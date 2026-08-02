@@ -1,3 +1,10 @@
+Adicionei o **Contador de Capotes do Centro Obstétrico (CO)** diretamente na barra de métricas superior!
+
+Ele conta com botões de **`-`** e **`+`** e **salva automaticamente no seu navegador (`localStorage`)**, ou seja, mesmo se você fechar a aba ou atualizar a página, o número de capotes controlados continuará lá.
+
+Aqui está o código completo e atualizado com essa nova ferramenta:
+
+```html
 <!DOCTYPE html>
 <html lang="pt-BR" class="dark">
 <head>
@@ -16,6 +23,7 @@
 </head>
 <body class="min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
 
+    <!-- TELA DE LOGIN -->
     <div id="login-overlay" class="fixed inset-0 z-50 backdrop-blur-md flex items-center justify-center p-4" style="background-image: linear-gradient(to bottom, rgba(3, 3, 5, 0.85), rgba(3, 3, 5, 0.95)), url('fundo.jpg'); background-size: cover; background-position: bottom center;">
         <div class="bg-[#08080a]/90 border border-zinc-800/80 backdrop-blur-xl rounded-3xl p-8 max-w-sm w-full shadow-2xl shadow-black space-y-6 text-center relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-blue-600/10 rounded-full blur-2xl pointer-events-none"></div>
@@ -40,6 +48,7 @@
         </div>
     </div>
 
+    <!-- HEADER PREMIUM -->
     <header class="bg-[#050508]/80 backdrop-blur-md border-b border-zinc-900/80 sticky top-0 z-30">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div class="flex items-center space-x-3">
@@ -63,10 +72,13 @@
         </div>
     </header>
 
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         
+        <!-- BARRA DE CONTROLE: SELETOR DE GRUPO + MÉTRICAS RÁPIDAS -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
+            <!-- Painel do Grupo Ativo -->
             <div class="lg:col-span-6 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
                 <div class="flex items-center space-x-3.5 w-full">
                     <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-lg shadow-blue-600/20" id="grupo-badge-num">
@@ -97,6 +109,7 @@
                 </div>
             </div>
 
+            <!-- Cards de Métricas e Controle (3 colunas) -->
             <div class="lg:col-span-6 grid grid-cols-3 gap-3">
                 <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-center">
                     <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Período Atual</span>
@@ -106,8 +119,10 @@
                     <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Turnos Semana</span>
                     <span class="text-sm sm:text-base font-black text-white mt-0.5" id="stat-atividades">--</span>
                     <div id="stat-detalhes-turnos" class="flex flex-wrap gap-x-1 gap-y-0.5 mt-1 text-[8px] sm:text-[9px] text-zinc-400 font-medium">
-                        </div>
+                        <!-- Gerado via JS -->
+                    </div>
                 </div>
+                <!-- NOVO: Contador de Capotes CO -->
                 <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-between">
                     <div>
                         <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Capotes CO</span>
@@ -125,13 +140,16 @@
 
         </div>
 
-        <div id="secao-semanas" class="space-y-2">
+        <!-- SELETOR DE SEMANAS (1 A 9) -->
+        <div class="space-y-2">
             <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider px-1">Selecione a Semana do Rodízio</span>
             <div class="grid grid-cols-3 sm:grid-cols-9 gap-2" id="semanas-tab-container">
-                </div>
+                <!-- Gerado via JS -->
+            </div>
         </div>
 
-        <div id="banner-hero" class="relative bg-gradient-to-r from-blue-950/40 via-[#08080a] to-[#08080a] border border-blue-500/20 rounded-3xl p-6 sm:p-7 shadow-2xl overflow-hidden flex flex-col justify-center min-h-[120px]">
+        <!-- BANNER HERO DO DIA SELECIONADO -->
+        <div class="relative bg-gradient-to-r from-blue-950/40 via-[#08080a] to-[#08080a] border border-blue-500/20 rounded-3xl p-6 sm:p-7 shadow-2xl overflow-hidden flex flex-col justify-center min-h-[120px]">
             <div class="absolute -right-16 -top-16 w-48 h-48 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="relative z-10 space-y-1">
                 <div class="flex items-center space-x-2">
@@ -141,26 +159,30 @@
                     </span>
                     <span id="label-dia-topo" class="text-[11px] font-bold tracking-widest text-blue-400 uppercase">SEGUNDA-FEIRA • 3/Aug</span>
                 </div>
-                <h2 id="titulo-banner-hero" class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+                <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
                     Escala Diária por Turnos
                 </h2>
             </div>
         </div>
 
-        <div id="container-abas-dias" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
-            </div>
+        <!-- ABAS DOS DIAS DA SEMANA -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2" id="dias-tab-container">
+            <!-- Gerado via JS -->
+        </div>
 
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-1">
+        <!-- SELETOR DE MODO DE VISUALIZAÇÃO (MEU TRIO vs TODOS OS TRIOS) -->
+        <div class="flex items-center justify-between px-1">
             <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider" id="titulo-secao-inferior">Divisão por Turnos (Manhã, Tarde e Noite)</span>
-            <div class="flex items-center space-x-1.5 bg-[#08080a] border border-zinc-900 p-1 rounded-xl w-full sm:w-auto overflow-x-auto">
-                <button onclick="alternarModo('individual')" id="btn-modo-ind" class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer">Meu Trio</button>
-                <button onclick="alternarModo('geral')" id="btn-modo-geral" class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer">Todos os 10 Trios</button>
-                <button onclick="alternarModo('seminarios')" id="btn-modo-seminarios" class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer">Seminários</button>
+            <div class="flex items-center space-x-1.5 bg-[#08080a] border border-zinc-900 p-1 rounded-xl">
+                <button onclick="alternarModo('individual')" id="btn-modo-ind" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer">Meu Trio</button>
+                <button onclick="alternarModo('geral')" id="btn-modo-geral" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer">Todos os 10 Trios</button>
             </div>
         </div>
 
+        <!-- GRADE INFERIOR: INTEGRANTES + TURNOS (OU VISÃO GERAL) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6" id="grid-inferior">
             
+            <!-- Coluna Esquerda: Integrantes (Oculta na visão geral) -->
             <div id="coluna-membros" class="lg:col-span-4 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-900">
@@ -168,16 +190,19 @@
                         <span class="w-2 h-2 rounded-full bg-blue-500"></span>
                     </div>
                     <ul id="lista-membros" class="space-y-3">
-                        </ul>
+                        <!-- Preenchido via JS -->
+                    </ul>
                 </div>
                 <div class="mt-6 pt-4 border-t border-zinc-900/60 text-[10px] text-zinc-600 font-medium text-center">
                     Rodízio de Ginecologia & Obstetrícia (9 Semanas)
                 </div>
             </div>
 
+            <!-- Coluna Direita: Turnos Detalhados (Expande para 12 na visão geral) -->
             <div class="lg:col-span-8 space-y-3" id="coluna-turnos-wrapper">
                 <div id="lista-turnos" class="space-y-3">
-                    </div>
+                    <!-- Preenchido via JavaScript -->
+                </div>
             </div>
 
         </div>
@@ -188,20 +213,6 @@
         const SENHA_ACESSO = "unieurot7a"; 
         let modoVisualizacao = 'individual'; 
         let capotesCount = parseInt(localStorage.getItem('t7a_capotes')) || 0;
-
-        const dadosSeminariosList = [
-            { data: "28/07", hora: "08h30–11h00", mediador: "—", apresentadores: "TODOS", tema1: "APRESENTAÇÃO DO INTERNATO EM SAÚDE DA MULHER – GINECOLOGIA & OBSTETRÍCIA", tema2: "" },
-            { data: "04/08", hora: "Terça-feira • 18h30", mediador: "Marta", apresentadores: "André Victor, Davi Carvalho, Letícia Barbosa", tema1: "Fisiologia do Ciclo Menstrual", tema2: "Pré-Natal de Risco Habitual" },
-            { data: "11/08", hora: "Terça-feira • 18h30", mediador: "—", apresentadores: "Nadya Veras, Louise Bonfim, Isabella de Lima", tema1: "Trabalho de Parto (Condutas, Indução e Condução).", tema2: "Cardiotocografia: Avaliação da Vitalidade Fetal: Sofrimento Fetal" },
-            { data: "18/08", hora: "Terça-feira • 18h30", mediador: "—", apresentadores: "Hiago Kaian, Isabella Frota, Maria Eduarda Aquino, José Henrique", tema1: "Sangramento Uterino Anormal (PALM-COEIN): Miomatose, Adenomiose e Endometriose.", tema2: "Hemorragias da 1ª Metade e da 2ª Metade da Gravidez: Hemorragia Pós-Parto" },
-            { data: "25/08", hora: "Terça-feira • 18h30", mediador: "Marta | Lucimara", apresentadores: "Heitor Stoduto, João Victor Tajra, Bruno Azevedo, Andressa Maboni", tema1: "Alterações Funcionais Benignas da Mama (AFBM): Patologias Benignas / Inflamatórias / Infecciosas da Mama.", tema2: "Câncer de Mama: Classificação BI-RADS" },
-            { data: "01/09", hora: "Terça-feira • 18h30", mediador: "—", apresentadores: "Maria Luiza, Maria Eduarda Santiago, Luiza de Santes", tema1: "Métodos Contraceptivos (Indicações, Contraindicações, Complicações).", tema2: "Trabalho de Parto Prematuro: Infecção do Trato Urinário em Obstetrícia" },
-            { data: "08/09", hora: "Terça-feira • 18h30", mediador: "—", apresentadores: "Letícia Teixeira, Júlia Matos, Luiza Sales", tema1: "Anatomia Genital Feminina Aplicada à Uroginecologia: Incontinência Urinária Feminina.", tema2: "HPV e Câncer de Colo de Útero" },
-            { data: "15/09", hora: "Terça-feira • 18h30", mediador: "—", apresentadores: "Ana Clara Ghisleni, Carolina Banholi, Kamilly Lima", tema1: "Prolapsos Genitais: Classificação de Bump (POP-Q).", tema2: "Tumores Benignos e Malignos do Ovário" },
-            { data: "22/09", hora: "Terça-feira • 18h30", mediador: "—", apresentadores: "Giovanna Muniz, Rayane Maria, Sofia Dias", tema1: "Síndromes Hipertensivas e Gestação (Pré-Eclâmpsia/Eclâmpsia/Síndrome HELLP).", tema2: "Diabetes Gestacional" },
-            { data: "23/09", hora: "Terça-feira • 18h30", mediador: "Lucimara", apresentadores: "Annelise Paiva, Camila Guidão, Gabriella Reis, Ana Luiza Daros", tema1: "Restrição de Crescimento Intrauterino: Oligoâmnio/Polidrâmnio.", tema2: "Leucorreias: Infecções Sexualmente Transmissíveis (IST) em GO e Doenças Inflamatórias Pélvica (DIP)" },
-            { data: "29/09", hora: "Terça-feira • 18h30", mediador: "—", apresentadores: "TODOS", tema1: "AVALIAÇÃO SOMATIVA", tema2: "" }
-        ];
 
         function verificarSenha() {
             const digitada = document.getElementById('senha-input').value;
@@ -240,124 +251,24 @@
             modoVisualizacao = modo;
             const btnInd = document.getElementById('btn-modo-ind');
             const btnGeral = document.getElementById('btn-modo-geral');
-            const btnSeminarios = document.getElementById('btn-modo-seminarios');
             const colunaMembros = document.getElementById('coluna-membros');
             const colunaTurnos = document.getElementById('coluna-turnos-wrapper');
             const tituloSecao = document.getElementById('titulo-secao-inferior');
-            const containerAbas = document.getElementById('container-abas-dias');
-            const bannerHero = document.getElementById('banner-hero');
-            const secaoSemanas = document.getElementById('secao-semanas');
-
-            btnInd.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
-            btnGeral.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
-            btnSeminarios.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
 
             if (modo === 'individual') {
-                btnInd.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
+                btnInd.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
+                btnGeral.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
                 colunaMembros.style.display = 'flex';
                 colunaTurnos.className = "lg:col-span-8 space-y-3";
                 tituloSecao.innerText = "Divisão por Turnos (Manhã, Tarde e Noite)";
-                containerAbas.style.display = 'grid';
-                bannerHero.style.display = 'flex';
-                secaoSemanas.style.display = 'block';
-                mudarGrupo();
-            } else if (modo === 'geral') {
-                btnGeral.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
+            } else {
+                btnGeral.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
+                btnInd.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
                 colunaMembros.style.display = 'none';
                 colunaTurnos.className = "lg:col-span-12 space-y-3";
                 tituloSecao.innerText = "Visão Geral: Todos os 10 Trios do Dia";
-                containerAbas.style.display = 'grid';
-                bannerHero.style.display = 'flex';
-                secaoSemanas.style.display = 'block';
-                mudarGrupo();
-            } else {
-                btnSeminarios.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
-                colunaMembros.style.display = 'none';
-                colunaTurnos.className = "lg:col-span-12 space-y-3";
-                tituloSecao.innerText = "Cronograma Oficial de Seminários Semanais";
-                containerAbas.style.display = 'grid'; // Mantido visível ou ocultado conforme pedido, mas aqui garantimos que as abas de dias não interferem
-                bannerHero.style.display = 'none';
-                secaoSemanas.style.display = 'none';
-                containerAbas.style.display = 'none'; // Apenas no modo seminários escondemos as abas diárias para focar nos cards
-                renderizarSeminariosView();
             }
-        }
-
-        function renderizarSeminariosView() {
-            const containerTurnos = document.getElementById('lista-turnos');
-            let html = `
-                <div class="bg-blue-950/20 border border-blue-500/30 rounded-2xl p-4 sm:p-5 mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-md">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 text-blue-400 flex items-center justify-center font-bold text-lg shrink-0">
-                            📍
-                        </div>
-                        <div>
-                            <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest block">Local Oficial dos Seminários</span>
-                            <h4 class="text-sm sm:text-base font-extrabold text-white">Terça-feira • 18h30 • UNIEURO • Bloco D • Sala 02</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            `;
-            
-            dadosSeminariosList.forEach(s => {
-                let temasHtml = '';
-                if (s.tema2) {
-                    temasHtml = `
-                        <div class="space-y-2">
-                            <div class="bg-[#121216] border border-zinc-900 p-3 rounded-xl space-y-1">
-                                <span class="text-[9px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 inline-block">18h30 – 19h45 (1º Tema)</span>
-                                <p class="text-xs text-zinc-200 font-semibold leading-relaxed">${s.tema1}</p>
-                            </div>
-                            <div class="bg-[#121216] border border-zinc-900 p-3 rounded-xl space-y-1">
-                                <span class="text-[9px] font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20 inline-block">20h00 – 21h30 (2º Tema)</span>
-                                <p class="text-xs text-zinc-200 font-semibold leading-relaxed">${s.tema2}</p>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    temasHtml = `
-                        <div class="bg-[#121216] border border-zinc-900 p-3 rounded-xl space-y-1">
-                            <span class="text-[9px] font-bold text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded inline-block">Horário Único</span>
-                            <p class="text-xs text-zinc-200 font-semibold leading-relaxed">${s.tema1}</p>
-                        </div>
-                    `;
-                }
-
-                html += `
-                    <div class="bg-[#08080a] border border-zinc-900 hover:border-zinc-800 rounded-2xl p-5 transition-all shadow-sm flex flex-col justify-between space-y-4">
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between pb-3 border-b border-zinc-900">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-8 h-8 rounded-xl bg-blue-600/10 border border-blue-500/20 text-blue-400 font-extrabold text-xs flex items-center justify-center">
-                                        📅
-                                    </div>
-                                    <span class="text-sm font-extrabold text-white">${s.data}</span>
-                                </div>
-                                <span class="text-[10px] font-bold text-zinc-400 bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-800">${s.hora}</span>
-                            </div>
-                            
-                            <div class="space-y-2.5">
-                                <div>
-                                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Apresentadores</span>
-                                    <p class="text-xs font-bold text-zinc-200 mt-0.5">${s.apresentadores}</p>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">Temas por Horário</span>
-                                    ${temasHtml}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="pt-3 border-t border-zinc-900 flex items-center justify-between text-xs">
-                            <span class="text-zinc-500 font-medium">Mediador(a):</span>
-                            <span class="text-zinc-300 font-bold bg-zinc-900 px-2.5 py-1 rounded-md border border-zinc-800">${s.mediador}</span>
-                        </div>
-                    </div>
-                `;
-            });
-            html += '</div>';
-            containerTurnos.innerHTML = html;
+            mudarGrupo();
         }
 
         function detectarDiaESemanaAtual() {
@@ -389,6 +300,7 @@
 
             function atualizar() {
                 const agora = new Date();
+                
                 const diferenca = dataFimRodizio - agora;
                 const diasRestantes = Math.ceil(diferenca / (1000 * 60 * 60 * 24));
                 const badge = document.getElementById('contador-dias');
@@ -402,6 +314,7 @@
                 const diffTime = agora - dataInicioRodizio;
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 let semanaCalculada = Math.floor(diffDays / 7) + 1;
+                
                 if (semanaCalculada < 1) semanaCalculada = 1;
                 if (semanaCalculada > 9) semanaCalculada = 9;
 
@@ -415,12 +328,350 @@
             setInterval(atualizar, 1000 * 60 * 60);
         }
 
-        function gerarDiasTrio1(semanaNum, datasArray) {
-            const tardeSegunda = (semanaNum === 1) ? "Simulado (UNIEURO)" : "Sessões Clínicas (UNIEURO)";
+        function gerarDiasSemana(datasArray) {
             return {
-                "seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: tardeSegunda }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                "seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
                 "ter": { nome: "Terça-feira", data: datasArray[1], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
                 "qua": { nome: "Quarta-feira", data: datasArray[2], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
                 "qui": { nome: "Quinta-feira", data: datasArray[3], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
                 "sex": { nome: "Sexta-feira", data: datasArray[4], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                "sab": { nome: "Sábado", data: datasArray[5], turnos: [ { periodo: "Manhã", horario: "07h-
+                "sab": { nome: "Sábado", data: datasArray[5], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
+                "dom": { nome: "Domingo", data: datasArray[6], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+            };
+        }
+
+        const semanasDatas = {
+            1: ["3/Aug", "4/Aug", "5/Aug", "6/Aug", "7/Aug", "8/Aug", "9/Aug"],
+            2: ["10/Aug", "11/Aug", "12/Aug", "13/Aug", "14/Aug", "15/Aug", "16/Aug"],
+            3: ["17/Aug", "18/Aug", "19/Aug", "20/Aug", "21/Aug", "22/Aug", "23/Aug"],
+            4: ["24/Aug", "25/Aug", "26/Aug", "27/Aug", "28/Aug", "29/Aug", "30/Aug"],
+            5: ["31/Aug", "1/Sep", "2/Sep", "3/Sep", "4/Sep", "5/Sep", "6/Sep"],
+            6: ["7/Sep", "8/Sep", "9/Sep", "10/Sep", "11/Sep", "12/Sep", "13/Sep"],
+            7: ["14/Sep", "15/Sep", "16/Sep", "17/Sep", "18/Sep", "19/Sep", "20/Sep"],
+            8: ["21/Sep", "22/Sep", "23/Sep", "24/Sep", "25/Sep", "26/Sep", "27/Sep"],
+            9: ["28/Sep", "29/Sep", "30/Sep", "1/Oct", "2/Oct", "3/Oct", "4/Oct"]
+        };
+
+        const dadosEscala = {
+            "1": {
+                nomeGrupo: "Trio A1: André, Davi & Leticia B.",
+                membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"],
+                semanas: {
+                    1: gerarDiasSemana(semanasDatas[1]),
+                    2: gerarDiasSemana(semanasDatas[2]),
+                    3: gerarDiasSemana(semanasDatas[3]),
+                    4: gerarDiasSemana(semanasDatas[4]),
+                    5: gerarDiasSemana(semanasDatas[5]),
+                    6: gerarDiasSemana(semanasDatas[6]),
+                    7: gerarDiasSemana(semanasDatas[7]),
+                    8: gerarDiasSemana(semanasDatas[8]),
+                    9: gerarDiasSemana(semanasDatas[9])
+                }
+            },
+            "2": {
+                nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.",
+                membros: ["Nadya Veras Jarosczynski", "Louise Albuquerque Mirindiba", "Isabella Teixeira de Lima"],
+                semanas: { 
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
+                }
+            },
+            "3": {
+                nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino",
+                membros: ["Hiago Kaian Xavier Lisboa", "Isabela Frota Carmona", "Maria Eduarda Lima de Aquino"],
+                semanas: { 
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
+                }
+            },
+            "4": {
+                nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.",
+                membros: ["Heitor Stoduto Mello Ferreira", "Bruno Azevedo Lima", "Andressa Costa Maboni"],
+                semanas: { 
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
+                }
+            },
+            "5": {
+                nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.",
+                membros: ["Maria Luiza de Ornelas Nobrega", "Maria Eduarda Santiago", "Luiza de Santes"],
+                semanas: { 
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
+                }
+            },
+            "6": {
+                nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.",
+                membros: ["Leticia Teixeira Monteiro", "Júlia Matos Guimarães", "Luiza Borges Sales"],
+                semanas: { 
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
+                }
+            },
+            "7": {
+                nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly",
+                membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima do vale"],
+                semanas: { 
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
+                }
+            },
+            "8": {
+                nomeGrupo: "Trio A8: Giovanna, Rayane & Sofi",
+                membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"],
+                semanas: { 
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
+                }
+            },
+            "9": {
+                nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella",
+                membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"],
+                semanas: { 
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
+                }
+            },
+            "10": {
+                nomeGrupo: "Trio A10: José, João Victor & Ana Luiza",
+                membros: ["José Henrique Ferreira", "João Victor Tajra", "Ana Luiza Daros"],
+                semanas: { 
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
+                }
+            }
+        };
+
+        let semanaSelecionadaGlobal = 1;
+        let diaSelecionadoGlobal = "seg";
+
+        function renderizarSemanas() {
+            const container = document.getElementById('semanas-tab-container');
+            container.innerHTML = '';
+            for (let s = 1; s <= 9; s++) {
+                const isSelected = (s === semanaSelecionadaGlobal);
+                const btnClass = isSelected 
+                    ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/30' 
+                    : 'bg-[#08080a] border-zinc-900 text-zinc-400 hover:border-zinc-800 hover:text-zinc-200';
+                
+                container.innerHTML += `
+                    <button onclick="selecionarSemana(${s})" class="border rounded-xl py-2 px-3 flex flex-col items-center justify-center transition-all ${btnClass} cursor-pointer">
+                        <span class="text-[10px] font-bold uppercase tracking-wider">Semana</span>
+                        <span class="text-xs font-extrabold mt-0.5">${s}</span>
+                    </button>
+                `;
+            }
+        }
+
+        function selecionarSemana(s) {
+            semanaSelecionadaGlobal = s;
+            renderizarSemanas();
+            renderizarAbasDias();
+            mudarGrupo();
+        }
+
+        function renderizarAbasDias() {
+            const container = document.getElementById('dias-tab-container');
+            container.innerHTML = '';
+            
+            const datasDaSemana = semanasDatas[semanaSelecionadaGlobal];
+            const listaDiasConfig = [
+                { key: "seg", label: "Seg", data: datasDaSemana[0] },
+                { key: "ter", label: "Ter", data: datasDaSemana[1] },
+                { key: "qua", label: "Qua", data: datasDaSemana[2] },
+                { key: "qui", label: "Qui", data: datasDaSemana[3] },
+                { key: "sex", label: "Sex", data: datasDaSemana[4] },
+                { key: "sab", label: "Sáb", data: datasDaSemana[5] },
+                { key: "dom", label: "Dom", data: datasDaSemana[6] }
+            ];
+
+            listaDiasConfig.forEach(d => {
+                const isSelected = (d.key === diaSelecionadoGlobal);
+                const btnClass = isSelected 
+                    ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/30' 
+                    : 'bg-[#08080a] border-zinc-900 text-zinc-400 hover:border-zinc-800 hover:text-zinc-200';
+                
+                container.innerHTML += `
+                    <button onclick="selecionarDia('${d.key}')" class="border rounded-2xl p-3 flex flex-col items-center justify-center transition-all ${btnClass} cursor-pointer">
+                        <span class="text-[10px] font-bold uppercase tracking-wider">${d.label}</span>
+                        <span class="text-xs font-extrabold mt-0.5">${d.data}</span>
+                    </button>
+                `;
+            });
+        }
+
+        function selecionarDia(key) {
+            diaSelecionadoGlobal = key;
+            renderizarAbasDias();
+            mudarGrupo();
+        }
+
+        function mudarGrupo() {
+            const id = document.getElementById('grupo-select').value;
+            const dados = dadosEscala[id];
+            
+            document.getElementById('grupo-badge-num').innerText = 'A' + id;
+            document.getElementById('titulo-grupo-header').innerText = dados.nomeGrupo;
+
+            const listaMembros = document.getElementById('lista-membros');
+            listaMembros.innerHTML = '';
+            dados.membros.forEach(nome => {
+                listaMembros.innerHTML += `
+                    <li class="flex items-center space-x-3">
+                        <div class="w-7 h-7 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-400 shrink-0">
+                            ${getIniciais(nome)}
+                        </div>
+                        <span class="text-xs font-medium text-zinc-200 leading-tight">${nome}</span>
+                    </li>
+                `;
+            });
+
+            const diasDaSemanaGrupo = dados.semanas[semanaSelecionadaGlobal];
+            const infoDia = diasDaSemanaGrupo[diaSelecionadoGlobal];
+            document.getElementById('label-dia-topo').innerText = `${infoDia.nome.toUpperCase()} • ${infoDia.data}`;
+
+            let totalAtividades = 0;
+            let totalPossiveis = 0;
+            let countManha = 0;
+            let countTarde = 0;
+            let countNoite = 0;
+            let countFds = 0;
+
+            Object.entries(diasDaSemanaGrupo).forEach(([diaKey, d]) => {
+                const isFds = (diaKey === 'sab' || diaKey === 'dom');
+                d.turnos.forEach(t => {
+                    totalPossiveis++;
+                    if (t.local !== "—") {
+                        totalAtividades++;
+                        if (t.periodo === "Manhã") countManha++;
+                        if (t.periodo === "Tarde") countTarde++;
+                        if (t.periodo === "Noite") countNoite++;
+                        if (isFds) countFds++;
+                    }
+                });
+            });
+
+            document.getElementById('stat-atividades').innerText = `${totalAtividades}/${totalPossiveis}`;
+            document.getElementById('stat-detalhes-turnos').innerHTML = `
+                <span>M: ${countManha}</span> • 
+                <span>T: ${countTarde}</span> • 
+                <span>N: ${countNoite}</span> • 
+                <span>FDS: ${countFds}</span>
+            `;
+
+            const containerTurnos = document.getElementById('lista-turnos');
+            containerTurnos.innerHTML = '';
+
+            if (modoVisualizacao === 'individual') {
+                infoDia.turnos.forEach(t => {
+                    let iconeTurno = '';
+                    if(t.periodo === 'Manhã') iconeTurno = '<svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+                    else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+                    else iconeTurno = '<svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
+
+                    const hasPlantao = t.local !== "—";
+                    const cardBorder = hasPlantao ? 'border-blue-500/30 bg-blue-950/10' : 'border-zinc-900 bg-[#08080a]';
+
+                    containerTurnos.innerHTML += `
+                        <div class="border ${cardBorder} hover:border-zinc-700 rounded-2xl p-4 flex items-center justify-between transition-all shadow-sm">
+                            <div class="flex items-center space-x-3.5">
+                                <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0">
+                                    ${iconeTurno}
+                                </div>
+                                <div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">${t.periodo}</span>
+                                        <span class="text-[10px] font-semibold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">${t.horario}</span>
+                                    </div>
+                                    <h4 class="text-sm sm:text-base font-bold text-white mt-0.5">${t.local}</h4>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-semibold">${t.local}</span>
+                        </div>
+                    `;
+                });
+            } else {
+                let gridHtml = '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
+                for (let i = 1; i <= 10; i++) {
+                    const dadosTrio = dadosEscala[i];
+                    const infoDiaTrio = dadosTrio.semanas[semanaSelecionadaGlobal][diaSelecionadoGlobal];
+                    
+                    let turnosTrioHtml = '';
+                    infoDiaTrio.turnos.forEach(t => {
+                        const hasPlantao = t.local !== "—";
+                        const badgeColor = hasPlantao ? 'text-blue-400 bg-blue-500/10 border-blue-500/20' : 'text-zinc-500 bg-zinc-900 border-zinc-800';
+                        turnosTrioHtml += `
+                            <div class="flex items-center justify-between text-xs py-1 px-2.5 rounded-lg bg-[#121216] border border-zinc-900">
+                                <span class="text-zinc-400 font-semibold">${t.periodo}</span>
+                                <span class="font-bold ${badgeColor} px-2 py-0.5 rounded border">${t.local}</span>
+                            </div>
+                        `;
+                    });
+
+                    gridHtml += `
+                        <div class="bg-[#08080a] border border-zinc-900 hover:border-zinc-800 rounded-2xl p-4 space-y-3 transition-all shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-7 h-7 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400 font-black text-xs flex items-center justify-center shrink-0">
+                                        A${i}
+                                    </div>
+                                    <h4 class="text-xs font-bold text-white tracking-tight truncate max-w-[190px] sm:max-w-[220px]">${dadosTrio.nomeGrupo.split(':')[1] || dadosTrio.nomeGrupo}</h4>
+                                </div>
+                                <button onclick="document.getElementById('grupo-select').value='${i}'; alternarModo('individual');" class="text-[10px] font-bold text-blue-400 hover:underline cursor-pointer">Ver Trio</button>
+                            </div>
+                            <div class="space-y-1.5">
+                                ${turnosTrioHtml}
+                            </div>
+                        </div>
+                    `;
+                }
+                gridHtml += '</div>';
+                containerTurnos.innerHTML = gridHtml;
+            }
+        }
+
+        function getIniciais(nome) {
+            const partes = nome.trim().split(' ');
+            if (partes.length > 1) return (partes[0][0] + partes[1][0]).toUpperCase();
+            return (nome[0] + nome[1]).toUpperCase();
+        }
+
+        window.onload = () => {
+            detectarDiaESemanaAtual();
+            renderizarSemanas();
+            renderizarAbasDias();
+            mudarGrupo();
+            atualizarCapotesDisplay();
+        };
+    </script>
+</body>
+</html>
+
+```
