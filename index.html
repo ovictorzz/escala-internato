@@ -12,11 +12,12 @@
         ::-webkit-scrollbar-track { background: #08080a; }
         ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+        .glass-panel { background: rgba(8, 8, 10, 0.75); backdrop-filter: blur(16px); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
 
-    <!-- TELA DE LOGIN COM FUNDO AJUSTADO (BOTTOM CENTER) -->
+    <!-- TELA DE LOGIN -->
     <div id="login-overlay" class="fixed inset-0 z-50 backdrop-blur-md flex items-center justify-center p-4" style="background-image: linear-gradient(to bottom, rgba(3, 3, 5, 0.85), rgba(3, 3, 5, 0.95)), url('fundo.jpg'); background-size: cover; background-position: bottom center;">
         <div class="bg-[#08080a]/90 border border-zinc-800/80 backdrop-blur-xl rounded-3xl p-8 max-w-sm w-full shadow-2xl shadow-black space-y-6 text-center relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-blue-600/10 rounded-full blur-2xl pointer-events-none"></div>
@@ -41,7 +42,7 @@
         </div>
     </div>
 
-    <!-- HEADER MINIMALISTA FLUIDO -->
+    <!-- HEADER PREMIUM -->
     <header class="bg-[#050508]/80 backdrop-blur-md border-b border-zinc-900/80 sticky top-0 z-30">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div class="flex items-center space-x-3">
@@ -53,14 +54,13 @@
                         Internato de Medicina – 10º semestre – <span class="text-blue-500 font-extrabold">Ginecologia & Obstetrícia</span>
                     </h1>
                     <p class="text-[10px] text-zinc-500 font-medium tracking-wide uppercase">
-                        Painel de Rodízios feito por André Victor
+                        Painel de Rodízios • Criado por André Victor
                     </p>
                 </div>
             </div>
             
             <div class="flex items-center space-x-2 self-end sm:self-center">
                 <span class="px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-300 text-[11px] font-semibold">Turma T7A</span>
-                <!-- CONTADOR DE DIAS PARA O FIM DO RODÍZIO -->
                 <span id="contador-dias" class="px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[11px] font-bold">Calculando...</span>
             </div>
         </div>
@@ -69,41 +69,59 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         
-        <!-- SELETOR DE GRUPO -->
-        <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-blue-400 font-black text-sm shrink-0" id="grupo-badge-num">
-                    A1
+        <!-- BARRA DE CONTROLE: SELETOR DE GRUPO + MÉTRICAS RÁPIDAS -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            
+            <!-- Seletor de Trio -->
+            <div class="md:col-span-7 bg-[#08080a] border border-zinc-900 rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-lg shadow-blue-600/20" id="grupo-badge-num">
+                        A1
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block">Grupo Ativo</span>
+                        <h3 class="text-sm font-bold text-white" id="titulo-grupo-header">Trio A1: André, Davi & Leticia B.</h3>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block">Grupo Ativo</span>
-                    <h3 class="text-sm sm:text-base font-bold text-white" id="titulo-grupo-header">Trio A1: André, Davi & Leticia B.</h3>
+
+                <div class="relative sm:w-64">
+                    <select id="grupo-select" onchange="mudarGrupo()" class="w-full bg-[#121216] border border-zinc-800 text-white font-semibold text-xs rounded-xl px-3.5 py-3 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer">
+                        <option value="1">Trio A1: André & Co</option>
+                        <option value="2">Trio A2: Nadya & Co</option>
+                        <option value="3">Trio A3: Hiago & Co</option>
+                        <option value="4">Trio A4: Heitor & Co</option>
+                        <option value="5">Trio A5: Mª Luiza & Co</option>
+                        <option value="6">Trio A6: Leticia M. & Co</option>
+                        <option value="7">Trio A7: Ana Clara & Co</option>
+                        <option value="8">Trio A8: Giovanna & Co</option>
+                        <option value="9">Trio A9: Annelise & Co</option>
+                        <option value="10">Trio A10: José & Co</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-zinc-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
                 </div>
             </div>
 
-            <div class="w-full md:w-96 relative">
-                <select id="grupo-select" onchange="mudarGrupo()" class="w-full bg-[#121216] border border-zinc-800 text-white font-semibold text-xs sm:text-sm rounded-xl px-4 py-3 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer">
-                    <option value="1">Trio A1: André, Davi & Leticia B.</option>
-                    <option value="2">Trio A2: Nadya, Louise & Isabella T.</option>
-                    <option value="3">Trio A3: Hiago, Isabela & Mª Eduarda Aquino</option>
-                    <option value="4">Trio A4: Heitor, Bruno & Andressa M.</option>
-                    <option value="5">Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.</option>
-                    <option value="6">Trio A6: Leticia M., Júlia & Luiza B.</option>
-                    <option value="7">Trio A7: Ana Clara, Carolina B. & Kamilly</option>
-                    <option value="8">Trio A8: Giovanna, Rayane & Sofi</option>
-                    <option value="9">Trio A9: Annelise, Camila S. & Gabriella</option>
-                    <option value="10">Trio A10: José, João Victor & Ana Luiza</option>
-                </select>
-                <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-zinc-500">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            <!-- Cards de Métricas da Semana -->
+            <div class="md:col-span-5 grid grid-cols-2 gap-3">
+                <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-center">
+                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Plantões / Atividades</span>
+                    <span class="text-lg font-black text-white mt-0.5" id="stat-atividades">--</span>
+                </div>
+                <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-center">
+                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Status da Semana</span>
+                    <span class="text-xs font-extrabold text-emerald-400 mt-1 flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Ativa & Atualizada
+                    </span>
                 </div>
             </div>
+
         </div>
 
-        <!-- BANNER DE CENÁRIO ATUAL / DIA SELECIONADO -->
-        <div class="relative bg-gradient-to-r from-blue-950/40 via-[#08080a] to-[#08080a] border border-blue-500/20 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden flex flex-col justify-center min-h-[140px]">
+        <!-- BANNER HERO DO DIA SELECIONADO -->
+        <div class="relative bg-gradient-to-r from-blue-950/40 via-[#08080a] to-[#08080a] border border-blue-500/20 rounded-3xl p-6 sm:p-7 shadow-2xl overflow-hidden flex flex-col justify-center min-h-[120px]">
             <div class="absolute -right-16 -top-16 w-48 h-48 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
-            
             <div class="relative z-10 space-y-1">
                 <div class="flex items-center space-x-2">
                     <span class="relative flex h-2 w-2">
@@ -123,7 +141,7 @@
             <!-- Gerado via JS -->
         </div>
 
-        <!-- GRADE INFERIOR DIVIDIDA -->
+        <!-- GRADE INFERIOR: INTEGRANTES + TURNOS DO DIA -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
             <!-- Coluna Esquerda: Integrantes -->
@@ -138,14 +156,14 @@
                     </ul>
                 </div>
                 <div class="mt-6 pt-4 border-t border-zinc-900/60 text-[10px] text-zinc-600 font-medium text-center">
-                    Escala Oficial • Trimester 2026.2
+                    Rodízio de Ginecologia & Obstetrícia
                 </div>
             </div>
 
-            <!-- Coluna Direita: Turnos do Dia com Horários -->
+            <!-- Coluna Direita: Turnos Detalhados -->
             <div class="lg:col-span-8 space-y-3">
                 <div class="flex items-center justify-between px-1">
-                    <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Divisão por Turnos (Com Horários)</span>
+                    <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Divisão por Turnos (Manhã, Tarde e Noite)</span>
                 </div>
                 
                 <div id="lista-turnos" class="space-y-3">
@@ -179,29 +197,21 @@
             iniciarContadorRodizio();
         });
 
-        // Função para calcular os dias restantes até 04/10/2026 às 23:59
+        // Contador até 04/10/2026 às 23:59
         function iniciarContadorRodizio() {
             const dataFimRodizio = new Date('2026-10-04T23:59:59'); 
-            
             function atualizar() {
                 const agora = new Date();
                 const diferenca = dataFimRodizio - agora;
                 const diasRestantes = Math.ceil(diferenca / (1000 * 60 * 60 * 24));
-                
                 const badge = document.getElementById('contador-dias');
                 if (badge) {
-                    if (diasRestantes > 1) {
-                        badge.innerText = `Faltam ${diasRestantes} dias para o fim`;
-                    } else if (diasRestantes === 1) {
-                        badge.innerText = `Falta 1 dia para o fim`;
-                    } else if (diasRestantes === 0) {
-                        badge.innerText = `Último dia de rodízio!`;
-                    } else {
-                        badge.innerText = `Rodízio concluído`;
-                    }
+                    if (diasRestantes > 1) badge.innerText = `Faltam ${diasRestantes} dias para o fim`;
+                    else if (diasRestantes === 1) badge.innerText = `Falta 1 dia para o fim`;
+                    else if (diasRestantes === 0) badge.innerText = `Último dia de rodízio!`;
+                    else badge.innerText = `Rodízio concluído`;
                 }
             }
-            
             atualizar();
             setInterval(atualizar, 1000 * 60 * 60);
         }
@@ -400,7 +410,16 @@
             const infoDia = dados.dias[diaSelecionadoGlobal];
             document.getElementById('label-dia-topo').innerText = `${infoDia.nome.toUpperCase()} • ${infoDia.data}`;
 
-            // Turnos com horários
+            // Contar atividades preenchidas na semana para as métricas
+            let totalAtividades = 0;
+            Object.values(dados.dias).forEach(d => {
+                d.turnos.forEach(t => {
+                    if (t.local !== "—") totalAtividades++;
+                });
+            });
+            document.getElementById('stat-atividades').innerText = totalAtividades + " turnos";
+
+            // Turnos com horários e destaque visual
             const containerTurnos = document.getElementById('lista-turnos');
             containerTurnos.innerHTML = '';
 
@@ -410,8 +429,11 @@
                 else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
                 else iconeTurno = '<svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
 
+                const hasPlantao = t.local !== "—";
+                const cardBorder = hasPlantao ? 'border-blue-500/30 bg-blue-950/10' : 'border-zinc-900 bg-[#08080a]';
+
                 containerTurnos.innerHTML += `
-                    <div class="bg-[#08080a] border border-zinc-900 hover:border-zinc-800 rounded-2xl p-4 flex items-center justify-between transition-all">
+                    <div class="border ${cardBorder} hover:border-zinc-700 rounded-2xl p-4 flex items-center justify-between transition-all shadow-sm">
                         <div class="flex items-center space-x-3.5">
                             <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0">
                                 ${iconeTurno}
