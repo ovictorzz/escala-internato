@@ -3,47 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escala G.O. - Internato Médico</title>
+    <title>Painel G.O. - Internato Médico</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="min-h-screen flex justify-center items-start py-0 sm:py-6 text-slate-100">
-    
-    <div class="w-full max-w-md bg-slate-900 min-h-screen sm:min-h-[850px] sm:rounded-[3rem] shadow-2xl border border-slate-800 flex flex-col justify-between overflow-hidden relative">
-        
-        <!-- Header Decorativo -->
-        <div class="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-indigo-600/20 via-purple-600/10 to-transparent pointer-events-none"></div>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
 
-        <div>
-            <!-- Topo / Navbar -->
-            <div class="px-6 pt-8 pb-4 relative z-10">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                        </div>
-                        <div>
-                            <span class="text-[11px] font-bold tracking-wider text-indigo-400 uppercase">Ginecologia e Obstetrícia</span>
-                            <h1 class="text-lg font-extrabold text-white tracking-tight">Escala do Internato</h1>
-                        </div>
-                    </div>
-                    <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 2026/3
-                    </span>
+    <!-- Header do Sistema -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 p-2 rounded-lg text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900 leading-tight">Internato Médico <span class="text-blue-600">G.O.</span></h1>
+                    <p class="text-[11px] font-medium text-slate-500 uppercase tracking-widest">Painel de Rodízios</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="bg-slate-100 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-md text-xs font-semibold">Turma 7.A</span>
+                <span class="bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1.5 rounded-md text-xs font-semibold">2026 / 3º Trimestre</span>
+            </div>
+        </div>
+    </header>
 
-                <!-- Seletor de Grupo Principal -->
-                <div class="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-4 shadow-xl backdrop-blur-md mb-5 relative group">
-                    <div class="flex items-center justify-between mb-1.5">
-                        <label for="grupo-select" class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Grupo Selecionado</label>
-                        <span id="grupo-badge" class="text-xs font-extrabold px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">A1</span>
-                    </div>
+    <!-- Área Principal (Grid para PC) -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-6 py-8">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Coluna Esquerda: Controles e Equipe (Ocupa 4/12 colunas no PC) -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Card de Seleção -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <h2 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Selecione seu Grupo</h2>
+                    
                     <div class="relative">
-                        <select id="grupo-select" onchange="mudarGrupo()" class="w-full bg-slate-900/90 border border-slate-700 text-white font-bold text-sm rounded-xl px-3.5 py-3 appearance-none focus:outline-none focus:border-indigo-500 transition-all cursor-pointer pr-10">
+                        <select id="grupo-select" onchange="mudarGrupo()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 font-bold text-base rounded-xl px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer hover:bg-slate-100">
                             <option value="1">Grupo A1: André, Davi & Leticia</option>
                             <option value="2">Grupo A2: Nadya, Louise & Isabella</option>
                             <option value="3">Grupo A3: Hiago, Isabela & Mª Eduarda</option>
@@ -55,13 +60,227 @@
                             <option value="9">Grupo A9: Annelise, Camila & Gabriella</option>
                             <option value="10">Grupo A10: José, João Victor & Ana Luiza</option>
                         </select>
-                        <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-slate-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </div>
                     </div>
                 </div>
 
-                <!-- Card de Membros do Grupo -->
+                <!-- Card da Equipe -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-5">
+                        <h2 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Integrantes do Trio</h2>
+                        <span id="grupo-badge" class="bg-blue-100 text-blue-700 font-bold px-2.5 py-1 rounded-md text-xs">A1</span>
+                    </div>
+                    
+                    <ul id="lista-membros" class="space-y-4">
+                        <!-- Preenchido via JS -->
+                    </ul>
+                </div>
+
+                <!-- Mini Status -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm text-center">
+                        <div class="text-2xl font-black text-slate-800">336<span class="text-sm font-medium text-slate-500">h</span></div>
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">Carga Total</div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm text-center">
+                        <div class="text-2xl font-black text-blue-600">33<span class="text-sm font-medium text-blue-400">%</span></div>
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">Concluído</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Coluna Direita: Rodízios e Cronograma (Ocupa 8/12 colunas no PC) -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- Destaque: Cenário Atual -->
+                <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 text-white shadow-md relative overflow-hidden flex flex-col justify-center h-48">
+                    <!-- Elemento decorativo de fundo -->
+                    <div class="absolute right-0 top-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-16 translate-x-16 pointer-events-none"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span class="text-xs font-bold text-blue-200 uppercase tracking-widest">Cenário Atual • Agosto</span>
+                        </div>
+                        <h2 id="cenario-atual-txt" class="text-3xl md:text-4xl font-black tracking-tight drop-shadow-sm">
+                            HRC - Centro Obstétrico
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Cronograma Horizontal (Cards lado a lado no PC) -->
+                <div>
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 ml-1">Cronograma de Rodízios</h3>
+                    
+                    <!-- Aqui usamos grid-cols-3 para os cards ficarem um ao lado do outro no monitor -->
+                    <div id="lista-blocos" class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <!-- Preenchido via JavaScript -->
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const dadosEscala = {
+            "1": {
+                membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"],
+                blocos: [
+                    { bloco: "BLOCO 1", local: "HRC - Centro Obstétrico", datas: "Agosto", ativo: true },
+                    { bloco: "BLOCO 2", local: "HRAN - Enfermaria", datas: "Setembro", ativo: false },
+                    { bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Outubro", ativo: false }
+                ]
+            },
+            "2": {
+                membros: ["Nadya Veras Jarosczynski", "Louise Albuquerque Mirindiba", "Isabella Teixeira de Lima"],
+                blocos: [
+                    { bloco: "BLOCO 1", local: "Policlínica Ceilândia", datas: "Agosto", ativo: true },
+                    { bloco: "BLOCO 2", local: "HRC - Centro Obstétrico", datas: "Setembro", ativo: false },
+                    { bloco: "BLOCO 3", local: "HRAN - Enfermaria", datas: "Outubro", ativo: false }
+                ]
+            },
+            "3": {
+                membros: ["Hiago Kaian Xavier Lisboa", "Isabela Frota Carmona", "Maria Eduarda Lima de Aquino"],
+                blocos: [
+                    { bloco: "BLOCO 1", local: "HRAN - Enfermaria", datas: "Agosto", ativo: true },
+                    { bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Setembro", ativo: false },
+                    { bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Outubro", ativo: false }
+                ]
+            },
+            "4": {
+                membros: ["Heitor Stoduto Mello Ferreira", "Bruno Azevedo Lima", "Andressa Costa Maboni"],
+                blocos: [
+                    { bloco: "BLOCO 1", local: "HRSM - Ambulatório", datas: "Agosto", ativo: true },
+                    { bloco: "BLOCO 2", local: "Policlínica Ceilândia", datas: "Setembro", ativo: false },
+                    { bloco: "BLOCO 3", local: "HRC - Centro Obstétrico", datas: "Outubro", ativo: false }
+                ]
+            },
+            "5": {
+                membros: ["Maria Luiza de Ornelas Nobrega", "Maria Eduarda Santiago", "Luiza de Santes"],
+                blocos: [
+                    { bloco: "BLOCO 1", local: "HRC - Enfermaria", datas: "Agosto", ativo: true },
+                    { bloco: "BLOCO 2", local: "HRAN - Centro Obstétrico", datas: "Setembro", ativo: false },
+                    { bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Outubro", ativo: false }
+                ]
+            },
+            "6": {
+                membros: ["Leticia Teixeira Monteiro", "Júlia Matos Guimarães", "Luiza Borges Sales"],
+                blocos: [
+                    { bloco: "BLOCO 1", local: "HRAN - Centro Obstétrico", datas: "Agosto", ativo: true },
+                    { bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Setembro", ativo: false },
+                    { bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Outubro", ativo: false }
+                ]
+            },
+            "7": {
+                membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima do vale"],
+                blocos: [
+                    { bloco: "BLOCO 1", local: "Policlínica Ceilândia", datas: "Agosto", ativo: true },
+                    { bloco: "BLOCO 2", local: "HRC - Enfermaria", datas: "Setembro", ativo: false },
+                    { bloco: "BLOCO 3", local: "HRAN - Centro Obstétrico", datas: "Outubro", ativo: false }
+                ]
+            },
+            "8": {
+                membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"],
+                blocos: [
+                    { bloco: "BLOCO 1", local: "HRSM - Ambulatório", datas: "Agosto", ativo: true },
+                    { bloco: "BLOCO 2", local: "Policlínica Ceilândia", datas: "Setembro", ativo: false },
+                    { bloco: "BLOCO 3", local: "HRC - Enfermaria", datas: "Outubro", ativo: false }
+                ]
+            },
+            "9": {
+                membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"],
+                blocos: [
+                    { bloco: "BLOCO 1", local: "HRC - Centro Obstétrico", datas: "Agosto", ativo: true },
+                    { bloco: "BLOCO 2", local: "HRAN - Enfermaria", datas: "Setembro", ativo: false },
+                    { bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Outubro", ativo: false }
+                ]
+            },
+            "10": {
+                membros: ["José Henrique Ferreira", "João Victor Tajra", "Ana Luiza Daros"],
+                blocos: [
+                    { bloco: "BLOCO 1", local: "HRAN - Enfermaria", datas: "Agosto", ativo: true },
+                    { bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Setembro", ativo: false },
+                    { bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Outubro", ativo: false }
+                ]
+            }
+        };
+
+        // Função para pegar as iniciais dos nomes (ex: André Victor -> AV)
+        function getIniciais(nome) {
+            const partes = nome.trim().split(' ');
+            if (partes.length > 1) return (partes[0][0] + partes[1][0]).toUpperCase();
+            return (nome[0] + nome[1]).toUpperCase();
+        }
+
+        function mudarGrupo() {
+            const id = document.getElementById('grupo-select').value;
+            const dados = dadosEscala[id];
+            
+            // Atualiza badge
+            document.getElementById('grupo-badge').innerText = 'A' + id;
+
+            // Atualiza lista de membros com design de lista de usuários real
+            const listaMembros = document.getElementById('lista-membros');
+            listaMembros.innerHTML = '';
+            dados.membros.forEach(nome => {
+                listaMembros.innerHTML += `
+                    <li class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-600 flex-shrink-0">
+                            ${getIniciais(nome)}
+                        </div>
+                        <span class="text-sm font-semibold text-slate-700 leading-tight">${nome}</span>
+                    </li>
+                `;
+            });
+
+            // Atualiza blocos em formato de Grid Horizontal
+            const containerBlocos = document.getElementById('lista-blocos');
+            containerBlocos.innerHTML = '';
+
+            let cenarioAtivo = '';
+
+            dados.blocos.forEach((b, index) => {
+                if (b.ativo) cenarioAtivo = b.local;
+
+                const cardClasses = b.ativo 
+                    ? 'bg-white border-2 border-blue-500 shadow-md ring-4 ring-blue-50 relative' 
+                    : 'bg-slate-50 border border-slate-200 hover:border-slate-300 hover:bg-white transition-colors';
+                
+                const titleColor = b.ativo ? 'text-blue-600' : 'text-slate-500';
+                const localColor = b.ativo ? 'text-slate-900' : 'text-slate-600';
+                
+                // Número do bloco (1, 2 ou 3)
+                const numBloco = index + 1;
+
+                containerBlocos.innerHTML += `
+                    <div class="rounded-2xl p-5 ${cardClasses}">
+                        ${b.ativo ? '<div class="absolute top-4 right-4"><span class="flex h-2.5 w-2.5 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span></span></div>' : ''}
+                        
+                        <div class="flex items-center space-x-2 mb-3">
+                            <div class="w-7 h-7 rounded-lg bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center">
+                                ${numBloco}
+                            </div>
+                            <span class="text-[11px] font-bold uppercase tracking-widest ${titleColor}">${b.datas}</span>
+                        </div>
+                        
+                        <h4 class="text-base font-bold ${localColor} leading-tight">${b.local}</h4>
+                    </div>
+                `;
+            });
+
+            // Atualiza banner principal
+            document.getElementById('cenario-atual-txt').innerText = cenarioAtivo;
+        }
+
+        window.onload = mudarGrupo;
+    </script>
+</body>
+</html>                <!-- Card de Membros do Grupo -->
                 <div class="bg-slate-800/40 border border-slate-800 rounded-2xl p-3.5 mb-5 flex items-center space-x-3">
                     <div class="w-8 h-8 rounded-xl bg-slate-800 flex items-center justify-center text-indigo-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
