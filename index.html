@@ -7,7 +7,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030305; color: #f4f4f5; }
+        /* Fundo garantido: Imagem sobreposta a um fundo preto sólido */
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #030305; /* Cor de segurança se a imagem falhar */
+            color: #f4f4f5; 
+            background-image: linear-gradient(to bottom, rgba(3, 3, 5, 0.85), rgba(3, 3, 5, 0.95)), url('fundo.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #08080a; }
         ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
@@ -16,24 +26,24 @@
 </head>
 <body class="min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
 
-    <div id="login-overlay" class="fixed inset-0 z-50 backdrop-blur-md flex items-center justify-center p-4 bg-[#030305]/95">
-        <div class="bg-[#08080a] border border-zinc-800/80 backdrop-blur-xl rounded-3xl p-8 max-w-sm w-full shadow-2xl shadow-black space-y-6 text-center relative overflow-hidden">
+    <div id="login-overlay" class="fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#08080a]/90 border border-zinc-800/80 backdrop-blur-xl rounded-3xl p-8 max-w-sm w-full shadow-2xl shadow-black space-y-6 text-center relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-blue-600/10 rounded-full blur-2xl pointer-events-none"></div>
             
-            <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-blue-600/30">
+            <div class="relative w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-blue-600/30">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
             </div>
             
-            <div class="space-y-1">
+            <div class="relative space-y-1">
                 <h2 class="text-xl font-bold tracking-tight text-white">Escala de 2026.2</h2>
                 <p class="text-xs text-zinc-400 leading-relaxed">
-                    Identificação obrigatória para a Turma T7A<br>
-                    <span class="text-zinc-500 font-medium">feito por André Victor</span>
+                    Turma T7A • Ginecologia & Obstetrícia<br>
+                    <span class="text-zinc-500 font-medium">Painel Sincronizado (Local)</span>
                 </p>
             </div>
             
-            <div class="space-y-3.5">
-                <input type="password" id="senha-input" placeholder="Digite a senha de acesso" class="w-full bg-[#121215] border border-zinc-800 rounded-xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-center transition-all placeholder:text-zinc-600">
+            <div class="relative space-y-3.5">
+                <input type="password" id="senha-input" placeholder="Digite a senha (unieurot7a)" class="w-full bg-[#121215] border border-zinc-800 rounded-xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-center transition-all placeholder:text-zinc-600">
                 <button onclick="verificarSenha()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg shadow-blue-600/25 text-sm active:scale-[0.98] cursor-pointer">Acessar Sistema</button>
                 <p id="erro-msg" class="text-xs text-rose-500 font-medium hidden">Senha incorreta. Tente novamente.</p>
             </div>
@@ -66,6 +76,7 @@
     <main class="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            
             <div class="lg:col-span-6 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
                 <div class="flex items-center space-x-3.5 w-full">
                     <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-lg shadow-blue-600/20" id="grupo-badge-num">
@@ -120,6 +131,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
         <div class="space-y-2">
@@ -144,437 +156,3 @@
         <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2" id="dias-tab-container"></div>
 
         <div class="flex items-center justify-between px-1">
-            <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider" id="titulo-secao-inferior">Divisão por Turnos (Manhã, Tarde e Noite)</span>
-            <div class="flex items-center space-x-1.5 bg-[#08080a] border border-zinc-900 p-1 rounded-xl">
-                <button onclick="alternarModo('individual')" id="btn-modo-ind" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer">Meu Trio</button>
-                <button onclick="alternarModo('geral')" id="btn-modo-geral" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer">Todos os 10 Trios</button>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6" id="grid-inferior">
-            <div id="coluna-membros" class="lg:col-span-4 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
-                <div>
-                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-900">
-                        <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Integrantes do Trio</span>
-                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                    </div>
-                    <ul id="lista-membros" class="space-y-3"></ul>
-                </div>
-                <div class="mt-6 pt-4 border-t border-zinc-900/60 text-[10px] text-zinc-600 font-medium text-center">
-                    Rodízio de Ginecologia & Obstetrícia (9 Semanas)
-                </div>
-            </div>
-
-            <div class="lg:col-span-8 space-y-3" id="coluna-turnos-wrapper">
-                <div id="lista-turnos" class="space-y-3"></div>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        const SENHA_ACESSO = "unieurot7a"; 
-        let modoVisualizacao = 'individual'; 
-        let capotesCount = 0;
-        let semanaSelecionadaGlobal = 1;
-        let diaSelecionadoGlobal = "seg";
-
-        try {
-            capotesCount = parseInt(localStorage.getItem('t7a_capotes')) || 0;
-        } catch (e) {
-            capotesCount = 0;
-        }
-
-        function verificarSenha() {
-            const input = document.getElementById('senha-input');
-            const erroMsg = document.getElementById('erro-msg');
-            const overlay = document.getElementById('login-overlay');
-            
-            if (!input || !erroMsg || !overlay) return;
-
-            if (input.value === SENHA_ACESSO) {
-                overlay.style.display = 'none';
-                try {
-                    sessionStorage.setItem('autenticado', 'true');
-                } catch (e) {}
-            } else {
-                erroMsg.classList.remove('hidden');
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            try {
-                if (sessionStorage.getItem('autenticado') === 'true') {
-                    const overlay = document.getElementById('login-overlay');
-                    if (overlay) overlay.style.display = 'none';
-                }
-            } catch (e) {}
-
-            detectarDiaESemanaAtual();
-            iniciarContadores();
-            atualizarCapotesDisplay();
-            renderizarSemanas();
-            renderizarAbasDias();
-            mudarGrupo();
-        });
-
-        function atualizarCapotesDisplay() {
-            const el = document.getElementById('contador-capotes-val');
-            if (el) el.innerText = capotesCount;
-            try {
-                localStorage.setItem('t7a_capotes', capotesCount);
-            } catch (e) {}
-        }
-
-        function alterarCapotes(delta) {
-            capotesCount += delta;
-            if (capotesCount < 0) capotesCount = 0;
-            atualizarCapotesDisplay();
-        }
-
-        function alternarModo(modo) {
-            modoVisualizacao = modo;
-            const btnInd = document.getElementById('btn-modo-ind');
-            const btnGeral = document.getElementById('btn-modo-geral');
-            const colunaMembros = document.getElementById('coluna-membros');
-            const colunaTurnos = document.getElementById('coluna-turnos-wrapper');
-            const tituloSecao = document.getElementById('titulo-secao-inferior');
-
-            if (!btnInd || !btnGeral || !colunaMembros || !colunaTurnos || !tituloSecao) return;
-
-            if (modo === 'individual') {
-                btnInd.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
-                btnGeral.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
-                colunaMembros.style.display = 'flex';
-                colunaTurnos.className = "lg:col-span-8 space-y-3";
-                tituloSecao.innerText = "Divisão por Turnos (Manhã, Tarde e Noite)";
-            } else {
-                btnGeral.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
-                btnInd.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
-                colunaMembros.style.display = 'none';
-                colunaTurnos.className = "lg:col-span-12 space-y-3";
-                tituloSecao.innerText = "Visão Geral: Todos os 10 Trios do Dia";
-            }
-            mudarGrupo();
-        }
-
-        function detectarDiaESemanaAtual() {
-            try {
-                const agora = new Date();
-                const dataInicioRodizio = new Date('2026-08-03T00:00:00');
-                const dataFimRodizio = new Date('2026-10-04T23:59:59');
-
-                if (agora >= dataInicioRodizio && agora <= dataFimRodizio) {
-                    const diffTime = agora - dataInicioRodizio;
-                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                    let semanaCalculada = Math.floor(diffDays / 7) + 1;
-                    
-                    if (semanaCalculada < 1) semanaCalculada = 1;
-                    if (semanaCalculada > 9) semanaCalculada = 9;
-                    semanaSelecionadaGlobal = semanaCalculada;
-
-                    const jsDay = agora.getDay();
-                    const mapDias = { 1: "seg", 2: "ter", 3: "qua", 4: "qui", 5: "sex", 6: "sab", 0: "dom" };
-                    diaSelecionadoGlobal = mapDias[jsDay] || "seg";
-                }
-            } catch (e) {
-                semanaSelecionadaGlobal = 1;
-                diaSelecionadoGlobal = "seg";
-            }
-        }
-
-        function iniciarContadores() {
-            const dataFimRodizio = new Date('2026-10-04T23:59:59'); 
-            const dataInicioRodizio = new Date('2026-08-03T00:00:00');
-
-            function atualizar() {
-                try {
-                    const agora = new Date();
-                    const diferenca = dataFimRodizio - agora;
-                    const diasRestantes = Math.ceil(diferenca / (1000 * 60 * 60 * 24));
-                    const badge = document.getElementById('contador-dias');
-                    if (badge) {
-                        if (diasRestantes > 1) badge.innerText = `Faltam ${diasRestantes} dias para o fim`;
-                        else if (diasRestantes === 1) badge.innerText = `Falta 1 dia para o fim`;
-                        else if (diasRestantes === 0) badge.innerText = `Último dia de rodízio!`;
-                        else badge.innerText = `Rodízio concluído`;
-                    }
-
-                    const diffTime = agora - dataInicioRodizio;
-                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                    let semanaCalculada = Math.floor(diffDays / 7) + 1;
-                    
-                    if (semanaCalculada < 1) semanaCalculada = 1;
-                    if (semanaCalculada > 9) semanaCalculada = 9;
-
-                    const statSemana = document.getElementById('stat-semana');
-                    if (statSemana) {
-                        statSemana.innerText = `Semana ${semanaCalculada} de 9`;
-                    }
-                } catch (e) {}
-            }
-
-            atualizar();
-            setInterval(atualizar, 1000 * 60 * 60);
-        }
-
-        function gerarDiasSemana(datasArray) {
-            return {
-                "seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                "ter": { nome: "Terça-feira", data: datasArray[1], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
-                "qua": { nome: "Quarta-feira", data: datasArray[2], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                "qui": { nome: "Quinta-feira", data: datasArray[3], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                "sex": { nome: "Sexta-feira", data: datasArray[4], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                "sab": { nome: "Sábado", data: datasArray[5], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
-                "dom": { nome: "Domingo", data: datasArray[6], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
-            };
-        }
-
-        const semanasDatas = {
-            1: ["3/Aug", "4/Aug", "5/Aug", "6/Aug", "7/Aug", "8/Aug", "9/Aug"],
-            2: ["10/Aug", "11/Aug", "12/Aug", "13/Aug", "14/Aug", "15/Aug", "16/Aug"],
-            3: ["17/Aug", "18/Aug", "19/Aug", "20/Aug", "21/Aug", "22/Aug", "23/Aug"],
-            4: ["24/Aug", "25/Aug", "26/Aug", "27/Aug", "28/Aug", "29/Aug", "30/Aug"],
-            5: ["31/Aug", "1/Sep", "2/Sep", "3/Sep", "4/Sep", "5/Sep", "6/Sep"],
-            6: ["7/Sep", "8/Sep", "9/Sep", "10/Sep", "11/Sep", "12/Sep", "13/Sep"],
-            7: ["14/Sep", "15/Sep", "16/Sep", "17/Sep", "18/Sep", "19/Sep", "20/Sep"],
-            8: ["21/Sep", "22/Sep", "23/Sep", "24/Sep", "25/Sep", "26/Sep", "27/Sep"],
-            9: ["28/Sep", "29/Sep", "30/Sep", "1/Oct", "2/Oct", "3/Oct", "4/Oct"]
-        };
-
-        const dadosEscala = {};
-        for (let i = 1; i <= 10; i++) {
-            let nomes = ["André", "Davi", "Leticia"];
-            if(i===2) nomes = ["Nadya", "Louise", "Isabella T."];
-            if(i===3) nomes = ["Hiago", "Isabela", "Mª Eduarda"];
-            if(i===4) nomes = ["Heitor", "Bruno", "Andressa"];
-            if(i===5) nomes = ["Mª Luiza", "Mª Eduarda S.", "Luiza S."];
-            if(i===6) nomes = ["Leticia M.", "Júlia", "Luiza B."];
-            if(i===7) nomes = ["Ana Clara", "Carolina B.", "Kamilly"];
-            if(i===8) nomes = ["Giovanna", "Rayane", "Sofi"];
-            if(i===9) nomes = ["Annelise", "Camila S.", "Gabriella"];
-            if(i===10) nomes = ["José", "João Victor", "Ana Luiza"];
-
-            let semanasObj = {};
-            for (let s = 1; s <= 9; s++) {
-                semanasObj[s] = gerarDiasSemana(semanasDatas[s]);
-            }
-
-            dadosEscala[i] = {
-                nomeGrupo: `Trio A${i}: ${nomes.join(', ')}`,
-                membros: nomes.map(n => n + ` (Integrante ${i})`),
-                semanas: semanasObj
-            };
-        }
-
-        function renderizarSemanas() {
-            const container = document.getElementById('semanas-tab-container');
-            if (!container) return;
-            container.innerHTML = '';
-            for (let s = 1; s <= 9; s++) {
-                const isSelected = (s === semanaSelecionadaGlobal);
-                const btnClass = isSelected 
-                    ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/30' 
-                    : 'bg-[#08080a] border-zinc-900 text-zinc-400 hover:border-zinc-800 hover:text-zinc-200';
-                
-                container.innerHTML += `
-                    <button onclick="selecionarSemana(${s})" class="border rounded-xl py-2 px-3 flex flex-col items-center justify-center transition-all ${btnClass} cursor-pointer">
-                        <span class="text-[10px] font-bold uppercase tracking-wider">Semana</span>
-                        <span class="text-xs font-extrabold mt-0.5">${s}</span>
-                    </button>
-                `;
-            }
-        }
-
-        function selecionarSemana(s) {
-            semanaSelecionadaGlobal = s;
-            renderizarSemanas();
-            renderizarAbasDias();
-            mudarGrupo();
-        }
-
-        function renderizarAbasDias() {
-            const container = document.getElementById('dias-tab-container');
-            if (!container) return;
-            container.innerHTML = '';
-            
-            const datasDaSemana = semanasDatas[semanaSelecionadaGlobal] || semanasDatas[1];
-            const listaDiasConfig = [
-                { key: "seg", label: "Seg", data: datasDaSemana[0] },
-                { key: "ter", label: "Ter", data: datasDaSemana[1] },
-                { key: "qua", label: "Qua", data: datasDaSemana[2] },
-                { key: "qui", label: "Qui", data: datasDaSemana[3] },
-                { key: "sex", label: "Sex", data: datasDaSemana[4] },
-                { key: "sab", label: "Sáb", data: datasDaSemana[5] },
-                { key: "dom", label: "Dom", data: datasDaSemana[6] }
-            ];
-
-            listaDiasConfig.forEach(d => {
-                const isSelected = (d.key === diaSelecionadoGlobal);
-                const btnClass = isSelected 
-                    ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/30' 
-                    : 'bg-[#08080a] border-zinc-900 text-zinc-400 hover:border-zinc-800 hover:text-zinc-200';
-                
-                container.innerHTML += `
-                    <button onclick="selecionarDia('${d.key}')" class="border rounded-2xl p-3 flex flex-col items-center justify-center transition-all ${btnClass} cursor-pointer">
-                        <span class="text-[10px] font-bold uppercase tracking-wider">${d.label}</span>
-                        <span class="text-xs font-extrabold mt-0.5">${d.data}</span>
-                    </button>
-                `;
-            });
-        }
-
-        function selecionarDia(key) {
-            diaSelecionadoGlobal = key;
-            renderizarAbasDias();
-            mudarGrupo();
-        }
-
-        function mudarGrupo() {
-            const selectEl = document.getElementById('grupo-select');
-            if (!selectEl) return;
-            const id = selectEl.value;
-            const dados = dadosEscala[id];
-            if (!dados) return;
-            
-            const badgeNum = document.getElementById('grupo-badge-num');
-            const tituloHeader = document.getElementById('titulo-grupo-header');
-            if (badgeNum) badgeNum.innerText = 'A' + id;
-            if (tituloHeader) tituloHeader.innerText = dados.nomeGrupo;
-
-            const listaMembros = document.getElementById('lista-membros');
-            if (listaMembros) {
-                listaMembros.innerHTML = '';
-                dados.membros.forEach(nome => {
-                    listaMembros.innerHTML += `
-                        <li class="flex items-center space-x-3">
-                            <div class="w-7 h-7 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-400 shrink-0">
-                                ${getIniciais(nome)}
-                            </div>
-                            <span class="text-xs font-medium text-zinc-200 leading-tight">${nome}</span>
-                        </li>
-                    `;
-                });
-            }
-
-            const diasDaSemanaGrupo = dados.semanas[semanaSelecionadaGlobal] || dados.semanas[1];
-            const infoDia = diasDaSemanaGrupo[diaSelecionadoGlobal] || diasDaSemanaGrupo["seg"];
-            const labelTopo = document.getElementById('label-dia-topo');
-            if (labelTopo) labelTopo.innerText = `${infoDia.nome.toUpperCase()} • ${infoDia.data}`;
-
-            let totalAtividades = 0;
-            let totalPossiveis = 0;
-            let countManha = 0;
-            let countTarde = 0;
-            let countNoite = 0;
-            let countFds = 0;
-
-            Object.entries(diasDaSemanaGrupo).forEach(([diaKey, d]) => {
-                const isFds = (diaKey === 'sab' || diaKey === 'dom');
-                d.turnos.forEach(t => {
-                    totalPossiveis++;
-                    if (t.local !== "—") {
-                        totalAtividades++;
-                        if (t.periodo === "Manhã") countManha++;
-                        if (t.periodo === "Tarde") countTarde++;
-                        if (t.periodo === "Noite") countNoite++;
-                        if (isFds) countFds++;
-                    }
-                });
-            });
-
-            const statAtividades = document.getElementById('stat-atividades');
-            const statDetalhes = document.getElementById('stat-detalhes-turnos');
-            if (statAtividades) statAtividades.innerText = `${totalAtividades}/${totalPossiveis}`;
-            if (statDetalhes) {
-                statDetalhes.innerHTML = `
-                    <span>M: ${countManha}</span> • 
-                    <span>T: ${countTarde}</span> • 
-                    <span>N: ${countNoite}</span> • 
-                    <span>FDS: ${countFds}</span>
-                `;
-            }
-
-            const containerTurnos = document.getElementById('lista-turnos');
-            if (!containerTurnos) return;
-            containerTurnos.innerHTML = '';
-
-            if (modoVisualizacao === 'individual') {
-                infoDia.turnos.forEach(t => {
-                    let iconeTurno = '';
-                    if(t.periodo === 'Manhã') iconeTurno = '<svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
-                    else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
-                    else iconeTurno = '<svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
-
-                    const hasPlantao = t.local !== "—";
-                    const cardBorder = hasPlantao ? 'border-blue-500/30 bg-blue-950/10' : 'border-zinc-900 bg-[#08080a]';
-
-                    containerTurnos.innerHTML += `
-                        <div class="border ${cardBorder} hover:border-zinc-700 rounded-2xl p-4 flex items-center justify-between transition-all shadow-sm">
-                            <div class="flex items-center space-x-3.5">
-                                <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0">
-                                    ${iconeTurno}
-                                </div>
-                                <div>
-                                    <div class="flex items-center space-x-2">
-                                        <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">${t.periodo}</span>
-                                        <span class="text-[10px] font-semibold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">${t.horario}</span>
-                                    </div>
-                                    <h4 class="text-sm sm:text-base font-bold text-white mt-0.5">${t.local}</h4>
-                                </div>
-                            </div>
-                            <span class="px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-semibold">${t.local}</span>
-                        </div>
-                    `;
-                });
-            } else {
-                let gridHtml = '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
-                for (let i = 1; i <= 10; i++) {
-                    const dadosTrio = dadosEscala[i];
-                    const infoDiaTrio = dadosTrio.semanas[semanaSelecionadaGlobal][diaSelecionadoGlobal];
-                    
-                    let turnosTrioHtml = '';
-                    infoDiaTrio.turnos.forEach(t => {
-                        const hasPlantao = t.local !== "—";
-                        const badgeColor = hasPlantao ? 'text-blue-400 bg-blue-500/10 border-blue-500/20' : 'text-zinc-500 bg-zinc-900 border-zinc-800';
-                        turnosTrioHtml += `
-                            <div class="flex items-center justify-between text-xs py-1 px-2.5 rounded-lg bg-[#121216] border border-zinc-900">
-                                <span class="text-zinc-400 font-semibold">${t.periodo}</span>
-                                <span class="font-bold ${badgeColor} px-2 py-0.5 rounded border">${t.local}</span>
-                            </div>
-                        `;
-                    });
-
-                    gridHtml += `
-                        <div class="bg-[#08080a] border border-zinc-900 hover:border-zinc-800 rounded-2xl p-4 space-y-3 transition-all shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-2.5">
-                                    <div class="w-7 h-7 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400 font-black text-xs flex items-center justify-center shrink-0">
-                                        A${i}
-                                    </div>
-                                    <h4 class="text-xs font-bold text-white tracking-tight truncate max-w-[190px] sm:max-w-[220px]">${dadosTrio.nomeGrupo.split(':')[1] || dadosTrio.nomeGrupo}</h4>
-                                </div>
-                                <button onclick="document.getElementById('grupo-select').value='${i}'; alternarModo('individual');" class="text-[10px] font-bold text-blue-400 hover:underline cursor-pointer">Ver Trio</button>
-                            </div>
-                            <div class="space-y-1.5">
-                                ${turnosTrioHtml}
-                            </div>
-                        </div>
-                    `;
-                }
-                gridHtml += '</div>';
-                containerTurnos.innerHTML = gridHtml;
-            }
-        }
-
-        function getIniciais(nome) {
-            try {
-                const partes = nome.trim().split(' ');
-                if (partes.length > 1) return (partes[0][0] + partes[1][0]).toUpperCase();
-                return (nome[0] + nome[1]).toUpperCase();
-            } catch (e) {
-                return "TR";
-            }
-        }
-    </script>
-</body>
-</html>
