@@ -68,13 +68,11 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         
-        <!-- BARRA DE CONTROLE: SELETOR DE GRUPO + MÉTRICAS RÁPIDAS (9 SEMANAS) -->
+        <!-- BARRA DE CONTROLE: SELETOR DE GRUPO + MÉTRICAS RÁPIDAS -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
-            <!-- Painel do Grupo Ativo (Largura Total Expandida) -->
+            <!-- Painel do Grupo Ativo -->
             <div class="lg:col-span-7 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
-                
-                <!-- Linha Superior: Ícone + Nome Completo do Trio sem cortes -->
                 <div class="flex items-center space-x-3.5 w-full">
                     <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-lg shadow-blue-600/20" id="grupo-badge-num">
                         A1
@@ -85,7 +83,6 @@
                     </div>
                 </div>
 
-                <!-- Linha Inferior: Seletor de Troca de Grupo -->
                 <div class="relative w-full pt-2 border-t border-zinc-900">
                     <select id="grupo-select" onchange="mudarGrupo()" class="w-full bg-[#121216] border border-zinc-800 text-white font-semibold text-xs sm:text-sm rounded-xl px-4 py-3 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer">
                         <option value="1">Trio A1: André, Davi & Leticia B.</option>
@@ -103,21 +100,28 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                 </div>
-
             </div>
 
-            <!-- Cards de Métricas da Semana (Incluindo contador dinâmico de semanas) -->
+            <!-- Cards de Métricas -->
             <div class="lg:col-span-5 grid grid-cols-2 gap-3">
                 <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-center">
                     <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Período Atual</span>
                     <span class="text-base sm:text-lg font-black text-white mt-0.5" id="stat-semana">-- de 9</span>
                 </div>
                 <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-center">
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Turnos do Trio</span>
+                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Turnos na Semana</span>
                     <span class="text-base sm:text-lg font-black text-white mt-0.5" id="stat-atividades">--</span>
                 </div>
             </div>
 
+        </div>
+
+        <!-- SELETOR DE SEMANAS (1 A 9) -->
+        <div class="space-y-2">
+            <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider px-1">Selecione a Semana do Rodízio</span>
+            <div class="grid grid-cols-3 sm:grid-cols-9 gap-2" id="semanas-tab-container">
+                <!-- Gerado via JS -->
+            </div>
         </div>
 
         <!-- BANNER HERO DO DIA SELECIONADO -->
@@ -198,7 +202,6 @@
             iniciarContadores();
         });
 
-        // Contadores automáticos (Dias até 04/10/2026 e Semana Atual de 9)
         function iniciarContadores() {
             const dataFimRodizio = new Date('2026-10-04T23:59:59'); 
             const dataInicioRodizio = new Date('2026-08-03T00:00:00');
@@ -206,7 +209,6 @@
             function atualizar() {
                 const agora = new Date();
                 
-                // Dias restantes
                 const diferenca = dataFimRodizio - agora;
                 const diasRestantes = Math.ceil(diferenca / (1000 * 60 * 60 * 24));
                 const badge = document.getElementById('contador-dias');
@@ -217,17 +219,16 @@
                     else badge.innerText = `Rodízio concluído`;
                 }
 
-                // Cálculo da semana atual (das 9 semanas)
                 const diffTime = agora - dataInicioRodizio;
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                let semanaAtual = Math.floor(diffDays / 7) + 1;
+                let semanaCalculada = Math.floor(diffDays / 7) + 1;
                 
-                if (semanaAtual < 1) semanaAtual = 1;
-                if (semanaAtual > 9) semanaAtual = 9;
+                if (semanaCalculada < 1) semanaCalculada = 1;
+                if (semanaCalculada > 9) semanaCalculada = 9;
 
                 const statSemana = document.getElementById('stat-semana');
                 if (statSemana) {
-                    statSemana.innerText = `Semana ${semanaAtual} de 9`;
+                    statSemana.innerText = `Semana ${semanaCalculada} de 9`;
                 }
             }
 
@@ -235,154 +236,229 @@
             setInterval(atualizar, 1000 * 60 * 60);
         }
 
+        // Função auxiliar para gerar os dias de uma semana com base na data inicial
+        function gerarDiasSemana(dataInicioStr, datasArray) {
+            return {
+                "seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                "ter": { nome: "Terça-feira", data: datasArray[1], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
+                "qua": { nome: "Quarta-feira", data: datasArray[2], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                "qui": { nome: "Quinta-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }.qui, // Mantém modelo
+                "qui": { nome: "Quinta-feira", data: datasArray[3], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                "sex": { nome: "Sexta-feira", data: datasArray[4], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                "sab": { nome: "Sábado", data: datasArray[5], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
+                "dom": { nome: "Domingo", data: datasArray[6], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+            };
+        }
+
+        // Datas exatas para as 9 semanas (03/Aug/2026 até 04/Oct/2026)
+        const semanasDatas = {
+            1: ["3/Aug", "4/Aug", "5/Aug", "6/Aug", "7/Aug", "8/Aug", "9/Aug"],
+            2: ["10/Aug", "11/Aug", "12/Aug", "13/Aug", "14/Aug", "15/Aug", "16/Aug"],
+            3: ["17/Aug", "18/Aug", "19/Aug", "20/Aug", "21/Aug", "22/Aug", "23/Aug"],
+            4: ["24/Aug", "25/Aug", "26/Aug", "27/Aug", "28/Aug", "29/Aug", "30/Aug"],
+            5: ["31/Aug", "1/Sep", "2/Sep", "3/Sep", "4/Sep", "5/Sep", "6/Sep"],
+            6: ["7/Sep", "8/Sep", "9/Sep", "10/Sep", "11/Sep", "12/Sep", "13/Sep"],
+            7: ["14/Sep", "15/Sep", "16/Sep", "17/Sep", "18/Sep", "19/Sep", "20/Sep"],
+            8: ["21/Sep", "22/Sep", "23/Sep", "24/Sep", "25/Sep", "26/Sep", "27/Sep"],
+            9: ["28/Sep", "29/Sep", "30/Sep", "1/Oct", "2/Oct", "3/Oct", "4/Oct"]
+        };
+
         const dadosEscala = {
             "1": {
                 nomeGrupo: "Trio A1: André, Davi & Leticia B.",
                 membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"],
-                dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+                semanas: {
+                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
+                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
+                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
+                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
+                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
+                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
+                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
+                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
+                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
                 }
             },
             "2": {
                 nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.",
                 membros: ["Nadya Veras Jarosczynski", "Louise Albuquerque Mirindiba", "Isabella Teixeira de Lima"],
-                dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CC" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Amb EURO" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Nádia(EUD)" }, { periodo: "Tarde", horario: "13h-18h", local: "Rocha" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+                semanas: { 
+                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
+                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
+                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
+                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
+                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
+                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
+                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
+                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
+                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
                 }
             },
             "3": {
                 nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino",
                 membros: ["Hiago Kaian Xavier Lisboa", "Isabela Frota Carmona", "Maria Eduarda Lima de Aquino"],
-                dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+                semanas: { 
+                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
+                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
+                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
+                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
+                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
+                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
+                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
+                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
+                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
                 }
             },
             "4": {
                 nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.",
                 membros: ["Heitor Stoduto Mello Ferreira", "Bruno Azevedo Lima", "Andressa Costa Maboni"],
-                dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+                semanas: { 
+                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
+                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
+                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
+                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
+                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
+                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
+                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
+                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
+                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
                 }
             },
             "5": {
                 nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.",
                 membros: ["Maria Luiza de Ornelas Nobrega", "Maria Eduarda Santiago", "Luiza de Santes"],
-                dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+                semanas: { 
+                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
+                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
+                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
+                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
+                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
+                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
+                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
+                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
+                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
                 }
             },
             "6": {
                 nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.",
                 membros: ["Leticia Teixeira Monteiro", "Júlia Matos Guimarães", "Luiza Borges Sales"],
-                dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+                semanas: { 
+                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
+                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
+                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
+                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
+                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
+                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
+                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
+                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
+                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
                 }
             },
             "7": {
                 nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly",
                 membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima do vale"],
-                dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+                semanas: { 
+                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
+                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
+                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
+                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
+                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
+                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
+                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
+                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
+                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
                 }
             },
             "8": {
                 nomeGrupo: "Trio A8: Giovanna, Rayane & Sofi",
                 membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"],
-                dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+                semanas: { 
+                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
+                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
+                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
+                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
+                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
+                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
+                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
+                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
+                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
                 }
             },
             "9": {
                 nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella",
                 membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"],
-                dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+                semanas: { 
+                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
+                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
+                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
+                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
+                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
+                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
+                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
+                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
+                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
                 }
             },
             "10": {
                 nomeGrupo: "Trio A10: José, João Victor & Ana Luiza",
                 membros: ["José Henrique Ferreira", "João Victor Tajra", "Ana Luiza Daros"],
-                dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+                semanas: { 
+                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
+                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
+                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
+                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
+                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
+                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
+                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
+                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
+                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
                 }
             }
         };
 
+        let semanaSelecionadaGlobal = 1;
         let diaSelecionadoGlobal = "seg";
 
-        const listaDiasConfig = [
-            { key: "seg", label: "Seg", data: "3/Aug" },
-            { key: "ter", label: "Ter", data: "4/Aug" },
-            { key: "qua", label: "Qua", data: "5/Aug" },
-            { key: "qui", label: "Qui", data: "6/Aug" },
-            { key: "sex", label: "Sex", data: "7/Aug" },
-            { key: "sab", label: "Sáb", data: "8/Aug" },
-            { key: "dom", label: "Dom", data: "9/Aug" }
-        ];
+        function renderizarSemanas() {
+            const container = document.getElementById('semanas-tab-container');
+            container.innerHTML = '';
+            for (let s = 1; s <= 9; s++) {
+                const isSelected = (s === semanaSelecionadaGlobal);
+                const btnClass = isSelected 
+                    ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/30' 
+                    : 'bg-[#08080a] border-zinc-900 text-zinc-400 hover:border-zinc-800 hover:text-zinc-200';
+                
+                container.innerHTML += `
+                    <button onclick="selecionarSemana(${s})" class="border rounded-xl py-2 px-3 flex flex-col items-center justify-center transition-all ${btnClass} cursor-pointer">
+                        <span class="text-[10px] font-bold uppercase tracking-wider">Semana</span>
+                        <span class="text-xs font-extrabold mt-0.5">${s}</span>
+                    </button>
+                `;
+            }
+        }
+
+        function selecionarSemana(s) {
+            semanaSelecionadaGlobal = s;
+            renderizarSemanas();
+            renderizarAbasDias();
+            mudarGrupo();
+        }
 
         function renderizarAbasDias() {
             const container = document.getElementById('dias-tab-container');
             container.innerHTML = '';
+            
+            const datasDaSemana = semanasDatas[semanaSelecionadaGlobal];
+            const listaDiasConfig = [
+                { key: "seg", label: "Seg", data: datasDaSemana[0] },
+                { key: "ter", label: "Ter", data: datasDaSemana[1] },
+                { key: "qua", label: "Qua", data: datasDaSemana[2] },
+                { key: "qui", label: "Qui", data: datasDaSemana[3] },
+                { key: "sex", label: "Sex", data: datasDaSemana[4] },
+                { key: "sab", label: "Sáb", data: datasDaSemana[5] },
+                { key: "dom", label: "Dom", data: datasDaSemana[6] }
+            ];
+
             listaDiasConfig.forEach(d => {
                 const isSelected = (d.key === diaSelecionadoGlobal);
                 const btnClass = isSelected 
@@ -425,20 +501,21 @@
                 `;
             });
 
-            // Dados do dia selecionado
-            const infoDia = dados.dias[diaSelecionadoGlobal];
+            // Dados do dia selecionado na semana selecionada
+            const diasDaSemanaGrupo = dados.semanas[semanaSelecionadaGlobal];
+            const infoDia = diasDaSemanaGrupo[diaSelecionadoGlobal];
             document.getElementById('label-dia-topo').innerText = `${infoDia.nome.toUpperCase()} • ${infoDia.data}`;
 
-            // Contar atividades preenchidas na semana para as métricas
+            // Contar atividades preenchidas na semana atual
             let totalAtividades = 0;
-            Object.values(dados.dias).forEach(d => {
+            Object.values(diasDaSemanaGrupo).forEach(d => {
                 d.turnos.forEach(t => {
                     if (t.local !== "—") totalAtividades++;
                 });
             });
             document.getElementById('stat-atividades').innerText = totalAtividades + " turnos";
 
-            // Turnos com horários e destaque visual
+            // Turnos do dia
             const containerTurnos = document.getElementById('lista-turnos');
             containerTurnos.innerHTML = '';
 
@@ -478,6 +555,7 @@
         }
 
         window.onload = () => {
+            renderizarSemanas();
             renderizarAbasDias();
             mudarGrupo();
         };
