@@ -109,7 +109,7 @@
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                     </span>
-                    <span id="label-dia-topo" class="text-[11px] font-bold tracking-widest text-blue-400 uppercase">SEGUNDA-FEIRA • 03/08</span>
+                    <span id="label-dia-topo" class="text-[11px] font-bold tracking-widest text-blue-400 uppercase">SEGUNDA-FEIRA • 3/Aug</span>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
                     Escala Diária por Turnos
@@ -141,10 +141,10 @@
                 </div>
             </div>
 
-            <!-- Coluna Direita: Turnos do Dia (Manhã, Tarde, Noite) -->
+            <!-- Coluna Direita: Turnos do Dia -->
             <div class="lg:col-span-8 space-y-3">
                 <div class="flex items-center justify-between px-1">
-                    <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Divisão por Turnos (Manhã, Tarde e Noite)</span>
+                    <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Divisão por Turnos da Escala</span>
                 </div>
                 
                 <div id="lista-turnos" class="space-y-3">
@@ -177,136 +177,136 @@
             }
         });
 
-        // Estrutura diária por turnos para a semana de 02/08 a 08/08 (e replicando lógica dinâmica)
+        // Escala exata baseada na imagem enviada para a semana de 3/Aug a 9/Aug
         const dadosEscala = {
             "1": {
                 nomeGrupo: "Trio A1: André, Davi & Leticia B.",
                 membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão HRC (12h)" } ] },
-                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Livre / Descanso" } ] },
-                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Plantão HRSM" } ] },
-                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
-                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Plantão Noturno HRC" } ] },
-                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão Fim de Semana (HRC)" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
-                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "Unieuro" }, { periodo: "Turno 3", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Turno 1", local: "CO" }, { periodo: "Turno 2", local: "Gilmária" }, { periodo: "Turno 3", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "CO" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Turno 1", local: "Flávia" }, { periodo: "Turno 2", local: "PS FICHA" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] }
                 }
             },
             "2": {
                 nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.",
                 membros: ["Nadya Veras Jarosczynski", "Louise Albuquerque Mirindiba", "Isabella Teixeira de Lima"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
-                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão HRC" } ] },
-                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Plantão HRSM" } ] },
-                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Livre" } ] },
-                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Plantão Tarde" }, { periodo: "Noite", local: "Livre" } ] },
-                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Turno 1", local: "CO" }, { periodo: "Turno 2", local: "Gilmária" }, { periodo: "Turno 3", local: "—" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "CO" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Turno 1", local: "Flávia" }, { periodo: "Turno 2", local: "PS FICHA" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] }
                 }
             },
             "3": {
                 nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino",
                 membros: ["Hiago Kaian Xavier Lisboa", "Isabela Frota Carmona", "Maria Eduarda Lima de Aquino"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Plantão HRAN" } ] },
-                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão HRC" } ] },
-                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
-                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Plantão Noturno" } ] },
-                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "Unieuro" }, { periodo: "Turno 3", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Turno 1", local: "CO" }, { periodo: "Turno 2", local: "Gilmária" }, { periodo: "Turno 3", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "CO" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Turno 1", local: "Flávia" }, { periodo: "Turno 2", local: "PS FICHA" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] }
                 }
             },
             "4": {
                 nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.",
                 membros: ["Heitor Stoduto Mello Ferreira", "Bruno Azevedo Lima", "Andressa Costa Maboni"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
-                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Plantão Policlínica" } ] },
-                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Plantão HRAN" } ] },
-                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Livre" } ] },
-                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão Sábado" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
-                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "Unieuro" }, { periodo: "Turno 3", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Turno 1", local: "CO" }, { periodo: "Turno 2", local: "Gilmária" }, { periodo: "Turno 3", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "CO" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Turno 1", local: "Flávia" }, { periodo: "Turno 2", local: "PS FICHA" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] }
                 }
             },
             "5": {
                 nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.",
                 membros: ["Maria Luiza de Ornelas Nobrega", "Maria Eduarda Santiago", "Luiza de Santes"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRC - Enfermaria" }, { periodo: "Tarde", local: "HRC - Enfermaria" }, { periodo: "Noite", local: "Plantão HRC" } ] },
-                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRAN - Centro Obstétrico" }, { periodo: "Tarde", local: "HRAN - Centro Obstétrico" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Plantão" } ] },
-                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRC - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Centro Obstétrico" }, { periodo: "Noite", local: "Livre" } ] },
-                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Plantão" }, { periodo: "Noite", local: "Livre" } ] },
-                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "Unieuro" }, { periodo: "Turno 3", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Turno 1", local: "CO" }, { periodo: "Turno 2", local: "Gilmária" }, { periodo: "Turno 3", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "CO" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Turno 1", local: "Flávia" }, { periodo: "Turno 2", local: "PS FICHA" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] }
                 }
             },
             "6": {
                 nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.",
                 membros: ["Leticia Teixeira Monteiro", "Júlia Matos Guimarães", "Luiza Borges Sales"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRAN - Centro Obstétrico" }, { periodo: "Tarde", local: "HRAN - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão" } ] },
-                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRC - Enfermaria" }, { periodo: "Tarde", local: "HRC - Enfermaria" }, { periodo: "Noite", local: "Plantão" } ] },
-                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRAN - Centro Obstétrico" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
-                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
-                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "Unieuro" }, { periodo: "Turno 3", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Turno 1", local: "CO" }, { periodo: "Turno 2", local: "Gilmária" }, { periodo: "Turno 3", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "CO" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Turno 1", local: "Flávia" }, { periodo: "Turno 2", local: "PS FICHA" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] }
                 }
             },
             "7": {
                 nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly",
                 membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima do vale"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Plantão" } ] },
-                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRC - Enfermaria" }, { periodo: "Tarde", local: "HRC - Enfermaria" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRAN - Centro Obstétrico" }, { periodo: "Tarde", local: "HRAN - Centro Obstétrico" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Plantão" } ] },
-                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "HRC - Enfermaria" }, { periodo: "Noite", local: "Livre" } ] },
-                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
-                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "Unieuro" }, { periodo: "Turno 3", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Turno 1", local: "CO" }, { periodo: "Turno 2", local: "Gilmária" }, { periodo: "Turno 3", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "CO" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Turno 1", local: "Flávia" }, { periodo: "Turno 2", local: "PS FICHA" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] }
                 }
             },
             "8": {
                 nomeGrupo: "Trio A8: Giovanna, Rayane & Sofi",
                 membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Plantão" } ] },
-                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRC - Enfermaria" }, { periodo: "Tarde", local: "HRC - Enfermaria" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRAN - Centro Obstétrico" }, { periodo: "Tarde", local: "HRAN - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão" } ] },
-                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
-                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
-                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "Unieuro" }, { periodo: "Turno 3", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Turno 1", local: "CO" }, { periodo: "Turno 2", local: "Gilmária" }, { periodo: "Turno 3", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "CO" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Turno 1", local: "Flávia" }, { periodo: "Turno 2", local: "PS FICHA" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] }
                 }
             },
             "9": {
                 nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella",
                 membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão" } ] },
-                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Plantão" } ] },
-                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Livre" } ] },
-                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
-                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "Unieuro" }, { periodo: "Turno 3", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Turno 1", local: "CO" }, { periodo: "Turno 2", local: "Gilmária" }, { periodo: "Turno 3", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "CO" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Turno 1", local: "Flávia" }, { periodo: "Turno 2", local: "PS FICHA" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] }
                 }
             },
             "10": {
                 nomeGrupo: "Trio A10: José, João Victor & Ana Luiza",
                 membros: ["José Henrique Ferreira", "João Victor Tajra", "Ana Luiza Daros"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Plantão" } ] },
-                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
-                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão" } ] },
-                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
-                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
-                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "Unieuro" }, { periodo: "Turno 3", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Turno 1", local: "CO" }, { periodo: "Turno 2", local: "Gilmária" }, { periodo: "Turno 3", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "CO" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Turno 1", local: "Flávia" }, { periodo: "Turno 2", local: "PS FICHA" }, { periodo: "Turno 3", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Turno 1", local: "—" }, { periodo: "Turno 2", local: "—" }, { periodo: "Turno 3", local: "—" } ] }
                 }
             }
         };
@@ -314,13 +314,13 @@
         let diaSelecionadoGlobal = "seg";
 
         const listaDiasConfig = [
-            { key: "dom", label: "Dom", data: "02/08" },
-            { key: "seg", label: "Seg", data: "03/08" },
-            { key: "ter", label: "Ter", data: "04/08" },
-            { key: "qua", label: "Qua", data: "05/08" },
-            { key: "qui", label: "Qui", data: "06/08" },
-            { key: "sex", label: "Sex", data: "07/08" },
-            { key: "sab", label: "Sáb", data: "08/08" }
+            { key: "seg", label: "Seg", data: "3/Aug" },
+            { key: "ter", label: "Ter", data: "4/Aug" },
+            { key: "qua", label: "Qua", data: "5/Aug" },
+            { key: "qui", label: "Qui", data: "6/Aug" },
+            { key: "sex", label: "Sex", data: "7/Aug" },
+            { key: "sab", label: "Sáb", data: "8/Aug" },
+            { key: "dom", label: "Dom", data: "9/Aug" }
         ];
 
         function renderizarAbasDias() {
@@ -372,28 +372,23 @@
             const infoDia = dados.dias[diaSelecionadoGlobal];
             document.getElementById('label-dia-topo').innerText = `${infoDia.nome.toUpperCase()} • ${infoDia.data}`;
 
-            // Turnos (Manhã, Tarde, Noite)
+            // Turnos
             const containerTurnos = document.getElementById('lista-turnos');
             containerTurnos.innerHTML = '';
 
             infoDia.turnos.forEach(t => {
-                let iconeTurno = '';
-                if(t.periodo === 'Manhã') iconeTurno = '<svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
-                else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
-                else iconeTurno = '<svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
-
                 containerTurnos.innerHTML += `
                     <div class="bg-[#08080a] border border-zinc-900 hover:border-zinc-800 rounded-2xl p-4 flex items-center justify-between transition-all">
                         <div class="flex items-center space-x-3.5">
-                            <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0">
-                                ${iconeTurno}
+                            <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 text-blue-400 font-bold text-xs">
+                                •
                             </div>
                             <div>
-                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block">Turno da ${t.periodo}</span>
+                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block">${t.periodo}</span>
                                 <h4 class="text-sm sm:text-base font-bold text-white">${t.local}</h4>
                             </div>
                         </div>
-                        <span class="px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-semibold">${t.periodo}</span>
+                        <span class="px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-semibold">${t.local}</span>
                     </div>
                 `;
             });
