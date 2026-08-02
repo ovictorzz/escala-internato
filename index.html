@@ -110,9 +110,9 @@
                 </div>
                 <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-between">
                     <div>
-                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Capotes CO (Cloud)</span>
+                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Capotes CO</span>
                         <div class="flex items-baseline space-x-1 mt-0.5">
-                            <span class="text-lg sm:text-xl font-black text-white" id="contador-capotes-val">...</span>
+                            <span class="text-lg sm:text-xl font-black text-white" id="contador-capotes-val">0</span>
                             <span class="text-[9px] text-zinc-500">un.</span>
                         </div>
                     </div>
@@ -186,68 +186,7 @@
     <script>
         const SENHA_ACESSO = "unieurot7a"; 
         let modoVisualizacao = 'individual'; 
-
-        // SINCRONIZAÇÃO NA NUVEM (CountAPI)
-        const API_NAMESPACE = "internato-t7a-go-2026";
-        const API_KEY = "capotes-co";
-
-        function carregarCapotesNuver() {
-            fetch(`https://api.countapi.xyz/get/${API_NAMESPACE}/${API_KEY}`)
-                .then(res => res.json())
-                .then(data => {
-                    const el = document.getElementById('contador-capotes-val');
-                    if (el && data && typeof data.value === 'number') {
-                        el.innerText = data.value;
-                    }
-                })
-                .catch(err => {
-                    // Fallback para localStorage caso haja falha de rede
-                    const localVal = localStorage.getItem('t7a_capotes') || '0';
-                    const el = document.getElementById('contador-capotes-val');
-                    if (el) el.innerText = localVal;
-                });
-        }
-
-        function alterarCapotes(delta) {
-            const endpoint = delta > 0 ? 'hit' : 'update';
-            const url = delta > 0 
-                ? `https://api.countapi.xyz/hit/${API_NAMESPACE}/${API_KEY}`
-                : `https://api.countapi.xyz/update/${API_NAMESPACE}/${API_KEY}?amount=-1`;
-
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    const el = document.getElementById('contador-capotes-val');
-                    if (el && data && typeof data.value === 'number') {
-                        // Impedir valores negativos
-                        if (data.value < 0) {
-                            zerarCapotesForcado();
-                        } else {
-                            el.innerText = data.value;
-                            localStorage.setItem('t7a_capotes', data.value);
-                        }
-                    }
-                })
-                .catch(err => {
-                    // Fallback local se a API falhar
-                    let atual = parseInt(localStorage.getItem('t7a_capotes')) || 0;
-                    atual += delta;
-                    if (atual < 0) atual = 0;
-                    localStorage.setItem('t7a_capotes', atual);
-                    const el = document.getElementById('contador-capotes-val');
-                    if (el) el.innerText = atual;
-                });
-        }
-
-        function zerarCapotesForcado() {
-            fetch(`https://api.countapi.xyz/set/${API_NAMESPACE}/${API_KEY}?value=0`)
-                .then(res => res.json())
-                .then(data => {
-                    const el = document.getElementById('contador-capotes-val');
-                    if (el) el.innerText = 0;
-                    localStorage.setItem('t7a_capotes', 0);
-                });
-        }
+        let capotesCount = parseInt(localStorage.getItem('t7a_capotes')) || 0;
 
         function verificarSenha() {
             const digitada = document.getElementById('senha-input').value;
@@ -267,11 +206,20 @@
             }
             detectarDiaESemanaAtual();
             iniciarContadores();
-            carregarCapotesNuver();
-
-            // Atualizar automaticamente a cada 15 segundos para refletir alterações de colegas em tempo real
-            setInterval(carregarCapotesNuver, 15000);
+            atualizarCapotesDisplay();
         });
+
+        function atualizarCapotesDisplay() {
+            const el = document.getElementById('contador-capotes-val');
+            if (el) el.innerText = capotesCount;
+            localStorage.setItem('t7a_capotes', capotesCount);
+        }
+
+        function alterarCapotes(delta) {
+            capotesCount += delta;
+            if (capotesCount < 0) capotesCount = 0;
+            atualizarCapotesDisplay();
+        }
 
         function alternarModo(modo) {
             modoVisualizacao = modo;
@@ -373,176 +321,4 @@
             4: ["24/Aug", "25/Aug", "26/Aug", "27/Aug", "28/Aug", "29/Aug", "30/Aug"],
             5: ["31/Aug", "1/Sep", "2/Sep", "3/Sep", "4/Sep", "5/Sep", "6/Sep"],
             6: ["7/Sep", "8/Sep", "9/Sep", "10/Sep", "11/Sep", "12/Sep", "13/Sep"],
-            7: ["14/Sep", "15/Sep", "16/Sep", "17/Sep", "18/Sep", "19/Sep", "20/Sep"],
-            8: ["21/Sep", "22/Sep", "23/Sep", "24/Sep", "25/Sep", "26/Sep", "27/Sep"],
-            9: ["28/Sep", "29/Sep", "30/Sep", "1/Oct", "2/Oct", "3/Oct", "4/Oct"]
-        };
-
-        const dadosEscala = {
-            "1": {
-                nomeGrupo: "Trio A1: André, Davi & Leticia B.",
-                membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"],
-                semanas: {
-                    1: gerarDiasSemana(semanasDatas[1]),
-                    2: gerarDiasSemana(semanasDatas[2]),
-                    3: gerarDiasSemana(semanasDatas[3]),
-                    4: gerarDiasSemana(semanasDatas[4]),
-                    5: gerarDiasSemana(semanasDatas[5]),
-                    6: gerarDiasSemana(semanasDatas[6]),
-                    7: gerarDiasSemana(semanasDatas[7]),
-                    8: gerarDiasSemana(semanasDatas[8]),
-                    9: gerarDiasSemana(semanasDatas[9])
-                }
-            },
-            "2": {
-                nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.",
-                membros: ["Nadya Veras Jarosczynski", "Louise Albuquerque Mirindiba", "Isabella Teixeira de Lima"],
-                semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
-                }
-            },
-            "3": {
-                nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino",
-                membros: ["Hiago Kaian Xavier Lisboa", "Isabela Frota Carmona", "Maria Eduarda Lima de Aquino"],
-                semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
-                }
-            },
-            "4": {
-                nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.",
-                membros: ["Heitor Stoduto Mello Ferreira", "Bruno Azevedo Lima", "Andressa Costa Maboni"],
-                semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
-                }
-            },
-            "5": {
-                nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.",
-                membros: ["Maria Luiza de Ornelas Nobrega", "Maria Eduarda Santiago", "Luiza de Santes"],
-                semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
-                }
-            },
-            "6": {
-                nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.",
-                membros: ["Leticia Teixeira Monteiro", "Júlia Matos Guimarães", "Luiza Borges Sales"],
-                semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
-                    9: gerarDiasSemana(9, semanasDatas[9])
-                }
-            },
-            "7": {
-                nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly",
-                membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima do vale"],
-                semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
-                }
-            },
-            "8": {
-                nomeGrupo: "Trio A8: Giovanna, Rayane & Sofi",
-                membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"],
-                semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
-                    5: gerarDiasSemana(5, semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
-                    7: gerarDiasSemana(7, semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
-                    9: gerarDiasSemana(9, semanasDatas[9])
-                }
-            },
-            "9": {
-                nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella",
-                membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"],
-                semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
-                    7: gerarDiasSemana(7, semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
-                    9: gerarDiasSemana(9, semanasDatas[9])
-                }
-            },
-            "10": {
-                nomeGrupo: "Trio A10: José, João Victor & Ana Luiza",
-                membros: ["José Henrique Ferreira", "João Victor Tajra", "Ana Luiza Daros"],
-                semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
-                    9: gerarDiasSemana(9, semanasDatas[9])
-                }
-            }
-        };
-
-        let semanaSelecionadaGlobal = 1;
-        let diaSelecionadoGlobal = "seg";
-
-        function renderizarSemanas() {
-            const container = document.getElementById('semanas-tab-container');
-            container.innerHTML = '';
-            for (let s = 1; s <= 9; s++) {
-                const isSelected = (s === semanaSelecionadaGlobal);
-                const btnClass = isSelected 
-                    ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/30' 
-                    : 'bg-[#08080a] border-zinc-900 text-zinc-400 hover:border-zinc-800 hover:text-zinc-200';
-                
-                container.innerHTML += `
-                    <button onclick="selecionarSemana(${s})" class="border rounded-xl py-2 px-3 flex flex-col items-center justify-center transition-all ${btnClass} cursor-pointer">
-                        <span class="text-[10px] font-bold uppercase tracking-wider">Semana</span>
-                        <span class="text-xs font-extrabold mt-0.5">${s}</span>
-                    </button>
-                `;
-            }
-        }
-
-        function selecionarSemana(s) {
-            semanaSelecionadaGlobal = s;
-            renderizarSemanas();
-            renderizarAbasDias();
-            mudarGrupo();
-        }
-
-        function renderizarAbasDias() {
-            const container = document.getElementById('dias-tab-container');
-            container.innerHTML = '';
-            
-            const datasDaSemana = semanasDatas[semanaSelecionadaGlobal];
-            const listaDiasConfig = [
-                { key: "seg", label: "Seg", data: datasDaSemana[0] },
-                { key: "ter", label: "Ter", data: datasDaSemana[1] },
-                { key: "qua", label: "Qua", data: datasDaSemana[2] },
-                { key: "qui", label: "Qui", data: datasDaSemana[3] },
-                { key: "sex", label: "Sex", data: datasDaSemana[4] },
-                { key: "sab", label: "Sáb", data: datasDaSemana[5] },
-                { key: "dom", label: "Dom", data: datasDaSemana[6] }
-            ];
-
-            listaDiasConfig.forEach(d => {
-                const isSelected = (d.key === diaSelecionadoGlobal);
-                const btnClass = isSelected 
-                    ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/30' 
-                    : 'bg-[#08080a] border-zinc-900 text-zinc-400 hover:border-zinc-800 hover:text-zinc-200';
-                
-                container.innerHTML += `
-                    <button onclick="selecionarDia('${d.key}')" class="border rounded-2xl p-3 flex
+            7: ["14/
