@@ -68,23 +68,26 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         
-        <!-- BARRA DE CONTROLE: SELETOR DE GRUPO + MÉTRICAS RÁpidas -->
+        <!-- BARRA DE CONTROLE: SELETOR DE GRUPO + MÉTRICAS RÁPIDAS -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
-            <!-- Seletor de Trio (Largura Expandida) -->
-            <div class="lg:col-span-8 bg-[#08080a] border border-zinc-900 rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-                <div class="flex items-center space-x-3 overflow-hidden">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-lg shadow-blue-600/20" id="grupo-badge-num">
+            <!-- Painel do Grupo Ativo (Largura Total Expandida) -->
+            <div class="lg:col-span-8 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
+                
+                <!-- Linha Superior: Ícone + Nome Completo do Trio sem cortes -->
+                <div class="flex items-center space-x-3.5 w-full">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-lg shadow-blue-600/20" id="grupo-badge-num">
                         A1
                     </div>
-                    <div class="min-w-0">
+                    <div class="min-w-0 flex-grow">
                         <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block">Grupo Ativo</span>
-                        <h3 class="text-xs sm:text-sm font-bold text-white whitespace-nowrap overflow-x-auto pb-0.5" id="titulo-grupo-header">Trio A1: André, Davi & Leticia B.</h3>
+                        <h3 class="text-sm sm:text-base font-bold text-white tracking-tight truncate" id="titulo-grupo-header">Trio A1: André, Davi & Leticia B.</h3>
                     </div>
                 </div>
 
-                <div class="relative w-full sm:w-[320px] md:w-[360px] shrink-0">
-                    <select id="grupo-select" onchange="mudarGrupo()" class="w-full bg-[#121216] border border-zinc-800 text-white font-semibold text-xs rounded-xl px-3.5 py-3 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer">
+                <!-- Linha Inferior: Seletor de Troca de Grupo -->
+                <div class="relative w-full pt-2 border-t border-zinc-900">
+                    <select id="grupo-select" onchange="mudarGrupo()" class="w-full bg-[#121216] border border-zinc-800 text-white font-semibold text-xs sm:text-sm rounded-xl px-4 py-3 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer">
                         <option value="1">Trio A1: André, Davi & Leticia B.</option>
                         <option value="2">Trio A2: Nadya, Louise & Isabella T.</option>
                         <option value="3">Trio A3: Hiago, Isabela & Mª Eduarda Aquino</option>
@@ -96,10 +99,11 @@
                         <option value="9">Trio A9: Annelise, Camila S. & Gabriella</option>
                         <option value="10">Trio A10: José, João Victor & Ana Luiza</option>
                     </select>
-                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-zinc-500">
+                    <div class="absolute inset-y-0 right-0 top-2 flex items-center px-4 pointer-events-none text-zinc-500">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                 </div>
+
             </div>
 
             <!-- Cards de Métricas da Semana -->
