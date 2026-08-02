@@ -44,7 +44,7 @@
         
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
             
-            <!-- Coluna Esquerda: Controles e Equipe (Mobile: Topo | PC: 4 colunas) -->
+            <!-- Coluna Esquerda: Controles e Equipe -->
             <div class="lg:col-span-4 space-y-6">
                 
                 <!-- Card de Seleção -->
@@ -96,18 +96,17 @@
 
             </div>
 
-            <!-- Coluna Direita: Rodízios e Cronograma (Mobile: Embaixo | PC: 8 colunas) -->
+            <!-- Coluna Direita: Rodízios e Cronograma -->
             <div class="lg:col-span-8 space-y-6">
                 
-                <!-- Destaque: Cenário Atual -->
+                <!-- Destaque: Cenário Atual (Muda dinamicamente ao clicar no mês) -->
                 <div class="bg-gradient-to-r from-blue-700 to-indigo-900 rounded-2xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden flex flex-col justify-center min-h-[160px] sm:min-h-[192px]">
-                    <!-- Elemento decorativo de fundo -->
                     <div class="absolute right-0 top-0 w-48 h-48 sm:w-64 sm:h-64 bg-white opacity-5 rounded-full -translate-y-12 translate-x-12 sm:-translate-y-16 sm:translate-x-16 pointer-events-none"></div>
                     
                     <div class="relative z-10">
                         <div class="flex items-center space-x-2 mb-2 sm:mb-3">
                             <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span class="text-[10px] sm:text-xs font-bold text-blue-200 uppercase tracking-widest">Cenário Atual • Agosto</span>
+                            <span id="label-cenario-topo" class="text-[10px] sm:text-xs font-bold text-blue-200 uppercase tracking-widest">CENÁRIO ATUAL • AGOSTO</span>
                         </div>
                         <h2 id="cenario-atual-txt" class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight drop-shadow-md">
                             HRC - Centro Obstétrico
@@ -115,9 +114,9 @@
                     </div>
                 </div>
 
-                <!-- Cronograma Horizontal (Cards 1 coluna no celular, 3 colunas no PC) -->
+                <!-- Cronograma Interativo -->
                 <div>
-                    <h3 class="text-xs sm:text-sm font-bold text-neutral-400 uppercase tracking-wider mb-4 ml-1">Cronograma de Rodízios</h3>
+                    <h3 class="text-xs sm:text-sm font-bold text-neutral-400 uppercase tracking-wider mb-4 ml-1">CRONOGRAMA DE RODÍZIOS (Clique no mês para ver)</h3>
                     
                     <div id="lista-blocos" class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
                         <!-- Preenchido via JavaScript -->
@@ -134,100 +133,114 @@
             "1": {
                 membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"],
                 blocos: [
-                    { bloco: "BLOCO 1", local: "HRC - Centro Obstétrico", datas: "Agosto", ativo: true },
-                    { bloco: "BLOCO 2", local: "HRAN - Enfermaria", datas: "Setembro", ativo: false },
-                    { bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Outubro", ativo: false }
+                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRC - Centro Obstétrico", datas: "Agosto" },
+                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRAN - Enfermaria", datas: "Setembro" },
+                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Outubro" }
                 ]
             },
             "2": {
                 membros: ["Nadya Veras Jarosczynski", "Louise Albuquerque Mirindiba", "Isabella Teixeira de Lima"],
                 blocos: [
-                    { bloco: "BLOCO 1", local: "Policlínica Ceilândia", datas: "Agosto", ativo: true },
-                    { bloco: "BLOCO 2", local: "HRC - Centro Obstétrico", datas: "Setembro", ativo: false },
-                    { bloco: "BLOCO 3", local: "HRAN - Enfermaria", datas: "Outubro", ativo: false }
+                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "Policlínica Ceilândia", datas: "Agosto" },
+                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRC - Centro Obstétrico", datas: "Setembro" },
+                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRAN - Enfermaria", datas: "Outubro" }
                 ]
             },
             "3": {
                 membros: ["Hiago Kaian Xavier Lisboa", "Isabela Frota Carmona", "Maria Eduarda Lima de Aquino"],
                 blocos: [
-                    { bloco: "BLOCO 1", local: "HRAN - Enfermaria", datas: "Agosto", ativo: true },
-                    { bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Setembro", ativo: false },
-                    { bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Outubro", ativo: false }
+                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRAN - Enfermaria", datas: "Agosto" },
+                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Setembro" },
+                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Outubro" }
                 ]
             },
             "4": {
                 membros: ["Heitor Stoduto Mello Ferreira", "Bruno Azevedo Lima", "Andressa Costa Maboni"],
                 blocos: [
-                    { bloco: "BLOCO 1", local: "HRSM - Ambulatório", datas: "Agosto", ativo: true },
-                    { bloco: "BLOCO 2", local: "Policlínica Ceilândia", datas: "Setembro", ativo: false },
-                    { bloco: "BLOCO 3", local: "HRC - Centro Obstétrico", datas: "Outubro", ativo: false }
+                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRSM - Ambulatório", datas: "Agosto" },
+                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "Policlínica Ceilândia", datas: "Setembro" },
+                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRC - Centro Obstétrico", datas: "Outubro" }
                 ]
             },
             "5": {
                 membros: ["Maria Luiza de Ornelas Nobrega", "Maria Eduarda Santiago", "Luiza de Santes"],
                 blocos: [
-                    { bloco: "BLOCO 1", local: "HRC - Enfermaria", datas: "Agosto", ativo: true },
-                    { bloco: "BLOCO 2", local: "HRAN - Centro Obstétrico", datas: "Setembro", ativo: false },
-                    { bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Outubro", ativo: false }
+                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRC - Enfermaria", datas: "Agosto" },
+                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRAN - Centro Obstétrico", datas: "Setembro" },
+                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Outubro" }
                 ]
             },
             "6": {
                 membros: ["Leticia Teixeira Monteiro", "Júlia Matos Guimarães", "Luiza Borges Sales"],
                 blocos: [
-                    { bloco: "BLOCO 1", local: "HRAN - Centro Obstétrico", datas: "Agosto", ativo: true },
-                    { bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Setembro", ativo: false },
-                    { bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Outubro", ativo: false }
+                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRAN - Centro Obstétrico", datas: "Agosto" },
+                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Setembro" },
+                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Outubro" }
                 ]
             },
             "7": {
                 membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima do vale"],
                 blocos: [
-                    { bloco: "BLOCO 1", local: "Policlínica Ceilândia", datas: "Agosto", ativo: true },
-                    { bloco: "BLOCO 2", local: "HRC - Enfermaria", datas: "Setembro", ativo: false },
-                    { bloco: "BLOCO 3", local: "HRAN - Centro Obstétrico", datas: "Outubro", ativo: false }
+                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "Policlínica Ceilândia", datas: "Agosto" },
+                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRC - Enfermaria", datas: "Setembro" },
+                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRAN - Centro Obstétrico", datas: "Outubro" }
                 ]
             },
             "8": {
                 membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"],
                 blocos: [
-                    { bloco: "BLOCO 1", local: "HRSM - Ambulatório", datas: "Agosto", ativo: true },
-                    { bloco: "BLOCO 2", local: "Policlínica Ceilândia", datas: "Setembro", ativo: false },
-                    { bloco: "BLOCO 3", local: "HRC - Enfermaria", datas: "Outubro", ativo: false }
+                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRSM - Ambulatório", datas: "Agosto" },
+                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "Policlínica Ceilândia", datas: "Setembro" },
+                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRC - Enfermaria", datas: "Outubro" }
                 ]
             },
             "9": {
                 membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"],
                 blocos: [
-                    { bloco: "BLOCO 1", local: "HRC - Centro Obstétrico", datas: "Agosto", ativo: true },
-                    { bloco: "BLOCO 2", local: "HRAN - Enfermaria", datas: "Setembro", ativo: false },
-                    { bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Outubro", ativo: false }
+                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRC - Centro Obstétrico", datas: "Agosto" },
+                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRAN - Enfermaria", datas: "Setembro" },
+                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Outubro" }
                 ]
             },
             "10": {
                 membros: ["José Henrique Ferreira", "João Victor Tajra", "Ana Luiza Daros"],
                 blocos: [
-                    { bloco: "BLOCO 1", local: "HRAN - Enfermaria", datas: "Agosto", ativo: true },
-                    { bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Setembro", ativo: false },
-                    { bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Outubro", ativo: false }
+                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRAN - Enfermaria", datas: "Agosto" },
+                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Setembro" },
+                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Outubro" }
                 ]
             }
         };
 
-        // Função para pegar as iniciais dos nomes (ex: André Victor -> AV)
+        // Descobre o mês atual do sistema para selecionar por padrão (Agosto = "AGOSTO")
+        function getMesAtualKey() {
+            const d = new Date();
+            const mes = d.getMonth(); // 7 = Agosto
+            if (mes === 8) return "SETEMBRO";
+            if (mes === 9) return "OUTUBRO";
+            return "AGOSTO"; // Padrão inicial (Agosto)
+        }
+
+        let mesSelecionadoGlobal = getMesAtualKey();
+
         function getIniciais(nome) {
             const partes = nome.trim().split(' ');
             if (partes.length > 1) return (partes[0][0] + partes[1][0]).toUpperCase();
             return (nome[0] + nome[1]).toUpperCase();
         }
 
+        function selecionarMes(mesKey) {
+            mesSelecionadoGlobal = mesKey;
+            mudarGrupo();
+        }
+
         function mudarGrupo() {
             const id = document.getElementById('grupo-select').value;
             const dados = dadosEscala[id];
             
-            // Atualiza badge
             document.getElementById('grupo-badge').innerText = 'A' + id;
 
-            // Atualiza lista de membros
+            // Renderiza membros
             const listaMembros = document.getElementById('lista-membros');
             listaMembros.innerHTML = '';
             dados.membros.forEach(nome => {
@@ -241,27 +254,29 @@
                 `;
             });
 
-            // Atualiza blocos
+            // Renderiza blocos com interatividade de clique
             const containerBlocos = document.getElementById('lista-blocos');
             containerBlocos.innerHTML = '';
 
-            let cenarioAtivo = '';
+            let localAtivoNoBanner = '';
 
             dados.blocos.forEach((b, index) => {
-                if (b.ativo) cenarioAtivo = b.local;
+                const isSelected = (b.mesKey === mesSelecionadoGlobal);
+                if (isSelected) {
+                    localAtivoNoBanner = b.local;
+                }
 
-                const cardClasses = b.ativo 
-                    ? 'bg-[#0f0f0f] border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.15)] relative' 
-                    : 'bg-[#0a0a0a] border border-neutral-800 hover:border-neutral-700 hover:bg-[#121212] transition-colors';
+                const cardClasses = isSelected 
+                    ? 'bg-[#0f0f0f] border-2 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.2)] relative cursor-pointer scale-[1.02] transition-all' 
+                    : 'bg-[#0a0a0a] border border-neutral-800 hover:border-neutral-700 hover:bg-[#121212] transition-all cursor-pointer';
                 
-                const titleColor = b.ativo ? 'text-blue-500' : 'text-neutral-500';
-                const localColor = b.ativo ? 'text-white' : 'text-neutral-400';
-                
+                const titleColor = isSelected ? 'text-blue-400' : 'text-neutral-500';
+                const localColor = isSelected ? 'text-white font-bold' : 'text-neutral-400';
                 const numBloco = index + 1;
 
                 containerBlocos.innerHTML += `
-                    <div class="rounded-2xl p-4 sm:p-5 ${cardClasses}">
-                        ${b.ativo ? '<div class="absolute top-3 right-3 sm:top-4 sm:right-4"><span class="flex h-2 w-2 sm:h-2.5 sm:w-2.5 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 bg-blue-500"></span></span></div>' : ''}
+                    <div onclick="selecionarMes('${b.mesKey}')" class="rounded-2xl p-4 sm:p-5 ${cardClasses}">
+                        ${isSelected ? '<div class="absolute top-3 right-3 sm:top-4 sm:right-4"><span class="flex h-2.5 w-2.5 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span></span></div>' : ''}
                         
                         <div class="flex items-center space-x-2 mb-2 sm:mb-3">
                             <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-neutral-800 text-neutral-300 font-bold text-[10px] sm:text-xs flex items-center justify-center">
@@ -270,13 +285,14 @@
                             <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest ${titleColor}">${b.datas}</span>
                         </div>
                         
-                        <h4 class="text-sm sm:text-base font-bold ${localColor} leading-tight">${b.local}</h4>
+                        <h4 class="text-sm sm:text-base ${localColor} leading-tight">${b.local}</h4>
                     </div>
                 `;
             });
 
-            // Atualiza banner principal
-            document.getElementById('cenario-atual-txt').innerText = cenarioAtivo;
+            // Atualiza o banner superior com o mês e o hospital selecionado
+            document.getElementById('label-cenario-topo').innerText = `CENÁRIO ATUAL • ${mesSelecionadoGlobal}`;
+            document.getElementById('cenario-atual-txt').innerText = localAtivoNoBanner;
         }
 
         window.onload = mudarGrupo;
