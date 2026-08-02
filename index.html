@@ -16,7 +16,7 @@
 </head>
 <body class="min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
 
-    <!-- TELA DE LOGIN COM FUNDO AJUSTADO -->
+    <!-- TELA DE LOGIN COM FUNDO AJUSTADO (BOTTOM CENTER) -->
     <div id="login-overlay" class="fixed inset-0 z-50 backdrop-blur-md flex items-center justify-center p-4" style="background-image: linear-gradient(to bottom, rgba(3, 3, 5, 0.85), rgba(3, 3, 5, 0.95)), url('fundo.jpg'); background-size: cover; background-position: bottom center;">
         <div class="bg-[#08080a]/90 border border-zinc-800/80 backdrop-blur-xl rounded-3xl p-8 max-w-sm w-full shadow-2xl shadow-black space-y-6 text-center relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-blue-600/10 rounded-full blur-2xl pointer-events-none"></div>
@@ -109,7 +109,7 @@
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                     </span>
-                    <span id="label-cenario-topo" class="text-[11px] font-bold tracking-widest text-blue-400 uppercase">CENÁRIO ATUAL • SEMANA 1</span>
+                    <span id="label-cenario-topo" class="text-[11px] font-bold tracking-widest text-blue-400 uppercase">CENÁRIO ATUAL • 02/08 A 08/08</span>
                 </div>
                 <h2 id="cenario-atual-txt" class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
                     HRC - Centro Obstétrico
@@ -139,10 +139,10 @@
             <!-- Coluna Direita: Cronograma Interativo -->
             <div class="lg:col-span-8 space-y-3">
                 <div class="flex items-center justify-between px-1">
-                    <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Cronograma de Rodízios (Clique para alternar)</span>
+                    <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Cronograma Semanal de Agosto (Clique para alternar)</span>
                 </div>
                 
-                <div id="lista-blocos" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div id="lista-blocos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     <!-- Preenchido via JavaScript -->
                 </div>
             </div>
@@ -177,95 +177,115 @@
                 nomeGrupo: "Trio A1: André, Davi & Leticia B.",
                 membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"],
                 blocos: [
-                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRC - Centro Obstétrico", datas: "Semana 1" },
-                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRAN - Enfermaria", datas: "Semana 2" },
-                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Semana 3" }
+                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRC - Centro Obstétrico" },
+                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRAN - Enfermaria" },
+                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRSM - Ambulatório" },
+                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "Policlínica Ceilândia" },
+                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Enfermaria" }
                 ]
             },
             "2": {
                 nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.",
                 membros: ["Nadya Veras Jarosczynski", "Louise Albuquerque Mirindiba", "Isabella Teixeira de Lima"],
                 blocos: [
-                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "Policlínica Ceilândia", datas: "Semana 1" },
-                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRC - Centro Obstétrico", datas: "Semana 2" },
-                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRAN - Enfermaria", datas: "Semana 3" }
+                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "Policlínica Ceilândia" },
+                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRC - Centro Obstétrico" },
+                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRAN - Enfermaria" },
+                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRSM - Ambulatório" },
+                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Enfermaria" }
                 ]
             },
             "3": {
                 nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino",
                 membros: ["Hiago Kaian Xavier Lisboa", "Isabela Frota Carmona", "Maria Eduarda Lima de Aquino"],
                 blocos: [
-                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRAN - Enfermaria", datas: "Semana 1" },
-                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Semana 2" },
-                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Semana 3" }
+                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRAN - Enfermaria" },
+                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRSM - Ambulatório" },
+                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "Policlínica Ceilândia" },
+                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRC - Centro Obstétrico" },
+                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Enfermaria" }
                 ]
             },
             "4": {
                 nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.",
                 membros: ["Heitor Stoduto Mello Ferreira", "Bruno Azevedo Lima", "Andressa Costa Maboni"],
                 blocos: [
-                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRSM - Ambulatório", datas: "Semana 1" },
-                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "Policlínica Ceilândia", datas: "Semana 2" },
-                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRC - Centro Obstétrico", datas: "Semana 3" }
+                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRSM - Ambulatório" },
+                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "Policlínica Ceilândia" },
+                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRC - Centro Obstétrico" },
+                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRAN - Enfermaria" },
+                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Enfermaria" }
                 ]
             },
             "5": {
                 nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.",
                 membros: ["Maria Luiza de Ornelas Nobrega", "Maria Eduarda Santiago", "Luiza de Santes"],
                 blocos: [
-                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRC - Enfermaria", datas: "Semana 1" },
-                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRAN - Centro Obstétrico", datas: "Semana 2" },
-                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Semana 3" }
+                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRC - Enfermaria" },
+                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRAN - Centro Obstétrico" },
+                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRSM - Ambulatório" },
+                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "Policlínica Ceilândia" },
+                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Centro Obstétrico" }
                 ]
             },
             "6": {
                 nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.",
                 membros: ["Leticia Teixeira Monteiro", "Júlia Matos Guimarães", "Luiza Borges Sales"],
                 blocos: [
-                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRAN - Centro Obstétrico", datas: "Semana 1" },
-                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Semana 2" },
-                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Semana 3" }
+                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRAN - Centro Obstétrico" },
+                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRSM - Ambulatório" },
+                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "Policlínica Ceilândia" },
+                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRC - Enfermaria" },
+                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Centro Obstétrico" }
                 ]
             },
             "7": {
                 nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly",
                 membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima do vale"],
                 blocos: [
-                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "Policlínica Ceilândia", datas: "Semana 1" },
-                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRC - Enfermaria", datas: "Semana 2" },
-                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRAN - Centro Obstétrico", datas: "Semana 3" }
+                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "Policlínica Ceilândia" },
+                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRC - Enfermaria" },
+                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRAN - Centro Obstétrico" },
+                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRSM - Ambulatório" },
+                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Centro Obstétrico" }
                 ]
             },
             "8": {
                 nomeGrupo: "Trio A8: Giovanna, Rayane & Sofi",
                 membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"],
                 blocos: [
-                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRSM - Ambulatório", datas: "Semana 1" },
-                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "Policlínica Ceilândia", datas: "Semana 2" },
-                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRC - Enfermaria", datas: "Semana 3" }
+                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRSM - Ambulatório" },
+                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "Policlínica Ceilândia" },
+                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRC - Enfermaria" },
+                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRAN - Centro Obstétrico" },
+                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Centro Obstétrico" }
                 ]
             },
             "9": {
                 nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella",
                 membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"],
                 blocos: [
-                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRC - Centro Obstétrico", datas: "Semana 1" },
-                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRAN - Enfermaria", datas: "Semana 2" },
-                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Semana 3" }
+                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRC - Centro Obstétrico" },
+                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRAN - Enfermaria" },
+                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRSM - Ambulatório" },
+                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "Policlínica Ceilândia" },
+                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Enfermaria" }
                 ]
             },
             "10": {
                 nomeGrupo: "Trio A10: José, João Victor & Ana Luiza",
                 membros: ["José Henrique Ferreira", "João Victor Tajra", "Ana Luiza Daros"],
                 blocos: [
-                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRAN - Enfermaria", datas: "Semana 1" },
-                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Semana 2" },
-                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Semana 3" }
+                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRAN - Enfermaria" },
+                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRSM - Ambulatório" },
+                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "Policlínica Ceilândia" },
+                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRC - Centro Obstétrico" },
+                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Enfermaria" }
                 ]
             }
         };
 
-        let semanaSelecionadaGlobal = "SEMANA_1";
+        let semanaSelecionadaGlobal = "S1";
 
         function selecionarSemana(semanaKey) {
             semanaSelecionadaGlobal = semanaKey;
@@ -296,13 +316,13 @@
             containerBlocos.innerHTML = '';
 
             let localAtivoNoBanner = '';
-            let nomeSemanaAtiva = 'SEMANA 1';
+            let datasAtivasBanner = '02/08 - 08/08';
 
             dados.blocos.forEach((b, index) => {
                 const isSelected = (b.semanaKey === semanaSelecionadaGlobal);
                 if (isSelected) {
                     localAtivoNoBanner = b.local;
-                    nomeSemanaAtiva = b.datas.toUpperCase();
+                    datasAtivasBanner = b.datas;
                 }
 
                 const cardClasses = isSelected 
@@ -321,7 +341,7 @@
                             <div class="w-5 h-5 rounded-md bg-zinc-900 text-zinc-400 font-bold text-[10px] flex items-center justify-center">
                                 ${numBloco}
                             </div>
-                            <span class="text-[10px] font-bold uppercase tracking-widest ${titleColor}">${b.datas}</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest ${titleColor}">Semana • ${b.datas}</span>
                         </div>
                         
                         <h4 class="text-sm sm:text-base ${localColor} leading-snug">${b.local}</h4>
@@ -329,7 +349,7 @@
                 `;
             });
 
-            document.getElementById('label-cenario-topo').innerText = `CENÁRIO ATUAL • ${nomeSemanaAtiva}`;
+            document.getElementById('label-cenario-topo').innerText = `CENÁRIO ATUAL • ${datasAtivasBanner}`;
             document.getElementById('cenario-atual-txt').innerText = localAtivoNoBanner;
         }
 
