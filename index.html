@@ -141,10 +141,10 @@
                 </div>
             </div>
 
-            <!-- Coluna Direita: Turnos do Dia -->
+            <!-- Coluna Direita: Turnos do Dia com Horários -->
             <div class="lg:col-span-8 space-y-3">
                 <div class="flex items-center justify-between px-1">
-                    <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Divisão por Turnos (Manhã, Tarde e Noite)</span>
+                    <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Divisão por Turnos (Com Horários)</span>
                 </div>
                 
                 <div id="lista-turnos" class="space-y-3">
@@ -177,136 +177,135 @@
             }
         });
 
-        // Escala exata baseada na imagem enviada para a semana de 3/Aug a 9/Aug
         const dadosEscala = {
             "1": {
                 nomeGrupo: "Trio A1: André, Davi & Leticia B.",
                 membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "Unieuro" }, { periodo: "Noite", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", local: "CO" }, { periodo: "Tarde", local: "Gilmária" }, { periodo: "Noite", local: "Unieuro" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "CO" }, { periodo: "Noite", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", local: "Flávia" }, { periodo: "Tarde", local: "PS FICHA" }, { periodo: "Noite", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "Unieuro" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
                 }
             },
             "2": {
                 nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.",
                 membros: ["Nadya Veras Jarosczynski", "Louise Albuquerque Mirindiba", "Isabella Teixeira de Lima"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", local: "CO" }, { periodo: "Tarde", local: "Gilmária" }, { periodo: "Noite", local: "—" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "CO" }, { periodo: "Noite", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", local: "Flávia" }, { periodo: "Tarde", local: "PS FICHA" }, { periodo: "Noite", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
                 }
             },
             "3": {
                 nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino",
                 membros: ["Hiago Kaian Xavier Lisboa", "Isabela Frota Carmona", "Maria Eduarda Lima de Aquino"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "Unieuro" }, { periodo: "Noite", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", local: "CO" }, { periodo: "Tarde", local: "Gilmária" }, { periodo: "Noite", local: "Unieuro" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "CO" }, { periodo: "Noite", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", local: "Flávia" }, { periodo: "Tarde", local: "PS FICHA" }, { periodo: "Noite", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "Unieuro" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
                 }
             },
             "4": {
                 nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.",
                 membros: ["Heitor Stoduto Mello Ferreira", "Bruno Azevedo Lima", "Andressa Costa Maboni"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "Unieuro" }, { periodo: "Noite", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", local: "CO" }, { periodo: "Tarde", local: "Gilmária" }, { periodo: "Noite", local: "Unieuro" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "CO" }, { periodo: "Noite", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", local: "Flávia" }, { periodo: "Tarde", local: "PS FICHA" }, { periodo: "Noite", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "Unieuro" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
                 }
             },
             "5": {
                 nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.",
                 membros: ["Maria Luiza de Ornelas Nobrega", "Maria Eduarda Santiago", "Luiza de Santes"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "Unieuro" }, { periodo: "Noite", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", local: "CO" }, { periodo: "Tarde", local: "Gilmária" }, { periodo: "Noite", local: "Unieuro" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "CO" }, { periodo: "Noite", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", local: "Flávia" }, { periodo: "Tarde", local: "PS FICHA" }, { periodo: "Noite", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "Unieuro" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
                 }
             },
             "6": {
                 nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.",
                 membros: ["Leticia Teixeira Monteiro", "Júlia Matos Guimarães", "Luiza Borges Sales"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "Unieuro" }, { periodo: "Noite", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", local: "CO" }, { periodo: "Tarde", local: "Gilmária" }, { periodo: "Noite", local: "Unieuro" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "CO" }, { periodo: "Noite", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", local: "Flávia" }, { periodo: "Tarde", local: "PS FICHA" }, { periodo: "Noite", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "Unieuro" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
                 }
             },
             "7": {
                 nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly",
                 membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima do vale"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "Unieuro" }, { periodo: "Noite", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", local: "CO" }, { periodo: "Tarde", local: "Gilmária" }, { periodo: "Noite", local: "Unieuro" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "CO" }, { periodo: "Noite", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", local: "Flávia" }, { periodo: "Tarde", local: "PS FICHA" }, { periodo: "Noite", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "Unieuro" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
                 }
             },
             "8": {
                 nomeGrupo: "Trio A8: Giovanna, Rayane & Sofi",
                 membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "Unieuro" }, { periodo: "Noite", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", local: "CO" }, { periodo: "Tarde", local: "Gilmária" }, { periodo: "Noite", local: "Unieuro" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "CO" }, { periodo: "Noite", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", local: "Flávia" }, { periodo: "Tarde", local: "PS FICHA" }, { periodo: "Noite", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "Unieuro" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
                 }
             },
             "9": {
                 nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella",
                 membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "Unieuro" }, { periodo: "Noite", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", local: "CO" }, { periodo: "Tarde", local: "Gilmária" }, { periodo: "Noite", local: "Unieuro" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "CO" }, { periodo: "Noite", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", local: "Flávia" }, { periodo: "Tarde", local: "PS FICHA" }, { periodo: "Noite", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "Unieuro" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
                 }
             },
             "10": {
                 nomeGrupo: "Trio A10: José, João Victor & Ana Luiza",
                 membros: ["José Henrique Ferreira", "João Victor Tajra", "Ana Luiza Daros"],
                 dias: {
-                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "Unieuro" }, { periodo: "Noite", local: "—" } ] },
-                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", local: "CO" }, { periodo: "Tarde", local: "Gilmária" }, { periodo: "Noite", local: "Unieuro" } ] },
-                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] },
-                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "CO" }, { periodo: "Noite", local: "—" } ] },
-                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", local: "Flávia" }, { periodo: "Tarde", local: "PS FICHA" }, { periodo: "Noite", local: "—" } ] },
-                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "CO" } ] },
-                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", local: "—" }, { periodo: "Tarde", local: "—" }, { periodo: "Noite", local: "—" } ] }
+                    "seg": { nome: "Segunda-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "Unieuro" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "ter": { nome: "Terça-feira", data: "4/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "Unieuro" } ] },
+                    "qua": { nome: "Quarta-feira", data: "5/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "qui": { nome: "Quinta-feira", data: "6/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sex": { nome: "Sexta-feira", data: "7/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                    "sab": { nome: "Sábado", data: "8/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
+                    "dom": { nome: "Domingo", data: "9/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
                 }
             }
         };
@@ -372,7 +371,7 @@
             const infoDia = dados.dias[diaSelecionadoGlobal];
             document.getElementById('label-dia-topo').innerText = `${infoDia.nome.toUpperCase()} • ${infoDia.data}`;
 
-            // Turnos
+            // Turnos com horários
             const containerTurnos = document.getElementById('lista-turnos');
             containerTurnos.innerHTML = '';
 
@@ -389,8 +388,11 @@
                                 ${iconeTurno}
                             </div>
                             <div>
-                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block">Turno da ${t.periodo}</span>
-                                <h4 class="text-sm sm:text-base font-bold text-white">${t.local}</h4>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">${t.periodo}</span>
+                                    <span class="text-[10px] font-semibold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">${t.horario}</span>
+                                </div>
+                                <h4 class="text-sm sm:text-base font-bold text-white mt-0.5">${t.local}</h4>
                             </div>
                         </div>
                         <span class="px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-semibold">${t.local}</span>
