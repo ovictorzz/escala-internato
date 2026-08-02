@@ -199,8 +199,34 @@
             if (sessionStorage.getItem('autenticado') === 'true') {
                 document.getElementById('login-overlay').style.display = 'none';
             }
+            detectarDiaESemanaAtual();
             iniciarContadores();
         });
+
+        // Detecta automaticamente a semana e o dia atual ao abrir o site
+        function detectarDiaESemanaAtual() {
+            const agora = new Date();
+            const dataInicioRodizio = new Date('2026-08-03T00:00:00');
+            const dataFimRodizio = new Date('2026-10-04T23:59:59');
+
+            if (agora >= dataInicioRodizio && agora <= dataFimRodizio) {
+                const diffTime = agora - dataInicioRodizio;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                let semanaCalculada = Math.floor(diffDays / 7) + 1;
+                
+                if (semanaCalculada < 1) semanaCalculada = 1;
+                if (semanaCalculada > 9) semanaCalculada = 9;
+                semanaSelecionadaGlobal = semanaCalculada;
+
+                // Identifica o dia da semana atual (0 = Domingo, 1 = Segunda, ..., 6 = Sábado)
+                const jsDay = agora.getDay();
+                const mapDias = { 1: "seg", 2: "ter", 3: "qua", 4: "qui", 5: "sex", 6: "sab", 0: "dom" };
+                diaSelecionadoGlobal = mapDias[jsDay] || "seg";
+            } else {
+                semanaSelecionadaGlobal = 1;
+                diaSelecionadoGlobal = "seg";
+            }
+        }
 
         function iniciarContadores() {
             const dataFimRodizio = new Date('2026-10-04T23:59:59'); 
@@ -236,13 +262,11 @@
             setInterval(atualizar, 1000 * 60 * 60);
         }
 
-        // Função auxiliar para gerar os dias de uma semana com base na data inicial
-        function gerarDiasSemana(dataInicioStr, datasArray) {
+        function gerarDiasSemana(datasArray) {
             return {
                 "seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
                 "ter": { nome: "Terça-feira", data: datasArray[1], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
                 "qua": { nome: "Quarta-feira", data: datasArray[2], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-                "qui": { nome: "Quinta-feira", data: "3/Aug", turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }.qui, // Mantém modelo
                 "qui": { nome: "Quinta-feira", data: datasArray[3], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
                 "sex": { nome: "Sexta-feira", data: datasArray[4], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
                 "sab": { nome: "Sábado", data: datasArray[5], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
@@ -250,7 +274,6 @@
             };
         }
 
-        // Datas exatas para as 9 semanas (03/Aug/2026 até 04/Oct/2026)
         const semanasDatas = {
             1: ["3/Aug", "4/Aug", "5/Aug", "6/Aug", "7/Aug", "8/Aug", "9/Aug"],
             2: ["10/Aug", "11/Aug", "12/Aug", "13/Aug", "14/Aug", "15/Aug", "16/Aug"],
@@ -268,150 +291,114 @@
                 nomeGrupo: "Trio A1: André, Davi & Leticia B.",
                 membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"],
                 semanas: {
-                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
-                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
-                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
-                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
-                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
-                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
-                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
-                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
-                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
+                    1: gerarDiasSemana(semanasDatas[1]),
+                    2: gerarDiasSemana(semanasDatas[2]),
+                    3: gerarDiasSemana(semanasDatas[3]),
+                    4: gerarDiasSemana(semanasDatas[4]),
+                    5: gerarDiasSemana(semanasDatas[5]),
+                    6: gerarDiasSemana(semanasDatas[6]),
+                    7: gerarDiasSemana(semanasDatas[7]),
+                    8: gerarDiasSemana(semanasDatas[8]),
+                    9: gerarDiasSemana(semanasDatas[9])
                 }
             },
             "2": {
                 nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.",
                 membros: ["Nadya Veras Jarosczynski", "Louise Albuquerque Mirindiba", "Isabella Teixeira de Lima"],
                 semanas: { 
-                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
-                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
-                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
-                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
-                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
-                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
-                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
-                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
-                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
                 }
             },
             "3": {
                 nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino",
                 membros: ["Hiago Kaian Xavier Lisboa", "Isabela Frota Carmona", "Maria Eduarda Lima de Aquino"],
                 semanas: { 
-                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
-                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
-                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
-                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
-                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
-                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
-                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
-                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
-                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
                 }
             },
             "4": {
                 nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.",
                 membros: ["Heitor Stoduto Mello Ferreira", "Bruno Azevedo Lima", "Andressa Costa Maboni"],
                 semanas: { 
-                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
-                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
-                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
-                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
-                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
-                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
-                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
-                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
-                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
                 }
             },
             "5": {
                 nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.",
                 membros: ["Maria Luiza de Ornelas Nobrega", "Maria Eduarda Santiago", "Luiza de Santes"],
                 semanas: { 
-                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
-                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
-                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
-                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
-                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
-                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
-                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
-                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
-                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
                 }
             },
             "6": {
                 nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.",
                 membros: ["Leticia Teixeira Monteiro", "Júlia Matos Guimarães", "Luiza Borges Sales"],
                 semanas: { 
-                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
-                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
-                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
-                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
-                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
-                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
-                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
-                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
-                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
                 }
             },
             "7": {
                 nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly",
                 membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima do vale"],
                 semanas: { 
-                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
-                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
-                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
-                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
-                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
-                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
-                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
-                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
-                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
                 }
             },
             "8": {
                 nomeGrupo: "Trio A8: Giovanna, Rayane & Sofi",
                 membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"],
                 semanas: { 
-                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
-                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
-                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
-                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
-                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
-                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
-                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
-                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
-                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
                 }
             },
             "9": {
                 nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella",
                 membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"],
                 semanas: { 
-                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
-                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
-                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
-                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
-                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
-                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
-                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
-                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
-                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
                 }
             },
             "10": {
                 nomeGrupo: "Trio A10: José, João Victor & Ana Luiza",
                 membros: ["José Henrique Ferreira", "João Victor Tajra", "Ana Luiza Daros"],
                 semanas: { 
-                    1: gerarDiasSemana("3/Aug", semanasDatas[1]),
-                    2: gerarDiasSemana("10/Aug", semanasDatas[2]),
-                    3: gerarDiasSemana("17/Aug", semanasDatas[3]),
-                    4: gerarDiasSemana("24/Aug", semanasDatas[4]),
-                    5: gerarDiasSemana("31/Aug", semanasDatas[5]),
-                    6: gerarDiasSemana("7/Sep", semanasDatas[6]),
-                    7: gerarDiasSemana("14/Sep", semanasDatas[7]),
-                    8: gerarDiasSemana("21/Sep", semanasDatas[8]),
-                    9: gerarDiasSemana("28/Sep", semanasDatas[9])
+                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
+                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
+                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
+                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
+                    9: gerarDiasSemana(semanasDatas[9])
                 }
             }
         };
@@ -487,7 +474,6 @@
             document.getElementById('grupo-badge-num').innerText = 'A' + id;
             document.getElementById('titulo-grupo-header').innerText = dados.nomeGrupo;
 
-            // Membros
             const listaMembros = document.getElementById('lista-membros');
             listaMembros.innerHTML = '';
             dados.membros.forEach(nome => {
@@ -501,12 +487,10 @@
                 `;
             });
 
-            // Dados do dia selecionado na semana selecionada
             const diasDaSemanaGrupo = dados.semanas[semanaSelecionadaGlobal];
             const infoDia = diasDaSemanaGrupo[diaSelecionadoGlobal];
             document.getElementById('label-dia-topo').innerText = `${infoDia.nome.toUpperCase()} • ${infoDia.data}`;
 
-            // Contar atividades preenchidas na semana atual
             let totalAtividades = 0;
             Object.values(diasDaSemanaGrupo).forEach(d => {
                 d.turnos.forEach(t => {
@@ -515,7 +499,6 @@
             });
             document.getElementById('stat-atividades').innerText = totalAtividades + " turnos";
 
-            // Turnos do dia
             const containerTurnos = document.getElementById('lista-turnos');
             containerTurnos.innerHTML = '';
 
@@ -555,6 +538,7 @@
         }
 
         window.onload = () => {
+            detectarDiaESemanaAtual();
             renderizarSemanas();
             renderizarAbasDias();
             mudarGrupo();
