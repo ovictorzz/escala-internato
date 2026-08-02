@@ -134,7 +134,7 @@
         </div>
 
         <!-- SELETOR DE SEMANAS (1 A 9) -->
-        <div class="space-y-2">
+        <div id="secao-semanas" class="space-y-2">
             <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider px-1">Selecione a Semana do Rodízio</span>
             <div class="grid grid-cols-3 sm:grid-cols-9 gap-2" id="semanas-tab-container">
                 <!-- Gerado via JS -->
@@ -209,17 +209,17 @@
         let capotesCount = parseInt(localStorage.getItem('t7a_capotes')) || 0;
 
         const dadosSeminariosList = [
-            { data: "28/07", hora: "08h30–11h00", mediador: "TODOS", apresentadores: "TODOS", tema: "APRESENTAÇÃO DO INTERNATO EM SAÚDE DA MULHER – GINECOLOGIA & OBSTETRÍCIA" },
-            { data: "04/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Marta", apresentadores: "André Victor, Davi Carvalho, Letícia Barbosa", tema: "• Fisiologia do Ciclo Menstrual\n• Pré-Natal de Risco Habitual" },
-            { data: "11/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Nadya Veras", apresentadores: "Louise Bonfim, Isabella de Lima", tema: "• Trabalho de Parto (Condutas, Indução e Condução)\n• Cardiotocografia: Avaliação da Vitalidade Fetal: Sofrimento Fetal" },
-            { data: "18/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Hiago Kaian", apresentadores: "Isabella Frota, Maria Eduarda Aquino, José Henrique", tema: "• Sangramento Uterino Anormal (PALM-COEIN): Miomatose, Adenomiose e Endometriose\n• Hemorragias da 1ª Metade e da 2ª Metade da Gravidez: Hemorragia Pós-Parto" },
-            { data: "25/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Marta | Lucimara", apresentadores: "Heitor Stoduto, João Victor Tajra, Bruno Azevedo, Andressa Maboni", tema: "• Alterações Funcionais Benignas da Mama (AFBM): Patologias Benignas / Inflamatórias / Infecciosas da Mama\n• Câncer de Mama: Classificação BI-RADS" },
-            { data: "01/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Maria Luiza", apresentadores: "Maria Eduarda Santiago, Luiza de Santes", tema: "• Métodos Contraceptivos (Indicações, Contraindicações, Complicações)\n• Trabalho de Parto Prematuro: Infecção do Trato Urinário em Obstetrícia" },
-            { data: "08/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Letícia Teixeira", apresentadores: "Júlia Matos, Luiza Sales", tema: "• Anatomia Genital Feminina Aplicada à Uroginecologia: Incontinência Urinária Feminina\n• HPV e Câncer de Colo de Útero" },
-            { data: "15/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Ana Clara Ghisleni", apresentadores: "Carolina Banholi, Kamilly Lima", tema: "• Prolapsos Genitais: Classificação de Bump (POP-Q)\n• Tumores Benignos e Malignos do Ovário" },
-            { data: "22/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Giovanna Muniz", apresentadores: "Rayane Maria, Sofia Dias", tema: "• Síndromes Hipertensivas e Gestação (Pré-Eclâmpsia/Eclâmpsia/Síndrome HELLP)\n• Diabetes Gestacional" },
-            { data: "23/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Lucimara", apresentadores: "Annelise Paiva, Camila Guidão, Gabriella Reis, Ana Luiza Daros", tema: "• Restrição de Crescimento Intrauterino: Oligoâmnio/Polidrâmnio\n• Leucorreias: Infecções Sexualmente Transmissíveis (IST) em GO e Doenças Inflamatórias Pélvica (DIP)" },
-            { data: "29/09", hora: "18h30–19h45\n20h00–21h30", mediador: "TODOS", apresentadores: "TODOS", tema: "AVALIAÇÃO SOMATIVA" }
+            { data: "28/07", hora: "08h30–11h00", mediador: "—", apresentadores: "TODOS", tema: "APRESENTAÇÃO DO INTERNATO EM SAÚDE DA MULHER – GINECOLOGIA & OBSTETRÍCIA" },
+            { data: "04/08", hora: "18h30–19h45 / 20h00–21h30", mediador: "Marta", apresentadores: "André Victor, Davi Carvalho, Letícia Barbosa", tema: "• Fisiologia do Ciclo Menstrual\n• Pré-Natal de Risco Habitual" },
+            { data: "11/08", hora: "18h30–19h45 / 20h00–21h30", mediador: "—", apresentadores: "Nadya Veras, Louise Bonfim, Isabella de Lima", tema: "• Trabalho de Parto (Condutas, Indução e Condução)\n• Cardiotocografia: Avaliação da Vitalidade Fetal: Sofrimento Fetal" },
+            { data: "18/08", hora: "18h30–19h45 / 20h00–21h30", mediador: "—", apresentadores: "Hiago Kaian, Isabella Frota, Maria Eduarda Aquino, José Henrique", tema: "• Sangramento Uterino Anormal (PALM-COEIN): Miomatose, Adenomiose e Endometriose\n• Hemorragias da 1ª Metade e da 2ª Metade da Gravidez: Hemorragia Pós-Parto" },
+            { data: "25/08", hora: "18h30–19h45 / 20h00–21h30", mediador: "Marta | Lucimara", apresentadores: "Heitor Stoduto, João Victor Tajra, Bruno Azevedo, Andressa Maboni", tema: "• Alterações Funcionais Benignas da Mama (AFBM): Patologias Benignas / Inflamatórias / Infecciosas da Mama\n• Câncer de Mama: Classificação BI-RADS" },
+            { data: "01/09", hora: "18h30–19h45 / 20h00–21h30", mediador: "—", apresentadores: "Maria Luiza, Maria Eduarda Santiago, Luiza de Santes", tema: "• Métodos Contraceptivos (Indicações, Contraindicações, Complicações)\n• Trabalho de Parto Prematuro: Infecção do Trato Urinário em Obstetrícia" },
+            { data: "08/09", hora: "18h30–19h45 / 20h00–21h30", mediador: "—", apresentadores: "Letícia Teixeira, Júlia Matos, Luiza Sales", tema: "• Anatomia Genital Feminina Aplicada à Uroginecologia: Incontinência Urinária Feminina\n• HPV e Câncer de Colo de Útero" },
+            { data: "15/09", hora: "18h30–19h45 / 20h00–21h30", mediador: "—", apresentadores: "Ana Clara Ghisleni, Carolina Banholi, Kamilly Lima", tema: "• Prolapsos Genitais: Classificação de Bump (POP-Q)\n• Tumores Benignos e Malignos do Ovário" },
+            { data: "22/09", hora: "18h30–19h45 / 20h00–21h30", mediador: "—", apresentadores: "Giovanna Muniz, Rayane Maria, Sofia Dias", tema: "• Síndromes Hipertensivas e Gestação (Pré-Eclâmpsia/Eclâmpsia/Síndrome HELLP)\n• Diabetes Gestacional" },
+            { data: "23/09", hora: "18h30–19h45 / 20h00–21h30", mediador: "Lucimara", apresentadores: "Annelise Paiva, Camila Guidão, Gabriella Reis, Ana Luiza Daros", tema: "• Restrição de Crescimento Intrauterino: Oligoâmnio/Polidrâmnio\n• Leucorreias: Infecções Sexualmente Transmissíveis (IST) em GO e Doenças Inflamatórias Pélvica (DIP)" },
+            { data: "29/09", hora: "18h30–19h45 / 20h00–21h30", mediador: "—", apresentadores: "TODOS", tema: "AVALIAÇÃO SOMATIVA" }
         ];
 
         function verificarSenha() {
@@ -265,6 +265,7 @@
             const tituloSecao = document.getElementById('titulo-secao-inferior');
             const containerAbas = document.getElementById('container-abas-dias');
             const bannerHero = document.getElementById('banner-hero');
+            const secaoSemanas = document.getElementById('secao-semanas');
 
             // Reset classes
             btnInd.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
@@ -278,6 +279,7 @@
                 tituloSecao.innerText = "Divisão por Turnos (Manhã, Tarde e Noite)";
                 containerAbas.style.display = 'grid';
                 bannerHero.style.display = 'flex';
+                secaoSemanas.style.display = 'block';
                 mudarGrupo();
             } else if (modo === 'geral') {
                 btnGeral.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
@@ -286,6 +288,7 @@
                 tituloSecao.innerText = "Visão Geral: Todos os 10 Trios do Dia";
                 containerAbas.style.display = 'grid';
                 bannerHero.style.display = 'flex';
+                secaoSemanas.style.display = 'block';
                 mudarGrupo();
             } else {
                 btnSeminarios.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
@@ -294,35 +297,44 @@
                 tituloSecao.innerText = "Cronograma Oficial de Seminários Semanais (UNIEURO - Bloco D, Sala 2)";
                 containerAbas.style.display = 'none';
                 bannerHero.style.display = 'none';
+                secaoSemanas.style.display = 'none';
                 renderizarSeminariosView();
             }
         }
 
         function renderizarSeminariosView() {
             const containerTurnos = document.getElementById('lista-turnos');
-            let html = '<div class="space-y-3">';
+            let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+            
             dadosSeminariosList.forEach(s => {
                 html += `
-                    <div class="bg-[#08080a] border border-zinc-900 hover:border-zinc-800 rounded-2xl p-4 sm:p-5 transition-all shadow-sm space-y-3">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-zinc-900">
-                            <div class="flex items-center space-x-2.5">
-                                <span class="px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 font-extrabold text-xs">${s.data}</span>
-                                <span class="text-xs font-semibold text-zinc-400">${s.hora.replace('\n', ' • ')}</span>
+                    <div class="bg-[#08080a] border border-zinc-900 hover:border-zinc-800 rounded-2xl p-5 transition-all shadow-sm flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between pb-3 border-b border-zinc-900">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-8 h-8 rounded-xl bg-blue-600/10 border border-blue-500/20 text-blue-400 font-extrabold text-xs flex items-center justify-center">
+                                        📅
+                                    </div>
+                                    <span class="text-sm font-extrabold text-white">${s.data}</span>
+                                </div>
+                                <span class="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/20">${s.hora}</span>
                             </div>
-                            <div class="flex items-center space-x-2 text-xs">
-                                <span class="text-zinc-500 font-medium">Mediador:</span>
-                                <span class="text-zinc-200 font-bold">${s.mediador}</span>
+                            
+                            <div class="space-y-2.5">
+                                <div>
+                                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Apresentadores</span>
+                                    <p class="text-xs font-bold text-zinc-200 mt-0.5">${s.apresentadores}</p>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Temas</span>
+                                    <p class="text-xs text-zinc-300 mt-1 whitespace-pre-line leading-relaxed bg-[#121216] border border-zinc-900 p-3 rounded-xl">${s.tema}</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="space-y-2">
-                            <div>
-                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Apresentadores</span>
-                                <p class="text-xs font-bold text-white mt-0.5">${s.apresentadores}</p>
-                            </div>
-                            <div>
-                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Temas Abordados</span>
-                                <p class="text-xs text-zinc-300 mt-0.5 whitespace-pre-line leading-relaxed">${s.tema}</p>
-                            </div>
+
+                        <div class="pt-3 border-t border-zinc-900 flex items-center justify-between text-xs">
+                            <span class="text-zinc-500 font-medium">Mediador(a):</span>
+                            <span class="text-zinc-300 font-bold bg-zinc-900 px-2.5 py-1 rounded-md border border-zinc-800">${s.mediador}</span>
                         </div>
                     </div>
                 `;
