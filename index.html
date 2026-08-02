@@ -68,11 +68,11 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         
-        <!-- BARRA DE CONTROLE: SELETOR DE GRUPO + MÉTRICAS RÁPIDAS -->
+        <!-- BARRA DE CONTROLE: SELETOR DE GRUPO + MÉTRICAS RÁPIDAS (9 SEMANAS) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
             <!-- Painel do Grupo Ativo (Largura Total Expandida) -->
-            <div class="lg:col-span-8 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
+            <div class="lg:col-span-7 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
                 
                 <!-- Linha Superior: Ícone + Nome Completo do Trio sem cortes -->
                 <div class="flex items-center space-x-3.5 w-full">
@@ -106,17 +106,15 @@
 
             </div>
 
-            <!-- Cards de Métricas da Semana -->
-            <div class="lg:col-span-4 grid grid-cols-2 gap-3">
+            <!-- Cards de Métricas da Semana (Incluindo contador dinâmico de semanas) -->
+            <div class="lg:col-span-5 grid grid-cols-2 gap-3">
                 <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-center">
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Atividades</span>
-                    <span class="text-lg font-black text-white mt-0.5" id="stat-atividades">--</span>
+                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Período Atual</span>
+                    <span class="text-base sm:text-lg font-black text-white mt-0.5" id="stat-semana">-- de 9</span>
                 </div>
                 <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-center">
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Status</span>
-                    <span class="text-xs font-extrabold text-emerald-400 mt-1 flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Ativa
-                    </span>
+                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Turnos do Trio</span>
+                    <span class="text-base sm:text-lg font-black text-white mt-0.5" id="stat-atividades">--</span>
                 </div>
             </div>
 
@@ -159,7 +157,7 @@
                     </ul>
                 </div>
                 <div class="mt-6 pt-4 border-t border-zinc-900/60 text-[10px] text-zinc-600 font-medium text-center">
-                    Rodízio de Ginecologia & Obstetrícia
+                    Rodízio de Ginecologia & Obstetrícia (9 Semanas)
                 </div>
             </div>
 
@@ -197,14 +195,18 @@
             if (sessionStorage.getItem('autenticado') === 'true') {
                 document.getElementById('login-overlay').style.display = 'none';
             }
-            iniciarContadorRodizio();
+            iniciarContadores();
         });
 
-        // Contador até 04/10/2026 às 23:59
-        function iniciarContadorRodizio() {
+        // Contadores automáticos (Dias até 04/10/2026 e Semana Atual de 9)
+        function iniciarContadores() {
             const dataFimRodizio = new Date('2026-10-04T23:59:59'); 
+            const dataInicioRodizio = new Date('2026-08-03T00:00:00');
+
             function atualizar() {
                 const agora = new Date();
+                
+                // Dias restantes
                 const diferenca = dataFimRodizio - agora;
                 const diasRestantes = Math.ceil(diferenca / (1000 * 60 * 60 * 24));
                 const badge = document.getElementById('contador-dias');
@@ -214,7 +216,21 @@
                     else if (diasRestantes === 0) badge.innerText = `Último dia de rodízio!`;
                     else badge.innerText = `Rodízio concluído`;
                 }
+
+                // Cálculo da semana atual (das 9 semanas)
+                const diffTime = agora - dataInicioRodizio;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                let semanaAtual = Math.floor(diffDays / 7) + 1;
+                
+                if (semanaAtual < 1) semanaAtual = 1;
+                if (semanaAtual > 9) semanaAtual = 9;
+
+                const statSemana = document.getElementById('stat-semana');
+                if (statSemana) {
+                    statSemana.innerText = `Semana ${semanaAtual} de 9`;
+                }
             }
+
             atualizar();
             setInterval(atualizar, 1000 * 60 * 60);
         }
