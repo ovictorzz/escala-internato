@@ -16,6 +16,7 @@
 </head>
 <body class="min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
 
+    <!-- TELA DE LOGIN COM FUNDO AJUSTADO -->
     <div id="login-overlay" class="fixed inset-0 z-50 backdrop-blur-md flex items-center justify-center p-4" style="background-image: linear-gradient(to bottom, rgba(3, 3, 5, 0.85), rgba(3, 3, 5, 0.95)), url('fundo.jpg'); background-size: cover; background-position: bottom center;">
         <div class="bg-[#08080a]/90 border border-zinc-800/80 backdrop-blur-xl rounded-3xl p-8 max-w-sm w-full shadow-2xl shadow-black space-y-6 text-center relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-blue-600/10 rounded-full blur-2xl pointer-events-none"></div>
@@ -40,6 +41,7 @@
         </div>
     </div>
 
+    <!-- HEADER MINIMALISTA FLUIDO -->
     <header class="bg-[#050508]/80 backdrop-blur-md border-b border-zinc-900/80 sticky top-0 z-30">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div class="flex items-center space-x-3">
@@ -63,8 +65,10 @@
         </div>
     </header>
 
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         
+        <!-- SELETOR DE GRUPO -->
         <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-blue-400 font-black text-sm shrink-0" id="grupo-badge-num">
@@ -95,6 +99,7 @@
             </div>
         </div>
 
+        <!-- BANNER DE CENÁRIO ATUAL -->
         <div class="relative bg-gradient-to-r from-blue-950/40 via-[#08080a] to-[#08080a] border border-blue-500/20 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden flex flex-col justify-center min-h-[160px]">
             <div class="absolute -right-16 -top-16 w-48 h-48 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
             
@@ -104,7 +109,7 @@
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                     </span>
-                    <span id="label-cenario-topo" class="text-[11px] font-bold tracking-widest text-blue-400 uppercase">CENÁRIO ATUAL • AGOSTO</span>
+                    <span id="label-cenario-topo" class="text-[11px] font-bold tracking-widest text-blue-400 uppercase">CENÁRIO ATUAL • SEMANA 1</span>
                 </div>
                 <h2 id="cenario-atual-txt" class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
                     HRC - Centro Obstétrico
@@ -112,8 +117,10 @@
             </div>
         </div>
 
+        <!-- GRADE INFERIOR DIVIDIDA -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
+            <!-- Coluna Esquerda: Integrantes -->
             <div class="lg:col-span-4 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-900">
@@ -121,20 +128,23 @@
                         <span class="w-2 h-2 rounded-full bg-blue-500"></span>
                     </div>
                     <ul id="lista-membros" class="space-y-3">
-                        </ul>
+                        <!-- Preenchido via JS -->
+                    </ul>
                 </div>
                 <div class="mt-6 pt-4 border-t border-zinc-900/60 text-[10px] text-zinc-600 font-medium text-center">
                     Escala Oficial • Trimester 2026.2
                 </div>
             </div>
 
+            <!-- Coluna Direita: Cronograma Interativo -->
             <div class="lg:col-span-8 space-y-3">
                 <div class="flex items-center justify-between px-1">
                     <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Cronograma de Rodízios (Clique para alternar)</span>
                 </div>
                 
                 <div id="lista-blocos" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    </div>
+                    <!-- Preenchido via JavaScript -->
+                </div>
             </div>
 
         </div>
@@ -167,112 +177,98 @@
                 nomeGrupo: "Trio A1: André, Davi & Leticia B.",
                 membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"],
                 blocos: [
-                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRC - Centro Obstétrico", datas: "Agosto" },
-                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRAN - Enfermaria", datas: "Setembro" },
-                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Outubro" }
+                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRC - Centro Obstétrico", datas: "Semana 1" },
+                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRAN - Enfermaria", datas: "Semana 2" },
+                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Semana 3" }
                 ]
             },
             "2": {
                 nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.",
                 membros: ["Nadya Veras Jarosczynski", "Louise Albuquerque Mirindiba", "Isabella Teixeira de Lima"],
                 blocos: [
-                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "Policlínica Ceilândia", datas: "Agosto" },
-                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRC - Centro Obstétrico", datas: "Setembro" },
-                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRAN - Enfermaria", datas: "Outubro" }
+                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "Policlínica Ceilândia", datas: "Semana 1" },
+                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRC - Centro Obstétrico", datas: "Semana 2" },
+                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRAN - Enfermaria", datas: "Semana 3" }
                 ]
             },
             "3": {
                 nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino",
                 membros: ["Hiago Kaian Xavier Lisboa", "Isabela Frota Carmona", "Maria Eduarda Lima de Aquino"],
                 blocos: [
-                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRAN - Enfermaria", datas: "Agosto" },
-                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Setembro" },
-                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Outubro" }
+                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRAN - Enfermaria", datas: "Semana 1" },
+                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Semana 2" },
+                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Semana 3" }
                 ]
             },
             "4": {
                 nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.",
                 membros: ["Heitor Stoduto Mello Ferreira", "Bruno Azevedo Lima", "Andressa Costa Maboni"],
                 blocos: [
-                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRSM - Ambulatório", datas: "Agosto" },
-                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "Policlínica Ceilândia", datas: "Setembro" },
-                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRC - Centro Obstétrico", datas: "Outubro" }
+                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRSM - Ambulatório", datas: "Semana 1" },
+                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "Policlínica Ceilândia", datas: "Semana 2" },
+                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRC - Centro Obstétrico", datas: "Semana 3" }
                 ]
             },
             "5": {
                 nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.",
                 membros: ["Maria Luiza de Ornelas Nobrega", "Maria Eduarda Santiago", "Luiza de Santes"],
                 blocos: [
-                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRC - Enfermaria", datas: "Agosto" },
-                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRAN - Centro Obstétrico", datas: "Setembro" },
-                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Outubro" }
+                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRC - Enfermaria", datas: "Semana 1" },
+                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRAN - Centro Obstétrico", datas: "Semana 2" },
+                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Semana 3" }
                 ]
             },
             "6": {
                 nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.",
                 membros: ["Leticia Teixeira Monteiro", "Júlia Matos Guimarães", "Luiza Borges Sales"],
                 blocos: [
-                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRAN - Centro Obstétrico", datas: "Agosto" },
-                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Setembro" },
-                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Outubro" }
+                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRAN - Centro Obstétrico", datas: "Semana 1" },
+                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Semana 2" },
+                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Semana 3" }
                 ]
             },
             "7": {
                 nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly",
                 membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima do vale"],
                 blocos: [
-                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "Policlínica Ceilândia", datas: "Agosto" },
-                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRC - Enfermaria", datas: "Setembro" },
-                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRAN - Centro Obstétrico", datas: "Outubro" }
+                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "Policlínica Ceilândia", datas: "Semana 1" },
+                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRC - Enfermaria", datas: "Semana 2" },
+                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRAN - Centro Obstétrico", datas: "Semana 3" }
                 ]
             },
             "8": {
                 nomeGrupo: "Trio A8: Giovanna, Rayane & Sofi",
                 membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"],
                 blocos: [
-                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRSM - Ambulatório", datas: "Agosto" },
-                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "Policlínica Ceilândia", datas: "Setembro" },
-                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRC - Enfermaria", datas: "Outubro" }
+                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRSM - Ambulatório", datas: "Semana 1" },
+                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "Policlínica Ceilândia", datas: "Semana 2" },
+                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRC - Enfermaria", datas: "Semana 3" }
                 ]
             },
             "9": {
                 nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella",
                 membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"],
                 blocos: [
-                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRC - Centro Obstétrico", datas: "Agosto" },
-                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRAN - Enfermaria", datas: "Setembro" },
-                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Outubro" }
+                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRC - Centro Obstétrico", datas: "Semana 1" },
+                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRAN - Enfermaria", datas: "Semana 2" },
+                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "HRSM - Ambulatório", datas: "Semana 3" }
                 ]
             },
             "10": {
                 nomeGrupo: "Trio A10: José, João Victor & Ana Luiza",
                 membros: ["José Henrique Ferreira", "João Victor Tajra", "Ana Luiza Daros"],
                 blocos: [
-                    { mesKey: "AGOSTO", bloco: "BLOCO 1", local: "HRAN - Enfermaria", datas: "Agosto" },
-                    { mesKey: "SETEMBRO", bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Setembro" },
-                    { mesKey: "OUTUBRO", bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Outubro" }
+                    { semanaKey: "SEMANA_1", bloco: "BLOCO 1", local: "HRAN - Enfermaria", datas: "Semana 1" },
+                    { semanaKey: "SEMANA_2", bloco: "BLOCO 2", local: "HRSM - Ambulatório", datas: "Semana 2" },
+                    { semanaKey: "SEMANA_3", bloco: "BLOCO 3", local: "Policlínica Ceilândia", datas: "Semana 3" }
                 ]
             }
         };
 
-        function getMesAtualKey() {
-            const d = new Date();
-            const mes = d.getMonth();
-            if (mes === 8) return "SETEMBRO";
-            if (mes === 9) return "OUTUBRO";
-            return "AGOSTO";
-        }
+        let semanaSelecionadaGlobal = "SEMANA_1";
 
-        let mesSelecionadoGlobal = getMesAtualKey();
-
-        function getIniciais(nome) {
-            const partes = nome.trim().split(' ');
-            if (partes.length > 1) return (partes[0][0] + partes[1][0]).toUpperCase();
-            return (nome[0] + nome[1]).toUpperCase();
-        }
-
-        function selecionarMes(mesKey) {
-            mesSelecionadoGlobal = mesKey;
+        function selecionarSemana(semanaKey) {
+            semanaSelecionadaGlobal = semanaKey;
             mudarGrupo();
         }
 
@@ -300,11 +296,13 @@
             containerBlocos.innerHTML = '';
 
             let localAtivoNoBanner = '';
+            let nomeSemanaAtiva = 'SEMANA 1';
 
             dados.blocos.forEach((b, index) => {
-                const isSelected = (b.mesKey === mesSelecionadoGlobal);
+                const isSelected = (b.semanaKey === semanaSelecionadaGlobal);
                 if (isSelected) {
                     localAtivoNoBanner = b.local;
+                    nomeSemanaAtiva = b.datas.toUpperCase();
                 }
 
                 const cardClasses = isSelected 
@@ -316,7 +314,7 @@
                 const numBloco = index + 1;
 
                 containerBlocos.innerHTML += `
-                    <div onclick="selecionarMes('${b.mesKey}')" class="rounded-2xl p-4 sm:p-5 ${cardClasses}">
+                    <div onclick="selecionarSemana('${b.semanaKey}')" class="rounded-2xl p-4 sm:p-5 ${cardClasses}">
                         ${isSelected ? '<div class="absolute top-3 right-3"><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span></span></div>' : ''}
                         
                         <div class="flex items-center space-x-2 mb-2">
@@ -331,8 +329,14 @@
                 `;
             });
 
-            document.getElementById('label-cenario-topo').innerText = `CENÁRIO ATUAL • ${mesSelecionadoGlobal}`;
+            document.getElementById('label-cenario-topo').innerText = `CENÁRIO ATUAL • ${nomeSemanaAtiva}`;
             document.getElementById('cenario-atual-txt').innerText = localAtivoNoBanner;
+        }
+
+        function getIniciais(nome) {
+            const partes = nome.trim().split(' ');
+            if (partes.length > 1) return (partes[0][0] + partes[1][0]).toUpperCase();
+            return (nome[0] + nome[1]).toUpperCase();
         }
 
         window.onload = mudarGrupo;
