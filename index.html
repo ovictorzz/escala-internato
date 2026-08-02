@@ -72,7 +72,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
             <!-- Painel do Grupo Ativo -->
-            <div class="lg:col-span-7 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
+            <div class="lg:col-span-6 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
                 <div class="flex items-center space-x-3.5 w-full">
                     <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-lg shadow-blue-600/20" id="grupo-badge-num">
                         A1
@@ -102,17 +102,31 @@
                 </div>
             </div>
 
-            <!-- Cards de Métricas -->
-            <div class="lg:col-span-5 grid grid-cols-2 gap-3">
+            <!-- Cards de Métricas e Controle (3 colunas) -->
+            <div class="lg:col-span-6 grid grid-cols-3 gap-3">
                 <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-center">
                     <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Período Atual</span>
-                    <span class="text-base sm:text-lg font-black text-white mt-0.5" id="stat-semana">-- de 9</span>
+                    <span class="text-sm sm:text-base font-black text-white mt-0.5" id="stat-semana">-- de 9</span>
                 </div>
                 <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-center">
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Turnos na Semana</span>
-                    <span class="text-base sm:text-lg font-black text-white mt-0.5" id="stat-atividades">--</span>
-                    <div id="stat-detalhes-turnos" class="flex flex-wrap gap-x-1.5 gap-y-0.5 mt-1 text-[9px] text-zinc-400 font-medium">
+                    <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Turnos Semana</span>
+                    <span class="text-sm sm:text-base font-black text-white mt-0.5" id="stat-atividades">--</span>
+                    <div id="stat-detalhes-turnos" class="flex flex-wrap gap-x-1 gap-y-0.5 mt-1 text-[8px] sm:text-[9px] text-zinc-400 font-medium">
                         <!-- Gerado via JS -->
+                    </div>
+                </div>
+                <!-- NOVO: Contador de Capotes CO -->
+                <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Capotes CO</span>
+                        <div class="flex items-baseline space-x-1 mt-0.5">
+                            <span class="text-lg sm:text-xl font-black text-white" id="contador-capotes-val">0</span>
+                            <span class="text-[9px] text-zinc-500">un.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-1 mt-2 pt-2 border-t border-zinc-900/60">
+                        <button onclick="alterarCapotes(-1)" class="flex-1 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-bold py-1 rounded-lg text-xs transition-all active:scale-95 cursor-pointer">-</button>
+                        <button onclick="alterarCapotes(1)" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-1 rounded-lg text-xs transition-all active:scale-95 cursor-pointer">+</button>
                     </div>
                 </div>
             </div>
@@ -190,7 +204,8 @@
 
     <script>
         const SENHA_ACESSO = "unieurot7a"; 
-        let modoVisualizacao = 'individual'; // 'individual' ou 'geral'
+        let modoVisualizacao = 'individual'; 
+        let capotesCount = parseInt(localStorage.getItem('t7a_capotes')) || 0;
 
         function verificarSenha() {
             const digitada = document.getElementById('senha-input').value;
@@ -210,7 +225,20 @@
             }
             detectarDiaESemanaAtual();
             iniciarContadores();
+            atualizarCapotesDisplay();
         });
+
+        function atualizarCapotesDisplay() {
+            const el = document.getElementById('contador-capotes-val');
+            if (el) el.innerText = capotesCount;
+            localStorage.setItem('t7a_capotes', capotesCount);
+        }
+
+        function alterarCapotes(delta) {
+            capotesCount += delta;
+            if (capotesCount < 0) capotesCount = 0;
+            atualizarCapotesDisplay();
+        }
 
         function alternarModo(modo) {
             modoVisualizacao = modo;
@@ -583,7 +611,6 @@
                     `;
                 });
             } else {
-                // Modo Visão Geral: Exibe todos os 10 trios
                 let gridHtml = '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
                 for (let i = 1; i <= 10; i++) {
                     const dadosTrio = dadosEscala[i];
@@ -634,6 +661,7 @@
             renderizarSemanas();
             renderizarAbasDias();
             mudarGrupo();
+            atualizarCapotesDisplay();
         };
     </script>
 </body>
