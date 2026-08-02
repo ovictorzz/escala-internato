@@ -28,7 +28,7 @@
             <div class="space-y-1">
                 <h2 class="text-xl font-bold tracking-tight text-white">Escala de 2026.2</h2>
                 <p class="text-xs text-zinc-400 leading-relaxed">
-                    Identificação obrigatória para la Turma T7A<br>
+                    Identificação obrigatória para a Turma T7A<br>
                     <span class="text-zinc-500 font-medium">feito por André Victor</span>
                 </p>
             </div>
@@ -111,7 +111,6 @@
                 <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-center">
                     <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Turnos na Semana</span>
                     <span class="text-base sm:text-lg font-black text-white mt-0.5" id="stat-atividades">--</span>
-                    <!-- Detalhes menorzinhos dos turnos -->
                     <div id="stat-detalhes-turnos" class="flex flex-wrap gap-x-1.5 gap-y-0.5 mt-1 text-[9px] text-zinc-400 font-medium">
                         <!-- Gerado via JS -->
                     </div>
@@ -150,11 +149,20 @@
             <!-- Gerado via JS -->
         </div>
 
-        <!-- GRADE INFERIOR: INTEGRANTES + TURNOS DO DIA -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- SELETOR DE MODO DE VISUALIZAÇÃO (MEU TRIO vs TODOS OS TRIOS) -->
+        <div class="flex items-center justify-between px-1">
+            <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider" id="titulo-secao-inferior">Divisão por Turnos (Manhã, Tarde e Noite)</span>
+            <div class="flex items-center space-x-1.5 bg-[#08080a] border border-zinc-900 p-1 rounded-xl">
+                <button onclick="alternarModo('individual')" id="btn-modo-ind" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer">Meu Trio</button>
+                <button onclick="alternarModo('geral')" id="btn-modo-geral" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer">Todos os 10 Trios</button>
+            </div>
+        </div>
+
+        <!-- GRADE INFERIOR: INTEGRANTES + TURNOS (OU VISÃO GERAL) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6" id="grid-inferior">
             
-            <!-- Coluna Esquerda: Integrantes -->
-            <div class="lg:col-span-4 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
+            <!-- Coluna Esquerda: Integrantes (Oculta na visão geral) -->
+            <div id="coluna-membros" class="lg:col-span-4 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-900">
                         <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Integrantes do Trio</span>
@@ -169,12 +177,8 @@
                 </div>
             </div>
 
-            <!-- Coluna Direita: Turnos Detalhados -->
-            <div class="lg:col-span-8 space-y-3">
-                <div class="flex items-center justify-between px-1">
-                    <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Divisão por Turnos (Manhã, Tarde e Noite)</span>
-                </div>
-                
+            <!-- Coluna Direita: Turnos Detalhados (Expande para 12 na visão geral) -->
+            <div class="lg:col-span-8 space-y-3" id="coluna-turnos-wrapper">
                 <div id="lista-turnos" class="space-y-3">
                     <!-- Preenchido via JavaScript -->
                 </div>
@@ -186,6 +190,7 @@
 
     <script>
         const SENHA_ACESSO = "unieurot7a"; 
+        let modoVisualizacao = 'individual'; // 'individual' ou 'geral'
 
         function verificarSenha() {
             const digitada = document.getElementById('senha-input').value;
@@ -206,6 +211,30 @@
             detectarDiaESemanaAtual();
             iniciarContadores();
         });
+
+        function alternarModo(modo) {
+            modoVisualizacao = modo;
+            const btnInd = document.getElementById('btn-modo-ind');
+            const btnGeral = document.getElementById('btn-modo-geral');
+            const colunaMembros = document.getElementById('coluna-membros');
+            const colunaTurnos = document.getElementById('coluna-turnos-wrapper');
+            const tituloSecao = document.getElementById('titulo-secao-inferior');
+
+            if (modo === 'individual') {
+                btnInd.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
+                btnGeral.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
+                colunaMembros.style.display = 'flex';
+                colunaTurnos.className = "lg:col-span-8 space-y-3";
+                tituloSecao.innerText = "Divisão por Turnos (Manhã, Tarde e Noite)";
+            } else {
+                btnGeral.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
+                btnInd.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
+                colunaMembros.style.display = 'none';
+                colunaTurnos.className = "lg:col-span-12 space-y-3";
+                tituloSecao.innerText = "Visão Geral: Todos os 10 Trios do Dia";
+            }
+            mudarGrupo();
+        }
 
         function detectarDiaESemanaAtual() {
             const agora = new Date();
@@ -525,33 +554,73 @@
             const containerTurnos = document.getElementById('lista-turnos');
             containerTurnos.innerHTML = '';
 
-            infoDia.turnos.forEach(t => {
-                let iconeTurno = '';
-                if(t.periodo === 'Manhã') iconeTurno = '<svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
-                else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
-                else iconeTurno = '<svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
+            if (modoVisualizacao === 'individual') {
+                infoDia.turnos.forEach(t => {
+                    let iconeTurno = '';
+                    if(t.periodo === 'Manhã') iconeTurno = '<svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+                    else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+                    else iconeTurno = '<svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
 
-                const hasPlantao = t.local !== "—";
-                const cardBorder = hasPlantao ? 'border-blue-500/30 bg-blue-950/10' : 'border-zinc-900 bg-[#08080a]';
+                    const hasPlantao = t.local !== "—";
+                    const cardBorder = hasPlantao ? 'border-blue-500/30 bg-blue-950/10' : 'border-zinc-900 bg-[#08080a]';
 
-                containerTurnos.innerHTML += `
-                    <div class="border ${cardBorder} hover:border-zinc-700 rounded-2xl p-4 flex items-center justify-between transition-all shadow-sm">
-                        <div class="flex items-center space-x-3.5">
-                            <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0">
-                                ${iconeTurno}
-                            </div>
-                            <div>
-                                <div class="flex items-center space-x-2">
-                                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">${t.periodo}</span>
-                                    <span class="text-[10px] font-semibold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">${t.horario}</span>
+                    containerTurnos.innerHTML += `
+                        <div class="border ${cardBorder} hover:border-zinc-700 rounded-2xl p-4 flex items-center justify-between transition-all shadow-sm">
+                            <div class="flex items-center space-x-3.5">
+                                <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0">
+                                    ${iconeTurno}
                                 </div>
-                                <h4 class="text-sm sm:text-base font-bold text-white mt-0.5">${t.local}</h4>
+                                <div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">${t.periodo}</span>
+                                        <span class="text-[10px] font-semibold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">${t.horario}</span>
+                                    </div>
+                                    <h4 class="text-sm sm:text-base font-bold text-white mt-0.5">${t.local}</h4>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-semibold">${t.local}</span>
+                        </div>
+                    `;
+                });
+            } else {
+                // Modo Visão Geral: Exibe todos os 10 trios
+                let gridHtml = '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
+                for (let i = 1; i <= 10; i++) {
+                    const dadosTrio = dadosEscala[i];
+                    const infoDiaTrio = dadosTrio.semanas[semanaSelecionadaGlobal][diaSelecionadoGlobal];
+                    
+                    let turnosTrioHtml = '';
+                    infoDiaTrio.turnos.forEach(t => {
+                        const hasPlantao = t.local !== "—";
+                        const badgeColor = hasPlantao ? 'text-blue-400 bg-blue-500/10 border-blue-500/20' : 'text-zinc-500 bg-zinc-900 border-zinc-800';
+                        turnosTrioHtml += `
+                            <div class="flex items-center justify-between text-xs py-1 px-2.5 rounded-lg bg-[#121216] border border-zinc-900">
+                                <span class="text-zinc-400 font-semibold">${t.periodo}</span>
+                                <span class="font-bold ${badgeColor} px-2 py-0.5 rounded border">${t.local}</span>
+                            </div>
+                        `;
+                    });
+
+                    gridHtml += `
+                        <div class="bg-[#08080a] border border-zinc-900 hover:border-zinc-800 rounded-2xl p-4 space-y-3 transition-all shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-7 h-7 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-400 font-black text-xs flex items-center justify-center shrink-0">
+                                        A${i}
+                                    </div>
+                                    <h4 class="text-xs font-bold text-white tracking-tight truncate max-w-[190px] sm:max-w-[220px]">${dadosTrio.nomeGrupo.split(':')[1] || dadosTrio.nomeGrupo}</h4>
+                                </div>
+                                <button onclick="document.getElementById('grupo-select').value='${i}'; alternarModo('individual');" class="text-[10px] font-bold text-blue-400 hover:underline cursor-pointer">Ver Trio</button>
+                            </div>
+                            <div class="space-y-1.5">
+                                ${turnosTrioHtml}
                             </div>
                         </div>
-                        <span class="px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-semibold">${t.local}</span>
-                    </div>
-                `;
-            });
+                    `;
+                }
+                gridHtml += '</div>';
+                containerTurnos.innerHTML = gridHtml;
+            }
         }
 
         function getIniciais(nome) {
