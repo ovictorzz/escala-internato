@@ -60,7 +60,8 @@
             
             <div class="flex items-center space-x-2 self-end sm:self-center">
                 <span class="px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-300 text-[11px] font-semibold">Turma T7A</span>
-                <span class="px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[11px] font-semibold">2026.2</span>
+                <!-- CONTADOR DE DIAS PARA O FIM DO RODÍZIO -->
+                <span id="contador-dias" class="px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[11px] font-bold">Calculando...</span>
             </div>
         </div>
     </header>
@@ -175,7 +176,35 @@
             if (sessionStorage.getItem('autenticado') === 'true') {
                 document.getElementById('login-overlay').style.display = 'none';
             }
+            iniciarContadorRodizio();
         });
+
+        // Função para calcular os dias restantes até 04/10/2026 às 23:59
+        function iniciarContadorRodizio() {
+            const dataFimRodizio = new Date('2026-10-04T23:59:59'); 
+            
+            function atualizar() {
+                const agora = new Date();
+                const diferenca = dataFimRodizio - agora;
+                const diasRestantes = Math.ceil(diferenca / (1000 * 60 * 60 * 24));
+                
+                const badge = document.getElementById('contador-dias');
+                if (badge) {
+                    if (diasRestantes > 1) {
+                        badge.innerText = `Faltam ${diasRestantes} dias para o fim`;
+                    } else if (diasRestantes === 1) {
+                        badge.innerText = `Falta 1 dia para o fim`;
+                    } else if (diasRestantes === 0) {
+                        badge.innerText = `Último dia de rodízio!`;
+                    } else {
+                        badge.innerText = `Rodízio concluído`;
+                    }
+                }
+            }
+            
+            atualizar();
+            setInterval(atualizar, 1000 * 60 * 60);
+        }
 
         const dadosEscala = {
             "1": {
