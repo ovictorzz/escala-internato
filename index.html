@@ -99,22 +99,27 @@
             </div>
         </div>
 
-        <!-- BANNER DE CENÁRIO ATUAL -->
-        <div class="relative bg-gradient-to-r from-blue-950/40 via-[#08080a] to-[#08080a] border border-blue-500/20 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden flex flex-col justify-center min-h-[160px]">
+        <!-- BANNER DE CENÁRIO ATUAL / DIA SELECIONADO -->
+        <div class="relative bg-gradient-to-r from-blue-950/40 via-[#08080a] to-[#08080a] border border-blue-500/20 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden flex flex-col justify-center min-h-[140px]">
             <div class="absolute -right-16 -top-16 w-48 h-48 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
             
-            <div class="relative z-10 space-y-2">
+            <div class="relative z-10 space-y-1">
                 <div class="flex items-center space-x-2">
                     <span class="relative flex h-2 w-2">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                     </span>
-                    <span id="label-cenario-topo" class="text-[11px] font-bold tracking-widest text-blue-400 uppercase">CENÁRIO ATUAL • 02/08 A 08/08</span>
+                    <span id="label-dia-topo" class="text-[11px] font-bold tracking-widest text-blue-400 uppercase">SEGUNDA-FEIRA • 03/08</span>
                 </div>
-                <h2 id="cenario-atual-txt" class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-                    HRC - Centro Obstétrico
+                <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+                    Escala Diária por Turnos
                 </h2>
             </div>
+        </div>
+
+        <!-- ABAS DOS DIAS DA SEMANA -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2" id="dias-tab-container">
+            <!-- Gerado via JS -->
         </div>
 
         <!-- GRADE INFERIOR DIVIDIDA -->
@@ -136,13 +141,13 @@
                 </div>
             </div>
 
-            <!-- Coluna Direita: Cronograma Interativo -->
+            <!-- Coluna Direita: Turnos do Dia (Manhã, Tarde, Noite) -->
             <div class="lg:col-span-8 space-y-3">
                 <div class="flex items-center justify-between px-1">
-                    <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Cronograma Semanal de Agosto (Clique para alternar)</span>
+                    <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Divisão por Turnos (Manhã, Tarde e Noite)</span>
                 </div>
                 
-                <div id="lista-blocos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div id="lista-turnos" class="space-y-3">
                     <!-- Preenchido via JavaScript -->
                 </div>
             </div>
@@ -172,123 +177,173 @@
             }
         });
 
+        // Estrutura diária por turnos para a semana de 02/08 a 08/08 (e replicando lógica dinâmica)
         const dadosEscala = {
             "1": {
                 nomeGrupo: "Trio A1: André, Davi & Leticia B.",
                 membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"],
-                blocos: [
-                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRC - Centro Obstétrico" },
-                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRAN - Enfermaria" },
-                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRSM - Ambulatório" },
-                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "Policlínica Ceilândia" },
-                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Enfermaria" }
-                ]
+                dias: {
+                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão HRC (12h)" } ] },
+                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Livre / Descanso" } ] },
+                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Plantão HRSM" } ] },
+                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
+                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Plantão Noturno HRC" } ] },
+                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão Fim de Semana (HRC)" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
+                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                }
             },
             "2": {
                 nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.",
                 membros: ["Nadya Veras Jarosczynski", "Louise Albuquerque Mirindiba", "Isabella Teixeira de Lima"],
-                blocos: [
-                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "Policlínica Ceilândia" },
-                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRC - Centro Obstétrico" },
-                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRAN - Enfermaria" },
-                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRSM - Ambulatório" },
-                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Enfermaria" }
-                ]
+                dias: {
+                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
+                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão HRC" } ] },
+                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Plantão HRSM" } ] },
+                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Livre" } ] },
+                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Plantão Tarde" }, { periodo: "Noite", local: "Livre" } ] },
+                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                }
             },
             "3": {
                 nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino",
                 membros: ["Hiago Kaian Xavier Lisboa", "Isabela Frota Carmona", "Maria Eduarda Lima de Aquino"],
-                blocos: [
-                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRAN - Enfermaria" },
-                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRSM - Ambulatório" },
-                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "Policlínica Ceilândia" },
-                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRC - Centro Obstétrico" },
-                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Enfermaria" }
-                ]
+                dias: {
+                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Plantão HRAN" } ] },
+                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão HRC" } ] },
+                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
+                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Plantão Noturno" } ] },
+                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                }
             },
             "4": {
                 nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.",
                 membros: ["Heitor Stoduto Mello Ferreira", "Bruno Azevedo Lima", "Andressa Costa Maboni"],
-                blocos: [
-                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRSM - Ambulatório" },
-                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "Policlínica Ceilândia" },
-                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRC - Centro Obstétrico" },
-                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRAN - Enfermaria" },
-                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Enfermaria" }
-                ]
+                dias: {
+                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
+                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Plantão Policlínica" } ] },
+                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Plantão HRAN" } ] },
+                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Livre" } ] },
+                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão Sábado" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
+                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                }
             },
             "5": {
                 nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.",
                 membros: ["Maria Luiza de Ornelas Nobrega", "Maria Eduarda Santiago", "Luiza de Santes"],
-                blocos: [
-                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRC - Enfermaria" },
-                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRAN - Centro Obstétrico" },
-                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRSM - Ambulatório" },
-                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "Policlínica Ceilândia" },
-                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Centro Obstétrico" }
-                ]
+                dias: {
+                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRC - Enfermaria" }, { periodo: "Tarde", local: "HRC - Enfermaria" }, { periodo: "Noite", local: "Plantão HRC" } ] },
+                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRAN - Centro Obstétrico" }, { periodo: "Tarde", local: "HRAN - Centro Obstétrico" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Plantão" } ] },
+                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRC - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Centro Obstétrico" }, { periodo: "Noite", local: "Livre" } ] },
+                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Plantão" }, { periodo: "Noite", local: "Livre" } ] },
+                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                }
             },
             "6": {
                 nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.",
                 membros: ["Leticia Teixeira Monteiro", "Júlia Matos Guimarães", "Luiza Borges Sales"],
-                blocos: [
-                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRAN - Centro Obstétrico" },
-                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRSM - Ambulatório" },
-                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "Policlínica Ceilândia" },
-                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRC - Enfermaria" },
-                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Centro Obstétrico" }
-                ]
+                dias: {
+                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRAN - Centro Obstétrico" }, { periodo: "Tarde", local: "HRAN - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão" } ] },
+                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRC - Enfermaria" }, { periodo: "Tarde", local: "HRC - Enfermaria" }, { periodo: "Noite", local: "Plantão" } ] },
+                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRAN - Centro Obstétrico" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
+                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
+                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                }
             },
             "7": {
                 nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly",
                 membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima do vale"],
-                blocos: [
-                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "Policlínica Ceilândia" },
-                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRC - Enfermaria" },
-                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRAN - Centro Obstétrico" },
-                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRSM - Ambulatório" },
-                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Centro Obstétrico" }
-                ]
+                dias: {
+                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Plantão" } ] },
+                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRC - Enfermaria" }, { periodo: "Tarde", local: "HRC - Enfermaria" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRAN - Centro Obstétrico" }, { periodo: "Tarde", local: "HRAN - Centro Obstétrico" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Plantão" } ] },
+                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "HRC - Enfermaria" }, { periodo: "Noite", local: "Livre" } ] },
+                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
+                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                }
             },
             "8": {
                 nomeGrupo: "Trio A8: Giovanna, Rayane & Sofi",
                 membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"],
-                blocos: [
-                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRSM - Ambulatório" },
-                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "Policlínica Ceilândia" },
-                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRC - Enfermaria" },
-                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRAN - Centro Obstétrico" },
-                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Centro Obstétrico" }
-                ]
+                dias: {
+                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Plantão" } ] },
+                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRC - Enfermaria" }, { periodo: "Tarde", local: "HRC - Enfermaria" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRAN - Centro Obstétrico" }, { periodo: "Tarde", local: "HRAN - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão" } ] },
+                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
+                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
+                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                }
             },
             "9": {
                 nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella",
                 membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"],
-                blocos: [
-                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRC - Centro Obstétrico" },
-                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRAN - Enfermaria" },
-                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "HRSM - Ambulatório" },
-                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "Policlínica Ceilândia" },
-                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Enfermaria" }
-                ]
+                dias: {
+                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão" } ] },
+                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Plantão" } ] },
+                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Livre" } ] },
+                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
+                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                }
             },
             "10": {
                 nomeGrupo: "Trio A10: José, João Victor & Ana Luiza",
                 membros: ["José Henrique Ferreira", "João Victor Tajra", "Ana Luiza Daros"],
-                blocos: [
-                    { semanaKey: "S1", datas: "02/08 - 08/08", local: "HRAN - Enfermaria" },
-                    { semanaKey: "S2", datas: "09/08 - 15/08", local: "HRSM - Ambulatório" },
-                    { semanaKey: "S3", datas: "16/08 - 22/08", local: "Policlínica Ceilândia" },
-                    { semanaKey: "S4", datas: "23/08 - 29/08", local: "HRC - Centro Obstétrico" },
-                    { semanaKey: "S5", datas: "30/08 - 31/08", local: "HRC - Enfermaria" }
-                ]
+                dias: {
+                    "seg": { nome: "Segunda-feira", data: "03/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRAN - Enfermaria" }, { periodo: "Noite", local: "Plantão" } ] },
+                    "ter": { nome: "Terça-feira", data: "04/08", turnos: [ { periodo: "Manhã", local: "HRSM - Ambulatório" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qua": { nome: "Quarta-feira", data: "05/08", turnos: [ { periodo: "Manhã", local: "Policlínica Ceilândia" }, { periodo: "Tarde", local: "Policlínica Ceilândia" }, { periodo: "Noite", local: "Livre" } ] },
+                    "qui": { nome: "Quinta-feira", data: "06/08", turnos: [ { periodo: "Manhã", local: "HRC - Centro Obstétrico" }, { periodo: "Tarde", local: "HRC - Centro Obstétrico" }, { periodo: "Noite", local: "Plantão" } ] },
+                    "sex": { nome: "Sexta-feira", data: "07/08", turnos: [ { periodo: "Manhã", local: "HRAN - Enfermaria" }, { periodo: "Tarde", local: "HRSM - Ambulatório" }, { periodo: "Noite", local: "Livre" } ] },
+                    "sab": { nome: "Sábado", data: "08/08", turnos: [ { periodo: "Manhã", local: "Plantão" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] },
+                    "dom": { nome: "Domingo", data: "02/08", turnos: [ { periodo: "Manhã", local: "Livre" }, { periodo: "Tarde", local: "Livre" }, { periodo: "Noite", local: "Livre" } ] }
+                }
             }
         };
 
-        let semanaSelecionadaGlobal = "S1";
+        let diaSelecionadoGlobal = "seg";
 
-        function selecionarSemana(semanaKey) {
-            semanaSelecionadaGlobal = semanaKey;
+        const listaDiasConfig = [
+            { key: "dom", label: "Dom", data: "02/08" },
+            { key: "seg", label: "Seg", data: "03/08" },
+            { key: "ter", label: "Ter", data: "04/08" },
+            { key: "qua", label: "Qua", data: "05/08" },
+            { key: "qui", label: "Qui", data: "06/08" },
+            { key: "sex", label: "Sex", data: "07/08" },
+            { key: "sab", label: "Sáb", data: "08/08" }
+        ];
+
+        function renderizarAbasDias() {
+            const container = document.getElementById('dias-tab-container');
+            container.innerHTML = '';
+            listaDiasConfig.forEach(d => {
+                const isSelected = (d.key === diaSelecionadoGlobal);
+                const btnClass = isSelected 
+                    ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/30' 
+                    : 'bg-[#08080a] border-zinc-900 text-zinc-400 hover:border-zinc-800 hover:text-zinc-200';
+                
+                container.innerHTML += `
+                    <button onclick="selecionarDia('${d.key}')" class="border rounded-2xl p-3 flex flex-col items-center justify-center transition-all ${btnClass} cursor-pointer">
+                        <span class="text-[10px] font-bold uppercase tracking-wider">${d.label}</span>
+                        <span class="text-xs font-extrabold mt-0.5">${d.data}</span>
+                    </button>
+                `;
+            });
+        }
+
+        function selecionarDia(key) {
+            diaSelecionadoGlobal = key;
+            renderizarAbasDias();
             mudarGrupo();
         }
 
@@ -299,6 +354,7 @@
             document.getElementById('grupo-badge-num').innerText = 'A' + id;
             document.getElementById('titulo-grupo-header').innerText = dados.nomeGrupo;
 
+            // Membros
             const listaMembros = document.getElementById('lista-membros');
             listaMembros.innerHTML = '';
             dados.membros.forEach(nome => {
@@ -312,45 +368,35 @@
                 `;
             });
 
-            const containerBlocos = document.getElementById('lista-blocos');
-            containerBlocos.innerHTML = '';
+            // Dados do dia selecionado
+            const infoDia = dados.dias[diaSelecionadoGlobal];
+            document.getElementById('label-dia-topo').innerText = `${infoDia.nome.toUpperCase()} • ${infoDia.data}`;
 
-            let localAtivoNoBanner = '';
-            let datasAtivasBanner = '02/08 - 08/08';
+            // Turnos (Manhã, Tarde, Noite)
+            const containerTurnos = document.getElementById('lista-turnos');
+            containerTurnos.innerHTML = '';
 
-            dados.blocos.forEach((b, index) => {
-                const isSelected = (b.semanaKey === semanaSelecionadaGlobal);
-                if (isSelected) {
-                    localAtivoNoBanner = b.local;
-                    datasAtivasBanner = b.datas;
-                }
+            infoDia.turnos.forEach(t => {
+                let iconeTurno = '';
+                if(t.periodo === 'Manhã') iconeTurno = '<svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+                else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+                else iconeTurno = '<svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
 
-                const cardClasses = isSelected 
-                    ? 'bg-[#0f0f13] border-2 border-blue-500 shadow-lg shadow-blue-500/10 relative cursor-pointer transition-all' 
-                    : 'bg-[#08080a] border border-zinc-900 hover:border-zinc-800 hover:bg-[#0c0c0f] transition-all cursor-pointer';
-                
-                const titleColor = isSelected ? 'text-blue-400' : 'text-zinc-500';
-                const localColor = isSelected ? 'text-white font-bold' : 'text-zinc-400';
-                const numBloco = index + 1;
-
-                containerBlocos.innerHTML += `
-                    <div onclick="selecionarSemana('${b.semanaKey}')" class="rounded-2xl p-4 sm:p-5 ${cardClasses}">
-                        ${isSelected ? '<div class="absolute top-3 right-3"><span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span></span></div>' : ''}
-                        
-                        <div class="flex items-center space-x-2 mb-2">
-                            <div class="w-5 h-5 rounded-md bg-zinc-900 text-zinc-400 font-bold text-[10px] flex items-center justify-center">
-                                ${numBloco}
+                containerTurnos.innerHTML += `
+                    <div class="bg-[#08080a] border border-zinc-900 hover:border-zinc-800 rounded-2xl p-4 flex items-center justify-between transition-all">
+                        <div class="flex items-center space-x-3.5">
+                            <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0">
+                                ${iconeTurno}
                             </div>
-                            <span class="text-[10px] font-bold uppercase tracking-widest ${titleColor}">Semana • ${b.datas}</span>
+                            <div>
+                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block">Turno da ${t.periodo}</span>
+                                <h4 class="text-sm sm:text-base font-bold text-white">${t.local}</h4>
+                            </div>
                         </div>
-                        
-                        <h4 class="text-sm sm:text-base ${localColor} leading-snug">${b.local}</h4>
+                        <span class="px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-semibold">${t.periodo}</span>
                     </div>
                 `;
             });
-
-            document.getElementById('label-cenario-topo').innerText = `CENÁRIO ATUAL • ${datasAtivasBanner}`;
-            document.getElementById('cenario-atual-txt').innerText = localAtivoNoBanner;
         }
 
         function getIniciais(nome) {
@@ -359,7 +405,10 @@
             return (nome[0] + nome[1]).toUpperCase();
         }
 
-        window.onload = mudarGrupo;
+        window.onload = () => {
+            renderizarAbasDias();
+            mudarGrupo();
+        };
     </script>
 </body>
 </html>
