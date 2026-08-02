@@ -16,6 +16,24 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col bg-black text-neutral-200">
 
+    <!-- TELA DE SENHA (LOGIN) -->
+    <div id="login-overlay" class="fixed inset-0 z-50 bg-black flex items-center justify-center p-4">
+        <div class="bg-[#0f0f0f] border border-neutral-800 rounded-2xl p-8 max-w-sm w-full shadow-2xl text-center space-y-5">
+            <div class="w-12 h-12 bg-blue-600/20 text-blue-500 rounded-xl mx-auto flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <div>
+                <h2 class="text-lg font-bold text-white">Área Restrita</h2>
+                <p class="text-xs text-neutral-400 mt-1">unieurot7.</p>
+            </div>
+            <div class="space-y-3">
+                <input type="password" id="senha-input" placeholder="Sua senha" class="w-full bg-[#171717] border border-neutral-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                <button onclick="verificarSenha()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition-colors text-sm">Entrar no Painel</button>
+                <p id="erro-msg" class="text-xs text-red-500 font-medium hidden">Senha incorreta. Tente novamente.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Header do Sistema -->
     <header class="bg-[#0a0a0a] border-b border-neutral-800 sticky top-0 z-10 shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 lg:gap-0">
@@ -49,20 +67,20 @@
                 
                 <!-- Card de Seleção -->
                 <div class="bg-[#0f0f0f] rounded-2xl border border-neutral-800 p-5 sm:p-6 shadow-sm">
-                    <h2 class="text-xs sm:text-sm font-bold text-neutral-400 uppercase tracking-wider mb-4">Selecione seu Grupo</h2>
+                    <h2 class="text-xs sm:text-sm font-bold text-neutral-400 uppercase tracking-wider mb-4">Selecione seu Trio</h2>
                     
                     <div class="relative">
                         <select id="grupo-select" onchange="mudarGrupo()" class="w-full bg-[#171717] border border-neutral-700 text-white font-bold text-sm sm:text-base rounded-xl px-4 py-3 sm:py-3.5 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer">
-                            <option value="1">Grupo A1: André, Davi & Leticia</option>
-                            <option value="2">Grupo A2: Nadya, Louise & Isabella</option>
-                            <option value="3">Grupo A3: Hiago, Isabela & Mª Eduarda</option>
-                            <option value="4">Grupo A4: Heitor, Bruno & Andressa</option>
-                            <option value="5">Grupo A5: Mª Luiza, Mª Eduarda & Luiza</option>
-                            <option value="6">Grupo A6: Leticia, Júlia & Luiza</option>
-                            <option value="7">Grupo A7: Ana Clara, Carolina & Kamilly</option>
-                            <option value="8">Grupo A8: Giovanna, Rayane & Sofia</option>
-                            <option value="9">Grupo A9: Annelise, Camila & Gabriella</option>
-                            <option value="10">Grupo A10: José, João Victor & Ana Luiza</option>
+                            <option value="1">Trio A1: André, Davi & Leticia</option>
+                            <option value="2">Trio A2: Nadya, Louise & Isabella</option>
+                            <option value="3">Trio A3: Hiago, Isabela & Mª Eduarda</option>
+                            <option value="4">Trio A4: Heitor, Bruno & Andressa</option>
+                            <option value="5">Trio A5: Mª Luiza, Mª Eduarda & Luiza</option>
+                            <option value="6">Trio A6: Leticia, Júlia & Luiza</option>
+                            <option value="7">Trio A7: Ana Clara, Carolina & Kamilly</option>
+                            <option value="8">Trio A8: Giovanna, Rayane & Sofia</option>
+                            <option value="9">Trio A9: Annelise, Camila & Gabriella</option>
+                            <option value="10">Trio A10: José, João Victor & Ana Luiza</option>
                         </select>
                         <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-neutral-500">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -99,7 +117,7 @@
             <!-- Coluna Direita: Rodízios e Cronograma -->
             <div class="lg:col-span-8 space-y-6">
                 
-                <!-- Destaque: Cenário Atual (Muda dinamicamente ao clicar no mês) -->
+                <!-- Destaque: Cenário Atual -->
                 <div class="bg-gradient-to-r from-blue-700 to-indigo-900 rounded-2xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden flex flex-col justify-center min-h-[160px] sm:min-h-[192px]">
                     <div class="absolute right-0 top-0 w-48 h-48 sm:w-64 sm:h-64 bg-white opacity-5 rounded-full -translate-y-12 translate-x-12 sm:-translate-y-16 sm:translate-x-16 pointer-events-none"></div>
                     
@@ -129,6 +147,28 @@
     </main>
 
     <script>
+        // DEFINA A SENHA AQUI
+        const SENHA_ACESSO = "turmat7a"; 
+
+        function verificarSenha() {
+            const digitada = document.getElementById('senha-input').value;
+            const erroMsg = document.getElementById('erro-msg');
+
+            if (digitada === SENHA_ACESSO) {
+                document.getElementById('login-overlay').style.display = 'none';
+                sessionStorage.setItem('autenticado', 'true');
+            } else {
+                erroMsg.classList.remove('hidden');
+            }
+        }
+
+        // Se o usuário já colocou a senha nesta sessão, não pede de novo
+        window.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('autenticado') === 'true') {
+                document.getElementById('login-overlay').style.display = 'none';
+            }
+        });
+
         const dadosEscala = {
             "1": {
                 membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"],
@@ -212,13 +252,12 @@
             }
         };
 
-        // Descobre o mês atual do sistema para selecionar por padrão (Agosto = "AGOSTO")
         function getMesAtualKey() {
             const d = new Date();
-            const mes = d.getMonth(); // 7 = Agosto
+            const mes = d.getMonth();
             if (mes === 8) return "SETEMBRO";
             if (mes === 9) return "OUTUBRO";
-            return "AGOSTO"; // Padrão inicial (Agosto)
+            return "AGOSTO";
         }
 
         let mesSelecionadoGlobal = getMesAtualKey();
@@ -240,7 +279,6 @@
             
             document.getElementById('grupo-badge').innerText = 'A' + id;
 
-            // Renderiza membros
             const listaMembros = document.getElementById('lista-membros');
             listaMembros.innerHTML = '';
             dados.membros.forEach(nome => {
@@ -254,7 +292,6 @@
                 `;
             });
 
-            // Renderiza blocos com interatividade de clique
             const containerBlocos = document.getElementById('lista-blocos');
             containerBlocos.innerHTML = '';
 
@@ -290,7 +327,6 @@
                 `;
             });
 
-            // Atualiza o banner superior com o mês e o hospital selecionado
             document.getElementById('label-cenario-topo').innerText = `CENÁRIO ATUAL • ${mesSelecionadoGlobal}`;
             document.getElementById('cenario-atual-txt').innerText = localAtivoNoBanner;
         }
