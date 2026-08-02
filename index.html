@@ -115,7 +115,7 @@
                         <!-- Gerado via JS -->
                     </div>
                 </div>
-                <!-- NOVO: Contador de Capotes CO -->
+                <!-- Contador de Capotes CO -->
                 <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-between">
                     <div>
                         <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Capotes CO</span>
@@ -142,7 +142,7 @@
         </div>
 
         <!-- BANNER HERO DO DIA SELECIONADO -->
-        <div class="relative bg-gradient-to-r from-blue-950/40 via-[#08080a] to-[#08080a] border border-blue-500/20 rounded-3xl p-6 sm:p-7 shadow-2xl overflow-hidden flex flex-col justify-center min-h-[120px]">
+        <div id="banner-hero" class="relative bg-gradient-to-r from-blue-950/40 via-[#08080a] to-[#08080a] border border-blue-500/20 rounded-3xl p-6 sm:p-7 shadow-2xl overflow-hidden flex flex-col justify-center min-h-[120px]">
             <div class="absolute -right-16 -top-16 w-48 h-48 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="relative z-10 space-y-1">
                 <div class="flex items-center space-x-2">
@@ -152,30 +152,31 @@
                     </span>
                     <span id="label-dia-topo" class="text-[11px] font-bold tracking-widest text-blue-400 uppercase">SEGUNDA-FEIRA • 3/Aug</span>
                 </div>
-                <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+                <h2 id="titulo-banner-hero" class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
                     Escala Diária por Turnos
                 </h2>
             </div>
         </div>
 
         <!-- ABAS DOS DIAS DA SEMANA -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2" id="dias-tab-container">
+        <div id="container-abas-dias" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
             <!-- Gerado via JS -->
         </div>
 
-        <!-- SELETOR DE MODO DE VISUALIZAÇÃO (MEU TRIO vs TODOS OS TRIOS) -->
-        <div class="flex items-center justify-between px-1">
+        <!-- SELETOR DE MODO DE VISUALIZAÇÃO (MEU TRIO vs TODOS OS TRIOS vs SEMINÁRIOS) -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-1">
             <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wider" id="titulo-secao-inferior">Divisão por Turnos (Manhã, Tarde e Noite)</span>
-            <div class="flex items-center space-x-1.5 bg-[#08080a] border border-zinc-900 p-1 rounded-xl">
-                <button onclick="alternarModo('individual')" id="btn-modo-ind" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer">Meu Trio</button>
-                <button onclick="alternarModo('geral')" id="btn-modo-geral" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer">Todos os 10 Trios</button>
+            <div class="flex items-center space-x-1.5 bg-[#08080a] border border-zinc-900 p-1 rounded-xl w-full sm:w-auto overflow-x-auto">
+                <button onclick="alternarModo('individual')" id="btn-modo-ind" class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer">Meu Trio</button>
+                <button onclick="alternarModo('geral')" id="btn-modo-geral" class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer">Todos os 10 Trios</button>
+                <button onclick="alternarModo('seminarios')" id="btn-modo-seminarios" class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer">Seminários</button>
             </div>
         </div>
 
-        <!-- GRADE INFERIOR: INTEGRANTES + TURNOS (OU VISÃO GERAL) -->
+        <!-- GRADE INFERIOR: INTEGRANTES + TURNOS (OU VISÃO GERAL / SEMINÁRIOS) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6" id="grid-inferior">
             
-            <!-- Coluna Esquerda: Integrantes (Oculta na visão geral) -->
+            <!-- Coluna Esquerda: Integrantes (Oculta na visão geral e seminários) -->
             <div id="coluna-membros" class="lg:col-span-4 bg-[#08080a] border border-zinc-900 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-900">
@@ -191,7 +192,7 @@
                 </div>
             </div>
 
-            <!-- Coluna Direita: Turnos Detalhados (Expande para 12 na visão geral) -->
+            <!-- Coluna Direita: Turnos Detalhados (Expande para 12 na visão geral/seminários) -->
             <div class="lg:col-span-8 space-y-3" id="coluna-turnos-wrapper">
                 <div id="lista-turnos" class="space-y-3">
                     <!-- Preenchido via JavaScript -->
@@ -204,8 +205,22 @@
 
     <script>
         const SENHA_ACESSO = "unieurot7a"; 
-        let modoVisualizacao = 'individual'; 
+        let modoVisualizacao = 'individual'; // 'individual', 'geral', 'seminarios'
         let capotesCount = parseInt(localStorage.getItem('t7a_capotes')) || 0;
+
+        const dadosSeminariosList = [
+            { data: "28/07", hora: "08h30–11h00", mediador: "TODOS", apresentadores: "TODOS", tema: "APRESENTAÇÃO DO INTERNATO EM SAÚDE DA MULHER – GINECOLOGIA & OBSTETRÍCIA" },
+            { data: "04/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Marta", apresentadores: "André Victor, Davi Carvalho, Letícia Barbosa", tema: "• Fisiologia do Ciclo Menstrual\n• Pré-Natal de Risco Habitual" },
+            { data: "11/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Nadya Veras", apresentadores: "Louise Bonfim, Isabella de Lima", tema: "• Trabalho de Parto (Condutas, Indução e Condução)\n• Cardiotocografia: Avaliação da Vitalidade Fetal: Sofrimento Fetal" },
+            { data: "18/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Hiago Kaian", apresentadores: "Isabella Frota, Maria Eduarda Aquino, José Henrique", tema: "• Sangramento Uterino Anormal (PALM-COEIN): Miomatose, Adenomiose e Endometriose\n• Hemorragias da 1ª Metade e da 2ª Metade da Gravidez: Hemorragia Pós-Parto" },
+            { data: "25/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Marta | Lucimara", apresentadores: "Heitor Stoduto, João Victor Tajra, Bruno Azevedo, Andressa Maboni", tema: "• Alterações Funcionais Benignas da Mama (AFBM): Patologias Benignas / Inflamatórias / Infecciosas da Mama\n• Câncer de Mama: Classificação BI-RADS" },
+            { data: "01/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Maria Luiza", apresentadores: "Maria Eduarda Santiago, Luiza de Santes", tema: "• Métodos Contraceptivos (Indicações, Contraindicações, Complicações)\n• Trabalho de Parto Prematuro: Infecção do Trato Urinário em Obstetrícia" },
+            { data: "08/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Letícia Teixeira", apresentadores: "Júlia Matos, Luiza Sales", tema: "• Anatomia Genital Feminina Aplicada à Uroginecologia: Incontinência Urinária Feminina\n• HPV e Câncer de Colo de Útero" },
+            { data: "15/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Ana Clara Ghisleni", apresentadores: "Carolina Banholi, Kamilly Lima", tema: "• Prolapsos Genitais: Classificação de Bump (POP-Q)\n• Tumores Benignos e Malignos do Ovário" },
+            { data: "22/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Giovanna Muniz", apresentadores: "Rayane Maria, Sofia Dias", tema: "• Síndromes Hipertensivas e Gestação (Pré-Eclâmpsia/Eclâmpsia/Síndrome HELLP)\n• Diabetes Gestacional" },
+            { data: "23/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Lucimara", apresentadores: "Annelise Paiva, Camila Guidão, Gabriella Reis, Ana Luiza Daros", tema: "• Restrição de Crescimento Intrauterino: Oligoâmnio/Polidrâmnio\n• Leucorreias: Infecções Sexualmente Transmissíveis (IST) em GO e Doenças Inflamatórias Pélvica (DIP)" },
+            { data: "29/09", hora: "18h30–19h45\n20h00–21h30", mediador: "TODOS", apresentadores: "TODOS", tema: "AVALIAÇÃO SOMATIVA" }
+        ];
 
         function verificarSenha() {
             const digitada = document.getElementById('senha-input').value;
@@ -244,24 +259,76 @@
             modoVisualizacao = modo;
             const btnInd = document.getElementById('btn-modo-ind');
             const btnGeral = document.getElementById('btn-modo-geral');
+            const btnSeminarios = document.getElementById('btn-modo-seminarios');
             const colunaMembros = document.getElementById('coluna-membros');
             const colunaTurnos = document.getElementById('coluna-turnos-wrapper');
             const tituloSecao = document.getElementById('titulo-secao-inferior');
+            const containerAbas = document.getElementById('container-abas-dias');
+            const bannerHero = document.getElementById('banner-hero');
+
+            // Reset classes
+            btnInd.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
+            btnGeral.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
+            btnSeminarios.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
 
             if (modo === 'individual') {
-                btnInd.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
-                btnGeral.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
+                btnInd.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
                 colunaMembros.style.display = 'flex';
                 colunaTurnos.className = "lg:col-span-8 space-y-3";
                 tituloSecao.innerText = "Divisão por Turnos (Manhã, Tarde e Noite)";
-            } else {
-                btnGeral.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
-                btnInd.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-white transition-all cursor-pointer";
+                containerAbas.style.display = 'grid';
+                bannerHero.style.display = 'flex';
+                mudarGrupo();
+            } else if (modo === 'geral') {
+                btnGeral.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
                 colunaMembros.style.display = 'none';
                 colunaTurnos.className = "lg:col-span-12 space-y-3";
                 tituloSecao.innerText = "Visão Geral: Todos os 10 Trios do Dia";
+                containerAbas.style.display = 'grid';
+                bannerHero.style.display = 'flex';
+                mudarGrupo();
+            } else {
+                btnSeminarios.className = "flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-600/25 transition-all cursor-pointer";
+                colunaMembros.style.display = 'none';
+                colunaTurnos.className = "lg:col-span-12 space-y-3";
+                tituloSecao.innerText = "Cronograma Oficial de Seminários Semanais (UNIEURO - Bloco D, Sala 2)";
+                containerAbas.style.display = 'none';
+                bannerHero.style.display = 'none';
+                renderizarSeminariosView();
             }
-            mudarGrupo();
+        }
+
+        function renderizarSeminariosView() {
+            const containerTurnos = document.getElementById('lista-turnos');
+            let html = '<div class="space-y-3">';
+            dadosSeminariosList.forEach(s => {
+                html += `
+                    <div class="bg-[#08080a] border border-zinc-900 hover:border-zinc-800 rounded-2xl p-4 sm:p-5 transition-all shadow-sm space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-zinc-900">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 font-extrabold text-xs">${s.data}</span>
+                                <span class="text-xs font-semibold text-zinc-400">${s.hora.replace('\n', ' • ')}</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs">
+                                <span class="text-zinc-500 font-medium">Mediador:</span>
+                                <span class="text-zinc-200 font-bold">${s.mediador}</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div>
+                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Apresentadores</span>
+                                <p class="text-xs font-bold text-white mt-0.5">${s.apresentadores}</p>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Temas Abordados</span>
+                                <p class="text-xs text-zinc-300 mt-0.5 whitespace-pre-line leading-relaxed">${s.tema}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            containerTurnos.innerHTML = html;
         }
 
         function detectarDiaESemanaAtual() {
@@ -321,9 +388,10 @@
             setInterval(atualizar, 1000 * 60 * 60);
         }
 
-        function gerarDiasSemana(datasArray) {
+        function gerarDiasSemana(semanaNum, datasArray) {
+            const tardeSegunda = (semanaNum === 1) ? "Simulado (UNIEURO)" : "Sessões Clínicas (UNIEURO)";
             return {
-                "seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "UNIEURO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                "seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: tardeSegunda }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
                 "ter": { nome: "Terça-feira", data: datasArray[1], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
                 "qua": { nome: "Quarta-feira", data: datasArray[2], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
                 "qui": { nome: "Quinta-feira", data: datasArray[3], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
@@ -350,114 +418,114 @@
                 nomeGrupo: "Trio A1: André, Davi & Leticia B.",
                 membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"],
                 semanas: {
-                    1: gerarDiasSemana(semanasDatas[1]),
-                    2: gerarDiasSemana(semanasDatas[2]),
-                    3: gerarDiasSemana(semanasDatas[3]),
-                    4: gerarDiasSemana(semanasDatas[4]),
-                    5: gerarDiasSemana(semanasDatas[5]),
-                    6: gerarDiasSemana(semanasDatas[6]),
-                    7: gerarDiasSemana(semanasDatas[7]),
-                    8: gerarDiasSemana(semanasDatas[8]),
-                    9: gerarDiasSemana(semanasDatas[9])
+                    1: gerarDiasSemana(1, semanasDatas[1]),
+                    2: gerarDiasSemana(2, semanasDatas[2]),
+                    3: gerarDiasSemana(3, semanasDatas[3]),
+                    4: gerarDiasSemana(4, semanasDatas[4]),
+                    5: gerarDiasSemana(5, semanasDatas[5]),
+                    6: gerarDiasSemana(6, semanasDatas[6]),
+                    7: gerarDiasSemana(7, semanasDatas[7]),
+                    8: gerarDiasSemana(8, semanasDatas[8]),
+                    9: gerarDiasSemana(9, semanasDatas[9])
                 }
             },
             "2": {
                 nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.",
                 membros: ["Nadya Veras Jarosczynski", "Louise Albuquerque Mirindiba", "Isabella Teixeira de Lima"],
                 semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
+                    1: gerarDiasSemana(1, semanasDatas[1]), 2: gerarDiasSemana(2, semanasDatas[2]), 
+                    3: gerarDiasSemana(3, semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
+                    5: gerarDiasSemana(5, semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
+                    7: gerarDiasSemana(7, semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
+                    9: gerarDiasSemana(9, semanasDatas[9])
                 }
             },
             "3": {
                 nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino",
                 membros: ["Hiago Kaian Xavier Lisboa", "Isabela Frota Carmona", "Maria Eduarda Lima de Aquino"],
                 semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
+                    1: gerarDiasSemana(1, semanasDatas[1]), 2: gerarDiasSemana(2, semanasDatas[2]), 
+                    3: gerarDiasSemana(3, semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
+                    5: gerarDiasSemana(5, semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
+                    7: gerarDiasSemana(7, semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
+                    9: gerarDiasSemana(9, semanasDatas[9])
                 }
             },
             "4": {
                 nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.",
                 membros: ["Heitor Stoduto Mello Ferreira", "Bruno Azevedo Lima", "Andressa Costa Maboni"],
                 semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
+                    1: gerarDiasSemana(1, semanasDatas[1]), 2: gerarDiasSemana(2, semanasDatas[2]), 
+                    3: gerarDiasSemana(3, semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
+                    5: gerarDiasSemana(5, semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
+                    7: gerarDiasSemana(7, semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
+                    9: gerarDiasSemana(9, semanasDatas[9])
                 }
             },
             "5": {
                 nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.",
                 membros: ["Maria Luiza de Ornelas Nobrega", "Maria Eduarda Santiago", "Luiza de Santes"],
                 semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
+                    1: gerarDiasSemana(1, semanasDatas[1]), 2: gerarDiasSemana(2, semanasDatas[2]), 
+                    3: gerarDiasSemana(3, semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
+                    5: gerarDiasSemana(5, semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
+                    7: gerarDiasSemana(7, semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
+                    9: gerarDiasSemana(9, semanasDatas[9])
                 }
             },
             "6": {
                 nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.",
                 membros: ["Leticia Teixeira Monteiro", "Júlia Matos Guimarães", "Luiza Borges Sales"],
                 semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
+                    1: gerarDiasSemana(1, semanasDatas[1]), 2: gerarDiasSemana(2, semanasDatas[2]), 
+                    3: gerarDiasSemana(3, semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
+                    5: gerarDiasSemana(5, semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
+                    7: gerarDiasSemana(7, semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
+                    9: gerarDiasSemana(9, semanasDatas[9])
                 }
             },
             "7": {
                 nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly",
                 membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima do vale"],
                 semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
+                    1: gerarDiasSemana(1, semanasDatas[1]), 2: gerarDiasSemana(2, semanasDatas[2]), 
+                    3: gerarDiasSemana(3, semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
+                    5: gerarDiasSemana(5, semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
+                    7: gerarDiasSemana(7, semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
+                    9: gerarDiasSemana(9, semanasDatas[9])
                 }
             },
             "8": {
                 nomeGrupo: "Trio A8: Giovanna, Rayane & Sofi",
                 membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"],
                 semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
+                    1: gerarDiasSemana(1, semanasDatas[1]), 2: gerarDiasSemana(2, semanasDatas[2]), 
+                    3: gerarDiasSemana(3, semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
+                    5: gerarDiasSemana(5, semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
+                    7: gerarDiasSemana(7, semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
+                    9: gerarDiasSemana(9, semanasDatas[9])
                 }
             },
             "9": {
                 nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella",
                 membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"],
                 semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
+                    1: gerarDiasSemana(1, semanasDatas[1]), 2: gerarDiasSemana(2, semanasDatas[2]), 
+                    3: gerarDiasSemana(3, semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
+                    5: gerarDiasSemana(5, semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
+                    7: gerarDiasSemana(7, semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
+                    9: gerarDiasSemana(9, semanasDatas[9])
                 }
             },
             "10": {
                 nomeGrupo: "Trio A10: José, João Victor & Ana Luiza",
                 membros: ["José Henrique Ferreira", "João Victor Tajra", "Ana Luiza Daros"],
                 semanas: { 
-                    1: gerarDiasSemana(semanasDatas[1]), 2: gerarDiasSemana(semanasDatas[2]), 
-                    3: gerarDiasSemana(semanasDatas[3]), 4: gerarDiasSemana(semanasDatas[4]), 
-                    5: gerarDiasSemana(semanasDatas[5]), 6: gerarDiasSemana(semanasDatas[6]), 
-                    7: gerarDiasSemana(semanasDatas[7]), 8: gerarDiasSemana(semanasDatas[8]), 
-                    9: gerarDiasSemana(semanasDatas[9])
+                    1: gerarDiasSemana(1, semanasDatas[1]), 2: gerarDiasSemana(2, semanasDatas[2]), 
+                    3: gerarDiasSemana(3, semanasDatas[3]), 4: gerarDiasSemana(4, semanasDatas[4]), 
+                    5: gerarDiasSemana(5, semanasDatas[5]), 6: gerarDiasSemana(6, semanasDatas[6]), 
+                    7: gerarDiasSemana(7, semanasDatas[7]), 8: gerarDiasSemana(8, semanasDatas[8]), 
+                    9: gerarDiasSemana(9, semanasDatas[9])
                 }
             }
         };
@@ -527,6 +595,8 @@
         }
 
         function mudarGrupo() {
+            if (modoVisualizacao === 'seminarios') return;
+
             const id = document.getElementById('grupo-select').value;
             const dados = dadosEscala[id];
             
@@ -610,7 +680,7 @@
                         </div>
                     `;
                 });
-            } else {
+            } else if (modoVisualizacao === 'geral') {
                 let gridHtml = '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
                 for (let i = 1; i <= 10; i++) {
                     const dadosTrio = dadosEscala[i];
