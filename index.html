@@ -28,7 +28,7 @@
             <div class="space-y-1">
                 <h2 class="text-xl font-bold tracking-tight text-white">Escala de 2026.2</h2>
                 <p class="text-xs text-zinc-400 leading-relaxed">
-                    Identificação obrigatória para a Turma T7A<br>
+                    Identificação obrigatória para la Turma T7A<br>
                     <span class="text-zinc-500 font-medium">feito por André Victor</span>
                 </p>
             </div>
@@ -111,6 +111,10 @@
                 <div class="bg-[#08080a] border border-zinc-900 rounded-2xl p-4 flex flex-col justify-center">
                     <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Turnos na Semana</span>
                     <span class="text-base sm:text-lg font-black text-white mt-0.5" id="stat-atividades">--</span>
+                    <!-- Detalhes menorzinhos dos turnos -->
+                    <div id="stat-detalhes-turnos" class="flex flex-wrap gap-x-1.5 gap-y-0.5 mt-1 text-[9px] text-zinc-400 font-medium">
+                        <!-- Gerado via JS -->
+                    </div>
                 </div>
             </div>
 
@@ -203,7 +207,6 @@
             iniciarContadores();
         });
 
-        // Detecta automaticamente a semana e o dia atual ao abrir o site
         function detectarDiaESemanaAtual() {
             const agora = new Date();
             const dataInicioRodizio = new Date('2026-08-03T00:00:00');
@@ -218,7 +221,6 @@
                 if (semanaCalculada > 9) semanaCalculada = 9;
                 semanaSelecionadaGlobal = semanaCalculada;
 
-                // Identifica o dia da semana atual (0 = Domingo, 1 = Segunda, ..., 6 = Sábado)
                 const jsDay = agora.getDay();
                 const mapDias = { 1: "seg", 2: "ter", 3: "qua", 4: "qui", 5: "sex", 6: "sab", 0: "dom" };
                 diaSelecionadoGlobal = mapDias[jsDay] || "seg";
@@ -492,12 +494,33 @@
             document.getElementById('label-dia-topo').innerText = `${infoDia.nome.toUpperCase()} • ${infoDia.data}`;
 
             let totalAtividades = 0;
-            Object.values(diasDaSemanaGrupo).forEach(d => {
+            let totalPossiveis = 0;
+            let countManha = 0;
+            let countTarde = 0;
+            let countNoite = 0;
+            let countFds = 0;
+
+            Object.entries(diasDaSemanaGrupo).forEach(([diaKey, d]) => {
+                const isFds = (diaKey === 'sab' || diaKey === 'dom');
                 d.turnos.forEach(t => {
-                    if (t.local !== "—") totalAtividades++;
+                    totalPossiveis++;
+                    if (t.local !== "—") {
+                        totalAtividades++;
+                        if (t.periodo === "Manhã") countManha++;
+                        if (t.periodo === "Tarde") countTarde++;
+                        if (t.periodo === "Noite") countNoite++;
+                        if (isFds) countFds++;
+                    }
                 });
             });
-            document.getElementById('stat-atividades').innerText = totalAtividades + " turnos";
+
+            document.getElementById('stat-atividades').innerText = `${totalAtividades}/${totalPossiveis}`;
+            document.getElementById('stat-detalhes-turnos').innerHTML = `
+                <span>M: ${countManha}</span> • 
+                <span>T: ${countTarde}</span> • 
+                <span>N: ${countNoite}</span> • 
+                <span>FDS: ${countFds}</span>
+            `;
 
             const containerTurnos = document.getElementById('lista-turnos');
             containerTurnos.innerHTML = '';
