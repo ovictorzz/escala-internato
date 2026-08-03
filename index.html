@@ -1602,7 +1602,7 @@ const datasComEscalaEnviadaPorTrio = {
 "3": ["24/08", "25/08", "26/08", "27/08", "21/09", "22/09", "23/09", "24/09", "25/09", "26/09", "27/09"],
 "4": ["28/08", "29/08", "30/08", "31/08", "01/09", "02/09", "07/09", "08/09", "09/09", "10/09", "11/09", "12/09", "13/09"],
 "5": ["03/09", "04/09", "05/09", "06/09", "07/09", "08/09", "14/09", "15/09", "16/09", "17/09", "18/09", "19/09", "20/09"],
-"6": ["31/08", "01/09", "02/09", "03/09", "04/09", "05/09", "06/09", "09/09", "10/09", "11/09", "12/09", "13/09"],
+"6": ["31/08", "01/09", "02/09", "03/09", "04/09", "05/09", "06/09", "07/09", "08/09", "09/09", "10/09", "11/09", "12/09", "13/09"],
 "7": ["24/08", "25/08", "26/08", "27/08", "28/08", "29/08", "30/08", "15/09", "16/09", "17/09", "18/09", "19/09", "20/09"],
 "8": ["20/09", "21/09", "22/09", "23/09", "24/09", "25/09"],
 "9": ["26/09", "27/09", "28/09", "29/09", "30/09"],
@@ -1619,6 +1619,23 @@ if (turno.local === ESCALA_NAO_ENVIADA) turno.local = "—";
 });
 }
 });
+
+// Padronização dos locais nas escalas assistenciais.
+const locaisPadronizados = {
+"Lucimara": "Lucimara (HRC)",
+"Marta": "Marta (HRC)",
+"PS FICHA": "PS FICHA (HRC)",
+"Gilmária": "Gilmária (HRC)"
+};
+for (let i = 1; i <= 10; i++) {
+for (let s = 1; s <= 9; s++) {
+Object.values(dadosEscala[i].semanas[s]).forEach(infoDia => {
+infoDia.turnos.forEach(turno => {
+if (locaisPadronizados[turno.local]) turno.local = locaisPadronizados[turno.local];
+});
+});
+}
+}
 window.semanaSelecionadaGlobal = 1;
 window.diaSelecionadoGlobal = "seg";
 window.renderizarSemanas = function() {
