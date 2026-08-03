@@ -508,7 +508,7 @@
             }
         });
 
-        function atualizarIdentificacaoAluno() {
+function atualizarIdentificacaoAluno() {
             const aluno = sessionStorage.getItem('alunoLogado');
             const badge = document.getElementById('aluno-logado-badge');
             const saudacao = document.getElementById('saudacao-aluno');
@@ -528,7 +528,7 @@
             }
         }
 
-function atualizarProximaAtividadeDinamica(alunoNome) {
+        function atualizarProximaAtividadeDinamica(alunoNome) {
             const badgeAtividade = document.getElementById('proxima-atividade-badge');
             const painelNovo = document.getElementById('proxima-atividade-conteudo');
 
@@ -541,24 +541,30 @@ function atualizarProximaAtividadeDinamica(alunoNome) {
                 return;
             }
 
-            // Garante que os dados da escala estão carregados
             if (typeof dadosEscala === 'undefined' || !dadosEscala[trioId]) {
                 if(painelNovo) painelNovo.innerHTML = `<span class="text-zinc-400">A carregar escala...</span>`;
                 return;
             }
 
+            // Garante que pegamos a data atual sem problemas de fuso horário
             const agora = new Date();
-            const dataInicioRodizio = new Date('2026-08-03T00:00:00');
-            const dataFimRodizio = new Date('2026-10-04T23:59:59');
+            const anoAtual = agora.getFullYear();
+            const mesAtual = agora.getMonth();
+            const diaAtual = agora.getDate();
+            const hojeLocal = new Date(anoAtual, mesAtual, diaAtual);
 
-            if (agora < dataInicioRodizio || agora > dataFimRodizio) {
+            // Data de início correta do rodízio (ajustada para alinhar com 03/08)
+            const dataInicioRodizio = new Date(2026, 7, 3); // Mês 7 = Agosto (0 a 11)
+            const dataFimRodizio = new Date(2026, 9, 4, 23, 59, 59);
+
+            if (hojeLocal < dataInicioRodizio || hojeLocal > dataFimRodizio) {
                 badgeAtividade.innerText = "Próxima: Férias / Fora do período";
                 if(painelNovo) painelNovo.innerHTML = `<span class="text-zinc-400">Fora do período do rodízio.</span>`;
                 return;
             }
 
             // --- 1. Badge Pequeno (Turno Atual de Hoje) ---
-            const diffTime = agora - dataInicioRodizio;
+            const diffTime = hojeLocal - dataInicioRodizio;
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             let semanaNum = Math.floor(diffDays / 7) + 1;
             if (semanaNum < 1) semanaNum = 1;
@@ -587,16 +593,14 @@ function atualizarProximaAtividadeDinamica(alunoNome) {
                 badgeAtividade.innerText = "Atual: Sem atividade";
             }
 
-            // --- 2. Cartão Grande: PRÓXIMA ATIVIDADE OBRIGATÓRIA (Pula o turno atual e busca a seguinte) ---
+            // --- 2. Cartão Grande: PRÓXIMA ATIVIDADE OBRIGATÓRIA (Avança para a próxima real) ---
             if (painelNovo) {
                 const dadosTrio = dadosEscala[trioId];
                 let proximaAtividade = null;
 
-                const hojeDateObj = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
                 const ordemTurnos = { 'Manhã': 1, 'Tarde': 2, 'Noite': 3 };
                 let pesoTurnoAtual = horaAtual < 13 ? 1 : (horaAtual < 18 ? 2 : 3);
 
-                // Varre a escala a partir da semana atual até à semana 9
                 for (let s = semanaNum; s <= 9; s++) {
                     if (!dadosTrio.semanas[s]) continue;
                     const diasDaSemana = dadosTrio.semanas[s];
@@ -606,21 +610,16 @@ function atualizarProximaAtividadeDinamica(alunoNome) {
                         if (!infoDia || !infoDia.data) continue;
                         
                         const [diaStr, mesStr] = infoDia.data.split('/');
-                        const anoAtual = agora.getFullYear();
                         const dataDiaObj = new Date(anoAtual, parseInt(mesStr) - 1, parseInt(diaStr));
 
-                        // Considera hoje e dias futuros
-                        if (dataDiaObj >= hojeDateObj) {
-                            const ehHoje = dataDiaObj.getTime() === hojeDateObj.getTime();
+                        if (dataDiaObj >= hojeLocal) {
+                            const ehHoje = dataDiaObj.getTime() === hojeLocal.getTime();
                             const turnos = infoDia.turnos || [];
 
                             for (let t of turnos) {
-                                // Apenas turnos obrigatórios (com local válido)
                                 if (t.local && t.local !== "—") {
-                                    
                                     if (ehHoje) {
                                         let pesoDeste = ordemTurnos[t.periodo] || 1;
-                                        // Se for hoje, tem de ser obrigatoriamente um turno posterior ao atual
                                         if (pesoDeste > pesoTurnoAtual) {
                                             proximaAtividade = {
                                                 diaNome: infoDia.nome,
@@ -632,7 +631,6 @@ function atualizarProximaAtividadeDinamica(alunoNome) {
                                             break;
                                         }
                                     } else {
-                                        // Se for amanhã ou dias seguintes, qualquer atividade obrigatória serve
                                         proximaAtividade = {
                                             diaNome: infoDia.nome,
                                             data: infoDia.data,
@@ -650,7 +648,6 @@ function atualizarProximaAtividadeDinamica(alunoNome) {
                     if (proximaAtividade) break;
                 }
 
-                // Renderiza no painel grande
                 if (proximaAtividade) {
                     painelNovo.innerHTML = `
                         <div class="font-semibold text-white flex items-center justify-between">
@@ -667,7 +664,6 @@ function atualizarProximaAtividadeDinamica(alunoNome) {
                 }
             }
         }
-
         const contadorRef = doc(db, "geral", "contador");
         onSnapshot(contadorRef, (docSnap) => {
             if (docSnap.exists()) {
