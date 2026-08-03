@@ -21,14 +21,12 @@
             margin: 0;
             padding: 0;
         }
-        /* No PC (lg para cima): sem scroll, trava na altura da tela */
         @media (min-width: 1024px) {
             body {
                 height: 100vh;
                 overflow: hidden;
             }
         }
-        /* No Celular: altura automática e rolagem natural fluida */
         @media (max-width: 1023px) {
             body {
                 min-height: 100vh;
@@ -259,7 +257,7 @@
                         <option value="5">Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.</option>
                         <option value="6">Trio A6: Leticia M., Júlia & Luiza B.</option>
                         <option value="7">Trio A7: Ana Clara, Carolina B. & Kamilly</option>
-                        <option value="8">Trio A8: Giovanna, Rayane & Sofi</option>
+                        <option value="8">Trio A8: Giovanna, Rayane & Sofia</option>
                         <option value="9">Trio A9: Annelise, Camila S. & Gabriella</option>
                         <option value="10">Trio A10: José, João Victor & Ana Luiza</option>
                     </select>
@@ -277,7 +275,7 @@
                 <div class="glass-panel rounded-2xl p-3 flex flex-col justify-center">
                     <span class="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-0.5">Turnos/Sem.</span>
                     <span class="text-sm sm:text-lg font-outfit font-black dark:text-white text-zinc-900" id="stat-atividades">--</span>
-                    <div id="stat-detalhes-turnos" class="flex flex-wrap gap-x-1 gap-y-0.5 mt-1 text-[8px] text-zinc-500 dark:text-zinc-400 font-semibold tracking-wide"></div>
+                    <div id="stat-detalhes-turnos" class="flex flex-wrap gap-x-1.5 gap-y-1 mt-1 text-[9px] text-zinc-500 dark:text-zinc-400 font-semibold tracking-wide"></div>
                 </div>
                 <div class="glass-panel rounded-2xl p-3 flex flex-col justify-between">
                     <div>
@@ -369,8 +367,24 @@
         window.modoVisualizacao = 'individual'; 
         let capotesCount = 0;
         let recadosListaGlobal = [];
-        let historicoListaGlobal = [];
+        let historicoRecadosGlobal = [];
+        let historicoLoginsGlobal = [];
         let isAdminAutenticado = false;
+        let currentLoginSessionId = null;
+
+        // Mapeamento de Aluno para Trio
+        const alunoTrioMap = {
+            "André Victor": "1", "Davi Carvalho": "1", "Letícia Barbosa": "1",
+            "Nadya Jarosczynski": "2", "Louise Mirindiba": "2", "Isabella Teixeira": "2",
+            "Hiago Kaian": "3", "Isabela Frota": "3", "Maria Eduarda Aquino": "3",
+            "Heitor Stoduto": "4", "Bruno Azevedo": "4", "Andressa Maboni": "4",
+            "Maria Luiza": "5", "Maria Eduarda Santiago": "5", "Luiza de Santes": "5",
+            "Leticia Teixeira": "6", "Júlia Matos": "6", "Luiza Borges Sales": "6",
+            "Ana Clara": "7", "Carolina Banholi": "7", "Kamilly Lima": "7",
+            "Giovanna Muniz": "8", "Rayane Maria": "8", "Sofia Dias": "8",
+            "Annelise Paiva": "9", "Camila Souza": "9", "Gabriella Reis": "9",
+            "José Henrique": "10", "João Victor Tajra": "10", "Ana Luiza Daros": "10"
+        };
 
         window.toggleMobileMenu = function() {
             const nav = document.getElementById('mobile-nav-menu');
@@ -395,7 +409,7 @@
             }
         };
 
-        window.verificarSenha = function() {
+        window.verificarSenha = async function() {
             const alunoSelect = document.getElementById('aluno-select').value;
             const digitada = document.getElementById('senha-input').value;
             const erroMsg = document.getElementById('erro-msg');
@@ -410,20 +424,64 @@
                 document.getElementById('login-overlay').style.display = 'none';
                 sessionStorage.setItem('autenticado', 'true');
                 sessionStorage.setItem('alunoLogado', alunoSelect);
+                
+                // Registra Login no Firestore
+                try {
+                    const agora = new Date();
+                    const docRef = await addDoc(collection(db, "historico_logins"), {
+                        nome: alunoSelect,
+                        data: agora.toLocaleDateString('pt-BR'),
+                        entrada: agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'}),
+                        saida: "Online",
+                        timestamp: serverTimestamp()
+                    });
+                    currentLoginSessionId = docRef.id;
+                    sessionStorage.setItem('loginSessionId', currentLoginSessionId);
+                } catch(e) {
+                    console.error("Erro ao registrar login:", e);
+                }
+
                 atualizarIdentificacaoAluno();
+                direcionarParaTrioDoAluno(alunoSelect);
             } else {
                 erroMsg.innerText = "Senha incorreta. Tente novamente.";
                 erroMsg.classList.remove('hidden');
             }
         }
 
-        window.sairSistema = function() {
+        function direcionarParaTrioDoAluno(nomeAluno) {
+            const trioId = alunoTrioMap[nomeAluno];
+            if (trioId) {
+                document.getElementById('grupo-select').value = trioId;
+                alternarModo('individual');
+            }
+        }
+
+        window.sairSistema = async function() {
+            const sessionId = sessionStorage.getItem('loginSessionId') || currentLoginSessionId;
+            if (sessionId) {
+                try {
+                    const saidaHora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+                    await updateDoc(doc(db, "historico_logins", sessionId), { saida: saidaHora });
+                } catch(e) {
+                    console.error("Erro ao registrar saída:", e);
+                }
+            }
             sessionStorage.removeItem('autenticado');
             sessionStorage.removeItem('alunoLogado');
+            sessionStorage.removeItem('loginSessionId');
             document.getElementById('senha-input').value = '';
             document.getElementById('aluno-select').selectedIndex = 0;
             document.getElementById('login-overlay').style.display = 'flex';
         }
+
+        // Registrar saída ao fechar a página
+        window.addEventListener('beforeunload', () => {
+            const sessionId = sessionStorage.getItem('loginSessionId') || currentLoginSessionId;
+            if (sessionId) {
+                // Navegador navigator.sendBeacon ou chamada síncrona se necessário, mas update assíncrono básico via firestore pode falhar se fechar muito rápido. Usamos o sessionStorage e salvamos na saída.
+            }
+        });
 
         function atualizarIdentificacaoAluno() {
             const aluno = sessionStorage.getItem('alunoLogado');
@@ -468,14 +526,25 @@
             }
         });
 
-        const historicoQuery = query(collection(db, "historico_recados"), orderBy("timestamp", "desc"));
-        onSnapshot(historicoQuery, (snapshot) => {
-            historicoListaGlobal = [];
+        const historicoRecadosQuery = query(collection(db, "historico_recados"), orderBy("timestamp", "desc"));
+        onSnapshot(historicoRecadosQuery, (snapshot) => {
+            historicoRecadosGlobal = [];
             snapshot.forEach((docSnap) => {
-                historicoListaGlobal.push({ id: docSnap.id, ...docSnap.data() });
+                historicoRecadosGlobal.push({ id: docSnap.id, ...docSnap.data() });
             });
             if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
-                renderizarAdminRecados();
+                if (document.getElementById('sub-sec-historico-recados')) abrirAdminSecao('historico_recados');
+            }
+        });
+
+        const historicoLoginsQuery = query(collection(db, "historico_logins"), orderBy("timestamp", "desc"));
+        onSnapshot(historicoLoginsQuery, (snapshot) => {
+            historicoLoginsGlobal = [];
+            snapshot.forEach((docSnap) => {
+                historicoLoginsGlobal.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
+                abrirAdminSecao('historico_logins');
             }
         });
 
@@ -697,22 +766,18 @@
             const container = document.getElementById('lista-turnos');
             container.innerHTML = `
                 <div class="space-y-3">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                        <div onclick="abrirAdminSecao('historico')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group border-indigo-500/30 bg-indigo-600/5">
-                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">📊 Histórico de Mensagens (Admin)</h4>
-                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Ver mensagens enviadas, editadas e apagadas.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        <div onclick="abrirAdminSecao('historico_logins')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group border-indigo-500/30 bg-indigo-600/5">
+                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">🔐 Histórico de Logins</h4>
+                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Nome, data, entrada e saída.</p>
+                        </div>
+                        <div onclick="abrirAdminSecao('historico_recados')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">📊 Histórico de Recados</h4>
+                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Avisos enviados, editados e apagados.</p>
                         </div>
                         <div onclick="abrirAdminSecao('recados')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
-                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">💬 Gerir Quadro de Recados</h4>
-                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Publicar avisos oficiais ou apagar mensagens.</p>
-                        </div>
-                        <div onclick="abrirAdminSecao('seminarios')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
-                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">📚 Gerir Seminários</h4>
-                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Editar apresentadores, mediadores e temas.</p>
-                        </div>
-                        <div onclick="abrirAdminSecao('geral')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
-                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">⚙️ Configurações e Capotes</h4>
-                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Ajustar contador de capotes e dados gerais.</p>
+                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">💬 Gerir Recados</h4>
+                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Publicar ou remover avisos.</p>
                         </div>
                     </div>
                     <div id="admin-subconteudo" class="glass-panel rounded-2xl p-3.5 shadow-md">
@@ -720,23 +785,51 @@
                     </div>
                 </div>
             `;
-            abrirAdminSecao('historico');
+            abrirAdminSecao('historico_logins');
         }
 
         window.abrirAdminSecao = function(secao) {
             const sub = document.getElementById('admin-subconteudo');
-            if (secao === 'historico') {
+            if (secao === 'historico_logins') {
                 let html = `
                     <h3 class="text-xs font-outfit font-extrabold text-indigo-500 mb-2.5 flex items-center justify-between">
-                        <span>Histórico de Auditoria (Enviadas, Editadas e Apagadas)</span>
-                        <span class="text-[9px] text-zinc-400 font-normal">Exclusivo para o Admin</span>
+                        <span>Histórico de Logins (Entrada e Saída)</span>
+                        <span class="text-[9px] text-zinc-400 font-normal">Monitoramento de Acessos</span>
                     </h3>
-                    <div class="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+                    <div class="space-y-2 max-h-[220px] overflow-y-auto pr-1" id="sub-sec-historico-logins">
                 `;
-                if (historicoListaGlobal.length === 0) {
-                    html += `<p class="text-[10px] text-zinc-400 py-2">Nenhum registro no histórico ainda.</p>`;
+                if (historicoLoginsGlobal.length === 0) {
+                    html += `<p class="text-[10px] text-zinc-400 py-2">Nenhum acesso registrado ainda.</p>`;
                 } else {
-                    historicoListaGlobal.forEach(h => {
+                    historicoLoginsGlobal.forEach(l => {
+                        html += `
+                            <div class="p-2.5 rounded-xl glass-panel border border-black/5 dark:border-white/5 flex items-center justify-between gap-2">
+                                <div>
+                                    <span class="text-xs font-outfit font-bold text-indigo-400">${l.nome}</span>
+                                    <p class="text-[9px] text-zinc-400 mt-0.5">Data: ${l.data}</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[9px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Entrada: ${l.entrada}</span>
+                                    <span class="text-[9px] font-mono text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20 ml-1">Saída: ${l.saida}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                html += `</div>`;
+                sub.innerHTML = html;
+            } else if (secao === 'historico_recados') {
+                let html = `
+                    <h3 class="text-xs font-outfit font-extrabold text-indigo-500 mb-2.5 flex items-center justify-between">
+                        <span>Histórico de Auditoria de Recados</span>
+                        <span class="text-[9px] text-zinc-400 font-normal">Enviadas, Editadas e Apagadas</span>
+                    </h3>
+                    <div class="space-y-2 max-h-[220px] overflow-y-auto pr-1" id="sub-sec-historico-recados">
+                `;
+                if (historicoRecadosGlobal.length === 0) {
+                    html += `<p class="text-[10px] text-zinc-400 py-2">Nenhum registro no histórico de recados ainda.</p>`;
+                } else {
+                    historicoRecadosGlobal.forEach(h => {
                         let dataFormatada = "Recentemente";
                         if (h.timestamp && h.timestamp.toDate) {
                             const d = h.timestamp.toDate();
@@ -764,16 +857,6 @@
                 sub.innerHTML = html;
             } else if (secao === 'recados') {
                 renderizarAdminRecados();
-            } else if (secao === 'seminarios') {
-                sub.innerHTML = `
-                    <h3 class="text-xs font-outfit font-extrabold text-indigo-500 mb-2">Gestão de Seminários</h3>
-                    <p class="text-[10px] text-zinc-400">O cronograma oficial encontra-se ativo na aba 'Seminários'.</p>
-                `;
-            } else {
-                sub.innerHTML = `
-                    <h3 class="text-xs font-outfit font-extrabold text-indigo-500 mb-2">Configurações Gerais</h3>
-                    <p class="text-[10px] text-zinc-400">Tudo sincronizado corretamente com o Firestore.</p>
-                `;
             }
         }
 
@@ -1089,7 +1172,7 @@
             "5": { nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.", membros: ["Maria Luiza", "Maria Eduarda Santiago", "Luiza de Santes"] },
             "6": { nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.", membros: ["Leticia Teixeira", "Júlia Matos", "Luiza Borges Sales"] },
             "7": { nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly", membros: ["Ana Clara", "Carolina Banholi", "Kamilly Lima"] },
-            "8": { nomeGrupo: "Trio A8: Giovanna, Rayane & Sofi", membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"] },
+            "8": { nomeGrupo: "Trio A8: Giovanna, Rayane & Sofia", membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"] },
             "9": { nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella", membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"] },
             "10": { nomeGrupo: "Trio A10: José, João Victor & Ana Luiza", membros: ["José Henrique", "João Victor Tajra", "Ana Luiza Daros"] }
         };
@@ -1216,10 +1299,10 @@
 
             document.getElementById('stat-atividades').innerText = `${totalAtividades}/${totalPossiveis}`;
             document.getElementById('stat-detalhes-turnos').innerHTML = `
-                <span class="bg-black/5 dark:bg-white/5 px-1 py-0.5 rounded border border-black/5 dark:border-white/5">M:${countManha}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-1 py-0.5 rounded border border-black/5 dark:border-white/5">T:${countTarde}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-1 py-0.5 rounded border border-black/5 dark:border-white/5">N:${countNoite}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-1 py-0.5 rounded border border-black/5 dark:border-white/5">FDS:${countFds}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5">🌅 Manhã: ${countManha}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5">☀️ Tarde: ${countTarde}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5">🌙 Noite: ${countNoite}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5">🏖️ Fim de Semana: ${countFds}</span>
             `;
 
             const containerTurnos = document.getElementById('lista-turnos');
@@ -1314,6 +1397,10 @@
             if (sessionStorage.getItem('autenticado') === 'true') {
                 document.getElementById('login-overlay').style.display = 'none';
                 atualizarIdentificacaoAluno();
+                const alunoLogado = sessionStorage.getItem('alunoLogado');
+                if (alunoLogado) {
+                    direcionarParaTrioDoAluno(alunoLogado);
+                }
             }
         };
     </script>
