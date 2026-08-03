@@ -1228,10 +1228,12 @@ atualizar();
 setInterval(atualizar, 1000 * 60); // Verifica a cada 1 minuto para transicionar automaticamente os turnos
 }
 function gerarDiasSemana(semanaNum, datasArray) {
-const tardeSegunda = "FIXO — Sessões Clínicas Integradas (Aula Teórica) — UNIEURO";
+const tardeSegunda = (semanaNum === 1)
+? "Simulado — UNIEURO"
+: "Sessões Clínicas Integradas (Aula Teórica) — UNIEURO";
 return {
 "seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: tardeSegunda }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-"ter": { nome: "Terça-feira", data: datasArray[1], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h30-21h30", local: "FIXO — Seminário de G.O. — UNIEURO" } ] },
+"ter": { nome: "Terça-feira", data: datasArray[1], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h30-21h30", local: "Seminário de G.O. — UNIEURO" } ] },
 "qua": { nome: "Quarta-feira", data: datasArray[2], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
 "qui": { nome: "Quinta-feira", data: datasArray[3], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
 "sex": { nome: "Sexta-feira", data: datasArray[4], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
@@ -1274,24 +1276,24 @@ for(let i=1; i<=10; i++) {
 dadosEscala[i].semanas[8].qua.turnos[2] = {
 periodo: "Noite",
 horario: "18h30-21h30",
-local: "EXTRA — Seminário de G.O. — UNIEURO"
+local: "Seminário de G.O. — UNIEURO"
 };
 }
 
 // Escala específica do Trio 01 entre 03/08 e 23/08.
 // Os turnos não informados nesse período permanecem livres.
 const escalaTrio01 = {
-"04/08": { manha: "CO (HRC)", tarde: "Gilmária (HRC)", noite: "FIXO — Seminário de G.O. — UNIEURO" },
+"04/08": { manha: "CO (HRC)", tarde: "Gilmária (HRC)", noite: "Seminário de G.O. — UNIEURO" },
 "06/08": { tarde: "CO (HRC)" },
 "07/08": { manha: "Flávia (HRC)", tarde: "PS FICHA" },
 "08/08": { noite: "CO (HRC)" },
-"11/08": { tarde: "HRSM", noite: "FIXO — Seminário de G.O. — UNIEURO" },
+"11/08": { tarde: "HRSM", noite: "Seminário de G.O. — UNIEURO" },
 "12/08": { tarde: "HRSM" },
 "13/08": { tarde: "HRSM" },
 "14/08": { tarde: "HRSM" },
 "15/08": { tarde: "HRSM" },
 "16/08": { noite: "CO (HRC)" },
-"18/08": { manha: "CO (HRC)", tarde: "Gilmária (HRC)", noite: "FIXO — Seminário de G.O. — UNIEURO" },
+"18/08": { manha: "CO (HRC)", tarde: "Gilmária (HRC)", noite: "Seminário de G.O. — UNIEURO" },
 "19/08": { manha: "Amb UNIEURO" },
 "20/08": { tarde: "CO (HRC)" },
 "21/08": { manha: "F. Mota (HRC)", tarde: "PS FICHA" },
@@ -1303,8 +1305,8 @@ Object.values(dadosEscala["1"].semanas[s]).forEach(infoDia => {
 const atividade = escalaTrio01[infoDia.data] || {};
 infoDia.turnos = [
 { periodo: "Manhã", horario: "07h-13h", local: atividade.manha || "—" },
-{ periodo: "Tarde", horario: "13h-18h", local: atividade.tarde || (infoDia.nome === "Segunda-feira" ? "FIXO — Sessões Clínicas Integradas (Aula Teórica) — UNIEURO" : "—") },
-{ periodo: "Noite", horario: infoDia.nome === "Terça-feira" ? "18h30-21h30" : "18h-22h", local: atividade.noite || (infoDia.nome === "Terça-feira" ? "FIXO — Seminário de G.O. — UNIEURO" : "—") }
+{ periodo: "Tarde", horario: "13h-18h", local: atividade.tarde || (infoDia.nome === "Segunda-feira" ? (infoDia.data === "03/08" ? "Simulado — UNIEURO" : "Sessões Clínicas Integradas (Aula Teórica) — UNIEURO") : "—") },
+{ periodo: "Noite", horario: infoDia.nome === "Terça-feira" ? "18h30-21h30" : "18h-22h", local: atividade.noite || (infoDia.nome === "Terça-feira" ? "Seminário de G.O. — UNIEURO" : "—") }
 ];
 });
 }
