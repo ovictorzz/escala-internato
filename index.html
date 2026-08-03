@@ -1386,7 +1386,7 @@ const escalaTrio04 = {
 "07/08": { manha: "F. Mota (HRC)" },
 "09/08": { manha: "CO (HRC)" },
 "10/08": { manha: "F. Mota (HRC)" },
-"11/08": { manha: "ALCON (HRC)", tarde: "Nádia (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"11/08": { manha: "ALCON (HRC)", tarde: "Sádia (HRC)", noite: "Seminário de G.O. — UNIEURO" },
 "13/08": { manha: "ALCON (HRC)", tarde: "Hellen (ECO) (HRC)" },
 "14/08": { manha: "Caio (PNAR) (HRC)" },
 "16/08": { manha: "ALCON (HRC)" },
@@ -1596,17 +1596,20 @@ local: "Avaliação Somativa — UNIEURO (50 questões)"
 };
 }
 
-// Nas semanas do HRAN cuja escala já foi enviada, turnos não informados são livres.
-const datasHRANPorTrio = {
+// Em períodos cuja escala já foi enviada, turnos não informados são livres.
+const datasComEscalaEnviadaPorTrio = {
 "2": ["28/09", "29/09", "30/09", "01/10", "02/10", "03/10", "04/10"],
-"3": ["21/09", "22/09", "23/09", "24/09", "25/09", "26/09", "27/09"],
-"4": ["07/09", "08/09", "09/09", "10/09", "11/09", "12/09", "13/09"],
-"5": ["14/09", "15/09", "16/09", "17/09", "18/09", "19/09"],
-"6": ["31/08", "01/09", "02/09", "03/09", "04/09", "05/09", "06/09"],
-"7": ["24/08", "25/08", "26/08", "27/08", "28/08", "29/08", "30/08"]
+"3": ["24/08", "25/08", "26/08", "27/08", "21/09", "22/09", "23/09", "24/09", "25/09", "26/09", "27/09"],
+"4": ["28/08", "29/08", "30/08", "31/08", "01/09", "02/09", "07/09", "08/09", "09/09", "10/09", "11/09", "12/09", "13/09"],
+"5": ["03/09", "04/09", "05/09", "06/09", "07/09", "08/09", "14/09", "15/09", "16/09", "17/09", "18/09", "19/09"],
+"6": ["31/08", "01/09", "02/09", "03/09", "04/09", "05/09", "06/09", "09/09", "10/09", "11/09", "12/09", "13/09"],
+"7": ["24/08", "25/08", "26/08", "27/08", "28/08", "29/08", "30/08", "15/09", "16/09", "17/09", "18/09", "19/09", "20/09"],
+"8": ["20/09", "21/09", "22/09", "23/09", "24/09", "25/09"],
+"9": ["26/09", "27/09", "28/09", "29/09", "30/09"],
+"10": ["01/10", "02/10", "03/10", "04/10"]
 };
 
-Object.entries(datasHRANPorTrio).forEach(([idTrio, datas]) => {
+Object.entries(datasComEscalaEnviadaPorTrio).forEach(([idTrio, datas]) => {
 for (let s = 1; s <= 9; s++) {
 Object.values(dadosEscala[idTrio].semanas[s]).forEach(infoDia => {
 if (!datas.includes(infoDia.data)) return;
