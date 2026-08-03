@@ -284,8 +284,8 @@
                     <div>
                         <span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-0.5">Capotes CO</span>
                         <div class="flex items-baseline space-x-1">
-                            <span class="text-lg sm:text-xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400" id="contador-capotes-val">...</span>
-                            <span class="text-[8px] font-bold text-zinc-400">un.</span>
+                            <span class="text-2xl sm:text-3xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400" id="contador-capotes-val">...</span>
+                            <span class="text-[9px] font-bold text-zinc-400">un.</span>
                         </div>
                     </div>
                     <div class="flex items-center space-x-1 mt-1 pt-1 border-t border-black/5 dark:border-white/10">
@@ -1067,7 +1067,6 @@
                         `;
                     });
 
-                    // Cada célula do calendário rigorosamente padronizada em tamanho e altura fixa (h-[84px])
                     html += `
                         <div class="p-1.5 rounded-xl border ${cardClass} flex flex-col justify-between h-[84px] box-border space-y-1">
                             <div class="flex items-center justify-between">
@@ -1082,7 +1081,6 @@
                     totalCelulas++;
                 }
 
-                // Preenchimento de células vazias restantes para manter o grid simétrico e sem quebras
                 const resto = totalCelulas % 7;
                 if (resto !== 0) {
                     const celulasFaltantes = 7 - resto;
@@ -1335,10 +1333,10 @@
 
             document.getElementById('stat-atividades').innerText = `${totalAtividades}/${totalPossiveis}`;
             document.getElementById('stat-detalhes-turnos').innerHTML = `
-                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5">🌅 Manhã: ${countManha}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5">☀️ Tarde: ${countTarde}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5">🌙 Noite: ${countNoite}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5">🏖️ Fim de Semana: ${countFds}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🌅 Manhã: ${countManha}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">☀️ Tarde: ${countTarde}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🌙 Noite: ${countNoite}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🏖️ FDS: ${countFds}</span>
             `;
 
             const containerTurnos = document.getElementById('lista-turnos');
