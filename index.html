@@ -1056,7 +1056,7 @@
 
                     let turnosHtml = '';
                     turnosDia.forEach(t => {
-                        const sigla = t.periodo === 'Manhã' ? 'M' : t.periodo === 'Tarde' ? 'T' : 'N';
+                        const sigla = t.periodo === 'Manhã' ? 'Manhã' : t.periodo === 'Tarde' ? 'Tarde' : 'Noite';
                         const ativo = t.local !== "—";
                         const corBadge = ativo 
                             ? 'bg-blue-600 text-white font-bold' 
@@ -1336,10 +1336,10 @@
 
             document.getElementById('stat-atividades').innerText = `${totalAtividades}/${totalPossiveis}`;
             document.getElementById('stat-detalhes-turnos').innerHTML = `
-                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">M: ${countManha}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">T: ${countTarde}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">N: ${countNoite}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">FDS: ${countFds}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">Manhã: ${countManha}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">Tarde: ${countTarde}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">Noite: ${countNoite}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">Fim de Semana: ${countFds}</span>
             `;
 
             const containerTurnos = document.getElementById('lista-turnos');
