@@ -89,7 +89,7 @@
         </div>
     </div>
 
-    <aside class="w-full lg:w-72 glass-panel border-r border-black/10 dark:border-white/5 flex flex-col justify-between p-6 shrink-0 z-20">
+    <aside class="w-full lg:w-72 glass-panel border-r border-black/10 dark:border-white/5 flex flex-col justify-between p-6 shrink-0 z-25">
         <div class="space-y-8">
             <div class="flex items-center space-x-3.5">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 flex items-center justify-center text-blue-500 dark:text-blue-400 shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
@@ -295,6 +295,7 @@
         const db = getFirestore(app);
 
         const SENHA_ACESSO = "unieurot7a"; 
+        const SENHA_ADMIN = "@admin980";
         window.modoVisualizacao = 'individual'; 
         let capotesCount = 0;
         let recadosListaGlobal = [];
@@ -385,7 +386,7 @@
             event.preventDefault();
             const senha = document.getElementById('admin-senha-input').value;
             const erro = document.getElementById('admin-erro');
-            if (senha === SENHA_ACESSO) {
+            if (senha === SENHA_ADMIN) {
                 isAdminAutenticado = true;
                 renderizarAdminPainelPrincipal();
             } else {
@@ -504,7 +505,7 @@
                     </div>
                     <div>
                         <h3 class="text-xl font-outfit font-extrabold dark:text-white text-zinc-900">Acesso Restrito ao Representante</h3>
-                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Introduza a senha de administração para gerir escalas, avisos e seminários.</p>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Introduza a senha de administração (@admin980) para gerir escalas, avisos e seminários.</p>
                     </div>
                     <form onsubmit="verificarAdminLogin(event)" class="space-y-4">
                         <input type="password" id="admin-senha-input" placeholder="Senha do painel admin" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3.5 text-center focus:outline-none focus:border-indigo-500 shadow-inner">
