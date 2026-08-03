@@ -528,7 +528,7 @@
             }
         }
 
-      function atualizarProximaAtividadeDinamica(alunoNome) {
+        function atualizarProximaAtividadeDinamica(alunoNome) {
             const badgeAtividade = document.getElementById('proxima-atividade-badge');
             const painelNovo = document.getElementById('proxima-atividade-conteudo');
 
@@ -551,7 +551,6 @@
                 return;
             }
 
-            // 1. Atualiza o Badge Pequeno (Atividade ATUAL)
             const diffTime = agora - dataInicioRodizio;
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             let semanaNum = Math.floor(diffDays / 7) + 1;
@@ -562,7 +561,7 @@
             const mapDias = { 1: "seg", 2: "ter", 3: "qua", 4: "qui", 5: "sex", 6: "sab", 0: "dom" };
             const diaKey = mapDias[jsDay];
 
-            const turnosDia = typeof dadosEscala !== 'undefined' && dadosEscala[trioId] ? dadosEscala[trioId].semanas[semanaNum][diaKey].turnos : [];
+            const turnosDia = dadosEscala[trioId].semanas[semanaNum][diaKey].turnos;
             
             const horaAtual = agora.getHours();
             let turnoAlvo = null;
@@ -577,23 +576,14 @@
 
             if (turnoAlvo) {
                 const localStr = turnoAlvo.local !== "—" ? turnoAlvo.local : "Livre (Sem plantão)";
-                badgeAtividade.innerHTML = `Atual (<span class="font-bold text-blue-500 dark:text-blue-400">${turnoAlvo.periodo}</span>): ${localStr}`;
+                badgeAtividade.innerHTML = `<span class="font-bold text-blue-500 dark:text-blue-400">${turnoAlvo.periodo}:</span> ${localStr}`;
             } else {
-                badgeAtividade.innerText = "Atual: Sem atividade";
+                badgeAtividade.innerText = "Próxima: Sem atividade";
             }
 
-            // 2. Atualiza o Painel Novo (Apenas a PRÓXIMA Atividade)
             if (painelNovo && typeof dadosEscala !== 'undefined') {
                 const dadosTrio = dadosEscala[trioId];
                 let proximaAtividade = null;
-
-                const hojeDateObj = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
-                
-                // Define um "peso" para o momento atual para ignorar o turno que já passou ou está acontecendo
-                let pesoAtual = 0; // Antes das 07h (considera tudo)
-                if (horaAtual >= 7 && horaAtual < 13) pesoAtual = 1; // Manhã já começou, buscar Tarde em diante
-                else if (horaAtual >= 13 && horaAtual < 19) pesoAtual = 2; // Tarde já começou, buscar Noite
-                else if (horaAtual >= 19) pesoAtual = 3; // Noite já começou, buscar só amanhã
 
                 for (let semanaK in dadosTrio.semanas) {
                     const dias = dadosTrio.semanas[semanaK];
@@ -603,21 +593,10 @@
                         const anoAtual = agora.getFullYear();
                         const dataDiaObj = new Date(anoAtual, parseInt(mesStr) - 1, parseInt(diaStr));
 
-                        if (dataDiaObj >= hojeDateObj) {
-                            const ehHoje = dataDiaObj.getTime() === hojeDateObj.getTime();
+                        if (dataDiaObj >= new Date(agora.getFullYear(), agora.getMonth(), agora.getDate())) {
                             const turnos = infoDia.turnos || [];
-                            
                             for (let t of turnos) {
                                 if (t.local && t.local !== "—") {
-                                    // Se for hoje, precisamos pular os turnos que já estão acontecendo ou passaram
-                                    if (ehHoje) {
-                                        const pesoTurno = t.periodo === 'Manhã' ? 1 : (t.periodo === 'Tarde' ? 2 : 3);
-                                        if (pesoTurno <= pesoAtual) {
-                                            continue; // Pula para o próximo turno, este já foi!
-                                        }
-                                    }
-
-                                    // Achou a primeira atividade verdadeiramente FUTURA
                                     proximaAtividade = {
                                         diaNome: infoDia.nome,
                                         data: infoDia.data,
