@@ -17,6 +17,8 @@
             background-attachment: fixed;
             transition: background-color 0.3s ease, color 0.3s ease;
             -webkit-tap-highlight-color: transparent;
+            height: 100vh;
+            overflow: hidden;
         }
         .dark body { 
             background-color: #020203; 
@@ -32,55 +34,52 @@
         }
 
         .font-outfit { font-family: 'Outfit', sans-serif; }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar { width: 3px; height: 3px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.3); border-radius: 10px; }
         
         .glass-panel {
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .dark .glass-panel {
-            background: rgba(15, 15, 20, 0.7);
+            background: rgba(15, 15, 20, 0.75);
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
         html:not(.dark) .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
         }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col lg:flex-row selection:bg-blue-500 selection:text-white">
+<body class="h-screen flex flex-col lg:flex-row selection:bg-blue-500 selection:text-white overflow-hidden">
 
-    <a href="https://wa.me/5561994559190?text=Olá%20André,%20estou%20a%20acessar%20o%20Painel%20de%20G.O." target="_blank" class="fixed bottom-5 right-5 z-50 w-12 h-12 sm:w-14 sm:h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(16,185,129,0.4)] transition-all transform hover:scale-110 active:scale-95 group" title="Falar com André Victor no WhatsApp">
-        <svg class="w-6 h-6 sm:w-7 sm:h-7 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+    <a href="https://wa.me/5561994559190?text=Olá%20André,%20estou%20a%20acessar%20o%20Painel%20de%20G.O." target="_blank" class="fixed bottom-3 right-3 z-50 w-10 h-10 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-[0_4px_15px_rgba(16,185,129,0.4)] transition-all transform hover:scale-110 active:scale-95 group" title="Falar com André Victor no WhatsApp">
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
     </a>
 
-    <div id="login-overlay" class="fixed inset-0 z-50 backdrop-blur-xl flex items-center justify-center p-3 sm:p-4 overflow-hidden" style="background-image: linear-gradient(to bottom, rgba(2, 2, 3, 0.85), rgba(2, 2, 3, 0.98)), url('fundo.jpg'); background-size: cover; background-position: bottom center;">
-        <div class="glass-panel rounded-[1.75rem] sm:rounded-[2rem] p-4 sm:p-6 max-w-md w-full shadow-2xl space-y-3.5 sm:space-y-4 text-center relative overflow-hidden transition-all duration-500 my-auto max-h-[96vh] flex flex-col justify-center">
-            
-            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl sm:rounded-2xl mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.3)] shrink-0">
-                <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+    <div id="login-overlay" class="fixed inset-0 z-50 backdrop-blur-xl flex items-center justify-center p-3 overflow-hidden" style="background-image: linear-gradient(to bottom, rgba(2, 2, 3, 0.85), rgba(2, 2, 3, 0.98)), url('fundo.jpg'); background-size: cover; background-position: bottom center;">
+        <div class="glass-panel rounded-2xl p-4 max-w-sm w-full shadow-2xl space-y-3 text-center relative overflow-hidden transition-all duration-300">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl mx-auto flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.3)] shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
             </div>
             
-            <div class="space-y-1 shrink-0">
-                <h2 class="text-xl sm:text-2xl font-outfit font-extrabold tracking-tight text-white">Escala de 2026.2</h2>
-                <p class="text-[11px] sm:text-xs text-zinc-400 font-medium">
-                    Identificação obrigatória para a Turma T7A • <span class="text-blue-400 font-semibold">André Victor</span>
-                </p>
+            <div class="space-y-0.5">
+                <h2 class="text-lg font-outfit font-extrabold tracking-tight text-white">Escala de 2026.2</h2>
+                <p class="text-[10px] text-zinc-400 font-medium">Turma T7A • <span class="text-blue-400 font-semibold">André Victor</span></p>
             </div>
             
-            <div class="space-y-3 text-left">
+            <div class="space-y-2.5 text-left">
                 <div>
-                    <label class="block text-[10px] sm:text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Selecione o seu Nome</label>
+                    <label class="block text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Selecione o seu Nome</label>
                     <div class="relative">
-                        <select id="aluno-select" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 sm:py-3 text-white text-xs sm:text-sm font-semibold appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer shadow-inner">
-                            <option value="" disabled selected>-- Escolha o seu nome completo --</option>
+                        <select id="aluno-select" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-white text-xs font-semibold appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer shadow-inner">
+                            <option value="" disabled selected>-- Escolha o seu nome --</option>
                             <optgroup label="Trio A1">
                                 <option value="André Victor">André Victor</option>
                                 <option value="Davi Carvalho">Davi Carvalho</option>
@@ -132,122 +131,113 @@
                                 <option value="Ana Luiza Daros">Ana Luiza Daros</option>
                             </optgroup>
                         </select>
-                        <div class="absolute inset-y-0 right-0 top-2.5 sm:top-3 flex items-center px-3 pointer-events-none text-zinc-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        <div class="absolute inset-y-0 right-0 top-2 flex items-center px-3 pointer-events-none text-zinc-400">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </div>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[10px] sm:text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Senha de Acesso</label>
-                    <input type="password" id="senha-input" placeholder="Digite a senha de acesso" class="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 sm:py-3 text-white text-xs sm:text-sm font-medium focus:outline-none focus:border-blue-500 text-center transition-all placeholder:text-zinc-500 shadow-inner">
+                    <label class="block text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Senha de Acesso</label>
+                    <input type="password" id="senha-input" placeholder="Digite a senha" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-white text-xs font-medium focus:outline-none focus:border-blue-500 text-center transition-all placeholder:text-zinc-500 shadow-inner">
                 </div>
 
-                <button onclick="verificarSenha()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-outfit font-bold tracking-wide py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)] active:scale-95 cursor-pointer mt-1">ACESSAR SISTEMA</button>
-                <p id="erro-msg" class="text-xs text-rose-400 font-semibold hidden text-center animate-pulse">Selecione o seu nome e digite a senha correta.</p>
+                <button onclick="verificarSenha()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-outfit font-bold tracking-wide py-2.5 rounded-xl transition-all shadow-[0_0_12px_rgba(79,70,229,0.3)] active:scale-95 cursor-pointer text-xs">ACESSAR SISTEMA</button>
+                <p id="erro-msg" class="text-[10px] text-rose-400 font-semibold hidden text-center animate-pulse">Selecione o nome e digite a senha correta.</p>
             </div>
         </div>
     </div>
 
-    <aside class="w-full lg:w-72 glass-panel border-b lg:border-b-0 lg:border-r border-black/10 dark:border-white/5 flex flex-col justify-between p-4 sm:p-6 shrink-0 z-30">
-        <div class="space-y-6">
-            <div class="flex items-center justify-between lg:justify-start lg:space-x-3.5">
-                <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 flex items-center justify-center text-blue-500 dark:text-blue-400 shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+    <aside class="w-full lg:w-60 glass-panel border-b lg:border-b-0 lg:border-r border-black/10 dark:border-white/5 flex flex-col justify-between p-3 shrink-0 z-30">
+        <div class="space-y-3">
+            <div class="flex items-center justify-between lg:justify-start lg:space-x-2.5">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 flex items-center justify-center text-blue-500 dark:text-blue-400 shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                     </div>
                     <div class="min-w-0">
-                        <p id="saudacao-aluno" class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest truncate">
-                            Olá!
-                        </p>
-                        <h1 class="text-xs sm:text-sm font-bold tracking-tight dark:text-white text-zinc-900 leading-tight truncate max-w-[170px] sm:max-w-[190px]" id="aluno-logado-badge">
-                            Turma T7A
-                        </h1>
+                        <p id="saudacao-aluno" class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest truncate">Olá!</p>
+                        <h1 class="text-xs font-bold tracking-tight dark:text-white text-zinc-900 leading-tight truncate max-w-[140px]" id="aluno-logado-badge">Turma T7A</h1>
                     </div>
                 </div>
-                <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-xl glass-panel text-zinc-600 dark:text-zinc-300">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                <button onclick="toggleMobileMenu()" class="lg:hidden p-1.5 rounded-lg glass-panel text-zinc-600 dark:text-zinc-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
                 </button>
             </div>
 
-            <nav id="mobile-nav-menu" class="hidden lg:block space-y-1.5 font-outfit pt-2 lg:pt-0">
-                <p class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest px-3 mb-2 hidden lg:block">Menus de Navegação</p>
-                
-                <button onclick="alternarModo('individual')" id="btn-modo-ind" class="w-full flex items-center space-x-3 px-3.5 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition-all cursor-pointer">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <nav id="mobile-nav-menu" class="hidden lg:block space-y-1 font-outfit">
+                <p class="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest px-2 mb-1 hidden lg:block">Navegação</p>
+                <button onclick="alternarModo('individual')" id="btn-modo-ind" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     <span>Meu Trio</span>
                 </button>
-
-                <button onclick="alternarModo('geral')" id="btn-modo-geral" class="w-full flex items-center space-x-3 px-3.5 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition-all cursor-pointer">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <button onclick="alternarModo('geral')" id="btn-modo-geral" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     <span>Todos os Trios</span>
                 </button>
-
-                <button onclick="alternarModo('seminarios')" id="btn-modo-seminarios" class="w-full flex items-center space-x-3 px-3.5 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition-all cursor-pointer">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                <button onclick="alternarModo('seminarios')" id="btn-modo-seminarios" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                     <span>Seminários</span>
                 </button>
-
-                <button onclick="alternarModo('calendario')" id="btn-modo-calendario" class="w-full flex items-center space-x-3 px-3.5 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition-all cursor-pointer">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    <span>Calendário Mensal</span>
+                <button onclick="alternarModo('calendario')" id="btn-modo-calendario" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span>Calendário</span>
                 </button>
-
-                <button onclick="alternarModo('recados')" id="btn-modo-recados" class="w-full flex items-center space-x-3 px-3.5 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition-all cursor-pointer">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                    <span>Quadro de Recados</span>
+                <button onclick="alternarModo('recados')" id="btn-modo-recados" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                    <span>Recados</span>
                 </button>
             </nav>
         </div>
 
-        <div id="mobile-footer-menu" class="hidden lg:block pt-4 lg:pt-6 border-t border-black/15 dark:border-white/5 space-y-3 font-outfit mt-4 lg:mt-0">
+        <div id="mobile-footer-menu" class="hidden lg:block pt-2 border-t border-black/10 dark:border-white/5 space-y-2 font-outfit">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-zinc-400">Turma T7A</span>
-                <div class="flex items-center space-x-2">
-                    <button onclick="alternarTema()" class="p-2 rounded-xl glass-panel text-zinc-600 dark:text-zinc-300 hover:text-blue-500 transition-all cursor-pointer" title="Alternar Tema">
-                        <svg id="icone-lua" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-                        <svg id="icone-sol" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                <span class="text-[10px] font-bold text-zinc-400">T7A</span>
+                <div class="flex items-center space-x-1.5">
+                    <button onclick="alternarTema()" class="p-1.5 rounded-lg glass-panel text-zinc-600 dark:text-zinc-300 hover:text-blue-500 transition-all cursor-pointer" title="Tema">
+                        <svg id="icone-lua" class="w-3.5 h-3.5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                        <svg id="icone-sol" class="w-3.5 h-3.5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     </button>
-                    <button onclick="sairSistema()" class="p-2 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white transition-all cursor-pointer" title="Sair do sistema">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    <button onclick="sairSistema()" class="p-1.5 rounded-lg bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white transition-all cursor-pointer" title="Sair">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                     </button>
                 </div>
             </div>
-            <button onclick="alternarModo('admin')" id="btn-header-admin" class="w-full py-2.5 px-3 rounded-xl bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-xs font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            <button onclick="alternarModo('admin')" id="btn-header-admin" class="w-full py-2 px-2.5 rounded-xl bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-[11px] font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                 <span>Painel Admin</span>
             </button>
         </div>
     </aside>
 
-    <main class="flex-grow flex flex-col min-w-0 p-4 sm:p-8 space-y-6 sm:space-y-8 relative">
+    <main class="flex-grow flex flex-col min-w-0 p-3 sm:p-4 space-y-3 relative overflow-y-auto">
         
-        <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 sm:pb-6 border-b border-black/5 dark:border-white/5">
+        <header class="flex items-center justify-between pb-2 border-b border-black/5 dark:border-white/5">
             <div>
-                <h2 class="text-lg sm:text-2xl font-outfit font-extrabold dark:text-white text-zinc-900 tracking-tight leading-tight">
+                <h2 class="text-sm sm:text-base font-outfit font-extrabold dark:text-white text-zinc-900 tracking-tight leading-tight">
                     Internato de Ginecologia & Obstetrícia
                 </h2>
-                <p id="contador-dias" class="text-xs text-blue-600 dark:text-blue-400 font-bold mt-1">Calculando prazo...</p>
+                <p id="contador-dias" class="text-[10px] text-blue-600 dark:text-blue-400 font-bold mt-0.5">Calculando prazo...</p>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
-            <div class="lg:col-span-6 glass-panel rounded-2xl p-5 sm:p-6 shadow-xl flex flex-col justify-between gap-4 sm:gap-5 transition-transform duration-300 hover:-translate-y-1 group">
-                <div class="flex items-center space-x-3.5 sm:space-x-4 w-full">
-                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-outfit font-black text-base sm:text-lg shrink-0 shadow-[0_0_20px_rgba(79,70,229,0.4)] group-hover:scale-105 transition-transform" id="grupo-badge-num">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
+            <div class="lg:col-span-6 glass-panel rounded-2xl p-3.5 shadow-lg flex flex-col justify-between gap-2.5">
+                <div class="flex items-center space-x-3 w-full">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-outfit font-black text-sm shrink-0 shadow-[0_0_15px_rgba(79,70,229,0.3)]" id="grupo-badge-num">
                         A1
                     </div>
                     <div class="min-w-0 flex-grow">
-                        <span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-0.5 sm:mb-1">Grupo Selecionado</span>
-                        <h3 class="text-sm sm:text-lg font-outfit font-extrabold dark:text-white text-zinc-900 tracking-tight truncate" id="titulo-grupo-header">Trio A1: André, Davi & Leticia B.</h3>
+                        <span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-0.5">Grupo Selecionado</span>
+                        <h3 class="text-xs sm:text-sm font-outfit font-extrabold dark:text-white text-zinc-900 tracking-tight truncate" id="titulo-grupo-header">Trio A1: André, Davi & Leticia B.</h3>
                     </div>
                 </div>
 
-                <div class="relative w-full pt-3 sm:pt-4 border-t border-black/5 dark:border-white/10">
-                    <select id="grupo-select" onchange="mudarGrupo()" class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-xs sm:text-sm rounded-xl px-4 py-3 sm:py-3.5 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer shadow-inner">
+                <div class="relative w-full pt-2 border-t border-black/5 dark:border-white/10">
+                    <select id="grupo-select" onchange="mudarGrupo()" class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-xs rounded-xl px-3 py-2 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer shadow-inner">
                         <option value="1">Trio A1: André, Davi & Leticia B.</option>
                         <option value="2">Trio A2: Nadya, Louise & Isabella T.</option>
-                        <option value="3">Trio A3: Hiago, Isabela & Mª Eduarda Aquino</option>
+                        <option value="3">Trio A3: Hiago, Isabela & Maria Eduarda Aquino</option>
                         <option value="4">Trio A4: Heitor, Bruno & Andressa M.</option>
                         <option value="5">Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.</option>
                         <option value="6">Trio A6: Leticia M., Júlia & Luiza B.</option>
@@ -256,90 +246,86 @@
                         <option value="9">Trio A9: Annelise, Camila S. & Gabriella</option>
                         <option value="10">Trio A10: José, João Victor & Ana Luiza</option>
                     </select>
-                    <div class="absolute inset-y-0 right-0 top-3.5 sm:top-4 flex items-center px-4 pointer-events-none text-zinc-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    <div class="absolute inset-y-0 right-0 top-2.5 flex items-center px-3 pointer-events-none text-zinc-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </div>
                 </div>
             </div>
 
-            <div class="lg:col-span-6 grid grid-cols-3 gap-3 sm:gap-4">
-                <div class="glass-panel rounded-2xl p-4 sm:p-5 flex flex-col justify-center transition-transform duration-300 hover:-translate-y-1">
-                    <span class="text-[9px] sm:text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1">Período Atual</span>
-                    <span class="text-base sm:text-2xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-white dark:to-zinc-300 truncate" id="stat-semana">-- de 9</span>
+            <div class="lg:col-span-6 grid grid-cols-3 gap-2.5">
+                <div class="glass-panel rounded-2xl p-3 flex flex-col justify-center">
+                    <span class="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-0.5">Período</span>
+                    <span class="text-sm sm:text-lg font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-white dark:to-zinc-300 truncate" id="stat-semana">-- de 9</span>
                 </div>
-                <div class="glass-panel rounded-2xl p-4 sm:p-5 flex flex-col justify-center transition-transform duration-300 hover:-translate-y-1">
-                    <span class="text-[9px] sm:text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1">Turnos/Sem.</span>
-                    <span class="text-base sm:text-2xl font-outfit font-black dark:text-white text-zinc-900" id="stat-atividades">--</span>
-                    <div id="stat-detalhes-turnos" class="flex flex-wrap gap-x-1 gap-y-0.5 mt-1.5 sm:mt-2 text-[8px] sm:text-[9px] text-zinc-500 dark:text-zinc-400 font-semibold tracking-wide"></div>
+                <div class="glass-panel rounded-2xl p-3 flex flex-col justify-center">
+                    <span class="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-0.5">Turnos/Sem.</span>
+                    <span class="text-sm sm:text-lg font-outfit font-black dark:text-white text-zinc-900" id="stat-atividades">--</span>
+                    <div id="stat-detalhes-turnos" class="flex flex-wrap gap-x-1 gap-y-0.5 mt-1 text-[8px] text-zinc-500 dark:text-zinc-400 font-semibold tracking-wide"></div>
                 </div>
-                <div class="glass-panel rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-transform duration-300 hover:-translate-y-1 group">
+                <div class="glass-panel rounded-2xl p-3 flex flex-col justify-between">
                     <div>
-                        <span class="text-[9px] sm:text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-0.5 sm:mb-1">Capotes CO</span>
+                        <span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-0.5">Capotes CO</span>
                         <div class="flex items-baseline space-x-1">
-                            <span class="text-xl sm:text-3xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.3)]" id="contador-capotes-val">...</span>
-                            <span class="text-[9px] font-bold text-zinc-400">un.</span>
+                            <span class="text-lg sm:text-xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400" id="contador-capotes-val">...</span>
+                            <span class="text-[8px] font-bold text-zinc-400">un.</span>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-1.5 mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-black/5 dark:border-white/10">
-                        <button onclick="alterarCapotes(-1)" class="flex-1 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-black/5 dark:border-white/5 text-zinc-700 dark:text-zinc-300 font-outfit font-bold py-1 rounded-lg text-xs sm:text-sm transition-all active:scale-95 cursor-pointer">-</button>
-                        <button onclick="alterarCapotes(1)" class="flex-1 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-outfit font-bold py-1 rounded-lg text-xs sm:text-sm transition-all active:scale-95 cursor-pointer shadow-[0_0_10px_rgba(59,130,246,0.1)]">+</button>
+                    <div class="flex items-center space-x-1 mt-1 pt-1 border-t border-black/5 dark:border-white/10">
+                        <button onclick="alterarCapotes(-1)" class="flex-1 bg-black/5 dark:bg-white/5 hover:bg-black/10 text-zinc-700 dark:text-zinc-300 font-outfit font-bold py-0.5 rounded text-[10px] transition-all cursor-pointer">-</button>
+                        <button onclick="alterarCapotes(1)" class="flex-1 bg-blue-600/20 hover:bg-blue-600/40 text-blue-600 dark:text-blue-400 font-outfit font-bold py-0.5 rounded text-[10px] transition-all cursor-pointer">+</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="space-y-2.5 sm:space-y-3" id="wrapper-semanas-tabs">
-            <span class="text-[10px] sm:text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest px-1 flex items-center space-x-2">
-                <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <div class="space-y-1.5" id="wrapper-semanas-tabs">
+            <span class="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest px-1 flex items-center space-x-1.5">
+                <svg class="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 <span>Navegação por Semanas</span>
             </span>
-
-            <div class="flex sm:grid sm:grid-cols-3 lg:grid-cols-9 gap-2 overflow-x-auto no-scrollbar pb-1 sm:pb-0" id="semanas-tab-container"></div>
+            <div class="flex sm:grid sm:grid-cols-3 lg:grid-cols-9 gap-1.5 overflow-x-auto no-scrollbar pb-1" id="semanas-tab-container"></div>
         </div>
 
-        <div id="banner-hero" class="relative bg-gradient-to-r from-blue-900/20 via-black/5 to-black/5 dark:from-blue-900/30 dark:via-black/40 dark:to-black/40 border border-blue-500/25 rounded-3xl p-5 sm:p-8 shadow-2xl overflow-hidden flex flex-col justify-center min-h-[110px] sm:min-h-[130px] backdrop-blur-xl">
-            <div class="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="relative z-10 space-y-1.5 sm:space-y-2">
-                <div class="flex items-center space-x-2.5 sm:space-x-3">
-                    <span class="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5">
+        <div id="banner-hero" class="relative bg-gradient-to-r from-blue-900/20 via-black/5 to-black/5 dark:from-blue-900/30 dark:via-black/40 dark:to-black/40 border border-blue-500/25 rounded-2xl p-3 sm:p-4 shadow-lg overflow-hidden flex flex-col justify-center backdrop-blur-xl">
+            <div class="relative z-10 space-y-0.5">
+                <div class="flex items-center space-x-2">
+                    <span class="relative flex h-2 w-2">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
                     </span>
-
-                    <span id="label-dia-topo" class="text-[10px] sm:text-xs font-bold tracking-[0.15em] sm:tracking-[0.2em] text-blue-600 dark:text-blue-400 uppercase font-outfit">SEGUNDA-FEIRA • 04/08</span>
+                    <span id="label-dia-topo" class="text-[9px] font-bold tracking-[0.15em] text-blue-600 dark:text-blue-400 uppercase font-outfit">SEGUNDA-FEIRA • 04/08</span>
                 </div>
-                <h2 id="titulo-banner-hero" class="text-xl sm:text-3xl font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-white dark:to-zinc-400 tracking-tight">
+                <h2 id="titulo-banner-hero" class="text-base sm:text-xl font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-white dark:to-zinc-400 tracking-tight">
                     Escala Diária por Turnos
                 </h2>
             </div>
         </div>
 
-        <div id="container-abas-dias" class="flex sm:grid sm:grid-cols-4 md:grid-cols-7 gap-2 overflow-x-auto no-scrollbar pb-1 sm:pb-0"></div>
+        <div id="container-abas-dias" class="flex sm:grid sm:grid-cols-4 md:grid-cols-7 gap-1.5 overflow-x-auto no-scrollbar pb-1"></div>
 
         <div class="flex items-center justify-between px-1">
-            <span class="text-[10px] sm:text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest flex items-center space-x-2" id="titulo-secao-inferior">
-                <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+            <span class="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest flex items-center space-x-1.5" id="titulo-secao-inferior">
+                <svg class="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                 <span>Divisão por Turnos (Manhã, Tarde e Noite)</span>
             </span>
-
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6" id="grid-inferior">
-            <div id="coluna-membros" class="lg:col-span-4 glass-panel rounded-3xl p-5 sm:p-6 shadow-xl flex flex-col justify-between">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 pb-2" id="grid-inferior">
+            <div id="coluna-membros" class="lg:col-span-4 glass-panel rounded-2xl p-3 shadow-lg flex flex-col justify-between">
                 <div>
-                    <div class="flex items-center justify-between mb-4 sm:mb-5 pb-3 sm:pb-4 border-b border-black/5 dark:border-white/10">
-                        <span class="text-[10px] sm:text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Integrantes do Trio</span>
-                        <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+                    <div class="flex items-center justify-between mb-2.5 pb-2 border-b border-black/5 dark:border-white/10">
+                        <span class="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Integrantes do Trio</span>
+                        <span class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]"></span>
                     </div>
-                    <ul id="lista-membros" class="space-y-3 sm:space-y-4"></ul>
+                    <ul id="lista-membros" class="space-y-2"></ul>
                 </div>
-                <div class="mt-6 sm:mt-8 pt-4 sm:pt-5 border-t border-black/5 dark:border-white/5 text-[9px] sm:text-[10px] text-zinc-400 dark:text-zinc-500 font-bold tracking-wide uppercase text-center font-outfit">
+                <div class="mt-3 pt-2.5 border-t border-black/5 dark:border-white/5 text-[8px] text-zinc-400 dark:text-zinc-500 font-bold tracking-wide uppercase text-center font-outfit">
                     Rodízio de G.O. (9 Semanas)
                 </div>
             </div>
 
-            <div class="lg:col-span-8 space-y-4" id="coluna-turnos-wrapper">
-                <div id="lista-turnos" class="space-y-3"></div>
+            <div class="lg:col-span-8 space-y-2.5" id="coluna-turnos-wrapper">
+                <div id="lista-turnos" class="space-y-2"></div>
             </div>
         </div>
     </main>
@@ -536,8 +522,8 @@
             const bannerHero = document.getElementById('banner-hero');
             const wrapperSemanas = document.getElementById('wrapper-semanas-tabs');
 
-            const classAtivo = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)] transition-all cursor-pointer";
-            const classInativo = "w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-xs font-bold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer";
+            const classAtivo = "w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_12px_rgba(79,70,229,0.3)] transition-all cursor-pointer";
+            const classInativo = "w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer";
 
             btnInd.className = classInativo;
             btnGeral.className = classInativo;
@@ -546,60 +532,60 @@
             btnRecados.className = classInativo;
 
             if (modo === 'individual') {
-                btnHeaderAdmin.className = "w-full py-2.5 px-3 rounded-xl bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-xs font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2";
+                btnHeaderAdmin.className = "w-full py-2 px-2.5 rounded-xl bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-[11px] font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-1.5";
                 btnInd.className = classAtivo;
                 colunaMembros.style.display = 'flex';
-                colunaTurnos.className = "lg:col-span-8 space-y-4";
-                tituloSecao.innerHTML = `<svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg><span>Divisão por Turnos (Manhã, Tarde e Noite)</span>`;
+                colunaTurnos.className = "lg:col-span-8 space-y-2.5";
+                tituloSecao.innerHTML = `<svg class="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg><span>Divisão por Turnos (Manhã, Tarde e Noite)</span>`;
                 containerAbas.style.display = 'flex';
                 bannerHero.style.display = 'flex';
                 wrapperSemanas.style.display = 'block';
                 mudarGrupo();
             } else if (modo === 'geral') {
-                btnHeaderAdmin.className = "w-full py-2.5 px-3 rounded-xl bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-xs font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2";
+                btnHeaderAdmin.className = "w-full py-2 px-2.5 rounded-xl bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-[11px] font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-1.5";
                 btnGeral.className = classAtivo;
                 colunaMembros.style.display = 'none';
-                colunaTurnos.className = "lg:col-span-12 space-y-4";
-                tituloSecao.innerHTML = `<svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg><span>Visão Geral: Todos os 10 Trios do Dia</span>`;
+                colunaTurnos.className = "lg:col-span-12 space-y-2.5";
+                tituloSecao.innerHTML = `<svg class="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg><span>Visão Geral: Todos os 10 Trios do Dia</span>`;
                 containerAbas.style.display = 'flex';
                 bannerHero.style.display = 'flex';
                 wrapperSemanas.style.display = 'block';
                 mudarGrupo();
             } else if (modo === 'seminarios') {
-                btnHeaderAdmin.className = "w-full py-2.5 px-3 rounded-xl bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-xs font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2";
+                btnHeaderAdmin.className = "w-full py-2 px-2.5 rounded-xl bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-[11px] font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-1.5";
                 btnSeminarios.className = classAtivo;
                 colunaMembros.style.display = 'none';
-                colunaTurnos.className = "lg:col-span-12 space-y-4";
-                tituloSecao.innerHTML = `<svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg><span>Cronograma Oficial de Seminários (Sala 2)</span>`;
+                colunaTurnos.className = "lg:col-span-12 space-y-2.5";
+                tituloSecao.innerHTML = `<svg class="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg><span>Cronograma Oficial de Seminários (Sala 2)</span>`;
                 containerAbas.style.display = 'none';
                 bannerHero.style.display = 'none';
                 wrapperSemanas.style.display = 'none';
                 renderizarSeminariosView();
             } else if (modo === 'calendario') {
-                btnHeaderAdmin.className = "w-full py-2.5 px-3 rounded-xl bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-xs font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2";
+                btnHeaderAdmin.className = "w-full py-2 px-2.5 rounded-xl bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-[11px] font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-1.5";
                 btnCalendario.className = classAtivo;
                 colunaMembros.style.display = 'none';
-                colunaTurnos.className = "lg:col-span-12 space-y-4";
-                tituloSecao.innerHTML = `<svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span>Calendário Mensal do Trio Selecionado (Agosto a Outubro de 2026)</span>`;
+                colunaTurnos.className = "lg:col-span-12 space-y-2.5";
+                tituloSecao.innerHTML = `<svg class="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span>Calendário Mensal do Trio Selecionado (Agosto a Outubro de 2026)</span>`;
                 containerAbas.style.display = 'none';
                 bannerHero.style.display = 'none';
                 wrapperSemanas.style.display = 'none';
                 renderizarCalendarioMensal();
             } else if (modo === 'recados') {
-                btnHeaderAdmin.className = "w-full py-2.5 px-3 rounded-xl bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-xs font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2";
+                btnHeaderAdmin.className = "w-full py-2 px-2.5 rounded-xl bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-[11px] font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-1.5";
                 btnRecados.className = classAtivo;
                 colunaMembros.style.display = 'none';
-                colunaTurnos.className = "lg:col-span-12 space-y-4";
-                tituloSecao.innerHTML = `<svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg><span>Quadro de Recados (Turma T7A)</span>`;
+                colunaTurnos.className = "lg:col-span-12 space-y-2.5";
+                tituloSecao.innerHTML = `<svg class="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg><span>Quadro de Recados (Turma T7A)</span>`;
                 containerAbas.style.display = 'none';
                 bannerHero.style.display = 'none';
                 wrapperSemanas.style.display = 'none';
                 renderizarRecadosView();
             } else if (modo === 'admin') {
-                btnHeaderAdmin.className = "w-full py-2.5 px-3 rounded-xl bg-indigo-600 text-white text-xs font-bold tracking-wide shadow-[0_0_15px_rgba(79,70,229,0.5)] transition-all cursor-pointer flex items-center justify-center space-x-2";
+                btnHeaderAdmin.className = "w-full py-2 px-2.5 rounded-xl bg-indigo-600 text-white text-[11px] font-bold tracking-wide shadow-[0_0_12px_rgba(79,70,229,0.4)] transition-all cursor-pointer flex items-center justify-center space-x-1.5";
                 colunaMembros.style.display = 'none';
-                colunaTurnos.className = "lg:col-span-12 space-y-4";
-                tituloSecao.innerHTML = `<svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg><span>Painel Administrativo Exclusivo (Representante)</span>`;
+                colunaTurnos.className = "lg:col-span-12 space-y-2.5";
+                tituloSecao.innerHTML = `<svg class="w-3 h-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg><span>Painel Administrativo Exclusivo (Representante)</span>`;
                 containerAbas.style.display = 'none';
                 bannerHero.style.display = 'none';
                 wrapperSemanas.style.display = 'none';
@@ -615,18 +601,18 @@
         window.renderizarAdminLogin = function() {
             const container = document.getElementById('lista-turnos');
             container.innerHTML = `
-                <div class="glass-panel rounded-3xl p-6 sm:p-8 max-w-md mx-auto shadow-2xl space-y-6 text-center">
-                    <div class="w-14 h-14 bg-indigo-600/20 text-indigo-500 rounded-2xl mx-auto flex items-center justify-center border border-indigo-500/30">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                <div class="glass-panel rounded-2xl p-5 max-w-sm mx-auto shadow-xl space-y-4 text-center">
+                    <div class="w-10 h-10 bg-indigo-600/20 text-indigo-500 rounded-xl mx-auto flex items-center justify-center border border-indigo-500/30">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                     </div>
                     <div>
-                        <h3 class="text-lg sm:text-xl font-outfit font-extrabold dark:text-white text-zinc-900">Acesso Restrito ao Representante</h3>
-                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Introduza a sua senha de administração para gerir escalas, avisos e seminários.</p>
+                        <h3 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900">Acesso Restrito ao Representante</h3>
+                        <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Introduza a sua senha para gerir escalas, avisos e seminários.</p>
                     </div>
-                    <form onsubmit="verificarAdminLogin(event)" class="space-y-4">
-                        <input type="password" id="admin-senha-input" placeholder="Senha do painel admin" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3.5 text-center focus:outline-none focus:border-indigo-500 shadow-inner">
-                        <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-outfit font-bold py-3.5 rounded-xl transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)] active:scale-95 cursor-pointer">ENTRAR NO PAINEL ADMIN</button>
-                        <p id="admin-erro" class="text-xs text-rose-400 font-semibold hidden animate-pulse">Senha incorreta.</p>
+                    <form onsubmit="verificarAdminLogin(event)" class="space-y-3">
+                        <input type="password" id="admin-senha-input" placeholder="Senha do painel admin" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-xs rounded-xl px-3.5 py-2.5 text-center focus:outline-none focus:border-indigo-500 shadow-inner">
+                        <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-outfit font-bold py-2.5 rounded-xl transition-all shadow-[0_0_12px_rgba(79,70,229,0.3)] active:scale-95 cursor-pointer text-xs">ENTRAR</button>
+                        <p id="admin-erro" class="text-[10px] text-rose-400 font-semibold hidden animate-pulse">Senha incorreta.</p>
                     </form>
                 </div>
             `;
@@ -635,27 +621,27 @@
         window.renderizarAdminPainelPrincipal = function() {
             const container = document.getElementById('lista-turnos');
             container.innerHTML = `
-                <div class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div onclick="abrirAdminSecao('escalas')" class="glass-panel p-5 sm:p-6 rounded-3xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-xl group">
-                            <h4 class="text-base font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">✏️ Gerir Escalas e Preceptores</h4>
-                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Atualizar locais, turnos e escalas dos trios.</p>
+                <div class="space-y-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                        <div onclick="abrirAdminSecao('escalas')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">✏️ Gerir Escalas e Preceptores</h4>
+                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Atualizar locais e turnos dos trios.</p>
                         </div>
-                        <div onclick="abrirAdminSecao('seminarios')" class="glass-panel p-5 sm:p-6 rounded-3xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-xl group">
-                            <h4 class="text-base font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">📚 Gerir Seminários</h4>
-                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Editar apresentadores, mediadores e temas.</p>
+                        <div onclick="abrirAdminSecao('seminarios')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">📚 Gerir Seminários</h4>
+                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Editar apresentadores, mediadores e temas.</p>
                         </div>
-                        <div onclick="abrirAdminSecao('recados')" class="glass-panel p-5 sm:p-6 rounded-3xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-xl group">
-                            <h4 class="text-base font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">💬 Gerir Quadro de Recados</h4>
-                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Publicar avisos importantes ou apagar mensagens.</p>
+                        <div onclick="abrirAdminSecao('recados')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">💬 Gerir Quadro de Recados</h4>
+                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Publicar avisos importantes ou apagar mensagens.</p>
                         </div>
-                        <div onclick="abrirAdminSecao('geral')" class="glass-panel p-5 sm:p-6 rounded-3xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-xl group">
-                            <h4 class="text-base font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">⚙️ Configurações e Capotes</h4>
-                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Ajustar contador de capotes e dados gerais.</p>
+                        <div onclick="abrirAdminSecao('geral')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">⚙️ Configurações e Capotes</h4>
+                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Ajustar contador de capotes e dados gerais.</p>
                         </div>
                     </div>
-                    <div id="admin-subconteudo" class="glass-panel rounded-3xl p-5 sm:p-6 shadow-xl">
-                        <p class="text-sm text-zinc-400 text-center py-6">Selecione uma opção acima para começar a editar.</p>
+                    <div id="admin-subconteudo" class="glass-panel rounded-2xl p-3.5 shadow-md">
+                        <p class="text-xs text-zinc-400 text-center py-3">Selecione uma opção acima para começar a editar.</p>
                     </div>
                 </div>
             `;
@@ -667,21 +653,21 @@
                 renderizarAdminRecados();
             } else if (secao === 'escalas') {
                 sub.innerHTML = `
-                    <h3 class="text-base font-outfit font-extrabold text-indigo-500 mb-3">Editar Escalas de Plantões</h3>
-                    <p class="text-xs text-zinc-400 mb-4">Para alterar rapidamente, utilize a base de dados sincronizada ou edite a linha correspondente no código JavaScript do painel. A infraestrutura Firebase está pronta para gravar qualquer alteração personalizada.</p>
-                    <div class="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-300 font-medium">
-                        💡 Dica: Para alterações pontuais de plantões ou troca de turmas entre colegas, utilize o <strong>Quadro de Recados</strong> para avisar toda a turma instantaneamente.
+                    <h3 class="text-xs font-outfit font-extrabold text-indigo-500 mb-2">Editar Escalas de Plantões</h3>
+                    <p class="text-[10px] text-zinc-400 mb-2.5">A base de dados sincronizada permite gravação instantânea via Firebase.</p>
+                    <div class="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-[10px] text-indigo-300 font-medium">
+                        💡 Dica: Para trocas rápidas, utilize o <strong>Quadro de Recados</strong>.
                     </div>
                 `;
             } else if (secao === 'seminarios') {
                 sub.innerHTML = `
-                    <h3 class="text-base font-outfit font-extrabold text-indigo-500 mb-3">Gestão de Seminários</h3>
-                    <p class="text-xs text-zinc-400 mb-4">O cronograma oficial encontra-se ativo na aba 'Seminários'. Pode alterá-lo diretamente na matriz de dados para atualizar para todos os alunos em tempo real.</p>
+                    <h3 class="text-xs font-outfit font-extrabold text-indigo-500 mb-2">Gestão de Seminários</h3>
+                    <p class="text-[10px] text-zinc-400">O cronograma oficial encontra-se ativo na aba 'Seminários'.</p>
                 `;
             } else {
                 sub.innerHTML = `
-                    <h3 class="text-base font-outfit font-extrabold text-indigo-500 mb-3">Configurações Gerais</h3>
-                    <p class="text-xs text-zinc-400">Tudo sincronizado corretamente com o Firestore.</p>
+                    <h3 class="text-xs font-outfit font-extrabold text-indigo-500 mb-2">Configurações Gerais</h3>
+                    <p class="text-[10px] text-zinc-400">Sincronizado corretamente com o Firestore.</p>
                 `;
             }
         }
@@ -690,25 +676,25 @@
             const sub = document.getElementById('admin-subconteudo');
             if (!sub) return;
             let html = `
-                <h3 class="text-base font-outfit font-extrabold text-indigo-500 mb-4">Gerir Quadro de Recados (Painel Admin)</h3>
-                <form onsubmit="adicionarRecado(event)" class="space-y-4 mb-6 pb-6 border-b border-black/5 dark:border-white/10">
-                    <input type="text" id="recado-autor" value="Representante (T7A)" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 shadow-inner">
-                    <textarea id="recado-texto" required rows="3" placeholder="Escreva um aviso oficial para a turma..." class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 shadow-inner resize-none"></textarea>
-                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-outfit font-bold px-6 py-2.5 rounded-xl text-xs transition-all cursor-pointer">Publicar Aviso Oficial</button>
+                <h3 class="text-xs font-outfit font-extrabold text-indigo-500 mb-3">Gerir Quadro de Recados</h3>
+                <form onsubmit="adicionarRecado(event)" class="space-y-2.5 mb-3 pb-3 border-b border-black/5 dark:border-white/10">
+                    <input type="text" id="recado-autor" value="Representante (T7A)" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 shadow-inner">
+                    <textarea id="recado-texto" required rows="2" placeholder="Escreva um aviso oficial..." class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 shadow-inner resize-none"></textarea>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-outfit font-bold px-4 py-2 rounded-xl text-[10px] transition-all cursor-pointer">Publicar</button>
                 </form>
-                <div class="space-y-3">
+                <div class="space-y-2 max-h-32 overflow-y-auto pr-1">
             `;
             if (recadosListaGlobal.length === 0) {
-                html += `<p class="text-xs text-zinc-400">Nenhum recado encontrado.</p>`;
+                html += `<p class="text-[10px] text-zinc-400">Nenhum recado encontrado.</p>`;
             } else {
                 recadosListaGlobal.forEach(r => {
                     html += `
-                        <div class="flex items-center justify-between p-4 rounded-xl glass-panel border border-black/5 dark:border-white/5 gap-3">
+                        <div class="flex items-center justify-between p-2.5 rounded-xl glass-panel border border-black/5 dark:border-white/5 gap-2">
                             <div>
-                                <span class="text-xs font-outfit font-bold text-indigo-400">${r.autor}</span>
-                                <p class="text-xs text-zinc-300 mt-0.5">${r.texto}</p>
+                                <span class="text-[10px] font-outfit font-bold text-indigo-400">${r.autor}</span>
+                                <p class="text-[10px] text-zinc-300 mt-0.5">${r.texto}</p>
                             </div>
-                            <button onclick="deletarRecado('${r.id}')" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white text-xs font-bold transition-all cursor-pointer shrink-0">Apagar</button>
+                            <button onclick="deletarRecado('${r.id}')" class="px-2 py-1 rounded bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white text-[10px] font-bold transition-all cursor-pointer shrink-0">Apagar</button>
                         </div>
                     `;
                 });
@@ -733,28 +719,28 @@
 
         window.renderizarSeminariosView = function() {
             const containerTurnos = document.getElementById('lista-turnos');
-            let html = '<div class="space-y-4">';
+            let html = '<div class="space-y-2.5">';
             dadosSeminariosList.forEach(s => {
                 html += `
-                    <div class="glass-panel hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl p-4 sm:p-6 transition-all shadow-lg group">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-black/5 dark:border-white/10">
-                            <div class="flex items-center space-x-2.5">
-                                <span class="px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-outfit font-extrabold text-xs shadow-[0_0_10px_rgba(59,130,246,0.15)]">${s.data}</span>
-                                <span class="text-xs font-semibold text-zinc-600 dark:text-zinc-300 font-outfit">${s.hora.replace('\n', ' • ')}</span>
+                    <div class="glass-panel hover:bg-black/5 dark:hover:bg-white/5 rounded-xl p-3 transition-all shadow-md group">
+                        <div class="flex items-center justify-between gap-2 pb-2 border-b border-black/5 dark:border-white/10">
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-outfit font-extrabold text-[10px]">${s.data}</span>
+                                <span class="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 font-outfit">${s.hora.replace('\n', ' • ')}</span>
                             </div>
-                            <div class="flex items-center space-x-2 text-xs bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-lg border border-black/5 dark:border-white/5 self-start sm:self-auto">
-                                <span class="text-zinc-500 dark:text-zinc-400 font-medium">Mediador:</span>
+                            <div class="flex items-center space-x-1.5 text-[10px] bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5">
+                                <span class="text-zinc-500 dark:text-zinc-400">Mediador:</span>
                                 <span class="dark:text-white text-zinc-900 font-bold font-outfit">${s.mediador}</span>
                             </div>
                         </div>
-                        <div class="space-y-3 mt-3">
+                        <div class="space-y-1.5 mt-2">
                             <div>
-                                <span class="text-[9px] sm:text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-0.5">Apresentadores</span>
-                                <p class="text-xs sm:text-sm font-bold dark:text-white text-zinc-900">${s.apresentadores}</p>
+                                <span class="text-[8px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block">Apresentadores</span>
+                                <p class="text-[11px] font-bold dark:text-white text-zinc-900">${s.apresentadores}</p>
                             </div>
                             <div>
-                                <span class="text-[9px] sm:text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest block mb-0.5">Temas Abordados</span>
-                                <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 whitespace-pre-line leading-relaxed">${s.tema}</p>
+                                <span class="text-[8px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest block">Temas</span>
+                                <p class="text-[10px] text-zinc-600 dark:text-zinc-300 whitespace-pre-line leading-relaxed">${s.tema}</p>
                             </div>
                         </div>
                     </div>
@@ -768,26 +754,20 @@
             const containerTurnos = document.getElementById('lista-turnos');
             const alunoPadrao = sessionStorage.getItem('alunoLogado') || 'Trio T7A';
             let html = `
-                <div class="space-y-5">
-                    <div class="glass-panel rounded-3xl p-5 sm:p-6 shadow-xl space-y-4">
-                        <h3 class="text-sm sm:text-base font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">Deixar um Recado ou Aviso</h3>
-                        <form onsubmit="adicionarRecado(event)" class="space-y-3.5">
-                            <div>
-                                <label class="block text-[10px] sm:text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1">O seu Nome / Trio</label>
-                                <input type="text" id="recado-autor" value="${alunoPadrao}" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-xs sm:text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 shadow-inner">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] sm:text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1">Mensagem</label>
-                                <textarea id="recado-texto" required rows="3" placeholder="Escreva o seu aviso, troca de plantão ou lembrete..." class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-xs sm:text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 shadow-inner resize-none"></textarea>
-                            </div>
-                            <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-outfit font-bold py-3.5 rounded-xl transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)] active:scale-95 cursor-pointer">Publicar Recado</button>
+                <div class="space-y-3">
+                    <div class="glass-panel rounded-2xl p-3.5 shadow-lg space-y-2.5">
+                        <h3 class="text-xs font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">Deixar um Recado ou Aviso</h3>
+                        <form onsubmit="adicionarRecado(event)" class="space-y-2">
+                            <input type="text" id="recado-autor" value="${alunoPadrao}" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 shadow-inner">
+                            <textarea id="recado-texto" required rows="2" placeholder="Escreva o seu aviso ou lembrete..." class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 shadow-inner resize-none"></textarea>
+                            <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 text-white font-outfit font-bold py-2 rounded-xl transition-all shadow-[0_0_10px_rgba(79,70,229,0.3)] active:scale-95 cursor-pointer text-xs">Publicar Recado</button>
                         </form>
                     </div>
-                    <div class="space-y-3.5">
+                    <div class="space-y-2">
             `;
 
             if (recadosListaGlobal.length === 0) {
-                html += `<div class="glass-panel rounded-2xl p-6 text-center text-zinc-400 font-medium text-xs sm:text-sm">Ainda não há recados publicados. Seja o primeiro a escrever!</div>`;
+                html += `<div class="glass-panel rounded-xl p-4 text-center text-zinc-400 font-medium text-xs">Ainda não há recados publicados.</div>`;
             } else {
                 recadosListaGlobal.forEach(r => {
                     let dataFormatada = "Recentemente";
@@ -796,12 +776,12 @@
                         dataFormatada = d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                     }
                     html += `
-                        <div class="glass-panel rounded-2xl p-4 sm:p-5 shadow-lg space-y-1.5 transition-transform hover:-translate-y-0.5">
+                        <div class="glass-panel rounded-xl p-3 shadow-md space-y-1">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-outfit font-extrabold text-blue-600 dark:text-blue-400">${r.autor}</span>
-                                <span class="text-[9px] sm:text-[10px] text-zinc-400 dark:text-zinc-500 font-medium">${dataFormatada}</span>
+                                <span class="text-[9px] text-zinc-400 font-medium">${dataFormatada}</span>
                             </div>
-                            <p class="text-xs sm:text-sm text-zinc-700 dark:text-zinc-200 whitespace-pre-line leading-relaxed">${r.texto}</p>
+                            <p class="text-xs text-zinc-700 dark:text-zinc-200 whitespace-pre-line leading-relaxed">${r.texto}</p>
                         </div>
                     `;
                 });
@@ -821,22 +801,22 @@
                 { nome: "Outubro de 2026", ano: 2026, mes: 9, diasNoMes: 4 }
             ];
 
-            let html = '<div class="space-y-6 sm:space-y-8">';
+            let html = '<div class="space-y-4">';
             meses.forEach(m => {
                 html += `
-                    <div class="glass-panel rounded-3xl p-4 sm:p-6 shadow-xl space-y-3.5">
-                        <div class="flex items-center justify-between pb-2.5 border-b border-black/5 dark:border-white/10">
-                            <h3 class="text-base sm:text-lg font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">${m.nome}</h3>
-                            <span class="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400 font-outfit">Escala do ${dadosTrio.nomeGrupo.split(':')[0]}</span>
+                    <div class="glass-panel rounded-2xl p-3 shadow-lg space-y-2">
+                        <div class="flex items-center justify-between pb-1.5 border-b border-black/5 dark:border-white/10">
+                            <h3 class="text-xs sm:text-sm font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">${m.nome}</h3>
+                            <span class="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 font-outfit">Escala do ${dadosTrio.nomeGrupo.split(':')[0]}</span>
                         </div>
-                        <div class="grid grid-cols-7 gap-1 sm:gap-2 text-center">
-                            <div class="text-[9px] sm:text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Seg</div>
-                            <div class="text-[9px] sm:text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Ter</div>
-                            <div class="text-[9px] sm:text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Qua</div>
-                            <div class="text-[9px] sm:text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Qui</div>
-                            <div class="text-[9px] sm:text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Sex</div>
-                            <div class="text-[9px] sm:text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Sáb</div>
-                            <div class="text-[9px] sm:text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Dom</div>
+                        <div class="grid grid-cols-7 gap-1 text-center">
+                            <div class="text-[8px] font-bold text-zinc-400 uppercase tracking-widest py-0.5">Seg</div>
+                            <div class="text-[8px] font-bold text-zinc-400 uppercase tracking-widest py-0.5">Ter</div>
+                            <div class="text-[8px] font-bold text-zinc-400 uppercase tracking-widest py-0.5">Qua</div>
+                            <div class="text-[8px] font-bold text-zinc-400 uppercase tracking-widest py-0.5">Qui</div>
+                            <div class="text-[8px] font-bold text-zinc-400 uppercase tracking-widest py-0.5">Sex</div>
+                            <div class="text-[8px] font-bold text-zinc-400 uppercase tracking-widest py-0.5">Sáb</div>
+                            <div class="text-[8px] font-bold text-zinc-400 uppercase tracking-widest py-0.5">Dom</div>
                 `;
 
                 let primeiroDiaIndex;
@@ -845,7 +825,7 @@
                 else if(m.mes === 9) primeiroDiaIndex = 3; 
 
                 for(let i = 0; i < primeiroDiaIndex; i++) {
-                    html += `<div class="p-2 sm:p-3 rounded-xl bg-black/5 dark:bg-black/15 opacity-20"></div>`;
+                    html += `<div class="p-1 rounded-lg bg-black/5 dark:bg-black/15 opacity-25"></div>`;
                 }
 
                 for(let dia = 1; dia <= m.diasNoMes; dia++) {
@@ -854,18 +834,18 @@
                     let temPlantao = turnoInfo.hasPlantao;
 
                     let cardClass = temPlantao 
-                        ? 'bg-blue-600/10 dark:bg-blue-900/30 border-blue-500/40 text-zinc-900 dark:text-white shadow-[0_0_10px_rgba(59,130,246,0.15)]' 
-                        : 'bg-black/5 dark:bg-black/30 border-black/5 dark:border-white/5 text-zinc-400 dark:text-zinc-500';
+                        ? 'bg-blue-600/10 dark:bg-blue-900/30 border-blue-500/40 text-zinc-900 dark:text-white shadow-[0_0_8px_rgba(59,130,246,0.15)]' 
+                        : 'bg-black/5 dark:bg-black/30 border-black/5 dark:border-white/5 text-zinc-400 dark:text-zinc-600';
 
-                    let tooltipHtml = turnoInfo.textoResumo ? `<div class="text-[8px] sm:text-[9px] font-bold text-blue-600 dark:text-blue-300 mt-1 truncate">${turnoInfo.textoResumo}</div>` : `<div class="text-[8px] sm:text-[9px] font-medium text-zinc-400 dark:text-zinc-600 mt-1">Livre</div>`;
+                    let tooltipHtml = turnoInfo.textoResumo ? `<div class="text-[7px] font-bold text-blue-600 dark:text-blue-300 mt-0.5 truncate">${turnoInfo.textoResumo}</div>` : `<div class="text-[7px] font-medium text-zinc-400 dark:text-zinc-600 mt-0.5">Livre</div>`;
 
                     html += `
-                        <div class="p-1.5 sm:p-3 rounded-xl sm:rounded-2xl border ${cardClass} flex flex-col justify-between min-h-[60px] sm:min-h-[75px]">
+                        <div class="p-1 rounded-xl border ${cardClass} flex flex-col justify-between min-h-[48px]">
                             <div class="flex items-center justify-between">
-                                <span class="text-[11px] sm:text-xs font-outfit font-extrabold">${dia}</span>
-                                ${temPlantao ? '<span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]"></span>' : ''}
+                                <span class="text-[10px] font-outfit font-extrabold">${dia}</span>
+                                ${temPlantao ? '<span class="w-1 h-1 rounded-full bg-blue-500 shadow-[0_0_4px_rgba(59,130,246,0.8)]"></span>' : ''}
                             </div>
-                            <div class="mt-0.5 sm:mt-1">${tooltipHtml}</div>
+                            <div>${tooltipHtml}</div>
                         </div>
                     `;
                 }
@@ -1012,15 +992,15 @@
             for (let s = 1; s <= 9; s++) {
                 const isSelected = (s === window.semanaSelecionadaGlobal);
                 const btnClass = isSelected 
-                    ? 'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_0_15px_rgba(79,70,229,0.4)] scale-105' 
+                    ? 'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_0_12px_rgba(79,70,229,0.4)] scale-105' 
                     : 'glass-panel text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200';
                 
                 const inicioFim = semanasDatas[s][0] + " – " + semanasDatas[s][6];
 
                 container.innerHTML += `
-                    <button onclick="selecionarSemana(${s})" class="border rounded-xl py-2.5 px-3 min-w-[95px] sm:min-w-0 flex flex-col items-center justify-center transition-all duration-300 ${btnClass} shrink-0 cursor-pointer">
-                        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider font-outfit">SEM ${s}</span>
-                        <span class="text-[10px] sm:text-[11px] font-extrabold font-outfit mt-0.5 tracking-tight">${inicioFim}</span>
+                    <button onclick="selecionarSemana(${s})" class="border rounded-xl py-1.5 px-2.5 min-w-[85px] sm:min-w-0 flex flex-col items-center justify-center transition-all duration-300 ${btnClass} shrink-0 cursor-pointer">
+                        <span class="text-[8px] font-bold uppercase tracking-wider font-outfit">SEM ${s}</span>
+                        <span class="text-[9px] font-extrabold font-outfit mt-0.5 tracking-tight">${inicioFim}</span>
                     </button>
                 `;
             }
@@ -1051,13 +1031,13 @@
             listaDiasConfig.forEach(d => {
                 const isSelected = (d.key === window.diaSelecionadoGlobal);
                 const btnClass = isSelected 
-                    ? 'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_0_15px_rgba(79,70,229,0.4)] scale-105' 
+                    ? 'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_0_12px_rgba(79,70,229,0.4)] scale-105' 
                     : 'glass-panel text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200';
                 
                 container.innerHTML += `
-                    <button onclick="selecionarDia('${d.key}')" class="border rounded-2xl p-2.5 sm:p-3 min-w-[75px] sm:min-w-0 flex flex-col items-center justify-center transition-all duration-300 ${btnClass} shrink-0 cursor-pointer">
-                        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest font-outfit">${d.label}</span>
-                        <span class="text-[11px] sm:text-xs font-extrabold font-outfit mt-0.5">${d.data}</span>
+                    <button onclick="selecionarDia('${d.key}')" class="border rounded-xl p-2 min-w-[65px] sm:min-w-0 flex flex-col items-center justify-center transition-all duration-300 ${btnClass} shrink-0 cursor-pointer">
+                        <span class="text-[8px] font-bold uppercase tracking-widest font-outfit">${d.label}</span>
+                        <span class="text-[10px] font-extrabold font-outfit mt-0.5">${d.data}</span>
                     </button>
                 `;
             });
@@ -1086,11 +1066,11 @@
             listaMembros.innerHTML = '';
             dados.membros.forEach(nome => {
                 listaMembros.innerHTML += `
-                    <li class="flex items-center space-x-3 group cursor-default">
-                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center text-[11px] sm:text-xs font-outfit font-extrabold text-zinc-700 dark:text-zinc-300 shrink-0 group-hover:bg-blue-500/20 group-hover:text-blue-500 transition-all shadow-inner">
+                    <li class="flex items-center space-x-2.5 group cursor-default">
+                        <div class="w-7 h-7 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center text-[10px] font-outfit font-extrabold text-zinc-700 dark:text-zinc-300 shrink-0 group-hover:bg-blue-500/20 group-hover:text-blue-500 transition-all shadow-inner">
                             ${getIniciais(nome)}
                         </div>
-                        <span class="text-xs sm:text-sm font-medium text-zinc-700 dark:text-zinc-200 leading-tight group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">${nome}</span>
+                        <span class="text-xs font-medium text-zinc-700 dark:text-zinc-200 leading-tight group-hover:text-zinc-900 dark:group-hover:text-white transition-colors truncate">${nome}</span>
                     </li>
                 `;
             });
@@ -1118,10 +1098,10 @@
 
             document.getElementById('stat-atividades').innerText = `${totalAtividades}/${totalPossiveis}`;
             document.getElementById('stat-detalhes-turnos').innerHTML = `
-                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5">M: ${countManha}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5">T: ${countTarde}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5">N: ${countNoite}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-1.5 py-0.5 rounded border border-black/5 dark:border-white/5">FDS: ${countFds}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1 py-0.5 rounded border border-black/5 dark:border-white/5">M:${countManha}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1 py-0.5 rounded border border-black/5 dark:border-white/5">T:${countTarde}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1 py-0.5 rounded border border-black/5 dark:border-white/5">N:${countNoite}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-1 py-0.5 rounded border border-black/5 dark:border-white/5">FDS:${countFds}</span>
             `;
 
             const containerTurnos = document.getElementById('lista-turnos');
@@ -1130,33 +1110,33 @@
             if (window.modoVisualizacao === 'individual') {
                 infoDia.turnos.forEach(t => {
                     let iconeTurno = '';
-                    if(t.periodo === 'Manhã') iconeTurno = '<svg class="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
-                    else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-4 h-4 sm:w-5 sm:h-5 text-orange-500 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
-                    else iconeTurno = '<svg class="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
+                    if(t.periodo === 'Manhã') iconeTurno = '<svg class="w-4 h-4 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+                    else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-4 h-4 text-orange-500 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+                    else iconeTurno = '<svg class="w-4 h-4 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
 
                     const hasPlantao = t.local !== "—";
-                    const cardBorder = hasPlantao ? 'border-blue-500/40 bg-blue-500/5 dark:bg-blue-900/10 shadow-[inset_0_0_20px_rgba(59,130,246,0.03)]' : 'glass-panel';
+                    const cardBorder = hasPlantao ? 'border-blue-500/40 bg-blue-500/5 dark:bg-blue-900/10' : 'glass-panel';
 
                     containerTurnos.innerHTML += `
-                        <div class="${cardBorder} hover:border-blue-500/60 rounded-2xl p-4 sm:p-5 flex items-center justify-between transition-all duration-300 shadow-lg group">
-                            <div class="flex items-center space-x-3.5 sm:space-x-4 min-w-0 pr-2">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 flex items-center justify-center shrink-0 shadow-inner">
+                        <div class="${cardBorder} hover:border-blue-500/60 rounded-xl p-3 flex items-center justify-between transition-all duration-300 shadow-md group">
+                            <div class="flex items-center space-x-3 min-w-0 pr-2">
+                                <div class="w-9 h-9 rounded-xl bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 flex items-center justify-center shrink-0 shadow-inner">
                                     ${iconeTurno}
                                 </div>
                                 <div class="min-w-0">
-                                    <div class="flex items-center space-x-2">
-                                        <span class="text-[10px] sm:text-[11px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">${t.periodo}</span>
-                                        <span class="text-[9px] sm:text-[10px] font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">${t.horario}</span>
+                                    <div class="flex items-center space-x-1.5">
+                                        <span class="text-[9px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">${t.periodo}</span>
+                                        <span class="text-[9px] font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded">${t.horario}</span>
                                     </div>
-                                    <h4 class="text-sm sm:text-lg font-outfit font-bold dark:text-white text-zinc-900 mt-0.5 truncate">${t.local}</h4>
+                                    <h4 class="text-xs sm:text-sm font-outfit font-bold dark:text-white text-zinc-900 mt-0.5 truncate">${t.local}</h4>
                                 </div>
                             </div>
-                            <span class="px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-zinc-700 dark:text-zinc-300 text-[11px] sm:text-xs font-outfit font-bold shrink-0 shadow-sm">${t.local !== "—" ? "Obrigatório" : "Livre"}</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-zinc-700 dark:text-zinc-300 text-[10px] font-outfit font-bold shrink-0">${t.local !== "—" ? "Obrigatório" : "Livre"}</span>
                         </div>
                     `;
                 });
             } else if (window.modoVisualizacao === 'geral') {
-                let gridHtml = '<div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">';
+                let gridHtml = '<div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 max-h-[380px] overflow-y-auto pr-1">';
                 for (let i = 1; i <= 10; i++) {
                     const dadosTrio = dadosEscala[i];
                     const infoDiaTrio = dadosTrio.semanas[window.semanaSelecionadaGlobal][window.diaSelecionadoGlobal];
@@ -1166,25 +1146,25 @@
                         const hasPlantao = t.local !== "—";
                         const badgeColor = hasPlantao ? 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20' : 'text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5';
                         turnosTrioHtml += `
-                            <div class="flex items-center justify-between text-[11px] sm:text-xs py-1.5 px-3 rounded-xl bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5 shadow-inner">
+                            <div class="flex items-center justify-between text-[10px] py-1 px-2.5 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5 shadow-inner">
                                 <span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit">${t.periodo}</span>
-                                <span class="font-extrabold font-outfit ${badgeColor} px-2 py-0.5 rounded-lg border truncate max-w-[130px] sm:max-w-[150px]">${t.local}</span>
+                                <span class="font-extrabold font-outfit ${badgeColor} px-1.5 py-0.5 rounded border truncate max-w-[120px]">${t.local}</span>
                             </div>
                         `;
                     });
 
                     gridHtml += `
-                        <div class="glass-panel rounded-2xl p-4 sm:p-5 space-y-3 transition-all shadow-lg">
+                        <div class="glass-panel rounded-xl p-3 space-y-2 transition-all shadow-md">
                             <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-2.5">
-                                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-outfit font-black text-xs flex items-center justify-center shrink-0">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-outfit font-black text-[10px] flex items-center justify-center shrink-0">
                                         A${i}
                                     </div>
-                                    <h4 class="text-xs sm:text-sm font-outfit font-bold dark:text-white text-zinc-900 tracking-tight truncate max-w-[150px] sm:max-w-[180px]">${dadosTrio.nomeGrupo.split(':')[1] || dadosTrio.nomeGrupo}</h4>
+                                    <h4 class="text-xs font-outfit font-bold dark:text-white text-zinc-900 tracking-tight truncate max-w-[140px]">${dadosTrio.nomeGrupo.split(':')[1] || dadosTrio.nomeGrupo}</h4>
                                 </div>
-                                <button onclick="document.getElementById('grupo-select').value='${i}'; alternarModo('individual');" class="text-[10px] font-outfit font-bold text-blue-600 dark:text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-2.5 py-1 rounded-lg transition-all cursor-pointer">Ver</button>
+                                <button onclick="document.getElementById('grupo-select').value='${i}'; alternarModo('individual');" class="text-[9px] font-outfit font-bold text-blue-600 dark:text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-2 py-0.5 rounded transition-all cursor-pointer">Ver</button>
                             </div>
-                            <div class="space-y-1.5">
+                            <div class="space-y-1">
                                 ${turnosTrioHtml}
                             </div>
                         </div>
