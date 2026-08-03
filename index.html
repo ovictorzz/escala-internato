@@ -164,7 +164,6 @@
         </div>
     </div>
 
-    <!-- Sidebar Expandida -->
     <aside class="w-full lg:w-64 glass-panel border-b lg:border-b-0 lg:border-r border-black/10 dark:border-white/5 flex flex-col justify-between p-4 shrink-0 z-30">
         <div class="space-y-4">
             <div class="flex items-center justify-between lg:justify-start lg:space-x-3">
@@ -189,7 +188,7 @@
                     <span>Meu Trio</span>
                 </button>
                 <button onclick="alternarModo('geral')" id="btn-modo-geral" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0 z"/></svg>
                     <span>Todos os Trios</span>
                 </button>
                 <button onclick="alternarModo('seminarios')" id="btn-modo-seminarios" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer">
@@ -230,7 +229,6 @@
         </div>
     </aside>
 
-    <!-- Área Principal -->
     <main class="flex-grow flex flex-col min-w-0 p-4 sm:p-5 space-y-4 relative lg:overflow-y-auto h-full">
         
         <header class="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/5 shrink-0">
@@ -242,9 +240,7 @@
             </div>
         </header>
 
-        <!-- Top Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
-            <!-- Info do Grupo (5 colunas) -->
             <div class="lg:col-span-5 glass-panel rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col justify-between gap-3">
                 <div class="flex items-center space-x-4 w-full">
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-outfit font-black text-lg shrink-0 shadow-[0_0_20px_rgba(79,70,229,0.4)]" id="grupo-badge-num">
@@ -275,7 +271,6 @@
                 </div>
             </div>
 
-            <!-- Estatísticas (7 colunas) -->
             <div class="lg:col-span-7 grid grid-cols-3 gap-3 sm:gap-4">
                 <div class="glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center">
                     <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Período</span>
@@ -284,10 +279,8 @@
                 <div class="glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center">
                     <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Turnos/Sem.</span>
                     <span class="text-base sm:text-xl font-outfit font-black dark:text-white text-zinc-900" id="stat-atividades">--</span>
-                    <!-- Nomes completos com os emojis respectivos -->
-                    <div id="stat-detalhes-turnos" class="flex flex-wrap justify-center items-center gap-x-2 gap-y-1.5 mt-2 text-[10px] text-zinc-600 dark:text-zinc-300 font-semibold tracking-wide"></div>
+                    <div id="stat-detalhes-turnos" class="flex flex-wrap justify-center items-center gap-x-1.5 gap-y-1 mt-2 text-[9px] sm:text-[10px] text-zinc-600 dark:text-zinc-300 font-semibold tracking-wide px-1"></div>
                 </div>
-                <!-- Box Capotes -->
                 <div class="glass-panel rounded-2xl p-4 flex flex-col items-center justify-between text-center bg-gradient-to-br from-blue-500/5 to-indigo-500/5 border border-blue-500/20 shadow-md">
                     <div class="w-full flex flex-col items-center justify-center py-2">
                         <span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-2">Capotes</span>
@@ -303,7 +296,6 @@
             </div>
         </div>
 
-        <!-- Semanas (Grid 100% preenchendo a largura inteira) -->
         <div class="space-y-2 shrink-0" id="wrapper-semanas-tabs">
             <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest px-1 flex items-center space-x-2">
                 <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -327,7 +319,6 @@
             </div>
         </div>
 
-        <!-- Dias da Semana (Grid 100% preenchendo a largura inteira) -->
         <div class="grid grid-cols-4 sm:grid-cols-7 gap-2.5 w-full shrink-0" id="container-abas-dias"></div>
 
         <div class="flex items-center justify-between px-1 shrink-0">
@@ -337,7 +328,6 @@
             </span>
         </div>
 
-        <!-- Grade Inferior -->
         <div class="flex flex-col-reverse lg:grid lg:grid-cols-12 gap-4 flex-1 pb-4" id="grid-inferior">
             
             <div id="coluna-membros" class="lg:col-span-3 glass-panel rounded-2xl p-5 shadow-lg flex flex-col justify-between h-full">
@@ -1370,12 +1360,12 @@
 
             document.getElementById('stat-atividades').innerText = `${totalAtividades}/${totalPossiveis}`;
             
-            // Nomes por extenso e emojis atualizados solicitados
+            // Estatísticas ajustadas para caber perfeitamente no card do celular
             document.getElementById('stat-detalhes-turnos').innerHTML = `
-                <span class="bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-md border border-black/5 dark:border-white/5 whitespace-nowrap">🌅 Manhã: ${countManha}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-md border border-black/5 dark:border-white/5 whitespace-nowrap">☀️ Tarde: ${countTarde}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-md border border-black/5 dark:border-white/5 whitespace-nowrap">🌙 Noite: ${countNoite}</span>
-                <span class="bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-md border border-black/5 dark:border-white/5 whitespace-nowrap">🏖️ Final de Semana: ${countFds}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🌅 Manhã: ${countManha}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">☀️ Tarde: ${countTarde}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🌙 Noite: ${countNoite}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🏖️ FDS: ${countFds}</span>
             `;
 
             const containerTurnos = document.getElementById('lista-turnos');
@@ -1425,7 +1415,7 @@
                         turnosTrioHtml += `
                             <div class="flex items-center justify-between text-[10px] py-1.5 px-3 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5">
                                 <span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit uppercase tracking-widest">${t.periodo}</span>
-                                <span class="font-extrabold font-outfit ${badgeColor} px-2 py-0.5 rounded truncate max-w-[130px] border">${t.local}</span>
+                                <span class="font-extrabold font-outfit ${badgeColor} px-2 py-0.5 rounded whitespace-normal leading-tight text-center border">${t.local}</span>
                             </div>
                         `;
                     });
