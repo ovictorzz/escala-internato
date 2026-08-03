@@ -975,7 +975,7 @@ const dadosSeminariosList = [
 { data: "15/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Ana Clara", apresentadores: "Carolina Banholi, Kamilly Lima", tema: "• Prolapsos Genitais: Classificação de Bump (POP-Q)\n• Tumores Benignos e Malignos do Ovário" },
 { data: "22/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Giovanna Muniz", apresentadores: "Rayane Maria, Sofia Dias", tema: "• Síndromes Hipertensivas e Gestação (Pré-Eclâmpsia/Eclâmpsia/Síndrome HELLP)\n• Diabetes Gestacional" },
 { data: "23/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Lucimara", apresentadores: "Annelise Paiva, Camila Guidão, Gabriella Reis, Ana Luiza Daros", tema: "• Restrição de Crescimento Intrauterino: Oligoâmnio/Polidrâmnio\n• Leucorreias: Infecções Sexualmente Transmissíveis (IST) em GO e Doenças Inflamatórias Pélvica (DIP)" },
-{ data: "29/09", hora: "18h30–19h45\n20h00–21h30", mediador: "TODOS", apresentadores: "TODOS", tema: "AVALIAÇÃO SOMATIVA" }
+{ data: "29/09", hora: "18h30–19h45\n20h00–21h30", mediador: "TODOS", apresentadores: "TODOS", tema: "AVALIAÇÃO SOMATIVA — 50 QUESTÕES" }
 ];
 window.renderizarSeminariosView = function() {
 const containerTurnos = document.getElementById('lista-turnos');
@@ -1579,6 +1579,20 @@ const escalaTrio10 = {
 "04/10": { tarde: "HRSM" }
 };
 aplicarEscalaEspecifica("10", escalaTrio10);
+
+// Atividades noturnas gerais adicionais, aplicadas após todas as escalas individuais.
+for (let i = 1; i <= 10; i++) {
+dadosEscala[i].semanas[8].qua.turnos[2] = {
+periodo: "Noite",
+horario: "18h30-21h30",
+local: "Seminário de G.O. — UNIEURO"
+};
+dadosEscala[i].semanas[9].ter.turnos[2] = {
+periodo: "Noite",
+horario: "18h30-21h30",
+local: "Avaliação Somativa — UNIEURO (50 questões)"
+};
+}
 window.semanaSelecionadaGlobal = 1;
 window.diaSelecionadoGlobal = "seg";
 window.renderizarSemanas = function() {
