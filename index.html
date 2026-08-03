@@ -255,8 +255,12 @@
                 const el = document.getElementById('contador-capotes-val');
                 if (el) el.innerText = capotesCount;
             } else {
-                setDoc(contadorRef, { capotes: 0 });
+                setDoc(contadorRef, { capotes: 0 }).catch(err => console.error("Erro ao criar documento:", err));
             }
+        }, (error) => {
+            console.error("Erro de permissão ou conexão com o Firebase:", error);
+            const el = document.getElementById('contador-capotes-val');
+            if (el) el.innerText = "Erro";
         });
 
         window.alterarCapotes = async function(delta) {
@@ -265,7 +269,7 @@
             try {
                 await updateDoc(contadorRef, { capotes: novoValor });
             } catch (error) {
-                console.error("Erro ao atualizar o contador:", error);
+                console.error("Erro ao atualizar o contador no Firestore:", error);
             }
         }
 
@@ -380,10 +384,10 @@
                 const diasRestantes = Math.ceil(diferenca / (1000 * 60 * 60 * 24));
                 const badge = document.getElementById('contador-dias');
                 if (badge) {
-                    if (diasRestantes > 1) badge.innerText = `Faltam ${diasRestantes} dias`;
-                    else if (diasRestantes === 1) badge.innerText = `Falta 1 dia`;
-                    else if (diasRestantes === 0) badge.innerText = `Último dia!`;
-                    else badge.innerText = `Rodízio concluído`;
+                    if (diasRestantes > 1) badge.innerText = `Faltam ${diasRestantes} dias para o fim do rodízio de G.O`;
+                    else if (diasRestantes === 1) badge.innerText = `Falta 1 dia para o fim do rodízio de G.O`;
+                    else if (diasRestantes === 0) badge.innerText = `Último dia para o fim do rodízio de G.O!`;
+                    else badge.innerText = `Rodízio de G.O concluído`;
                 }
 
                 const diffTime = agora - dataInicioRodizio;
