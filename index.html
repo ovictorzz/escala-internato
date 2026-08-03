@@ -480,6 +480,11 @@ badge.innerText = aluno;
 atualizarProximaAtividadeDinamica(aluno);
 }
 }
+const ESCALA_NAO_ENVIADA = "Escala não enviada até o momento";
+function atividadeConfirmada(local) {
+return Boolean(local && local !== "—" && local !== ESCALA_NAO_ENVIADA);
+}
+
 function atualizarProximaAtividadeDinamica(alunoNome) {
 const badgeAtividade = document.getElementById('proxima-atividade-badge');
 const painelNovo = document.getElementById('proxima-atividade-conteudo');
@@ -550,7 +555,7 @@ if (dataDiaObj >= hojeLocal) {
 const ehHoje = dataDiaObj.getTime() === hojeLocal.getTime();
 const turnos = infoDia.turnos || [];
 for (let t of turnos) {
-if (t.local && t.local !== "—") {
+if (atividadeConfirmada(t.local)) {
 if (ehHoje) {
 let pesoDeste = ordemTurnos[t.periodo] || 1;
 if (pesoDeste > pesoTurnoAtual) {
@@ -1113,7 +1118,7 @@ let totalCelulas = primeiroDiaIndex;
 for(let dia = 1; dia <= m.diasNoMes; dia++) {
 const dataObj = new Date(m.ano, m.mes, dia);
 const turnosDia = obterDetalhesTurnosDia(idTrio, dataObj);
-const temAlgumPlantao = turnosDia.some(t => t.local !== "—");
+const temAlgumPlantao = turnosDia.some(t => atividadeConfirmada(t.local));
 const dayOfWeek = dataObj.getDay();
 const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
 let cardClass = temAlgumPlantao
@@ -1122,7 +1127,7 @@ let cardClass = temAlgumPlantao
 let turnosHtml = '';
 turnosDia.forEach(t => {
 const sigla = t.periodo === 'Manhã' ? 'M' : t.periodo === 'Tarde' ? 'T' : 'N';
-const ativo = t.local !== "—";
+const ativo = atividadeConfirmada(t.local);
 const corBadge = ativo
 ? 'bg-blue-600 text-white font-bold shadow-sm'
 : 'bg-black/10 dark:bg-white/5 text-zinc-400 dark:text-zinc-500';
@@ -1231,14 +1236,15 @@ function gerarDiasSemana(semanaNum, datasArray) {
 const tardeSegunda = (semanaNum === 1)
 ? "Simulado — UNIEURO"
 : "Sessões Clínicas Integradas (Aula Teórica) — UNIEURO";
+const localLivre = semanaNum >= 4 ? ESCALA_NAO_ENVIADA : "—";
 return {
-"seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: tardeSegunda }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-"ter": { nome: "Terça-feira", data: datasArray[1], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h30-21h30", local: "Seminário de G.O. — UNIEURO" } ] },
-"qua": { nome: "Quarta-feira", data: datasArray[2], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-"qui": { nome: "Quinta-feira", data: datasArray[3], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-"sex": { nome: "Sexta-feira", data: datasArray[4], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-"sab": { nome: "Sábado", data: datasArray[5], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
-"dom": { nome: "Domingo", data: datasArray[6], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+"seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: tardeSegunda }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] },
+"ter": { nome: "Terça-feira", data: datasArray[1], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: localLivre }, { periodo: "Noite", horario: "18h30-21h30", local: "Seminário de G.O. — UNIEURO" } ] },
+"qua": { nome: "Quarta-feira", data: datasArray[2], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: localLivre }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] },
+"qui": { nome: "Quinta-feira", data: datasArray[3], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: localLivre }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] },
+"sex": { nome: "Sexta-feira", data: datasArray[4], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: localLivre }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] },
+"sab": { nome: "Sábado", data: datasArray[5], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: localLivre }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] },
+"dom": { nome: "Domingo", data: datasArray[6], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: localLivre }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] }
 };
 }
 const semanasDatas = {
@@ -1388,7 +1394,7 @@ Object.entries(diasDaSemanaGrupo).forEach(([diaKey, d]) => {
 const isFds = (diaKey === 'sab' || diaKey === 'dom');
 d.turnos.forEach(t => {
 totalPossiveis++;
-if (t.local !== "—") {
+if (atividadeConfirmada(t.local)) {
 totalAtividades++;
 if (t.periodo === "Manhã") countManha++;
 if (t.periodo === "Tarde") countTarde++;
@@ -1413,7 +1419,7 @@ let iconeTurno = '';
 if(t.periodo === 'Manhã') iconeTurno = '<svg class="w-7 h-7 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
 else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-7 h-7 text-orange-500 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
 else iconeTurno = '<svg class="w-7 h-7 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
-const hasPlantao = t.local !== "—";
+const hasPlantao = atividadeConfirmada(t.local);
 const cardBorder = hasPlantao ? 'border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-900/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]' : 'glass-panel opacity-70';
 html += `
 <div class="${cardBorder} border hover:border-blue-500/60 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all duration-300 shadow-md group relative overflow-hidden h-full min-h-[200px]">
@@ -1425,7 +1431,7 @@ ${iconeTurno}
 <h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight mb-5">${t.local}</h4>
 <div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10 flex justify-between items-center">
 <span class="text-xs font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">${t.horario}</span>
-<span class="px-3 py-1.5 rounded-lg ${hasPlantao ? 'bg-blue-600 text-white shadow-md' : 'bg-black/5 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 border border-black/10 dark:border-white/10'} text-[10px] font-outfit font-bold uppercase tracking-wide transition-colors">${hasPlantao ? "Obrigatório" : "Livre"}</span>
+<span class="px-3 py-1.5 rounded-lg ${hasPlantao ? 'bg-blue-600 text-white shadow-md' : 'bg-black/5 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 border border-black/10 dark:border-white/10'} text-[10px] font-outfit font-bold uppercase tracking-wide transition-colors">${hasPlantao ? "Obrigatório" : (t.local === ESCALA_NAO_ENVIADA ? "Pendente" : "Livre")}</span>
 </div>
 </div>
 `;
@@ -1439,7 +1445,7 @@ const dadosTrio = dadosEscala[i];
 const infoDiaTrio = dadosTrio.semanas[window.semanaSelecionadaGlobal][window.diaSelecionadoGlobal];
 let turnosTrioHtml = '';
 infoDiaTrio.turnos.forEach(t => {
-const hasPlantao = t.local !== "—";
+const hasPlantao = atividadeConfirmada(t.local);
 const badgeColor = hasPlantao ? 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20 shadow-inner' : 'text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5';
 turnosTrioHtml += `
 <div class="flex items-center justify-between text-[10px] py-1.5 px-3 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5">
