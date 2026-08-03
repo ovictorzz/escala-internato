@@ -528,7 +528,7 @@
             }
         }
 
- function atualizarProximaAtividadeDinamica(alunoNome) {
+function atualizarProximaAtividadeDinamica(alunoNome) {
             const badgeAtividade = document.getElementById('proxima-atividade-badge');
             const painelNovo = document.getElementById('proxima-atividade-conteudo');
 
@@ -551,7 +551,7 @@
                 return;
             }
 
-            // --- 1. Atualiza o Badge Pequeno (Atividade do Turno ATUAL) ---
+            // --- 1. Badge Pequeno (Indica o Turno ATUAL de hoje) ---
             const diffTime = agora - dataInicioRodizio;
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             let semanaNum = Math.floor(diffDays / 7) + 1;
@@ -562,71 +562,70 @@
             const mapDias = { 1: "seg", 2: "ter", 3: "qua", 4: "qui", 5: "sex", 6: "sab", 0: "dom" };
             const diaKey = mapDias[jsDay];
 
-            const turnosDia = typeof dadosEscala !== 'undefined' && dadosEscala[trioId] ? dadosEscala[trioId].semanas[semanaNum][diaKey].turnos : [];
-            
+            const turnosHoje = typeof dadosEscala !== 'undefined' && dadosEscala[trioId] ? dadosEscala[trioId].semanas[semanaNum][diaKey].turnos : [];
             const horaAtual = agora.getHours();
-            let turnoAlvo = null;
+            let turnoAtual = null;
 
-            // Determina qual é o turno de AGORA
             if (horaAtual < 13) {
-                turnoAlvo = turnosDia.find(t => t.periodo === 'Manhã') || turnosDia[0];
+                turnoAtual = turnosHoje.find(t => t.periodo === 'Manhã') || turnosHoje[0];
             } else if (horaAtual >= 13 && horaAtual < 18) {
-                turnoAlvo = turnosDia.find(t => t.periodo === 'Tarde') || turnosDia[1];
+                turnoAtual = turnosHoje.find(t => t.periodo === 'Tarde') || turnosHoje[1];
             } else {
-                turnoAlvo = turnosDia.find(t => t.periodo === 'Noite') || turnosDia[2];
+                turnoAtual = turnosHoje.find(t => t.periodo === 'Noite') || turnosHoje[2];
             }
 
-            if (turnoAlvo) {
-                const localStr = turnoAlvo.local !== "—" ? turnoAlvo.local : "Livre (Sem plantão)";
-                badgeAtividade.innerHTML = `Atual (<span class="font-bold text-blue-500 dark:text-blue-400">${turnoAlvo.periodo}</span>): ${localStr}`;
+            if (turnoAtual) {
+                const localStr = turnoAtual.local !== "—" ? turnoAtual.local : "Livre (Sem plantão)";
+                badgeAtividade.innerHTML = `Atual (<span class="font-bold text-blue-500 dark:text-blue-400">${turnoAtual.periodo}</span>): ${localStr}`;
             } else {
                 badgeAtividade.innerText = "Atual: Sem atividade";
             }
 
-            // --- 2. Atualiza o Cartão Novo (Estritamente a PRÓXIMA Atividade) ---
+            // --- 2. Cartão Grande: Buscando ESTRITAMENTE A PRÓXIMA OBRIGATÓRIA (ignorando o momento atual) ---
             if (painelNovo && typeof dadosEscala !== 'undefined') {
                 const dadosTrio = dadosEscala[trioId];
                 let proximaAtividade = null;
 
                 const hojeDateObj = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
                 
-                // Define o PESO do turno atual (para sabermos o que pular)
-                let pesoTurnoAtual = 0; 
-                if (horaAtual >= 7 && horaAtual < 13) pesoTurnoAtual = 1; // Está na Manhã
-                else if (horaAtual >= 13 && horaAtual < 18) pesoTurnoAtual = 2; // Está na Tarde
-                else if (horaAtual >= 18) pesoTurnoAtual = 3; // Está na Noite
+                // Atribui peso ao turno atual para sabermos exatamente o que ignorar
+                // Manhã = 1 | Tarde = 2 | Noite = 3
+                let pesoTurnoAtual = 0;
+                if (horaAtual >= 7 && horaAtual < 13) pesoTurnoAtual = 1;
+                else if (horaAtual >= 13 && horaAtual < 18) pesoTurnoAtual = 2;
+                else if (horaAtual >= 18) pesoTurnoAtual = 3;
 
-                for (let semanaK in dadosTrio.semanas) {
-                    const dias = dadosTrio.semanas[semanaK];
-                    for (let dKey in dias) {
-                        const infoDia = dias[dKey];
+                // Varre a escala a partir da semana atual
+                for (let s = semanaNum; s <= 9; s++) {
+                    const diasDaSemana = dadosTrio.semanas[s];
+                    for (let dK in diasDaSemana) {
+                        const infoDia = diasDaSemana[dK];
                         const [diaStr, mesStr] = infoDia.data.split('/');
                         const anoAtual = agora.getFullYear();
                         const dataDiaObj = new Date(anoAtual, parseInt(mesStr) - 1, parseInt(diaStr));
 
-                        // Só olha para hoje ou para os dias no futuro
+                        // Considera apenas hoje e dias futuros
                         if (dataDiaObj >= hojeDateObj) {
                             const ehHoje = dataDiaObj.getTime() === hojeDateObj.getTime();
                             const turnos = infoDia.turnos || [];
-                            
+
                             for (let t of turnos) {
-                                // Só considera obrigatório se tiver local válido
+                                // Garante que a atividade é obrigatória (tem local definido)
                                 if (t.local && t.local !== "—") {
                                     
-                                    // SE FOR HOJE, precisamos pular o turno em que estamos e os que já passaram
+                                    // Se for HOJE, ignoramos turnos cujo peso seja menor ou igual ao turno em que estamos agora
                                     if (ehHoje) {
                                         let pesoDesteTurno = 0;
                                         if (t.periodo === 'Manhã') pesoDesteTurno = 1;
                                         else if (t.periodo === 'Tarde') pesoDesteTurno = 2;
                                         else if (t.periodo === 'Noite') pesoDesteTurno = 3;
 
-                                        // Se o peso deste turno da lista for MENOR OU IGUAL ao turno atual, PULA.
                                         if (pesoDesteTurno <= pesoTurnoAtual) {
-                                            continue; 
+                                            continue; // Já passou ou está a acontecer agora, ignora!
                                         }
                                     }
 
-                                    // Se chegou aqui, encontrou a PRIMEIRA atividade FUTURA real
+                                    // Encontramos a primeira atividade futura real!
                                     proximaAtividade = {
                                         diaNome: infoDia.nome,
                                         data: infoDia.data,
@@ -643,7 +642,7 @@
                     if (proximaAtividade) break;
                 }
 
-                // Renderiza o resultado no HTML
+                // Renderiza o resultado no painel
                 if (proximaAtividade) {
                     painelNovo.innerHTML = `
                         <div class="font-semibold text-white flex items-center justify-between">
@@ -656,7 +655,7 @@
                         </div>
                     `;
                 } else {
-                    painelNovo.innerHTML = `<span class="text-zinc-400">Nenhuma atividade futura encontrada.</span>`;
+                    painelNovo.innerHTML = `<span class="text-zinc-400">Nenhuma atividade obrigatória futura encontrada.</span>`;
                 }
             }
         }
