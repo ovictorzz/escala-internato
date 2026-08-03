@@ -174,7 +174,7 @@ Próxima: Carregando...
 </div>
 <div class="mt-3 p-3 rounded-xl bg-blue-950/40 border border-blue-500/30 text-white flex flex-col space-y-1 shadow-md">
 <div class="flex items-center space-x-1.5 text-blue-400">
-<span class="text-sm">��</span>
+<span class="w-2 h-2 rounded-full bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.8)]" aria-hidden="true"></span>
 <span class="text-[11px] font-bold tracking-wider uppercase">Próxima Atividade Obrigatória</span>
 </div>
 <div id="proxima-atividade-conteudo" class="text-xs text-zinc-300">
@@ -583,7 +583,7 @@ if (proximaAtividade) break;
 if (proximaAtividade) {
 painelNovo.innerHTML = `
 <div class="font-semibold text-white flex items-center justify-between">
-<span>��️ ${proximaAtividade.diaNome} (${proximaAtividade.data})</span>
+<span>${proximaAtividade.diaNome} (${proximaAtividade.data})</span>
 <span class="px-1.5 py-0.5 rounded bg-blue-600/50 text-blue-200 text-[10px]">${proximaAtividade.periodo}</span>
 </div>
 <div class="text-[11px] text-zinc-300 mt-0.5">
@@ -840,15 +840,15 @@ container.innerHTML = `
 <div class="space-y-4 h-full flex flex-col">
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 shrink-0">
 <div onclick="abrirAdminSecao('historico_logins')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group border border-indigo-500/30 bg-indigo-600/5">
-<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">�� Histórico de Logins</h4>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Logins</h4>
 <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Nome, data, entrada e saída.</p>
 </div>
 <div onclick="abrirAdminSecao('historico_recados')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
-<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">�� Histórico de Recados</h4>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Recados</h4>
 <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Avisos enviados, editados e apagados.</p>
 </div>
 <div onclick="abrirAdminSecao('recados')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
-<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">�� Gerir Recados</h4>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Gerir Recados</h4>
 <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Publicar ou remover avisos oficias.</p>
 </div>
 </div>
@@ -1408,10 +1408,10 @@ if (isFds) countFds++;
 });
 document.getElementById('stat-atividades').innerText = `${totalAtividades}/${totalPossiveis}`;
 document.getElementById('stat-detalhes-turnos').innerHTML = `
-<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">�� Manhã: ${countManha}</span>
-<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">☀️ Tarde: ${countTarde}</span>
-<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">�� Noite: ${countNoite}</span>
-<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">��️ FDS: ${countFds}</span>
+<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">Manhã: ${countManha}</span>
+<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">Tarde: ${countTarde}</span>
+<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">Noite: ${countNoite}</span>
+<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">FDS: ${countFds}</span>
 `;
 const containerTurnos = document.getElementById('lista-turnos');
 containerTurnos.innerHTML = '';
