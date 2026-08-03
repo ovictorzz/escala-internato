@@ -20,7 +20,7 @@
             width: 100%;
             margin: 0;
             padding: 0;
-            touch-action: manipulation; /* Remove o zoom por duplo clique em dispositivos móveis */
+            touch-action: manipulation;
         }
         @media (min-width: 1024px) {
             body {
@@ -164,16 +164,16 @@
         </div>
     </div>
 
-    <aside class="w-full lg:w-64 glass-panel border-b lg:border-b-0 lg:border-r border-black/10 dark:border-white/5 flex flex-col justify-between p-4 shrink-0 z-30">
+    <aside class="w-full lg:w-80 glass-panel border-b lg:border-b-0 lg:border-r border-black/10 dark:border-white/5 flex flex-col justify-between p-4 shrink-0 z-30">
         <div class="space-y-4">
             <div class="flex items-center justify-between lg:justify-start lg:space-x-3">
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-3 min-w-0">
                     <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                     </div>
-                    <div class="min-w-0">
+                    <div class="min-w-0 flex-1">
                         <p id="saudacao-aluno" class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-[0.15em] truncate">Olá!</p>
-                        <h1 class="text-sm font-black tracking-tight dark:text-white text-zinc-900 leading-tight truncate max-w-[160px]" id="aluno-logado-badge">Turma T7A</h1>
+                        <h1 class="text-sm font-black tracking-tight dark:text-white text-zinc-900 leading-tight truncate" id="aluno-logado-badge">Turma T7A</h1>
                     </div>
                 </div>
                 <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-xl glass-panel text-zinc-600 dark:text-zinc-300">
@@ -188,7 +188,7 @@
                     <span>Meu Trio</span>
                 </button>
                 <button onclick="alternarModo('geral')" id="btn-modo-geral" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0 z"/></svg>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     <span>Todos os Trios</span>
                 </button>
                 <button onclick="alternarModo('seminarios')" id="btn-modo-seminarios" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer">
@@ -1360,7 +1360,6 @@
 
             document.getElementById('stat-atividades').innerText = `${totalAtividades}/${totalPossiveis}`;
             
-            // Estatísticas ajustadas para caber perfeitamente no card do celular
             document.getElementById('stat-detalhes-turnos').innerHTML = `
                 <span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🌅 Manhã: ${countManha}</span>
                 <span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">☀️ Tarde: ${countTarde}</span>
@@ -1423,13 +1422,13 @@
                     gridHtml += `
                         <div class="glass-panel rounded-2xl p-4 space-y-3 transition-all shadow-md border border-black/5 dark:border-white/10 hover:border-blue-500/30">
                             <div class="flex items-center justify-between border-b border-black/5 dark:border-white/10 pb-2">
-                                <div class="flex items-center space-x-2.5">
+                                <div class="flex items-center space-x-2.5 min-w-0">
                                     <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-outfit font-black text-[11px] flex items-center justify-center shrink-0 shadow-inner">
                                         A${i}
                                     </div>
-                                    <h4 class="text-xs font-outfit font-bold dark:text-white text-zinc-900 tracking-tight truncate max-w-[120px] sm:max-w-[140px]">${dadosTrio.nomeGrupo.split(':')[1] || dadosTrio.nomeGrupo}</h4>
+                                    <h4 class="text-xs font-outfit font-bold dark:text-white text-zinc-900 tracking-tight truncate">${dadosTrio.nomeGrupo.split(':')[1] || dadosTrio.nomeGrupo}</h4>
                                 </div>
-                                <button onclick="document.getElementById('grupo-select').value='${i}'; alternarModo('individual');" class="text-[10px] font-outfit font-bold text-blue-600 dark:text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-2.5 py-1 rounded-md transition-all cursor-pointer">Ver</button>
+                                <button onclick="document.getElementById('grupo-select').value='${i}'; alternarModo('individual');" class="text-[10px] font-outfit font-bold text-blue-600 dark:text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-2.5 py-1 rounded-md transition-all cursor-pointer shrink-0">Ver</button>
                             </div>
                             <div class="space-y-1.5">
                                 ${turnosTrioHtml}
