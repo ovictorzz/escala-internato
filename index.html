@@ -83,56 +83,31 @@
                     <div class="relative">
                         <select id="aluno-select" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-white text-xs sm:text-sm font-semibold appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer shadow-inner">
                             <option value="" disabled selected>-- Escolha o seu nome completo --</option>
-                            <optgroup label="Trio A1">
-                                <option value="André Victor de Oliveira Almeida">André Victor de Oliveira Almeida</option>
-                                <option value="Davi Carvalho Barbosa">Davi Carvalho Barbosa</option>
-                                <option value="Leticia Barbosa Nunes Otaviano">Leticia Barbosa Nunes Otaviano</option>
-                            </optgroup>
-                            <optgroup label="Trio A2">
-                                <option value="Nadya Veras Jarosczynski">Nadya Veras Jarosczynski</option>
-                                <option value="Louise Albuquerque Mirindiba">Louise Albuquerque Mirindiba</option>
-                                <option value="Isabella Teixeira de Lima">Isabella Teixeira de Lima</option>
-                            </optgroup>
-                            <optgroup label="Trio A3">
-                                <option value="Hiago Kaian Xavier Lisboa">Hiago Kaian Xavier Lisboa</option>
-                                <option value="Isabela Frota Carmona">Isabela Frota Carmona</option>
-                                <option value="Maria Eduarda Lima de Aquino">Maria Eduarda Lima de Aquino</option>
-                            </optgroup>
-                            <optgroup label="Trio A4">
-                                <option value="Heitor Stoduto Mello Ferreira">Heitor Stoduto Mello Ferreira</option>
-                                <option value="Bruno Azevedo Lima">Bruno Azevedo Lima</option>
-                                <option value="Andressa Costa Maboni">Andressa Costa Maboni</option>
-                            </optgroup>
-                            <optgroup label="Trio A5">
-                                <option value="Maria Luiza de Ornelas Nobrega">Maria Luiza de Ornelas Nobrega</option>
-                                <option value="Maria Eduarda Santiago">Maria Eduarda Santiago</option>
-                                <option value="Luiza de Santes">Luiza de Santes</option>
-                            </optgroup>
-                            <optgroup label="Trio A6">
-                                <option value="Leticia Teixeira Monteiro">Leticia Teixeira Monteiro</option>
-                                <option value="Júlia Matos Guimarães">Júlia Matos Guimarães</option>
-                                <option value="Luiza Borges Sales">Luiza Borges Sales</option>
-                            </optgroup>
-                            <optgroup label="Trio A7">
-                                <option value="Ana Clara Estrela Ghisleni">Ana Clara Estrela Ghisleni</option>
-                                <option value="Carolina Banholi">Carolina Banholi</option>
-                                <option value="Kamilly Lima do vale">Kamilly Lima do vale</option>
-                            </optgroup>
-                            <optgroup label="Trio A8">
-                                <option value="Giovanna Muniz">Giovanna Muniz</option>
-                                <option value="Rayane Maria">Rayane Maria</option>
-                                <option value="Sofia Dias">Sofia Dias</option>
-                            </optgroup>
-                            <optgroup label="Trio A9">
-                                <option value="Annelise Paiva">Annelise Paiva</option>
-                                <option value="Camila Souza">Camila Souza</option>
-                                <option value="Gabriella Reis">Gabriella Reis</option>
-                            </optgroup>
-                            <optgroup label="Trio A10">
-                                <option value="José Henrique Ferreira">José Henrique Ferreira</option>
-                                <option value="João Victor Tajra">João Victor Tajra</option>
-                                <option value="Ana Luiza Daros">Ana Luiza Daros</option>
-                            </optgroup>
+                            <option value="André Victor">André Victor</option>
+                            <option value="Davi Carvalho">Davi Carvalho</option>
+                            <option value="Letícia Barbosa">Letícia Barbosa</option>
+                            <option value="Nadya Jarosczynski">Nadya Jarosczynski</option>
+                            <option value="Louise Mirindiba">Louise Mirindiba</option>
+                            <option value="Isabella Teixeira">Isabella Teixeira</option>
+                            <option value="Hiago Kaian">Hiago Kaian</option>
+                            <option value="Isabela Frota">Isabela Frota</option>
+                            <option value="Heitor Stoduto">Heitor Stoduto</option>
+                            <option value="Bruno Azevedo">Bruno Azevedo</option>
+                            <option value="Andressa Maboni">Andressa Maboni</option>
+                            <option value="Maria Luiza">Maria Luiza</option>
+                            <option value="Maria Eduarda Santiago">Maria Eduarda Santiago</option>
+                            <option value="Luiza de Santes">Luiza de Santes</option>
+                            <option value="Leticia Teixeira">Leticia Teixeira</option>
+                            <option value="Júlia Matos">Júlia Matos</option>
+                            <option value="Carolina Banholi">Carolina Banholi</option>
+                            <option value="Kamilly Lima">Kamilly Lima</option>
+                            <option value="Rayane Maria">Rayane Maria</option>
+                            <option value="Sofia Dias">Sofia Dias</option>
+                            <option value="Annelise Paiva">Annelise Paiva</option>
+                            <option value="Camila Souza">Camila Souza</option>
+                            <option value="Gabriella Reis">Gabriella Reis</option>
+                            <option value="José Henrique">José Henrique</option>
+                            <option value="João Victor Tajra">João Victor Tajra</option>
                         </select>
                         <div class="absolute inset-y-0 right-0 top-3.5 flex items-center px-4 pointer-events-none text-zinc-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -983,16 +958,16 @@
         };
 
         const dadosEscala = {
-            "1": { nomeGrupo: "Trio A1: André, Davi & Leticia B.", membros: ["André Victor de Oliveira Almeida", "Davi Carvalho Barbosa", "Leticia Barbosa Nunes Otaviano"] },
-            "2": { nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.", membros: ["Nadya Veras Jarosczynski", "Louise Albuquerque Mirindiba", "Isabella Teixeira de Lima"] },
-            "3": { nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino", membros: ["Hiago Kaian Xavier Lisboa", "Isabela Frota Carmona", "Maria Eduarda Lima de Aquino"] },
-            "4": { nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.", membros: ["Heitor Stoduto Mello Ferreira", "Bruno Azevedo Lima", "Andressa Costa Maboni"] },
-            "5": { nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.", membros: ["Maria Luiza de Ornelas Nobrega", "Maria Eduarda Santiago", "Luiza de Santes"] },
-            "6": { nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.", membros: ["Leticia Teixeira Monteiro", "Júlia Matos Guimarães", "Luiza Borges Sales"] },
-            "7": { nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly", membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima do vale"] },
+            "1": { nomeGrupo: "Trio A1: André, Davi & Leticia B.", membros: ["André Victor", "Davi Carvalho", "Letícia Barbosa"] },
+            "2": { nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.", membros: ["Nadya Jarosczynski", "Louise Mirindiba", "Isabella Teixeira"] },
+            "3": { nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino", membros: ["Hiago Kaian", "Isabela Frota", "Maria Eduarda Lima de Aquino"] },
+            "4": { nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.", membros: ["Heitor Stoduto", "Bruno Azevedo", "Andressa Maboni"] },
+            "5": { nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.", membros: ["Maria Luiza", "Maria Eduarda Santiago", "Luiza de Santes"] },
+            "6": { nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.", membros: ["Leticia Teixeira", "Júlia Matos", "Luiza Borges Sales"] },
+            "7": { nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly", membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima"] },
             "8": { nomeGrupo: "Trio A8: Giovanna, Rayane & Sofi", membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"] },
             "9": { nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella", membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"] },
-            "10": { nomeGrupo: "Trio A10: José, João Victor & Ana Luiza", membros: ["José Henrique Ferreira", "João Victor Tajra", "Ana Luiza Daros"] }
+            "10": { nomeGrupo: "Trio A10: José, João Victor & Ana Luiza", membros: ["José Henrique", "João Victor Tajra", "Ana Luiza Daros"] }
         };
 
         for(let i=1; i<=10; i++) {
