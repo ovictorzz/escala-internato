@@ -528,7 +528,7 @@
             }
         }
 
-        function atualizarProximaAtividadeDinamica(alunoNome) {
+ function atualizarProximaAtividadeDinamica(alunoNome) {
             const badgeAtividade = document.getElementById('proxima-atividade-badge');
             const painelNovo = document.getElementById('proxima-atividade-conteudo');
 
@@ -551,6 +551,7 @@
                 return;
             }
 
+            // --- 1. Atualiza o Badge Pequeno (Atividade do Turno ATUAL) ---
             const diffTime = agora - dataInicioRodizio;
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             let semanaNum = Math.floor(diffDays / 7) + 1;
@@ -561,11 +562,12 @@
             const mapDias = { 1: "seg", 2: "ter", 3: "qua", 4: "qui", 5: "sex", 6: "sab", 0: "dom" };
             const diaKey = mapDias[jsDay];
 
-            const turnosDia = dadosEscala[trioId].semanas[semanaNum][diaKey].turnos;
+            const turnosDia = typeof dadosEscala !== 'undefined' && dadosEscala[trioId] ? dadosEscala[trioId].semanas[semanaNum][diaKey].turnos : [];
             
             const horaAtual = agora.getHours();
             let turnoAlvo = null;
 
+            // Determina qual é o turno de AGORA
             if (horaAtual < 13) {
                 turnoAlvo = turnosDia.find(t => t.periodo === 'Manhã') || turnosDia[0];
             } else if (horaAtual >= 13 && horaAtual < 18) {
@@ -576,14 +578,23 @@
 
             if (turnoAlvo) {
                 const localStr = turnoAlvo.local !== "—" ? turnoAlvo.local : "Livre (Sem plantão)";
-                badgeAtividade.innerHTML = `<span class="font-bold text-blue-500 dark:text-blue-400">${turnoAlvo.periodo}:</span> ${localStr}`;
+                badgeAtividade.innerHTML = `Atual (<span class="font-bold text-blue-500 dark:text-blue-400">${turnoAlvo.periodo}</span>): ${localStr}`;
             } else {
-                badgeAtividade.innerText = "Próxima: Sem atividade";
+                badgeAtividade.innerText = "Atual: Sem atividade";
             }
 
+            // --- 2. Atualiza o Cartão Novo (Estritamente a PRÓXIMA Atividade) ---
             if (painelNovo && typeof dadosEscala !== 'undefined') {
                 const dadosTrio = dadosEscala[trioId];
                 let proximaAtividade = null;
+
+                const hojeDateObj = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+                
+                // Define o PESO do turno atual (para sabermos o que pular)
+                let pesoTurnoAtual = 0; 
+                if (horaAtual >= 7 && horaAtual < 13) pesoTurnoAtual = 1; // Está na Manhã
+                else if (horaAtual >= 13 && horaAtual < 18) pesoTurnoAtual = 2; // Está na Tarde
+                else if (horaAtual >= 18) pesoTurnoAtual = 3; // Está na Noite
 
                 for (let semanaK in dadosTrio.semanas) {
                     const dias = dadosTrio.semanas[semanaK];
@@ -593,10 +604,29 @@
                         const anoAtual = agora.getFullYear();
                         const dataDiaObj = new Date(anoAtual, parseInt(mesStr) - 1, parseInt(diaStr));
 
-                        if (dataDiaObj >= new Date(agora.getFullYear(), agora.getMonth(), agora.getDate())) {
+                        // Só olha para hoje ou para os dias no futuro
+                        if (dataDiaObj >= hojeDateObj) {
+                            const ehHoje = dataDiaObj.getTime() === hojeDateObj.getTime();
                             const turnos = infoDia.turnos || [];
+                            
                             for (let t of turnos) {
+                                // Só considera obrigatório se tiver local válido
                                 if (t.local && t.local !== "—") {
+                                    
+                                    // SE FOR HOJE, precisamos pular o turno em que estamos e os que já passaram
+                                    if (ehHoje) {
+                                        let pesoDesteTurno = 0;
+                                        if (t.periodo === 'Manhã') pesoDesteTurno = 1;
+                                        else if (t.periodo === 'Tarde') pesoDesteTurno = 2;
+                                        else if (t.periodo === 'Noite') pesoDesteTurno = 3;
+
+                                        // Se o peso deste turno da lista for MENOR OU IGUAL ao turno atual, PULA.
+                                        if (pesoDesteTurno <= pesoTurnoAtual) {
+                                            continue; 
+                                        }
+                                    }
+
+                                    // Se chegou aqui, encontrou a PRIMEIRA atividade FUTURA real
                                     proximaAtividade = {
                                         diaNome: infoDia.nome,
                                         data: infoDia.data,
@@ -613,6 +643,7 @@
                     if (proximaAtividade) break;
                 }
 
+                // Renderiza o resultado no HTML
                 if (proximaAtividade) {
                     painelNovo.innerHTML = `
                         <div class="font-semibold text-white flex items-center justify-between">
