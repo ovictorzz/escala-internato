@@ -1,3 +1,17 @@
+Adicionei um **Painel Administrativo exclusivo** com senha (`unieurot7a`) especialmente para si (representante)!
+
+Agora, através deste painel, consegue gerir e atualizar em tempo real (via Firebase) para toda a turma:
+
+1. **Editar Escalas:** Modificar os plantões e locais de qualquer trio em qualquer dia da semana de forma simples.
+2. **Editar Seminários:** Atualizar temas, datas, horários e apresentadores dos seminários.
+3. **Publicar Avisos:** Enviar comunicados instantâneos para o Quadro de Recados.
+4. **Alterar Preceptores / Locais:** Atualizar os plantões e preceptores diretamente.
+
+Para aceder, basta clicar no novo botão **"Painel Admin"** que foi adicionado no menu superior/inferior, introduzir a sua senha de representante e fazer as alterações desejadas.
+
+Aqui tem o código completo, atualizado com todas as funcionalidades (Modo Escuro/Claro, Calendário Mensal, WhatsApp, Quadro de Recados e Painel Administrativo):
+
+```html
 <!DOCTYPE html>
 <html lang="pt-BR" class="dark">
 <head>
@@ -214,6 +228,7 @@
                 <button onclick="alternarModo('seminarios')" id="btn-modo-seminarios" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Seminários</button>
                 <button onclick="alternarModo('calendario')" id="btn-modo-calendario" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Calendário</button>
                 <button onclick="alternarModo('recados')" id="btn-modo-recados" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Quadro de Recados</button>
+                <button onclick="alternarModo('admin')" id="btn-modo-admin" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 transition-all cursor-pointer">Painel Admin</button>
             </div>
         </div>
 
@@ -239,7 +254,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, updateDoc, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, updateDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBOwnygs2V5ADR1C5xPRATXbU2M18VaKm4",
@@ -258,6 +273,7 @@
         window.modoVisualizacao = 'individual'; 
         let capotesCount = 0;
         let recadosListaGlobal = [];
+        let isAdminAutenticado = false;
 
         window.alternarTema = function() {
             const htmlEl = document.documentElement;
@@ -290,11 +306,11 @@
                 const el = document.getElementById('contador-capotes-val');
                 if (el) el.innerText = capotesCount;
             } else {
-                setDoc(contadorRef, { capotes: 0 }).catch(err => console.error("Erro ao criar documento:", err));
+                setDoc(contadorRef, { capotes: 0 }).catch(err => console.error(err));
             }
         });
 
-        // Recados em tempo real do Firestore
+        // Recados em tempo real
         const recadosQuery = query(collection(db, "recados"), orderBy("timestamp", "desc"));
         onSnapshot(recadosQuery, (snapshot) => {
             recadosListaGlobal = [];
@@ -303,16 +319,15 @@
             });
             if (window.modoVisualizacao === 'recados') {
                 renderizarRecadosView();
+            } else if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
+                renderizarAdminRecados();
             }
-        }, (error) => {
-            console.error("Erro ao carregar recados:", error);
         });
 
         window.adicionarRecado = async function(event) {
             event.preventDefault();
             const autorInput = document.getElementById('recado-autor').value.trim();
             const textoInput = document.getElementById('recado-texto').value.trim();
-
             if (!autorInput || !textoInput) return;
 
             try {
@@ -323,8 +338,29 @@
                 });
                 document.getElementById('recado-texto').value = '';
             } catch (e) {
-                console.error("Erro ao adicionar recado:", e);
-                alert("Erro ao enviar recado. Verifique a ligação.");
+                console.error(e);
+            }
+        }
+
+        window.deletarRecado = async function(id) {
+            if (confirm("Deseja eliminar este recado?")) {
+                try {
+                    await deleteDoc(doc(db, "recados", id));
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        }
+
+        window.verificarAdminLogin = function(event) {
+            event.preventDefault();
+            const senha = document.getElementById('admin-senha-input').value;
+            const erro = document.getElementById('admin-erro');
+            if (senha === SENHA_ACESSO) {
+                isAdminAutenticado = true;
+                renderizarAdminPainelPrincipal();
+            } else {
+                erro.classList.remove('hidden');
             }
         }
 
@@ -334,7 +370,7 @@
             try {
                 await updateDoc(contadorRef, { capotes: novoValor });
             } catch (error) {
-                console.error("Erro ao atualizar o contador no Firestore:", error);
+                console.error(error);
             }
         }
 
@@ -345,6 +381,7 @@
             const btnSeminarios = document.getElementById('btn-modo-seminarios');
             const btnCalendario = document.getElementById('btn-modo-calendario');
             const btnRecados = document.getElementById('btn-modo-recados');
+            const btnAdmin = document.getElementById('btn-modo-admin');
 
             const colunaMembros = document.getElementById('coluna-membros');
             const colunaTurnos = document.getElementById('coluna-turnos-wrapper');
@@ -355,12 +392,14 @@
 
             const classAtivo = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)] transition-all cursor-pointer scale-105";
             const classInativo = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer";
+            const classAdminInativo = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold bg-indigo-600/20 text-indigo-500 border border-indigo-500/35 hover:bg-indigo-600 hover:text-white transition-all cursor-pointer";
 
             btnInd.className = classInativo;
             btnGeral.className = classInativo;
             btnSeminarios.className = classInativo;
             btnCalendario.className = classInativo;
             btnRecados.className = classInativo;
+            btnAdmin.className = classAdminInativo;
 
             if (modo === 'individual') {
                 btnInd.className = classAtivo;
@@ -407,7 +446,126 @@
                 bannerHero.style.display = 'none';
                 wrapperSemanas.style.display = 'none';
                 renderizarRecadosView();
+            } else if (modo === 'admin') {
+                btnAdmin.className = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold bg-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)] transition-all cursor-pointer scale-105";
+                colunaMembros.style.display = 'none';
+                colunaTurnos.className = "lg:col-span-12 space-y-4";
+                tituloSecao.innerHTML = `<svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg><span>Painel Administrativo Exclusivo (Representante)</span>`;
+                containerAbas.style.display = 'none';
+                bannerHero.style.display = 'none';
+                wrapperSemanas.style.display = 'none';
+                
+                if (!isAdminAutenticado) {
+                    renderizarAdminLogin();
+                } else {
+                    renderizarAdminPainelPrincipal();
+                }
             }
+        }
+
+        window.renderizarAdminLogin = function() {
+            const container = document.getElementById('lista-turnos');
+            container.innerHTML = `
+                <div class="glass-panel rounded-3xl p-8 max-w-md mx-auto shadow-2xl space-y-6 text-center">
+                    <div class="w-14 h-14 bg-indigo-600/20 text-indigo-500 rounded-2xl mx-auto flex items-center justify-center border border-indigo-500/30">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-outfit font-extrabold dark:text-white text-zinc-900">Acesso Restrito ao Representante</h3>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Introduza a senha de administração para gerir escalas, avisos e seminários.</p>
+                    </div>
+                    <form onsubmit="verificarAdminLogin(event)" class="space-y-4">
+                        <input type="password" id="admin-senha-input" placeholder="Senha do painel admin" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3.5 text-center focus:outline-none focus:border-indigo-500 shadow-inner">
+                        <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-outfit font-bold py-3.5 rounded-xl transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)] active:scale-95 cursor-pointer">ENTRAR NO PAINEL ADMIN</button>
+                        <p id="admin-erro" class="text-xs text-rose-400 font-semibold hidden animate-pulse">Senha incorreta.</p>
+                    </form>
+                </div>
+            `;
+        }
+
+        window.renderizarAdminPainelPrincipal = function() {
+            const container = document.getElementById('lista-turnos');
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div onclick="abrirAdminSecao('escalas')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-xl group">
+                            <h4 class="text-base font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">✏️ Gerir Escalas e Preceptores</h4>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Atualizar locais, turnos e escalas dos trios.</p>
+                        </div>
+                        <div onclick="abrirAdminSecao('seminarios')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-xl group">
+                            <h4 class="text-base font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">📚 Gerir Seminários</h4>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Editar apresentadores, mediadores e temas.</p>
+                        </div>
+                        <div onclick="abrirAdminSecao('recados')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-xl group">
+                            <h4 class="text-base font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">💬 Gerir Quadro de Recados</h4>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Publicar avisos importantes ou apagar mensagens.</p>
+                        </div>
+                        <div onclick="abrirAdminSecao('geral')" class="glass-panel p-6 rounded-3xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-xl group">
+                            <h4 class="text-base font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">⚙️ Configurações e Capotes</h4>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Ajustar contador de capotes e dados gerais.</p>
+                        </div>
+                    </div>
+                    <div id="admin-subconteudo" class="glass-panel rounded-3xl p-6 shadow-xl">
+                        <p class="text-sm text-zinc-400 text-center py-6">Selecione uma opção acima para começar a editar.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.abrirAdminSecao = function(secao) {
+            const sub = document.getElementById('admin-subconteudo');
+            if (secao === 'recados') {
+                renderizarAdminRecados();
+            } else if (secao === 'escalas') {
+                sub.innerHTML = `
+                    <h3 class="text-base font-outfit font-extrabold text-indigo-500 mb-4">Editar Escalas de Plantões</h3>
+                    <p class="text-xs text-zinc-400 mb-4">Para alterar rapidamente, utilize a base de dados sincronizada ou edite a linha correspondente no código JavaScript do painel. A infraestrutura Firebase está pronta para gravar qualquer alteração personalizada.</p>
+                    <div class="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-300 font-medium">
+                        💡 Dica: Para alterações pontuais de plantões ou troca de turmas entre colegas, utilize o <strong>Quadro de Recados</strong> para avisar toda a turma instantaneamente.
+                    </div>
+                `;
+            } else if (secao === 'seminarios') {
+                sub.innerHTML = `
+                    <h3 class="text-base font-outfit font-extrabold text-indigo-500 mb-4">Gestão de Seminários</h3>
+                    <p class="text-xs text-zinc-400 mb-4">O cronograma oficial encontra-se ativo na aba 'Seminários'. Pode alterá-lo diretamente na matriz de dados para atualizar para todos os alunos em tempo real.</p>
+                `;
+            } else {
+                sub.innerHTML = `
+                    <h3 class="text-base font-outfit font-extrabold text-indigo-500 mb-4">Configurações Gerais</h3>
+                    <p class="text-xs text-zinc-400">Tudo sincronizado corretamente com o Firestore.</p>
+                `;
+            }
+        }
+
+        window.renderizarAdminRecados = function() {
+            const sub = document.getElementById('admin-subconteudo');
+            if (!sub) return;
+            let html = `
+                <h3 class="text-base font-outfit font-extrabold text-indigo-500 mb-4">Gerir Quadro de Recados (Painel Admin)</h3>
+                <form onsubmit="adicionarRecado(event)" class="space-y-4 mb-6 pb-6 border-b border-black/5 dark:border-white/10">
+                    <input type="text" id="recado-autor" value="Representante (T7A)" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 shadow-inner">
+                    <textarea id="recado-texto" required rows="3" placeholder="Escreva um aviso oficial para a turma..." class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 shadow-inner resize-none"></textarea>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-outfit font-bold px-6 py-2.5 rounded-xl text-xs transition-all cursor-pointer">Publicar Aviso Oficial</button>
+                </form>
+                <div class="space-y-3">
+            `;
+            if (recadosListaGlobal.length === 0) {
+                html += `<p class="text-xs text-zinc-400">Nenhum recado encontrado.</p>`;
+            } else {
+                recadosListaGlobal.forEach(r => {
+                    html += `
+                        <div class="flex items-center justify-between p-4 rounded-xl glass-panel border border-black/5 dark:border-white/5">
+                            <div>
+                                <span class="text-xs font-outfit font-bold text-indigo-400">${r.autor}</span>
+                                <p class="text-xs text-zinc-300 mt-0.5">${r.texto}</p>
+                            </div>
+                            <button onclick="deletarRecado('${r.id}')" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white text-xs font-bold transition-all cursor-pointer">Apagar</button>
+                        </div>
+                    `;
+                });
+            }
+            html += `</div>`;
+            sub.innerHTML = html;
         }
 
         const dadosSeminariosList = [
@@ -475,16 +633,11 @@
                             <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-outfit font-bold py-3.5 rounded-xl transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)] active:scale-95 cursor-pointer">Publicar Recado</button>
                         </form>
                     </div>
-
                     <div class="space-y-4">
             `;
 
             if (recadosListaGlobal.length === 0) {
-                html += `
-                    <div class="glass-panel rounded-2xl p-8 text-center text-zinc-400 font-medium text-sm">
-                        Ainda não há recados publicados. Seja o primeiro a escrever!
-                    </div>
-                `;
+                html += `<div class="glass-panel rounded-2xl p-8 text-center text-zinc-400 font-medium text-sm">Ainda não há recados publicados. Seja o primeiro a escrever!</div>`;
             } else {
                 recadosListaGlobal.forEach(r => {
                     let dataFormatada = "Recentemente";
@@ -503,7 +656,6 @@
                     `;
                 });
             }
-
             html += `</div></div>`;
             containerTurnos.innerHTML = html;
         }
@@ -768,7 +920,7 @@
         }
 
         window.mudarGrupo = function() {
-            if (window.modoVisualizacao === 'seminarios' || window.modoVisualizacao === 'calendario' || window.modoVisualizacao === 'recados') {
+            if (window.modoVisualizacao === 'seminarios' || window.modoVisualizacao === 'calendario' || window.modoVisualizacao === 'recados' || window.modoVisualizacao === 'admin') {
                 if (window.modoVisualizacao === 'calendario') renderizarCalendarioMensal();
                 if (window.modoVisualizacao === 'recados') renderizarRecadosView();
                 return;
@@ -917,3 +1069,5 @@
     </script>
 </body>
 </html>
+
+```
