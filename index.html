@@ -352,6 +352,7 @@
         window.modoVisualizacao = 'individual'; 
         let capotesCount = 0;
         let recadosListaGlobal = [];
+        let historicoListaGlobal = [];
         let isAdminAutenticado = false;
 
         window.toggleMobileMenu = function() {
@@ -450,6 +451,30 @@
             }
         });
 
+        const historicoQuery = query(collection(db, "historico_recados"), orderBy("timestamp", "desc"));
+        onSnapshot(historicoQuery, (snapshot) => {
+            historicoListaGlobal = [];
+            snapshot.forEach((docSnap) => {
+                historicoListaGlobal.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
+                renderizarAdminRecados();
+            }
+        });
+
+        async function registrarHistorico(acao, autor, texto) {
+            try {
+                await addDoc(collection(db, "historico_recados"), {
+                    acao: acao,
+                    autor: autor,
+                    texto: texto,
+                    timestamp: serverTimestamp()
+                });
+            } catch (e) {
+                console.error("Erro ao registrar histórico:", e);
+            }
+        }
+
         window.adicionarRecado = async function(event) {
             event.preventDefault();
             const autorInput = document.getElementById('recado-autor').value.trim();
@@ -462,6 +487,7 @@
                     texto: textoInput,
                     timestamp: serverTimestamp()
                 });
+                await registrarHistorico("Enviado", autorInput, textoInput);
                 document.getElementById('recado-texto').value = '';
             } catch (e) {
                 console.error(e);
@@ -469,12 +495,44 @@
         }
 
         window.deletarRecado = async function(id) {
+            const recadoEncontrado = recadosListaGlobal.find(r => r.id === id);
             if (confirm("Deseja eliminar este recado?")) {
                 try {
                     await deleteDoc(doc(db, "recados", id));
+                    if (recadoEncontrado) {
+                        await registrarHistorico("Apagado", recadoEncontrado.autor, recadoEncontrado.texto);
+                    }
                 } catch (e) {
                     console.error(e);
                 }
+            }
+        }
+
+        window.prepararEdicaoRecado = function(id, textoAtual) {
+            const elTexto = document.getElementById(`recado-texto-el-${id}`);
+            const elAcoes = document.getElementById(`recado-acoes-${id}`);
+            
+            elTexto.innerHTML = `
+                <textarea id="edit-input-${id}" rows="2" class="w-full glass-panel border border-blue-500/50 text-xs rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-blue-500 text-zinc-800 dark:text-zinc-200">${textoAtual}</textarea>
+            `;
+            elAcoes.innerHTML = `
+                <button onclick="salvarEdicaoRecado('${id}')" class="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold transition-all cursor-pointer">Salvar</button>
+                <button onclick="renderizarRecadosView()" class="px-2.5 py-1 rounded bg-zinc-500/20 text-zinc-400 hover:bg-zinc-500 hover:text-white text-[10px] font-bold transition-all cursor-pointer">Cancelar</button>
+            `;
+        }
+
+        window.salvarEdicaoRecado = async function(id) {
+            const novoTexto = document.getElementById(`edit-input-${id}`).value.trim();
+            if (!novoTexto) return;
+            const recadoEncontrado = recadosListaGlobal.find(r => r.id === id);
+            try {
+                const recadoRef = doc(db, "recados", id);
+                await updateDoc(recadoRef, { texto: novoTexto });
+                if (recadoEncontrado) {
+                    await registrarHistorico("Editado", recadoEncontrado.autor, `De: "${recadoEncontrado.texto}" Para: "${novoTexto}"`);
+                }
+            } catch (e) {
+                console.error(e);
             }
         }
 
@@ -607,7 +665,7 @@
                     </div>
                     <div>
                         <h3 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900">Acesso Restrito ao Representante</h3>
-                        <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Introduza a sua senha para gerir escalas, avisos e seminários.</p>
+                        <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Introduza a sua senha para ver o histórico e gerir o painel.</p>
                     </div>
                     <form onsubmit="verificarAdminLogin(event)" class="space-y-3">
                         <input type="password" id="admin-senha-input" placeholder="Senha do painel admin" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-xs rounded-xl px-3.5 py-2.5 text-center focus:outline-none focus:border-indigo-500 shadow-inner">
@@ -623,17 +681,17 @@
             container.innerHTML = `
                 <div class="space-y-3">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                        <div onclick="abrirAdminSecao('escalas')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
-                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">✏️ Gerir Escalas e Preceptores</h4>
-                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Atualizar locais e turnos dos trios.</p>
+                        <div onclick="abrirAdminSecao('historico')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group border-indigo-500/30 bg-indigo-600/5">
+                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">📊 Histórico de Mensagens (Admin)</h4>
+                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Ver mensagens enviadas, editadas e apagadas.</p>
+                        </div>
+                        <div onclick="abrirAdminSecao('recados')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">💬 Gerir Quadro de Recados</h4>
+                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Publicar avisos oficiais ou apagar mensagens.</p>
                         </div>
                         <div onclick="abrirAdminSecao('seminarios')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
                             <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">📚 Gerir Seminários</h4>
                             <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Editar apresentadores, mediadores e temas.</p>
-                        </div>
-                        <div onclick="abrirAdminSecao('recados')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
-                            <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">💬 Gerir Quadro de Recados</h4>
-                            <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Publicar avisos importantes ou apagar mensagens.</p>
                         </div>
                         <div onclick="abrirAdminSecao('geral')" class="glass-panel p-3.5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
                             <h4 class="text-xs font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">⚙️ Configurações e Capotes</h4>
@@ -641,24 +699,54 @@
                         </div>
                     </div>
                     <div id="admin-subconteudo" class="glass-panel rounded-2xl p-3.5 shadow-md">
-                        <p class="text-xs text-zinc-400 text-center py-3">Selecione uma opção acima para começar a editar.</p>
+                        <p class="text-xs text-zinc-400 text-center py-3">Selecione uma opção acima para visualizar.</p>
                     </div>
                 </div>
             `;
+            abrirAdminSecao('historico');
         }
 
         window.abrirAdminSecao = function(secao) {
             const sub = document.getElementById('admin-subconteudo');
-            if (secao === 'recados') {
-                renderizarAdminRecados();
-            } else if (secao === 'escalas') {
-                sub.innerHTML = `
-                    <h3 class="text-xs font-outfit font-extrabold text-indigo-500 mb-2">Editar Escalas de Plantões</h3>
-                    <p class="text-[10px] text-zinc-400 mb-2.5">A base de dados sincronizada permite gravação instantânea via Firebase.</p>
-                    <div class="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-[10px] text-indigo-300 font-medium">
-                        💡 Dica: Para trocas rápidas, utilize o <strong>Quadro de Recados</strong>.
-                    </div>
+            if (secao === 'historico') {
+                let html = `
+                    <h3 class="text-xs font-outfit font-extrabold text-indigo-500 mb-2.5 flex items-center justify-between">
+                        <span>Histórico de Auditoria (Enviadas, Editadas e Apagadas)</span>
+                        <span class="text-[9px] text-zinc-400 font-normal">Exclusivo para o Admin</span>
+                    </h3>
+                    <div class="space-y-2 max-h-[220px] overflow-y-auto pr-1">
                 `;
+                if (historicoListaGlobal.length === 0) {
+                    html += `<p class="text-[10px] text-zinc-400 py-2">Nenhum registro no histórico ainda.</p>`;
+                } else {
+                    historicoListaGlobal.forEach(h => {
+                        let dataFormatada = "Recentemente";
+                        if (h.timestamp && h.timestamp.toDate) {
+                            const d = h.timestamp.toDate();
+                            dataFormatada = d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                        }
+                        let badgeColor = 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+                        if (h.acao === 'Editado') badgeColor = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+                        if (h.acao === 'Apagado') badgeColor = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+
+                        html += `
+                            <div class="p-2.5 rounded-xl glass-panel border border-black/5 dark:border-white/5 space-y-1">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="px-2 py-0.5 rounded border text-[9px] font-bold ${badgeColor}">${h.acao}</span>
+                                        <span class="text-[10px] font-outfit font-bold text-zinc-300">${h.autor}</span>
+                                    </div>
+                                    <span class="text-[9px] text-zinc-400">${dataFormatada}</span>
+                                </div>
+                                <p class="text-[10px] text-zinc-400 dark:text-zinc-300 font-mono">${h.texto}</p>
+                            </div>
+                        `;
+                    });
+                }
+                html += `</div>`;
+                sub.innerHTML = html;
+            } else if (secao === 'recados') {
+                renderizarAdminRecados();
             } else if (secao === 'seminarios') {
                 sub.innerHTML = `
                     <h3 class="text-xs font-outfit font-extrabold text-indigo-500 mb-2">Gestão de Seminários</h3>
@@ -667,7 +755,7 @@
             } else {
                 sub.innerHTML = `
                     <h3 class="text-xs font-outfit font-extrabold text-indigo-500 mb-2">Configurações Gerais</h3>
-                    <p class="text-[10px] text-zinc-400">Sincronizado corretamente com o Firestore.</p>
+                    <p class="text-[10px] text-zinc-400">Tudo sincronizado corretamente com o Firestore.</p>
                 `;
             }
         }
@@ -763,7 +851,7 @@
                             <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 text-white font-outfit font-bold py-2 rounded-xl transition-all shadow-[0_0_10px_rgba(79,70,229,0.3)] active:scale-95 cursor-pointer text-xs">Publicar Recado</button>
                         </form>
                     </div>
-                    <div class="space-y-2">
+                    <div class="space-y-2 max-h-[220px] overflow-y-auto pr-1">
             `;
 
             if (recadosListaGlobal.length === 0) {
@@ -776,12 +864,20 @@
                         dataFormatada = d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                     }
                     html += `
-                        <div class="glass-panel rounded-xl p-3 shadow-md space-y-1">
+                        <div class="glass-panel rounded-xl p-3 shadow-md space-y-1.5 transition-transform hover:-translate-y-0.5">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-outfit font-extrabold text-blue-600 dark:text-blue-400">${r.autor}</span>
-                                <span class="text-[9px] text-zinc-400 font-medium">${dataFormatada}</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-[9px] text-zinc-400 font-medium">${dataFormatada}</span>
+                                    <div id="recado-acoes-${r.id}" class="flex items-center space-x-1">
+                                        <button onclick="prepararEdicaoRecado('${r.id}', \`${r.texto.replace(/`/g, '\\`')}\`)" class="p-1 rounded bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition-all text-[10px]" title="Editar">✏️</button>
+                                        <button onclick="deletarRecado('${r.id}')" class="p-1 rounded bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all text-[10px]" title="Apagar">🗑️</button>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="text-xs text-zinc-700 dark:text-zinc-200 whitespace-pre-line leading-relaxed">${r.texto}</p>
+                            <div id="recado-texto-el-${r.id}">
+                                <p class="text-xs text-zinc-700 dark:text-zinc-200 whitespace-pre-line leading-relaxed">${r.texto}</p>
+                            </div>
                         </div>
                     `;
                 });
@@ -966,11 +1062,11 @@
         const dadosEscala = {
             "1": { nomeGrupo: "Trio A1: André, Davi & Leticia B.", membros: ["André Victor", "Davi Carvalho", "Letícia Barbosa"] },
             "2": { nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.", membros: ["Nadya Jarosczynski", "Louise Mirindiba", "Isabella Teixeira"] },
-            "3": { nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino", membros: ["Hiago Kaian", "Isabela Frota", "Maria Eduarda Lima de Aquino"] },
+            "3": { nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino", membros: ["Hiago Kaian", "Isabela Frota", "Maria Eduarda Aquino"] },
             "4": { nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.", membros: ["Heitor Stoduto", "Bruno Azevedo", "Andressa Maboni"] },
             "5": { nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.", membros: ["Maria Luiza", "Maria Eduarda Santiago", "Luiza de Santes"] },
             "6": { nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.", membros: ["Leticia Teixeira", "Júlia Matos", "Luiza Borges Sales"] },
-            "7": { nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly", membros: ["Ana Clara Estrela Ghisleni", "Carolina Banholi", "Kamilly Lima"] },
+            "7": { nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly", membros: ["Ana Clara", "Carolina Banholi", "Kamilly Lima"] },
             "8": { nomeGrupo: "Trio A8: Giovanna, Rayane & Sofi", membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"] },
             "9": { nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella", membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"] },
             "10": { nomeGrupo: "Trio A10: José, João Victor & Ana Luiza", membros: ["José Henrique", "João Victor Tajra", "Ana Luiza Daros"] }
