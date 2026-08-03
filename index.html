@@ -1,11 +1,3 @@
-Atualizei a lógica do **Quadro de Recados**:
-
-1. **Nome Automático:** O campo de autor agora preenche automaticamente com o nome da pessoa que fez o login no sistema (e fica travado/somente leitura para evitar falsificação).
-2. **Permissão Restrita:** Apenas o próprio autor do recado (ou o Administrador na aba de admin) consegue ver os botões de **Apagar** e **Editar**. Ninguém mais pode mexer nas mensagens dos outros.
-
-Aqui está o código completo e atualizado:
-
-```html
 <!DOCTYPE html>
 <html lang="pt-BR" class="dark">
 <head>
@@ -20,21 +12,27 @@ Aqui está o código completo e atualizado:
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { 
+        html, body { 
             font-family: 'Inter', sans-serif; 
             background-attachment: fixed;
             transition: background-color 0.3s ease, color 0.3s ease;
             -webkit-tap-highlight-color: transparent;
+            width: 100%;
+            margin: 0;
+            padding: 0;
         }
+        /* No PC (lg para cima): sem scroll, trava na altura da tela */
         @media (min-width: 1024px) {
             body {
                 height: 100vh;
                 overflow: hidden;
             }
         }
+        /* No Celular: altura automática e rolagem natural fluida */
         @media (max-width: 1023px) {
             body {
                 min-height: 100vh;
+                height: auto;
                 overflow-y: auto;
             }
         }
@@ -329,7 +327,7 @@ Aqui está o código completo e atualizado:
             </span>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 pb-2" id="grid-inferior">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 pb-4" id="grid-inferior">
             <div id="coluna-membros" class="lg:col-span-4 glass-panel rounded-2xl p-3 shadow-lg flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between mb-2.5 pb-2 border-b border-black/5 dark:border-white/10">
@@ -496,7 +494,7 @@ Aqui está o código completo e atualizado:
 
         window.adicionarRecado = async function(event) {
             event.preventDefault();
-            const alunoLogado = sessionStorage.getItem('alunoLogado') || document.getElementById('recado-autor').value.trim();
+            const alunoLogado = sessionStorage.getItem('alunoLogado') || 'Aluno T7A';
             const textoInput = document.getElementById('recado-texto').value.trim();
             if (!alunoLogado || !textoInput) return;
 
@@ -1321,5 +1319,3 @@ Aqui está o código completo e atualizado:
     </script>
 </body>
 </html>
-
-```
