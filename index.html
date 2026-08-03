@@ -726,4 +726,748 @@
                 wrapperSemanas.style.display = 'none';
                 renderizarCalendarioMensal();
             } else if (modo === 'recados') {
-                btnHeaderAdmin.className
+                btnHeaderAdmin.className = "w-full py-2.5 px-3 rounded-xl bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-xs font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2";
+                btnRecados.className = classAtivo;
+                colunaMembros.style.display = 'none';
+                colunaTurnos.className = "lg:col-span-12 flex flex-col h-full";
+                tituloSecao.innerHTML = `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg><span>Quadro de Recados Oficiais e Avisos</span>`;
+                containerAbas.style.display = 'none';
+                bannerHero.style.display = 'none';
+                wrapperSemanas.style.display = 'none';
+                renderizarRecadosView();
+            } else if (modo === 'admin') {
+                btnHeaderAdmin.className = "w-full py-2.5 px-3 rounded-xl bg-indigo-600 text-white text-xs font-bold tracking-wide shadow-[0_0_15px_rgba(79,70,229,0.4)] transition-all cursor-pointer flex items-center justify-center space-x-2";
+                colunaMembros.style.display = 'none';
+                colunaTurnos.className = "lg:col-span-12 flex flex-col h-full";
+                tituloSecao.innerHTML = `<svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg><span>Painel Administrativo Exclusivo (Representante)</span>`;
+                containerAbas.style.display = 'none';
+                bannerHero.style.display = 'none';
+                wrapperSemanas.style.display = 'none';
+                
+                if (!isAdminAutenticado) {
+                    renderizarAdminLogin();
+                } else {
+                    renderizarAdminPainelPrincipal();
+                }
+            }
+        }
+
+        window.renderizarAdminLogin = function() {
+            const container = document.getElementById('lista-turnos');
+            container.innerHTML = `
+                <div class="glass-panel rounded-2xl p-6 max-w-sm mx-auto shadow-xl space-y-5 text-center mt-6 border border-indigo-500/20">
+                    <div class="w-12 h-12 bg-indigo-600/20 text-indigo-500 rounded-xl mx-auto flex items-center justify-center border border-indigo-500/30">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-outfit font-extrabold dark:text-white text-zinc-900">Acesso Restrito</h3>
+                        <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Introduza a sua senha para gerir o painel.</p>
+                    </div>
+                    <form onsubmit="verificarAdminLogin(event)" class="space-y-4">
+                        <input type="password" id="admin-senha-input" placeholder="Senha do painel admin" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3 text-center focus:outline-none focus:border-indigo-500 shadow-inner">
+                        <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-outfit font-bold py-3.5 rounded-xl transition-all shadow-[0_4px_15px_rgba(79,70,229,0.4)] active:scale-95 cursor-pointer text-sm">ENTRAR</button>
+                        <p id="admin-erro" class="text-xs text-rose-400 font-semibold hidden animate-pulse">Senha incorreta.</p>
+                    </form>
+                </div>
+            `;
+        }
+
+        window.renderizarAdminPainelPrincipal = function() {
+            const container = document.getElementById('lista-turnos');
+            container.innerHTML = `
+                <div class="space-y-4 h-full flex flex-col">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 shrink-0">
+                        <div onclick="abrirAdminSecao('historico_logins')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group border border-indigo-500/30 bg-indigo-600/5">
+                            <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">🔐 Histórico de Logins</h4>
+                            <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Nome, data, entrada e saída.</p>
+                        </div>
+                        <div onclick="abrirAdminSecao('historico_recados')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+                            <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">📊 Histórico de Recados</h4>
+                            <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Avisos enviados, editados e apagados.</p>
+                        </div>
+                        <div onclick="abrirAdminSecao('recados')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+                            <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">💬 Gerir Recados</h4>
+                            <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Publicar ou remover avisos oficias.</p>
+                        </div>
+                    </div>
+                    <div id="admin-subconteudo" class="glass-panel rounded-2xl p-5 shadow-md flex-1">
+                        <p class="text-sm text-zinc-400 text-center py-5">Selecione uma opção acima para visualizar.</p>
+                    </div>
+                </div>
+            `;
+            abrirAdminSecao('historico_logins');
+        }
+
+        window.abrirAdminSecao = function(secao) {
+            const sub = document.getElementById('admin-subconteudo');
+            if (secao === 'historico_logins') {
+                let html = `
+                    <h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between">
+                        <span>Histórico de Logins (Entrada e Saída)</span>
+                        <span class="text-[10px] text-zinc-400 font-normal">Monitoramento de Acessos</span>
+                    </h3>
+                    <div class="space-y-3 max-h-[350px] overflow-y-auto pr-2" id="sub-sec-historico-logins">
+                `;
+                if (historicoLoginsGlobal.length === 0) {
+                    html += `<p class="text-xs text-zinc-400 py-2">Nenhum acesso registrado ainda.</p>`;
+                } else {
+                    historicoLoginsGlobal.forEach(l => {
+                        html += `
+                            <div class="p-3.5 rounded-xl glass-panel border border-black/5 dark:border-white/5 flex items-center justify-between gap-3">
+                                <div>
+                                    <span class="text-sm font-outfit font-bold text-indigo-400">${l.nome}</span>
+                                    <p class="text-[10px] text-zinc-400 mt-1">Data: ${l.data}</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">Entrada: ${l.entrada}</span>
+                                    <span class="text-[10px] font-mono text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-md border border-rose-500/20 ml-2">Saída: ${l.saida}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                html += `</div>`;
+                sub.innerHTML = html;
+            } else if (secao === 'historico_recados') {
+                let html = `
+                    <h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between">
+                        <span>Histórico de Auditoria de Recados</span>
+                        <span class="text-[10px] text-zinc-400 font-normal">Enviadas, Editadas e Apagadas</span>
+                    </h3>
+                    <div class="space-y-3 max-h-[350px] overflow-y-auto pr-2" id="sub-sec-historico-recados">
+                `;
+                if (historicoRecadosGlobal.length === 0) {
+                    html += `<p class="text-xs text-zinc-400 py-2">Nenhum registro no histórico de recados ainda.</p>`;
+                } else {
+                    historicoRecadosGlobal.forEach(h => {
+                        let dataFormatada = "Recentemente";
+                        if (h.timestamp && h.timestamp.toDate) {
+                            const d = h.timestamp.toDate();
+                            dataFormatada = d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                        }
+                        let badgeColor = 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+                        if (h.acao === 'Editado') badgeColor = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+                        if (h.acao === 'Apagado') badgeColor = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+
+                        html += `
+                            <div class="p-3.5 rounded-xl glass-panel border border-black/5 dark:border-white/5 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="px-2.5 py-1 rounded-md border text-[10px] font-bold ${badgeColor}">${h.acao}</span>
+                                        <span class="text-xs font-outfit font-bold text-zinc-300">${h.autor}</span>
+                                    </div>
+                                    <span class="text-[10px] text-zinc-400 font-mono">${dataFormatada}</span>
+                                </div>
+                                <p class="text-[11px] text-zinc-400 dark:text-zinc-300 font-mono leading-relaxed bg-black/5 dark:bg-black/30 p-2 rounded-lg">${h.texto}</p>
+                            </div>
+                        `;
+                    });
+                }
+                html += `</div>`;
+                sub.innerHTML = html;
+            } else if (secao === 'recados') {
+                renderizarAdminRecados();
+            }
+        }
+
+        window.renderizarAdminRecados = function() {
+            const sub = document.getElementById('admin-subconteudo');
+            if (!sub) return;
+            let html = `
+                <h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4">Gerir Quadro de Recados</h3>
+                <form onsubmit="adicionarRecado(event)" class="space-y-3 mb-4 pb-4 border-b border-black/5 dark:border-white/10">
+                    <input type="text" id="recado-autor" value="Representante (T7A)" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 shadow-inner">
+                    <textarea id="recado-texto" required rows="3" placeholder="Escreva um aviso oficial..." class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 shadow-inner resize-none"></textarea>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-outfit font-bold px-5 py-2.5 rounded-xl text-xs transition-all cursor-pointer">Publicar Aviso</button>
+                </form>
+                <div class="space-y-3 max-h-48 overflow-y-auto pr-2">
+            `;
+            if (recadosListaGlobal.length === 0) {
+                html += `<p class="text-xs text-zinc-400">Nenhum recado encontrado.</p>`;
+            } else {
+                recadosListaGlobal.forEach(r => {
+                    html += `
+                        <div class="flex items-center justify-between p-3.5 rounded-xl glass-panel border border-black/5 dark:border-white/5 gap-3">
+                            <div class="flex-1">
+                                <span class="text-[11px] font-outfit font-bold text-indigo-400">${r.autor}</span>
+                                <p class="text-[11px] text-zinc-300 mt-1">${r.texto}</p>
+                            </div>
+                            <button onclick="deletarRecado('${r.id}')" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white text-[10px] font-bold transition-all cursor-pointer shrink-0">Apagar</button>
+                        </div>
+                    `;
+                });
+            }
+            html += `</div>`;
+            sub.innerHTML = html;
+        }
+
+        const dadosSeminariosList = [
+            { data: "28/07", hora: "08h30–11h00", mediador: "TODOS", apresentadores: "TODOS", tema: "APRESENTAÇÃO DO INTERNATO EM SAÚDE DA MULHER – GINECOLOGIA & OBSTETRÍCIA" },
+            { data: "04/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Marta", apresentadores: "André Victor, Davi Carvalho, Letícia Barbosa", tema: "• Fisiologia do Ciclo Menstrual\n• Pré-Natal de Risco Habitual" },
+            { data: "11/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Nadya Veras", apresentadores: "Louise Bonfim, Isabella de Lima", tema: "• Trabalho de Parto (Condutas, Indução e Condução)\n• Cardiotocografia: Avaliação da Vitalidade Fetal: Sofrimento Fetal" },
+            { data: "18/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Hiago Kaian", apresentadores: "Isabella Frota, Maria Eduarda Aquino, José Henrique", tema: "• Sangramento Uterino Anormal (PALM-COEIN): Miomatose, Adenomiose e Endometriose\n• Hemorragias da 1ª Metade e da 2ª Metade da Gravidez: Hemorragia Pós-Parto" },
+            { data: "25/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Marta | Lucimara", apresentadores: "Heitor Stoduto, João Victor Tajra, Bruno Azevedo, Andressa Maboni", tema: "• Alterações Funcionais Benignas da Mama (AFBM): Patologias Benignas / Inflamatórias / Infecciosas da Mama\n• Câncer de Mama: Classificação BI-RADS" },
+            { data: "01/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Maria Luiza", apresentadores: "Maria Eduarda Santiago, Luiza de Santes", tema: "• Métodos Contraceptivos (Indicações, Contraindicações, Complicações)\n• Trabalho de Parto Prematuro: Infecção do Trato Urinário em Obstetrícia" },
+            { data: "08/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Letícia Teixeira", apresentadores: "Júlia Matos, Luiza Sales", tema: "• Anatomia Genital Feminina Aplicada à Uroginecologia: Incontinência Urinária Feminina\n• HPV e Câncer de Colo de Útero" },
+            { data: "15/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Ana Clara", apresentadores: "Carolina Banholi, Kamilly Lima", tema: "• Prolapsos Genitais: Classificação de Bump (POP-Q)\n• Tumores Benignos e Malignos do Ovário" },
+            { data: "22/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Giovanna Muniz", apresentadores: "Rayane Maria, Sofia Dias", tema: "• Síndromes Hipertensivas e Gestação (Pré-Eclâmpsia/Eclâmpsia/Síndrome HELLP)\n• Diabetes Gestacional" },
+            { data: "23/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Lucimara", apresentadores: "Annelise Paiva, Camila Guidão, Gabriella Reis, Ana Luiza Daros", tema: "• Restrição de Crescimento Intrauterino: Oligoâmnio/Polidrâmnio\n• Leucorreias: Infecções Sexualmente Transmissíveis (IST) em GO e Doenças Inflamatórias Pélvica (DIP)" },
+            { data: "29/09", hora: "18h30–19h45\n20h00–21h30", mediador: "TODOS", apresentadores: "TODOS", tema: "AVALIAÇÃO SOMATIVA" }
+        ];
+
+        window.renderizarSeminariosView = function() {
+            const containerTurnos = document.getElementById('lista-turnos');
+            let html = '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-full overflow-y-auto pr-1 pb-4">';
+            dadosSeminariosList.forEach(s => {
+                html += `
+                    <div class="glass-panel hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl p-4 transition-all shadow-md group border border-black/5 dark:border-white/10 flex flex-col h-full relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/50 to-indigo-500/50"></div>
+                        <div class="flex items-center justify-between gap-2 pb-3 border-b border-black/5 dark:border-white/10 mb-3">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-outfit font-extrabold text-[11px]">${s.data}</span>
+                                <span class="text-[11px] font-semibold text-zinc-600 dark:text-zinc-300 font-outfit">${s.hora.replace('\n', ' • ')}</span>
+                            </div>
+                            <div class="flex items-center space-x-1.5 text-[10px] bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-md border border-black/5 dark:border-white/5">
+                                <span class="text-zinc-500 dark:text-zinc-400">Mediador:</span>
+                                <span class="dark:text-white text-zinc-900 font-bold font-outfit">${s.mediador}</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3 flex-grow flex flex-col">
+                            <div>
+                                <span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">Apresentadores</span>
+                                <p class="text-xs font-bold dark:text-white text-zinc-900 leading-snug">${s.apresentadores}</p>
+                            </div>
+                            <div class="mt-auto pt-2">
+                                <span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest block mb-1.5">Temas Abordados</span>
+                                <p class="text-[11px] text-zinc-600 dark:text-zinc-300 whitespace-pre-line leading-relaxed font-medium bg-black/5 dark:bg-black/20 p-2.5 rounded-lg border border-black/5 dark:border-white/5">${s.tema}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            containerTurnos.innerHTML = html;
+        }
+
+        window.renderizarRecadosView = function() {
+            const containerTurnos = document.getElementById('lista-turnos');
+            const alunoLogado = sessionStorage.getItem('alunoLogado') || 'Aluno T7A';
+            let html = `
+                <div class="flex flex-col lg:flex-row gap-5 h-full overflow-hidden">
+                    <div class="w-full lg:w-1/3 shrink-0">
+                        <div class="glass-panel rounded-2xl p-5 shadow-lg border border-blue-500/20 bg-gradient-to-b from-blue-900/10 to-transparent sticky top-0">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500 dark:text-blue-400 shadow-inner">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                </div>
+                                <h3 class="text-sm font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">Novo Recado Oficial</h3>
+                            </div>
+                            <form onsubmit="adicionarRecado(event)" class="space-y-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5">Autor do Aviso</label>
+                                    <input type="text" id="recado-autor" value="${alunoLogado}" disabled class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-400 text-zinc-500 font-semibold text-xs rounded-xl px-4 py-3 cursor-not-allowed shadow-inner bg-black/5 dark:bg-black/40">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5">Mensagem</label>
+                                    <textarea id="recado-texto" required rows="4" placeholder="Escreva os detalhes, lembretes ou avisos importantes da semana..." class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-xs rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 shadow-inner resize-none bg-white/50 dark:bg-black/20"></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-outfit font-bold py-3.5 rounded-xl transition-all shadow-[0_4px_15px_rgba(79,70,229,0.3)] active:scale-95 cursor-pointer text-xs flex items-center justify-center space-x-2">
+                                    <span>Publicar no Mural</span>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="w-full lg:w-2/3 flex flex-col h-full">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-y-auto pr-2 pb-4 h-full content-start">
+            `;
+
+            if (recadosListaGlobal.length === 0) {
+                html += `<div class="col-span-full glass-panel rounded-xl p-5 text-center text-zinc-400 font-medium text-sm">Ainda não há recados publicados no mural.</div>`;
+            } else {
+                recadosListaGlobal.forEach(r => {
+                    let dataFormatada = "Recentemente";
+                    if (r.timestamp && r.timestamp.toDate) {
+                        const d = r.timestamp.toDate();
+                        dataFormatada = d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                    }
+
+                    const eDono = (r.autor === alunoLogado);
+
+                    html += `
+                        <div class="glass-panel rounded-2xl p-4 shadow-md space-y-2.5 border border-black/5 dark:border-white/10 hover:border-blue-500/40 transition-all flex flex-col">
+                            <div class="flex items-center justify-between pb-2.5 border-b border-black/5 dark:border-white/5">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-[10px] font-bold shadow-inner">
+                                        ${r.autor.charAt(0)}
+                                    </div>
+                                    <span class="text-[11px] font-outfit font-extrabold text-blue-600 dark:text-blue-400">${r.autor}</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-[9px] text-zinc-400 font-medium font-mono bg-black/5 dark:bg-white/5 px-2 py-1 rounded">${dataFormatada}</span>
+                                    ${eDono ? `
+                                        <div id="recado-acoes-${r.id}" class="flex items-center space-x-1">
+                                            <button onclick="prepararEdicaoRecado('${r.id}', \`${r.texto.replace(/`/g, '\\`')}\`)" class="p-1.5 rounded-lg bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-all" title="Editar"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+                                            <button onclick="deletarRecado('${r.id}')" class="p-1.5 rounded-lg bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white transition-all" title="Apagar"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <div id="recado-texto-el-${r.id}" class="pt-1 flex-1">
+                                <p class="text-[11px] text-zinc-700 dark:text-zinc-300 whitespace-pre-line leading-relaxed font-medium">${r.texto}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            html += `</div></div></div>`;
+            containerTurnos.innerHTML = html;
+        }
+
+        window.renderizarCalendarioMensal = function() {
+            const idTrio = document.getElementById('grupo-select').value;
+            const dadosTrio = dadosEscala[idTrio];
+            const containerTurnos = document.getElementById('lista-turnos');
+
+            const meses = [
+                { nome: "Agosto de 2026", ano: 2026, mes: 7, diasNoMes: 31 },
+                { nome: "Setembro de 2026", ano: 2026, mes: 8, diasNoMes: 30 },
+                { nome: "Outubro de 2026", ano: 2026, mes: 9, diasNoMes: 4 }
+            ];
+
+            let html = '<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5 pb-4 h-full overflow-y-auto pr-1">';
+            meses.forEach(m => {
+                html += `
+                    <div class="glass-panel rounded-2xl p-4 shadow-lg space-y-3 h-fit border border-black/5 dark:border-white/5">
+                        <div class="flex items-center justify-between pb-2.5 border-b border-black/5 dark:border-white/10">
+                            <h3 class="text-sm font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">${m.nome}</h3>
+                            <span class="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 font-outfit">Escala do ${dadosTrio.nomeGrupo.split(':')[0]}</span>
+                        </div>
+                        <div class="grid grid-cols-7 gap-1.5 text-center">
+                            <div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Seg</div>
+                            <div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Ter</div>
+                            <div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Qua</div>
+                            <div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Qui</div>
+                            <div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Sex</div>
+                            <div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Sáb</div>
+                            <div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Dom</div>
+                `;
+
+                let primeiroDiaIndex;
+                if(m.mes === 7) primeiroDiaIndex = 5; 
+                else if(m.mes === 8) primeiroDiaIndex = 1; 
+                else if(m.mes === 9) primeiroDiaIndex = 3; 
+
+                for(let i = 0; i < primeiroDiaIndex; i++) {
+                    html += `<div class="rounded-xl bg-black/5 dark:bg-black/20 opacity-20 h-[90px]"></div>`;
+                }
+
+                let totalCelulas = primeiroDiaIndex;
+
+                for(let dia = 1; dia <= m.diasNoMes; dia++) {
+                    const dataObj = new Date(m.ano, m.mes, dia);
+                    const turnosDia = obterDetalhesTurnosDia(idTrio, dataObj);
+                    const temAlgumPlantao = turnosDia.some(t => t.local !== "—");
+
+                    const dayOfWeek = dataObj.getDay();
+                    const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+                    let cardClass = temAlgumPlantao 
+                        ? 'bg-blue-600/10 dark:bg-blue-900/35 border-blue-500/40 text-zinc-900 dark:text-white shadow-[0_0_8px_rgba(59,130,246,0.15)]' 
+                        : (isWeekend ? 'bg-black/10 dark:bg-black/40 border-black/10 dark:border-white/10 text-zinc-400 dark:text-zinc-500' : 'bg-black/5 dark:bg-black/30 border-black/5 dark:border-white/5 text-zinc-500 dark:text-zinc-400');
+
+                    let turnosHtml = '';
+                    turnosDia.forEach(t => {
+                        const sigla = t.periodo === 'Manhã' ? 'M' : t.periodo === 'Tarde' ? 'T' : 'N';
+                        const ativo = t.local !== "—";
+                        const corBadge = ativo 
+                            ? 'bg-blue-600 text-white font-bold shadow-sm' 
+                            : 'bg-black/10 dark:bg-white/5 text-zinc-400 dark:text-zinc-500';
+                        
+                        turnosHtml += `
+                            <div class="flex items-center justify-between text-[8px] px-1.5 py-0.5 rounded-md ${corBadge} truncate" title="${t.periodo}: ${t.local}">
+                                <span class="uppercase font-mono">${sigla}</span>
+                                <span class="truncate ml-1 font-medium">${t.local !== "—" ? t.local : "—"}</span>
+                            </div>
+                        `;
+                    });
+
+                    html += `
+                        <div class="p-1.5 rounded-xl border ${cardClass} flex flex-col justify-between h-[90px] box-border space-y-1 transition-transform hover:scale-[1.02]">
+                            <div class="flex items-center justify-between px-0.5">
+                                <span class="text-[11px] font-outfit font-extrabold">${dia}</span>
+                                ${temAlgumPlantao ? '<span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]"></span>' : ''}
+                            </div>
+                            <div class="space-y-1">
+                                ${turnosHtml}
+                            </div>
+                        </div>
+                    `;
+                    totalCelulas++;
+                }
+
+                const resto = totalCelulas % 7;
+                if (resto !== 0) {
+                    const celulasFaltantes = 7 - resto;
+                    for(let i = 0; i < celulasFaltantes; i++) {
+                        html += `<div class="rounded-xl bg-black/5 dark:bg-black/20 opacity-15 h-[90px]"></div>`;
+                    }
+                }
+
+                html += `</div></div>`;
+            });
+            html += '</div>';
+            containerTurnos.innerHTML = html;
+        }
+
+        function obterDetalhesTurnosDia(idTrio, dataObj) {
+            const dataInicioRodizio = new Date(2026, 7, 3);
+            const dataFimRodizio = new Date(2026, 9, 4, 23, 59, 59);
+
+            if(dataObj < dataInicioRodizio || dataObj > dataFimRodizio) {
+                return [
+                    { periodo: "Manhã", local: "—" },
+                    { periodo: "Tarde", local: "—" },
+                    { periodo: "Noite", local: "—" }
+                ];
+            }
+
+            const diffTime = dataObj - dataInicioRodizio;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            let semanaNum = Math.floor(diffDays / 7) + 1;
+            if(semanaNum < 1) semanaNum = 1;
+            if(semanaNum > 9) semanaNum = 9;
+
+            const jsDay = dataObj.getDay();
+            const mapDias = { 1: "seg", 2: "ter", 3: "qua", 4: "qui", 5: "sex", 6: "sab", 0: "dom" };
+            const diaKey = mapDias[jsDay];
+
+            return dadosEscala[idTrio].semanas[semanaNum][diaKey].turnos;
+        }
+
+        function detectarDiaESemanaAtual() {
+            const agora = new Date();
+            const dataInicioRodizio = new Date('2026-08-03T00:00:00');
+            const dataFimRodizio = new Date('2026-10-04T23:59:59');
+
+            if (agora >= dataInicioRodizio && agora <= dataFimRodizio) {
+                const diffTime = agora - dataInicioRodizio;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                let semanaCalculada = Math.floor(diffDays / 7) + 1;
+                
+                if (semanaCalculada < 1) semanaCalculada = 1;
+                if (semanaCalculada > 9) semanaCalculada = 9;
+                window.semanaSelecionadaGlobal = semanaCalculada;
+
+                const jsDay = agora.getDay();
+                const mapDias = { 1: "seg", 2: "ter", 3: "qua", 4: "qui", 5: "sex", 6: "sab", 0: "dom" };
+                window.diaSelecionadoGlobal = mapDias[jsDay] || "seg";
+            } else {
+                window.semanaSelecionadaGlobal = 1;
+                window.diaSelecionadoGlobal = "seg";
+            }
+        }
+
+        function iniciarContadores() {
+            const dataFimRodizio = new Date('2026-10-04T23:59:59'); 
+            const dataInicioRodizio = new Date('2026-08-03T00:00:00');
+
+            function atualizar() {
+                const agora = new Date();
+                const diferenca = dataFimRodizio - agora;
+                const diasRestantes = Math.ceil(diferenca / (1000 * 60 * 60 * 24));
+                const badge = document.getElementById('contador-dias');
+                if (badge) {
+                    if (diasRestantes > 1) badge.innerText = `Faltam ${diasRestantes} dias para o fim do rodízio`;
+                    else if (diasRestantes === 1) badge.innerText = `Falta 1 dia para o fim do rodízio`;
+                    else if (diasRestantes === 0) badge.innerText = `Último dia de G.O!`;
+                    else badge.innerText = `Rodízio Concluído`;
+                }
+
+                const diffTime = agora - dataInicioRodizio;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                let semanaCalculada = Math.floor(diffDays / 7) + 1;
+                if (semanaCalculada < 1) semanaCalculada = 1;
+                if (semanaCalculada > 9) semanaCalculada = 9;
+
+                const statSemana = document.getElementById('stat-semana');
+                if (statSemana) statSemana.innerText = `Semana ${semanaCalculada} de 9`;
+            }
+
+            atualizar();
+            setInterval(atualizar, 1000 * 60 * 60);
+        }
+
+        function gerarDiasSemana(semanaNum, datasArray) {
+            const tardeSegunda = (semanaNum === 1) ? "Simulado (UNIEURO)" : "Sessões Clínicas";
+            return {
+                "seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: tardeSegunda }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                "ter": { nome: "Terça-feira", data: datasArray[1], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "CO" }, { periodo: "Tarde", horario: "13h-18h", local: "Gilmária" }, { periodo: "Noite", horario: "18h-22h", local: "UNIEURO" } ] },
+                "qua": { nome: "Quarta-feira", data: datasArray[2], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                "qui": { nome: "Quinta-feira", data: datasArray[3], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "CO" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                "sex": { nome: "Sexta-feira", data: datasArray[4], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "Flávia" }, { periodo: "Tarde", horario: "13h-18h", local: "PS FICHA" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] },
+                "sab": { nome: "Sábado", data: datasArray[5], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "CO" } ] },
+                "dom": { nome: "Domingo", data: datasArray[6], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: "—" }, { periodo: "Tarde", horario: "13h-18h", local: "—" }, { periodo: "Noite", horario: "18h-22h", local: "—" } ] }
+            };
+        }
+
+        const semanasDatas = {
+            1: ["04/08", "05/08", "06/08", "07/08", "08/08", "09/08", "10/08"],
+            2: ["11/08", "12/08", "13/08", "14/08", "15/08", "16/08", "17/08"],
+            3: ["18/08", "19/08", "20/08", "21/08", "22/08", "23/08", "24/08"],
+            4: ["25/08", "26/08", "27/08", "28/08", "29/08", "30/08", "31/08"],
+            5: ["01/09", "02/09", "03/09", "04/09", "05/09", "06/09", "07/09"],
+            6: ["08/09", "09/09", "10/09", "11/09", "12/09", "13/09", "14/09"],
+            7: ["15/09", "16/09", "17/09", "18/09", "19/09", "20/09", "21/09"],
+            8: ["22/09", "23/09", "24/09", "25/09", "26/09", "27/09", "28/09"],
+            9: ["29/09", "30/09", "01/10", "02/10", "03/10", "04/10", "05/10"]
+        };
+
+        const dadosEscala = {
+            "1": { nomeGrupo: "Trio A1: André, Davi & Leticia B.", membros: ["André Victor", "Davi Carvalho", "Letícia Barbosa"] },
+            "2": { nomeGrupo: "Trio A2: Nadya, Louise & Isabella T.", membros: ["Nadya Jarosczynski", "Louise Mirindiba", "Isabella Teixeira"] },
+            "3": { nomeGrupo: "Trio A3: Hiago, Isabela & Mª Eduarda Aquino", membros: ["Hiago Kaian", "Isabela Frota", "Maria Eduarda Aquino"] },
+            "4": { nomeGrupo: "Trio A4: Heitor, Bruno & Andressa M.", membros: ["Heitor Stoduto", "Bruno Azevedo", "Andressa Maboni"] },
+            "5": { nomeGrupo: "Trio A5: Mª Luiza, Mª Eduarda Santiago & Luiza de S.", membros: ["Maria Luiza", "Maria Eduarda Santiago", "Luiza de Santes"] },
+            "6": { nomeGrupo: "Trio A6: Leticia M., Júlia & Luiza B.", membros: ["Leticia Teixeira", "Júlia Matos", "Luiza Borges Sales"] },
+            "7": { nomeGrupo: "Trio A7: Ana Clara, Carolina B. & Kamilly", membros: ["Ana Clara", "Carolina Banholi", "Kamilly Lima"] },
+            "8": { nomeGrupo: "Trio A8: Giovanna, Rayane & Sofia", membros: ["Giovanna Muniz", "Rayane Maria", "Sofia Dias"] },
+            "9": { nomeGrupo: "Trio A9: Annelise, Camila S. & Gabriella", membros: ["Annelise Paiva", "Camila Souza", "Gabriella Reis"] },
+            "10": { nomeGrupo: "Trio A10: José, João Victor & Ana Luiza", membros: ["José Henrique", "João Victor Tajra", "Ana Luiza Daros"] }
+        };
+
+        for(let i=1; i<=10; i++) {
+            dadosEscala[i].semanas = {};
+            for(let s=1; s<=9; s++) {
+                dadosEscala[i].semanas[s] = gerarDiasSemana(s, semanasDatas[s]);
+            }
+        }
+
+        window.semanaSelecionadaGlobal = 1;
+        window.diaSelecionadoGlobal = "seg";
+
+        window.renderizarSemanas = function() {
+            const container = document.getElementById('semanas-tab-container');
+            container.innerHTML = '';
+            for (let s = 1; s <= 9; s++) {
+                const isSelected = (s === window.semanaSelecionadaGlobal);
+                const btnClass = isSelected 
+                    ? 'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_4px_12px_rgba(79,70,229,0.3)] scale-[1.02]' 
+                    : 'glass-panel text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 border-black/5 dark:border-white/5';
+                
+                const inicioFim = semanasDatas[s][0] + " – " + semanasDatas[s][6];
+
+                container.innerHTML += `
+                    <button onclick="selecionarSemana(${s})" class="border rounded-xl py-2.5 px-2 flex flex-col items-center justify-center transition-all duration-300 ${btnClass} w-full cursor-pointer">
+                        <span class="text-[9px] font-bold uppercase tracking-wider font-outfit">SEM ${s}</span>
+                        <span class="text-[10px] font-extrabold font-outfit mt-0.5 tracking-tight">${inicioFim}</span>
+                    </button>
+                `;
+            }
+        }
+
+        window.selecionarSemana = function(s) {
+            window.semanaSelecionadaGlobal = s;
+            window.renderizarSemanas();
+            window.renderizarAbasDias();
+            window.mudarGrupo();
+        }
+
+        window.renderizarAbasDias = function() {
+            const container = document.getElementById('container-abas-dias');
+            container.innerHTML = '';
+            
+            const datasDaSemana = semanasDatas[window.semanaSelecionadaGlobal];
+            const listaDiasConfig = [
+                { key: "seg", label: "Segunda", data: datasDaSemana[0] },
+                { key: "ter", label: "Terça", data: datasDaSemana[1] },
+                { key: "qua", label: "Quarta", data: datasDaSemana[2] },
+                { key: "qui", label: "Quinta", data: datasDaSemana[3] },
+                { key: "sex", label: "Sexta", data: datasDaSemana[4] },
+                { key: "sab", label: "Sábado", data: datasDaSemana[5] },
+                { key: "dom", label: "Domingo", data: datasDaSemana[6] }
+            ];
+
+            listaDiasConfig.forEach(d => {
+                const isSelected = (d.key === window.diaSelecionadoGlobal);
+                const btnClass = isSelected 
+                    ? 'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_4px_12px_rgba(79,70,229,0.3)] scale-[1.02]' 
+                    : 'glass-panel text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 border-black/5 dark:border-white/5';
+                
+                container.innerHTML += `
+                    <button onclick="selecionarDia('${d.key}')" class="border rounded-xl py-3 px-2 flex flex-col items-center justify-center transition-all duration-300 ${btnClass} w-full cursor-pointer">
+                        <span class="text-[11px] font-bold uppercase tracking-widest font-outfit">${d.label}</span>
+                        <span class="text-xs font-extrabold font-outfit mt-1">${d.data}</span>
+                    </button>
+                `;
+            });
+        }
+
+        window.selecionarDia = function(key) {
+            window.diaSelecionadoGlobal = key;
+            window.renderizarAbasDias();
+            window.mudarGrupo();
+        }
+
+        window.mudarGrupo = function() {
+            if (window.modoVisualizacao === 'seminarios' || window.modoVisualizacao === 'calendario' || window.modoVisualizacao === 'recados' || window.modoVisualizacao === 'admin') {
+                if (window.modoVisualizacao === 'calendario') renderizarCalendarioMensal();
+                if (window.modoVisualizacao === 'recados') renderizarRecadosView();
+                return;
+            }
+
+            const id = document.getElementById('grupo-select').value;
+            const dados = dadosEscala[id];
+            
+            document.getElementById('grupo-badge-num').innerText = 'A' + id;
+            document.getElementById('titulo-grupo-header').innerText = dados.nomeGrupo;
+
+            const listaMembros = document.getElementById('lista-membros');
+            listaMembros.innerHTML = '';
+            dados.membros.forEach(nome => {
+                listaMembros.innerHTML += `
+                    <li class="flex items-center space-x-3 group cursor-default">
+                        <div class="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center text-[11px] font-outfit font-extrabold text-zinc-700 dark:text-zinc-300 shrink-0 group-hover:bg-blue-500/20 group-hover:text-blue-500 transition-all shadow-inner">
+                            ${getIniciais(nome)}
+                        </div>
+                        <span class="text-sm font-semibold text-zinc-700 dark:text-zinc-200 leading-tight group-hover:text-zinc-900 dark:group-hover:text-white transition-colors truncate">${nome}</span>
+                    </li>
+                `;
+            });
+
+            const diasDaSemanaGrupo = dados.semanas[window.semanaSelecionadaGlobal];
+            const infoDia = diasDaSemanaGrupo[window.diaSelecionadoGlobal];
+            document.getElementById('label-dia-topo').innerText = `${infoDia.nome.toUpperCase()} • ${infoDia.data}`;
+
+            let totalAtividades = 0, totalPossiveis = 0;
+            let countManha = 0, countTarde = 0, countNoite = 0, countFds = 0;
+
+            Object.entries(diasDaSemanaGrupo).forEach(([diaKey, d]) => {
+                const isFds = (diaKey === 'sab' || diaKey === 'dom');
+                d.turnos.forEach(t => {
+                    totalPossiveis++;
+                    if (t.local !== "—") {
+                        totalAtividades++;
+                        if (t.periodo === "Manhã") countManha++;
+                        if (t.periodo === "Tarde") countTarde++;
+                        if (t.periodo === "Noite") countNoite++;
+                        if (isFds) countFds++;
+                    }
+                });
+            });
+
+            document.getElementById('stat-atividades').innerText = `${totalAtividades}/${totalPossiveis}`;
+            
+            // Garantindo nomes completos limpos e sem abreviações
+            document.getElementById('stat-detalhes-turnos').innerHTML = `
+                <span class="bg-black/5 dark:bg-white/5 px-2 py-1 rounded-md border border-black/5 dark:border-white/5 whitespace-nowrap">🌅 Manhã: ${countManha}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-2 py-1 rounded-md border border-black/5 dark:border-white/5 whitespace-nowrap">☀️ Tarde: ${countTarde}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-2 py-1 rounded-md border border-black/5 dark:border-white/5 whitespace-nowrap">🌙 Noite: ${countNoite}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-2 py-1 rounded-md border border-black/5 dark:border-white/5 whitespace-nowrap">🏖️ Fim de Semana: ${countFds}</span>
+            `;
+
+            const containerTurnos = document.getElementById('lista-turnos');
+            containerTurnos.innerHTML = '';
+
+            if (window.modoVisualizacao === 'individual') {
+                let html = '<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">';
+                infoDia.turnos.forEach(t => {
+                    let iconeTurno = '';
+                    if(t.periodo === 'Manhã') iconeTurno = '<svg class="w-7 h-7 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+                    else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-7 h-7 text-orange-500 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+                    else iconeTurno = '<svg class="w-7 h-7 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
+
+                    const hasPlantao = t.local !== "—";
+                    const cardBorder = hasPlantao ? 'border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-900/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]' : 'glass-panel opacity-70';
+
+                    html += `
+                        <div class="${cardBorder} border hover:border-blue-500/60 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all duration-300 shadow-md group relative overflow-hidden h-full min-h-[200px]">
+                            ${hasPlantao ? '<div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>' : ''}
+                            
+                            <div class="w-14 h-14 rounded-full bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 flex items-center justify-center shadow-inner mb-4 group-hover:scale-110 transition-transform duration-300">
+                                ${iconeTurno}
+                            </div>
+                            
+                            <span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">${t.periodo}</span>
+                            <h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight mb-5">${t.local}</h4>
+                            
+                            <div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10 flex justify-between items-center">
+                                <span class="text-xs font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">${t.horario}</span>
+                                <span class="px-3 py-1.5 rounded-lg ${hasPlantao ? 'bg-blue-600 text-white shadow-md' : 'bg-black/5 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 border border-black/10 dark:border-white/10'} text-[10px] font-outfit font-bold uppercase tracking-wide transition-colors">${hasPlantao ? "Obrigatório" : "Livre"}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                containerTurnos.innerHTML = html;
+            } else if (window.modoVisualizacao === 'geral') {
+                let gridHtml = '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 overflow-y-auto pr-1 pb-4 h-full content-start">';
+                for (let i = 1; i <= 10; i++) {
+                    const dadosTrio = dadosEscala[i];
+                    const infoDiaTrio = dadosTrio.semanas[window.semanaSelecionadaGlobal][window.diaSelecionadoGlobal];
+                    
+                    let turnosTrioHtml = '';
+                    infoDiaTrio.turnos.forEach(t => {
+                        const hasPlantao = t.local !== "—";
+                        const badgeColor = hasPlantao ? 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20 shadow-inner' : 'text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5';
+                        turnosTrioHtml += `
+                            <div class="flex items-center justify-between text-[10px] py-1.5 px-3 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5">
+                                <span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit uppercase tracking-widest">${t.periodo}</span>
+                                <span class="font-extrabold font-outfit ${badgeColor} px-2 py-0.5 rounded truncate max-w-[130px] border">${t.local}</span>
+                            </div>
+                        `;
+                    });
+
+                    gridHtml += `
+                        <div class="glass-panel rounded-2xl p-4 space-y-3 transition-all shadow-md border border-black/5 dark:border-white/10 hover:border-blue-500/30">
+                            <div class="flex items-center justify-between border-b border-black/5 dark:border-white/10 pb-2">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-outfit font-black text-[11px] flex items-center justify-center shrink-0 shadow-inner">
+                                        A${i}
+                                    </div>
+                                    <h4 class="text-xs font-outfit font-bold dark:text-white text-zinc-900 tracking-tight truncate max-w-[120px] sm:max-w-[140px]">${dadosTrio.nomeGrupo.split(':')[1] || dadosTrio.nomeGrupo}</h4>
+                                </div>
+                                <button onclick="document.getElementById('grupo-select').value='${i}'; alternarModo('individual');" class="text-[10px] font-outfit font-bold text-blue-600 dark:text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-2.5 py-1 rounded-md transition-all cursor-pointer">Ver</button>
+                            </div>
+                            <div class="space-y-1.5">
+                                ${turnosTrioHtml}
+                            </div>
+                        </div>
+                    `;
+                }
+                gridHtml += '</div>';
+                containerTurnos.innerHTML = gridHtml;
+            }
+        }
+
+        function getIniciais(nome) {
+            const partes = nome.trim().split(' ');
+            if (partes.length > 1) return (partes[0][0] + partes[1][0]).toUpperCase();
+            return (nome[0] + nome[1]).toUpperCase();
+        }
+
+        window.onload = () => {
+            if (localStorage.getItem('tema') === 'claro') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+            detectarDiaESemanaAtual();
+            window.renderizarSemanas();
+            window.renderizarAbasDias();
+            window.mudarGrupo();
+            iniciarContadores();
+            
+            if (sessionStorage.getItem('autenticado') === 'true') {
+                document.getElementById('login-overlay').style.display = 'none';
+                atualizarIdentificacaoAluno();
+                const alunoLogado = sessionStorage.getItem('alunoLogado');
+                if (alunoLogado) {
+                    direcionarParaTrioDoAluno(alunoLogado);
+                }
+            }
+        };
+    </script>
+</body>
+</html>
