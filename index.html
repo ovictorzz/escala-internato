@@ -205,14 +205,15 @@
     </main>
 
     <script>
-        // CONFIGURAÇÃO DO FIREBASE (SUBSTITUA PELOS SEUS DADOS REAIS DO CONSOLE DO FIREBASE)
+        // AS SUAS CHAVES REAIS DO FIREBASE
         const firebaseConfig = {
-            apiKey: "SUA_API_KEY",
-            authDomain: "SEU_PROJETO.firebaseapp.com",
-            projectId: "SEU_PROJETO_ID",
-            storageBucket: "SEU_PROJETO.appspot.com",
-            messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-            appId: "SEU_APP_ID"
+            apiKey: "AIzaSyBOwnygs2V5ADR1C5xPRATXbU2M18VaKm4",
+            authDomain: "painel-go-t7a.firebaseapp.com",
+            projectId: "painel-go-t7a",
+            storageBucket: "painel-go-t7a.firebasestorage.app",
+            messagingSenderId: "393877337729",
+            appId: "1:393877337729:web:3bae60fd8d49bda9dc3f80",
+            measurementId: "G-EHQSXVSYVS"
         };
 
         // Inicializar Firebase
@@ -284,7 +285,7 @@
             }
             detectarDiaESemanaAtual();
             iniciarContadores();
-            iniciarOuvinteFirebase(); // Inicia a escuta em tempo real
+            iniciarOuvinteFirebase();
         });
 
         function alternarModo(modo) {
