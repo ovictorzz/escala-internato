@@ -105,14 +105,19 @@
                 </div>
             </div>
             
-            <div class="flex items-center space-x-3 self-end sm:self-center font-outfit">
+            <div class="flex items-center space-x-2.5 self-end sm:self-center font-outfit">
                 <button onclick="alternarTema()" class="p-2.5 rounded-xl glass-panel text-zinc-600 dark:text-zinc-300 hover:text-blue-500 dark:hover:text-blue-400 transition-all shadow-sm cursor-pointer" title="Alternar Modo Escuro/Claro">
                     <svg id="icone-lua" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
                     <svg id="icone-sol" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                 </button>
 
                 <span class="px-3 py-1.5 rounded-lg glass-panel text-zinc-700 dark:text-zinc-300 text-[11px] font-bold tracking-wide">T7A</span>
-                <span id="contador-dias" class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-600 dark:text-blue-400 text-[11px] font-bold tracking-wide shadow-[0_0_10px_rgba(59,130,246,0.1)]">Calculando...</span>
+
+                <button onclick="alternarModo('admin')" id="btn-header-admin" class="px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-[11px] font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer">Painel Admin</button>
+
+                <button onclick="sairSistema()" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-500 border border-rose-500/30 text-[11px] font-bold tracking-wide hover:bg-rose-500 hover:text-white transition-all cursor-pointer" title="Sair do sistema">Sair</button>
+
+                <span id="contador-dias" class="hidden sm:inline-block px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-600 dark:text-blue-400 text-[11px] font-bold tracking-wide shadow-[0_0_10px_rgba(59,130,246,0.1)]">Calculando...</span>
             </div>
         </div>
     </header>
@@ -209,7 +214,6 @@
                 <span>Divisão por Turnos (Manhã, Tarde e Noite)</span>
             </span>
             <div class="flex items-center space-x-1.5 glass-panel p-1.5 rounded-xl w-full sm:w-auto overflow-x-auto shadow-sm">
-                <button onclick="alternarModo('admin')" id="btn-modo-admin" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 transition-all cursor-pointer">Painel Admin</button>
                 <button onclick="alternarModo('individual')" id="btn-modo-ind" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Meu Trio</button>
                 <button onclick="alternarModo('geral')" id="btn-modo-geral" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Todos os Trios</button>
                 <button onclick="alternarModo('seminarios')" id="btn-modo-seminarios" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Seminários</button>
@@ -282,6 +286,12 @@
             } else {
                 erroMsg.classList.remove('hidden');
             }
+        }
+
+        window.sairSistema = function() {
+            sessionStorage.removeItem('autenticado');
+            document.getElementById('senha-input').value = '';
+            document.getElementById('login-overlay').style.display = 'flex';
         }
 
         const contadorRef = doc(db, "geral", "contador");
@@ -365,7 +375,7 @@
             const btnSeminarios = document.getElementById('btn-modo-seminarios');
             const btnCalendario = document.getElementById('btn-modo-calendario');
             const btnRecados = document.getElementById('btn-modo-recados');
-            const btnAdmin = document.getElementById('btn-modo-admin');
+            const btnHeaderAdmin = document.getElementById('btn-header-admin');
 
             const colunaMembros = document.getElementById('coluna-membros');
             const colunaTurnos = document.getElementById('coluna-turnos-wrapper');
@@ -376,16 +386,15 @@
 
             const classAtivo = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)] transition-all cursor-pointer scale-105";
             const classInativo = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer";
-            const classAdminInativo = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold bg-indigo-600/20 text-indigo-500 border border-indigo-500/35 hover:bg-indigo-600 hover:text-white transition-all cursor-pointer";
 
             btnInd.className = classInativo;
             btnGeral.className = classInativo;
             btnSeminarios.className = classInativo;
             btnCalendario.className = classInativo;
             btnRecados.className = classInativo;
-            btnAdmin.className = classAdminInativo;
 
             if (modo === 'individual') {
+                btnHeaderAdmin.className = "px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-[11px] font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer";
                 btnInd.className = classAtivo;
                 colunaMembros.style.display = 'flex';
                 colunaTurnos.className = "lg:col-span-8 space-y-4";
@@ -395,6 +404,7 @@
                 wrapperSemanas.style.display = 'block';
                 mudarGrupo();
             } else if (modo === 'geral') {
+                btnHeaderAdmin.className = "px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-[11px] font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer";
                 btnGeral.className = classAtivo;
                 colunaMembros.style.display = 'none';
                 colunaTurnos.className = "lg:col-span-12 space-y-4";
@@ -404,6 +414,7 @@
                 wrapperSemanas.style.display = 'block';
                 mudarGrupo();
             } else if (modo === 'seminarios') {
+                btnHeaderAdmin.className = "px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-[11px] font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer";
                 btnSeminarios.className = classAtivo;
                 colunaMembros.style.display = 'none';
                 colunaTurnos.className = "lg:col-span-12 space-y-4";
@@ -413,6 +424,7 @@
                 wrapperSemanas.style.display = 'none';
                 renderizarSeminariosView();
             } else if (modo === 'calendario') {
+                btnHeaderAdmin.className = "px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-[11px] font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer";
                 btnCalendario.className = classAtivo;
                 colunaMembros.style.display = 'none';
                 colunaTurnos.className = "lg:col-span-12 space-y-4";
@@ -422,6 +434,7 @@
                 wrapperSemanas.style.display = 'none';
                 renderizarCalendarioMensal();
             } else if (modo === 'recados') {
+                btnHeaderAdmin.className = "px-3 py-1.5 rounded-lg bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 text-[11px] font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer";
                 btnRecados.className = classAtivo;
                 colunaMembros.style.display = 'none';
                 colunaTurnos.className = "lg:col-span-12 space-y-4";
@@ -431,7 +444,7 @@
                 wrapperSemanas.style.display = 'none';
                 renderizarRecadosView();
             } else if (modo === 'admin') {
-                btnAdmin.className = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold bg-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)] transition-all cursor-pointer scale-105";
+                btnHeaderAdmin.className = "px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-[11px] font-bold tracking-wide shadow-[0_0_10px_rgba(79,70,229,0.5)] transition-all cursor-pointer";
                 colunaMembros.style.display = 'none';
                 colunaTurnos.className = "lg:col-span-12 space-y-4";
                 tituloSecao.innerHTML = `<svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg><span>Painel Administrativo Exclusivo (Representante)</span>`;
