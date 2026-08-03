@@ -209,12 +209,12 @@
                 <span>Divisão por Turnos (Manhã, Tarde e Noite)</span>
             </span>
             <div class="flex items-center space-x-1.5 glass-panel p-1.5 rounded-xl w-full sm:w-auto overflow-x-auto shadow-sm">
+                <button onclick="alternarModo('admin')" id="btn-modo-admin" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 transition-all cursor-pointer">Painel Admin</button>
                 <button onclick="alternarModo('individual')" id="btn-modo-ind" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Meu Trio</button>
                 <button onclick="alternarModo('geral')" id="btn-modo-geral" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Todos os Trios</button>
                 <button onclick="alternarModo('seminarios')" id="btn-modo-seminarios" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Seminários</button>
                 <button onclick="alternarModo('calendario')" id="btn-modo-calendario" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Calendário</button>
                 <button onclick="alternarModo('recados')" id="btn-modo-recados" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Quadro de Recados</button>
-                <button onclick="alternarModo('admin')" id="btn-modo-admin" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold bg-indigo-600/20 text-indigo-500 border border-indigo-500/30 transition-all cursor-pointer">Painel Admin</button>
             </div>
         </div>
 
@@ -284,7 +284,6 @@
             }
         }
 
-        // Contador Capotes
         const contadorRef = doc(db, "geral", "contador");
         onSnapshot(contadorRef, (docSnap) => {
             if (docSnap.exists()) {
@@ -296,7 +295,6 @@
             }
         });
 
-        // Recados em tempo real
         const recadosQuery = query(collection(db, "recados"), orderBy("timestamp", "desc"));
         onSnapshot(recadosQuery, (snapshot) => {
             recadosListaGlobal = [];
