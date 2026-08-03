@@ -1034,27 +1034,43 @@
                 else if(m.mes === 9) primeiroDiaIndex = 3; 
 
                 for(let i = 0; i < primeiroDiaIndex; i++) {
-                    html += `<div class="p-1 rounded-lg bg-black/5 dark:bg-black/15 opacity-25"></div>`;
+                    html += `<div class="p-1 rounded-lg bg-black/5 dark:bg-black/15 opacity-25 min-h-[75px]"></div>`;
                 }
 
                 for(let dia = 1; dia <= m.diasNoMes; dia++) {
                     const dataObj = new Date(m.ano, m.mes, dia);
-                    let turnoInfo = obterTurnosDoDiaParaTrio(idTrio, dataObj);
-                    let temPlantao = turnoInfo.hasPlantao;
+                    const turnosDia = obterDetalhesTurnosDia(idTrio, dataObj);
+                    const temAlgumPlantao = turnosDia.some(t => t.local !== "—");
 
-                    let cardClass = temPlantao 
-                        ? 'bg-blue-600/10 dark:bg-blue-900/30 border-blue-500/40 text-zinc-900 dark:text-white shadow-[0_0_8px_rgba(59,130,246,0.15)]' 
-                        : 'bg-black/5 dark:bg-black/30 border-black/5 dark:border-white/5 text-zinc-400 dark:text-zinc-600';
+                    let cardClass = temAlgumPlantao 
+                        ? 'bg-blue-600/10 dark:bg-blue-900/35 border-blue-500/40 text-zinc-900 dark:text-white shadow-[0_0_6px_rgba(59,130,246,0.15)]' 
+                        : 'bg-black/5 dark:bg-black/30 border-black/5 dark:border-white/5 text-zinc-500 dark:text-zinc-400';
 
-                    let tooltipHtml = turnoInfo.textoResumo ? `<div class="text-[7px] font-bold text-blue-600 dark:text-blue-300 mt-0.5 truncate">${turnoInfo.textoResumo}</div>` : `<div class="text-[7px] font-medium text-zinc-400 dark:text-zinc-600 mt-0.5">Livre</div>`;
+                    let turnosHtml = '';
+                    turnosDia.forEach(t => {
+                        const sigla = t.periodo === 'Manhã' ? 'M' : t.periodo === 'Tarde' ? 'T' : 'N';
+                        const ativo = t.local !== "—";
+                        const corBadge = ativo 
+                            ? 'bg-blue-600 text-white font-bold' 
+                            : 'bg-black/10 dark:bg-white/5 text-zinc-400 dark:text-zinc-500';
+                        
+                        turnosHtml += `
+                            <div class="flex items-center justify-between text-[7px] px-1 py-0.5 rounded ${corBadge} truncate" title="${t.periodo}: ${t.local}">
+                                <span class="uppercase font-mono">${sigla}</span>
+                                <span class="truncate ml-1 font-medium">${t.local !== "—" ? t.local : "—"}</span>
+                            </div>
+                        `;
+                    });
 
                     html += `
-                        <div class="p-1 rounded-xl border ${cardClass} flex flex-col justify-between min-h-[48px]">
+                        <div class="p-1 rounded-xl border ${cardClass} flex flex-col justify-between min-h-[75px] space-y-1">
                             <div class="flex items-center justify-between">
                                 <span class="text-[10px] font-outfit font-extrabold">${dia}</span>
-                                ${temPlantao ? '<span class="w-1 h-1 rounded-full bg-blue-500 shadow-[0_0_4px_rgba(59,130,246,0.8)]"></span>' : ''}
+                                ${temAlgumPlantao ? '<span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_4px_rgba(59,130,246,0.8)]"></span>' : ''}
                             </div>
-                            <div>${tooltipHtml}</div>
+                            <div class="space-y-0.5">
+                                ${turnosHtml}
+                            </div>
                         </div>
                     `;
                 }
@@ -1064,12 +1080,16 @@
             containerTurnos.innerHTML = html;
         }
 
-        function obterTurnosDoDiaParaTrio(idTrio, dataObj) {
+        function obterDetalhesTurnosDia(idTrio, dataObj) {
             const dataInicioRodizio = new Date(2026, 7, 3);
             const dataFimRodizio = new Date(2026, 9, 4, 23, 59, 59);
 
             if(dataObj < dataInicioRodizio || dataObj > dataFimRodizio) {
-                return { hasPlantao: false, textoResumo: "" };
+                return [
+                    { periodo: "Manhã", local: "—" },
+                    { periodo: "Tarde", local: "—" },
+                    { periodo: "Noite", local: "—" }
+                ];
             }
 
             const diffTime = dataObj - dataInicioRodizio;
@@ -1082,16 +1102,7 @@
             const mapDias = { 1: "seg", 2: "ter", 3: "qua", 4: "qui", 5: "sex", 6: "sab", 0: "dom" };
             const diaKey = mapDias[jsDay];
 
-            const diasSemanaTrio = dadosEscala[idTrio].semanas[semanaNum][diaKey];
-            let plantoesAtivos = [];
-            diasSemanaTrio.turnos.forEach(t => {
-                if(t.local !== "—") plantoesAtivos.push(t.local);
-            });
-
-            if(plantoesAtivos.length > 0) {
-                return { hasPlantao: true, textoResumo: plantoesAtivos.join(', ') };
-            }
-            return { hasPlantao: false, textoResumo: "" };
+            return dadosEscala[idTrio].semanas[semanaNum][diaKey].turnos;
         }
 
         function detectarDiaESemanaAtual() {
