@@ -528,7 +528,7 @@ function atualizarIdentificacaoAluno() {
             }
         }
 
-        function atualizarProximaAtividadeDinamica(alunoNome) {
+function atualizarProximaAtividadeDinamica(alunoNome) {
             const badgeAtividade = document.getElementById('proxima-atividade-badge');
             const painelNovo = document.getElementById('proxima-atividade-conteudo');
 
@@ -546,15 +546,14 @@ function atualizarIdentificacaoAluno() {
                 return;
             }
 
-            // Garante que pegamos a data atual sem problemas de fuso horário
             const agora = new Date();
             const anoAtual = agora.getFullYear();
             const mesAtual = agora.getMonth();
             const diaAtual = agora.getDate();
             const hojeLocal = new Date(anoAtual, mesAtual, diaAtual);
 
-            // Data de início correta do rodízio (ajustada para alinhar com 03/08)
-            const dataInicioRodizio = new Date(2026, 7, 3); // Mês 7 = Agosto (0 a 11)
+            // Alinhamento exato da data de início do rodízio (03 de Agosto de 2026)
+            const dataInicioRodizio = new Date(2026, 7, 3); 
             const dataFimRodizio = new Date(2026, 9, 4, 23, 59, 59);
 
             if (hojeLocal < dataInicioRodizio || hojeLocal > dataFimRodizio) {
@@ -593,7 +592,7 @@ function atualizarIdentificacaoAluno() {
                 badgeAtividade.innerText = "Atual: Sem atividade";
             }
 
-            // --- 2. Cartão Grande: PRÓXIMA ATIVIDADE OBRIGATÓRIA (Avança para a próxima real) ---
+            // --- 2. Cartão Grande: PRÓXIMA ATIVIDADE OBRIGATÓRIA (Pula o turno atual e busca a seguinte) ---
             if (painelNovo) {
                 const dadosTrio = dadosEscala[trioId];
                 let proximaAtividade = null;
