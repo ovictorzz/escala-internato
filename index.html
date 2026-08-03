@@ -5,16 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel G.O. - Internato T7A</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
     <style>
         body { 
             font-family: 'Inter', sans-serif; 
+            background-attachment: fixed;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .dark body { 
             background-color: #020203; 
             color: #e4e4e7;
             background-image: radial-gradient(circle at 50% 0%, #1e3a8a 0%, transparent 25%), 
                               radial-gradient(circle at 100% 100%, #312e81 0%, transparent 25%);
-            background-attachment: fixed;
         }
+        html:not(.dark) body { 
+            background-color: #f8fafc; 
+            color: #1e293b;
+            background-image: radial-gradient(circle at 50% 0%, #dbeafe 0%, transparent 25%), 
+                              radial-gradient(circle at 100% 100%, #e0e7ff 0%, transparent 25%);
+        }
+
         .font-outfit { font-family: 'Outfit', sans-serif; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -22,20 +37,31 @@
         ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
         
         .glass-panel {
-            background: rgba(15, 15, 20, 0.6);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .dark .glass-panel {
+            background: rgba(15, 15, 20, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .glass-panel:hover {
+        .dark .glass-panel:hover {
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        html:not(.dark) .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        html:not(.dark) .glass-panel:hover {
+            border: 1px solid rgba(0, 0, 0, 0.15);
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
 
     <div id="login-overlay" class="fixed inset-0 z-50 backdrop-blur-xl flex items-center justify-center p-4" style="background-image: linear-gradient(to bottom, rgba(2, 2, 3, 0.8), rgba(2, 2, 3, 0.98)), url('fundo.jpg'); background-size: cover; background-position: bottom center;">
-        <div class="glass-panel rounded-[2rem] p-8 max-w-sm w-full shadow-2xl shadow-black space-y-7 text-center relative overflow-hidden transition-all duration-500 transform hover:scale-[1.02]">
+        <div class="glass-panel rounded-[2rem] p-8 max-w-sm w-full shadow-2xl space-y-7 text-center relative overflow-hidden transition-all duration-500 transform hover:scale-[1.02]">
             <div class="absolute -top-16 -right-16 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
             <div class="absolute -bottom-16 -left-16 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
             
@@ -44,40 +70,45 @@
             </div>
             
             <div class="space-y-1.5">
-                <h2 class="text-2xl font-outfit font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400">Escala de 2026.2</h2>
+                <h2 class="text-2xl font-outfit font-extrabold tracking-tight text-white">Escala de 2026.2</h2>
                 <p class="text-xs text-zinc-400 leading-relaxed font-medium">
                     Identificação obrigatória para a Turma T7A<br>
-                    <span class="text-blue-400/80 font-semibold tracking-wide">feito por André Victor</span>
+                    <span class="text-blue-400 font-semibold tracking-wide">feito por André Victor</span>
                 </p>
             </div>
             
             <div class="space-y-4">
-                <input type="password" id="senha-input" placeholder="Digite a senha de acesso" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-4 text-white text-sm font-medium focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-center transition-all placeholder:text-zinc-600 shadow-inner">
-                <button onclick="verificarSenha()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-outfit font-bold tracking-wide py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] active:scale-95">ACESSAR SISTEMA</button>
+                <input type="password" id="senha-input" placeholder="Digite a senha de acesso" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-4 text-white text-sm font-medium focus:outline-none focus:border-blue-500 text-center transition-all placeholder:text-zinc-500 shadow-inner">
+                <button onclick="verificarSenha()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-outfit font-bold tracking-wide py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] active:scale-95">ACESSAR SISTEMA</button>
                 <p id="erro-msg" class="text-xs text-rose-400 font-semibold hidden animate-pulse">Senha incorreta. Tente novamente.</p>
             </div>
         </div>
     </div>
 
-    <header class="glass-panel border-b-white/5 sticky top-0 z-30 shadow-lg shadow-black/20">
+    <header class="glass-panel sticky top-0 z-30 shadow-lg">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div class="flex items-center space-x-3.5">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 flex items-center justify-center text-blue-500 dark:text-blue-400 shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </div>
                 <div>
-                    <h1 class="text-xs sm:text-sm font-bold text-white tracking-tight">
-                        Internato de Medicina – 10º semestre – <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 font-extrabold font-outfit">Ginecologia & Obstetrícia</span>
+                    <h1 class="text-xs sm:text-sm font-bold tracking-tight dark:text-white text-zinc-900">
+                        Internato de Medicina – 10º semestre – <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 font-extrabold font-outfit">Ginecologia & Obstetrícia</span>
                     </h1>
-                    <p class="text-[10px] text-zinc-400 font-semibold tracking-widest uppercase mt-0.5">
+                    <p class="text-[10px] text-zinc-500 dark:text-zinc-400 font-semibold tracking-widest uppercase mt-0.5">
                         Painel de Rodízios • Criado por André Victor
                     </p>
                 </div>
             </div>
             
-            <div class="flex items-center space-x-2 self-end sm:self-center font-outfit">
-                <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-zinc-300 text-[11px] font-bold tracking-wide">T7A</span>
-                <span id="contador-dias" class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 text-[11px] font-bold tracking-wide shadow-[0_0_10px_rgba(59,130,246,0.1)]">Calculando...</span>
+            <div class="flex items-center space-x-3 self-end sm:self-center font-outfit">
+                <button onclick="alternarTema()" class="p-2.5 rounded-xl glass-panel text-zinc-600 dark:text-zinc-300 hover:text-blue-500 dark:hover:text-blue-400 transition-all shadow-sm cursor-pointer" title="Alternar Modo Escuro/Claro">
+                    <svg id="icone-lua" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    <svg id="icone-sol" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                </button>
+
+                <span class="px-3 py-1.5 rounded-lg glass-panel text-zinc-700 dark:text-zinc-300 text-[11px] font-bold tracking-wide">T7A</span>
+                <span id="contador-dias" class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-600 dark:text-blue-400 text-[11px] font-bold tracking-wide shadow-[0_0_10px_rgba(59,130,246,0.1)]">Calculando...</span>
             </div>
         </div>
     </header>
@@ -91,13 +122,13 @@
                         A1
                     </div>
                     <div class="min-w-0 flex-grow">
-                        <span class="text-[10px] font-bold text-blue-400/80 uppercase tracking-widest block mb-1">Grupo Selecionado</span>
-                        <h3 class="text-base sm:text-lg font-outfit font-extrabold text-white tracking-tight truncate" id="titulo-grupo-header">Trio A1: André, Davi & Leticia B.</h3>
+                        <span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">Grupo Selecionado</span>
+                        <h3 class="text-base sm:text-lg font-outfit font-extrabold dark:text-white text-zinc-900 tracking-tight truncate" id="titulo-grupo-header">Trio A1: André, Davi & Leticia B.</h3>
                     </div>
                 </div>
 
-                <div class="relative w-full pt-4 border-t border-white/10">
-                    <select id="grupo-select" onchange="mudarGrupo()" class="w-full bg-black/40 border border-white/10 text-zinc-200 font-semibold text-sm rounded-xl px-4 py-3.5 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer shadow-inner">
+                <div class="relative w-full pt-4 border-t border-black/5 dark:border-white/10">
+                    <select id="grupo-select" onchange="mudarGrupo()" class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3.5 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer shadow-inner">
                         <option value="1">Trio A1: André, Davi & Leticia B.</option>
                         <option value="2">Trio A2: Nadya, Louise & Isabella T.</option>
                         <option value="3">Trio A3: Hiago, Isabela & Mª Eduarda Aquino</option>
@@ -117,39 +148,39 @@
 
             <div class="lg:col-span-6 grid grid-cols-3 gap-4">
                 <div class="glass-panel rounded-2xl p-5 flex flex-col justify-center transition-transform duration-300 hover:-translate-y-1">
-                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Período Atual</span>
-                    <span class="text-xl sm:text-2xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-300" id="stat-semana">-- de 9</span>
+                    <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1">Período Atual</span>
+                    <span class="text-xl sm:text-2xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-white dark:to-zinc-300" id="stat-semana">-- de 9</span>
                 </div>
                 <div class="glass-panel rounded-2xl p-5 flex flex-col justify-center transition-transform duration-300 hover:-translate-y-1">
-                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Turnos/Semana</span>
-                    <span class="text-xl sm:text-2xl font-outfit font-black text-white" id="stat-atividades">--</span>
-                    <div id="stat-detalhes-turnos" class="flex flex-wrap gap-x-1.5 gap-y-0.5 mt-2 text-[9px] text-zinc-400 font-semibold tracking-wide"></div>
+                    <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1">Turnos/Semana</span>
+                    <span class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900" id="stat-atividades">--</span>
+                    <div id="stat-detalhes-turnos" class="flex flex-wrap gap-x-1.5 gap-y-0.5 mt-2 text-[9px] text-zinc-500 dark:text-zinc-400 font-semibold tracking-wide"></div>
                 </div>
                 <div class="glass-panel rounded-2xl p-5 flex flex-col justify-between transition-transform duration-300 hover:-translate-y-1 group">
                     <div>
-                        <span class="text-[10px] font-bold text-blue-400/80 uppercase tracking-widest block mb-1">Capotes CO</span>
+                        <span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">Capotes CO</span>
                         <div class="flex items-baseline space-x-1">
-                            <span class="text-2xl sm:text-3xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" id="contador-capotes-val">...</span>
-                            <span class="text-[10px] font-bold text-zinc-500">un.</span>
+                            <span class="text-2xl sm:text-3xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.3)]" id="contador-capotes-val">...</span>
+                            <span class="text-[10px] font-bold text-zinc-400">un.</span>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-2 mt-3 pt-3 border-t border-white/10">
-                        <button onclick="alterarCapotes(-1)" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/5 text-zinc-300 font-outfit font-bold py-1.5 rounded-lg text-sm transition-all active:scale-95 cursor-pointer">-</button>
-                        <button onclick="alterarCapotes(1)" class="flex-1 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 text-blue-400 hover:text-white font-outfit font-bold py-1.5 rounded-lg text-sm transition-all active:scale-95 cursor-pointer shadow-[0_0_10px_rgba(59,130,246,0.1)]">+</button>
+                    <div class="flex items-center space-x-2 mt-3 pt-3 border-t border-black/5 dark:border-white/10">
+                        <button onclick="alterarCapotes(-1)" class="flex-1 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-black/5 dark:border-white/5 text-zinc-700 dark:text-zinc-300 font-outfit font-bold py-1.5 rounded-lg text-sm transition-all active:scale-95 cursor-pointer">-</button>
+                        <button onclick="alterarCapotes(1)" class="flex-1 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-outfit font-bold py-1.5 rounded-lg text-sm transition-all active:scale-95 cursor-pointer shadow-[0_0_10px_rgba(59,130,246,0.1)]">+</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="space-y-3">
-            <span class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest px-2 flex items-center space-x-2">
+        <div class="space-y-3" id="wrapper-semanas-tabs">
+            <span class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest px-2 flex items-center space-x-2">
                 <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 <span>Navegação por Semanas</span>
             </span>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-9 gap-2.5" id="semanas-tab-container"></div>
         </div>
 
-        <div id="banner-hero" class="relative bg-gradient-to-r from-blue-900/30 via-black/40 to-black/40 border border-blue-500/20 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden flex flex-col justify-center min-h-[130px] backdrop-blur-xl">
+        <div id="banner-hero" class="relative bg-gradient-to-r from-blue-900/20 via-black/5 to-black/5 dark:from-blue-900/30 dark:via-black/40 dark:to-black/40 border border-blue-500/25 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden flex flex-col justify-center min-h-[130px] backdrop-blur-xl">
             <div class="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-600/10 rounded-full blur-2xl pointer-events-none"></div>
             <div class="relative z-10 space-y-2">
@@ -158,9 +189,9 @@
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]"></span>
                     </span>
-                    <span id="label-dia-topo" class="text-xs font-bold tracking-[0.2em] text-blue-400 uppercase font-outfit">SEGUNDA-FEIRA • 04/08</span>
+                    <span id="label-dia-topo" class="text-xs font-bold tracking-[0.2em] text-blue-600 dark:text-blue-400 uppercase font-outfit">SEGUNDA-FEIRA • 04/08</span>
                 </div>
-                <h2 id="titulo-banner-hero" class="text-2xl sm:text-3xl font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400 tracking-tight">
+                <h2 id="titulo-banner-hero" class="text-2xl sm:text-3xl font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-white dark:to-zinc-400 tracking-tight">
                     Escala Diária por Turnos
                 </h2>
             </div>
@@ -169,27 +200,28 @@
         <div id="container-abas-dias" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2.5"></div>
 
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-2">
-            <span class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest flex items-center space-x-2" id="titulo-secao-inferior">
+            <span class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest flex items-center space-x-2" id="titulo-secao-inferior">
                 <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                 <span>Divisão por Turnos (Manhã, Tarde e Noite)</span>
             </span>
-            <div class="flex items-center space-x-1.5 glass-panel p-1.5 rounded-xl w-full sm:w-auto overflow-x-auto">
+            <div class="flex items-center space-x-1.5 glass-panel p-1.5 rounded-xl w-full sm:w-auto overflow-x-auto shadow-sm">
                 <button onclick="alternarModo('individual')" id="btn-modo-ind" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Meu Trio</button>
                 <button onclick="alternarModo('geral')" id="btn-modo-geral" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Todos os Trios</button>
                 <button onclick="alternarModo('seminarios')" id="btn-modo-seminarios" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Seminários</button>
+                <button onclick="alternarModo('calendario')" id="btn-modo-calendario" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold transition-all cursor-pointer">Calendário Mensal</button>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6" id="grid-inferior">
             <div id="coluna-membros" class="lg:col-span-4 glass-panel rounded-3xl p-6 shadow-xl flex flex-col justify-between">
                 <div>
-                    <div class="flex items-center justify-between mb-5 pb-4 border-b border-white/10">
-                        <span class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Integrantes do Trio</span>
+                    <div class="flex items-center justify-between mb-5 pb-4 border-b border-black/5 dark:border-white/10">
+                        <span class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Integrantes do Trio</span>
                         <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
                     </div>
                     <ul id="lista-membros" class="space-y-4"></ul>
                 </div>
-                <div class="mt-8 pt-5 border-t border-white/5 text-[10px] text-zinc-500 font-bold tracking-wide uppercase text-center font-outfit">
+                <div class="mt-8 pt-5 border-t border-black/5 dark:border-white/5 text-[10px] text-zinc-400 dark:text-zinc-500 font-bold tracking-wide uppercase text-center font-outfit">
                     Rodízio de G.O. (9 Semanas)
                 </div>
             </div>
@@ -221,19 +253,16 @@
         window.modoVisualizacao = 'individual'; 
         let capotesCount = 0;
 
-        const dadosSeminariosList = [
-            { data: "28/07", hora: "08h30–11h00", mediador: "TODOS", apresentadores: "TODOS", tema: "APRESENTAÇÃO DO INTERNATO EM SAÚDE DA MULHER – GINECOLOGIA & OBSTETRÍCIA" },
-            { data: "04/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Marta", apresentadores: "André Victor, Davi Carvalho, Letícia Barbosa", tema: "• Fisiologia do Ciclo Menstrual\n• Pré-Natal de Risco Habitual" },
-            { data: "11/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Nadya Veras", apresentadores: "Louise Bonfim, Isabella de Lima", tema: "• Trabalho de Parto (Condutas, Indução e Condução)\n• Cardiotocografia: Avaliação da Vitalidade Fetal: Sofrimento Fetal" },
-            { data: "18/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Hiago Kaian", apresentadores: "Isabella Frota, Maria Eduarda Aquino, José Henrique", tema: "• Sangramento Uterino Anormal (PALM-COEIN): Miomatose, Adenomiose e Endometriose\n• Hemorragias da 1ª Metade e da 2ª Metade da Gravidez: Hemorragia Pós-Parto" },
-            { data: "25/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Marta | Lucimara", apresentadores: "Heitor Stoduto, João Victor Tajra, Bruno Azevedo, Andressa Maboni", tema: "• Alterações Funcionais Benignas da Mama (AFBM): Patologias Benignas / Inflamatórias / Infecciosas da Mama\n• Câncer de Mama: Classificação BI-RADS" },
-            { data: "01/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Maria Luiza", apresentadores: "Maria Eduarda Santiago, Luiza de Santes", tema: "• Métodos Contraceptivos (Indicações, Contraindicações, Complicações)\n• Trabalho de Parto Prematuro: Infecção do Trato Urinário em Obstetrícia" },
-            { data: "08/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Letícia Teixeira", apresentadores: "Júlia Matos, Luiza Sales", tema: "• Anatomia Genital Feminina Aplicada à Uroginecologia: Incontinência Urinária Feminina\n• HPV e Câncer de Colo de Útero" },
-            { data: "15/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Ana Clara Ghisleni", apresentadores: "Carolina Banholi, Kamilly Lima", tema: "• Prolapsos Genitais: Classificação de Bump (POP-Q)\n• Tumores Benignos e Malignos do Ovário" },
-            { data: "22/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Giovanna Muniz", apresentadores: "Rayane Maria, Sofia Dias", tema: "• Síndromes Hipertensivas e Gestação (Pré-Eclâmpsia/Eclâmpsia/Síndrome HELLP)\n• Diabetes Gestacional" },
-            { data: "23/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Lucimara", apresentadores: "Annelise Paiva, Camila Guidão, Gabriella Reis, Ana Luiza Daros", tema: "• Restrição de Crescimento Intrauterino: Oligoâmnio/Polidrâmnio\n• Leucorreias: Infecções Sexualmente Transmissíveis (IST) em GO e Doenças Inflamatórias Pélvica (DIP)" },
-            { data: "29/09", hora: "18h30–19h45\n20h00–21h30", mediador: "TODOS", apresentadores: "TODOS", tema: "AVALIAÇÃO SOMATIVA" }
-        ];
+        window.alternarTema = function() {
+            const htmlEl = document.documentElement;
+            if (htmlEl.classList.contains('dark')) {
+                htmlEl.classList.remove('dark');
+                localStorage.setItem('tema', 'claro');
+            } else {
+                htmlEl.classList.add('dark');
+                localStorage.setItem('tema', 'escuro');
+            }
+        };
 
         window.verificarSenha = function() {
             const digitada = document.getElementById('senha-input').value;
@@ -247,7 +276,6 @@
             }
         }
 
-        // Conexão em Tempo Real com o Firestore
         const contadorRef = doc(db, "geral", "contador");
         onSnapshot(contadorRef, (docSnap) => {
             if (docSnap.exists()) {
@@ -278,18 +306,21 @@
             const btnInd = document.getElementById('btn-modo-ind');
             const btnGeral = document.getElementById('btn-modo-geral');
             const btnSeminarios = document.getElementById('btn-modo-seminarios');
+            const btnCalendario = document.getElementById('btn-modo-calendario');
             const colunaMembros = document.getElementById('coluna-membros');
             const colunaTurnos = document.getElementById('coluna-turnos-wrapper');
             const tituloSecao = document.getElementById('titulo-secao-inferior');
             const containerAbas = document.getElementById('container-abas-dias');
             const bannerHero = document.getElementById('banner-hero');
+            const wrapperSemanas = document.getElementById('wrapper-semanas-tabs');
 
             const classAtivo = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)] transition-all cursor-pointer scale-105";
-            const classInativo = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold text-zinc-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer";
+            const classInativo = "flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-outfit font-bold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer";
 
             btnInd.className = classInativo;
             btnGeral.className = classInativo;
             btnSeminarios.className = classInativo;
+            btnCalendario.className = classInativo;
 
             if (modo === 'individual') {
                 btnInd.className = classAtivo;
@@ -298,6 +329,7 @@
                 tituloSecao.innerHTML = `<svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg><span>Divisão por Turnos (Manhã, Tarde e Noite)</span>`;
                 containerAbas.style.display = 'grid';
                 bannerHero.style.display = 'flex';
+                wrapperSemanas.style.display = 'block';
                 mudarGrupo();
             } else if (modo === 'geral') {
                 btnGeral.className = classAtivo;
@@ -306,42 +338,67 @@
                 tituloSecao.innerHTML = `<svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg><span>Visão Geral: Todos os 10 Trios do Dia</span>`;
                 containerAbas.style.display = 'grid';
                 bannerHero.style.display = 'flex';
+                wrapperSemanas.style.display = 'block';
                 mudarGrupo();
-            } else {
+            } else if (modo === 'seminarios') {
                 btnSeminarios.className = classAtivo;
                 colunaMembros.style.display = 'none';
                 colunaTurnos.className = "lg:col-span-12 space-y-4";
                 tituloSecao.innerHTML = `<svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg><span>Cronograma Oficial de Seminários (Sala 2)</span>`;
                 containerAbas.style.display = 'none';
                 bannerHero.style.display = 'none';
+                wrapperSemanas.style.display = 'none';
                 renderizarSeminariosView();
+            } else if (modo === 'calendario') {
+                btnCalendario.className = classAtivo;
+                colunaMembros.style.display = 'none';
+                colunaTurnos.className = "lg:col-span-12 space-y-4";
+                tituloSecao.innerHTML = `<svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span>Calendário Mensal do Trio Selecionado (Agosto a Outubro de 2026)</span>`;
+                containerAbas.style.display = 'none';
+                bannerHero.style.display = 'none';
+                wrapperSemanas.style.display = 'none';
+                renderizarCalendarioMensal();
             }
         }
+
+        const dadosSeminariosList = [
+            { data: "28/07", hora: "08h30–11h00", mediador: "TODOS", apresentadores: "TODOS", tema: "APRESENTAÇÃO DO INTERNATO EM SAÚDE DA MULHER – GINECOLOGIA & OBSTETRÍCIA" },
+            { data: "04/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Marta", apresentadores: "André Victor, Davi Carvalho, Letícia Barbosa", tema: "• Fisiologia do Ciclo Menstrual\n• Pré-Natal de Risco Habitual" },
+            { data: "11/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Nadya Veras", apresentadores: "Louise Bonfim, Isabella de Lima", tema: "• Trabalho de Parto (Condutas, Indução e Condução)\n• Cardiotocografia: Avaliação da Vitalidade Fetal: Sofrimento Fetal" },
+            { data: "18/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Hiago Kaian", apresentadores: "Isabella Frota, Maria Eduarda Aquino, José Henrique", tema: "• Sangramento Uterino Anormal (PALM-COEIN): Miomatose, Adenomiose e Endometriose\n• Hemorragias da 1ª Metade e da 2ª Metade da Gravidez: Hemorragia Pós-Parto" },
+            { data: "25/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Marta | Lucimara", apresentadores: "Heitor Stoduto, João Victor Tajra, Bruno Azevedo, Andressa Maboni", tema: "• Alterações Funcionais Benignas da Mama (AFBM): Patologias Benignas / Inflamatórias / Infecciosas da Mama\n• Câncer de Mama: Classificação BI-RADS" },
+            { data: "01/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Maria Luiza", apresentadores: "Maria Eduarda Santiago, Luiza de Santes", tema: "• Métodos Contraceptivos (Indicações, Contraindicações, Complicações)\n• Trabalho de Parto Prematuro: Infecção do Trato Urinário em Obstetrícia" },
+            { data: "08/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Letícia Teixeira", apresentadores: "Júlia Matos, Luiza Sales", tema: "• Anatomia Genital Feminina Aplicada à Uroginecologia: Incontinência Urinária Feminina\n• HPV e Câncer de Colo de Útero" },
+            { data: "15/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Ana Clara Ghisleni", apresentadores: "Carolina Banholi, Kamilly Lima", tema: "• Prolapsos Genitais: Classificação de Bump (POP-Q)\n• Tumores Benignos e Malignos do Ovário" },
+            { data: "22/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Giovanna Muniz", apresentadores: "Rayane Maria, Sofia Dias", tema: "• Síndromes Hipertensivas e Gestação (Pré-Eclâmpsia/Eclâmpsia/Síndrome HELLP)\n• Diabetes Gestacional" },
+            { data: "23/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Lucimara", apresentadores: "Annelise Paiva, Camila Guidão, Gabriella Reis, Ana Luiza Daros", tema: "• Restrição de Crescimento Intrauterino: Oligoâmnio/Polidrâmnio\n• Leucorreias: Infecções Sexualmente Transmissíveis (IST) em GO e Doenças Inflamatórias Pélvica (DIP)" },
+            { data: "29/09", hora: "18h30–19h45\n20h00–21h30", mediador: "TODOS", apresentadores: "TODOS", tema: "AVALIAÇÃO SOMATIVA" }
+        ];
 
         window.renderizarSeminariosView = function() {
             const containerTurnos = document.getElementById('lista-turnos');
             let html = '<div class="space-y-4">';
             dadosSeminariosList.forEach(s => {
                 html += `
-                    <div class="glass-panel hover:bg-white/5 rounded-2xl p-5 sm:p-6 transition-all shadow-lg group">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+                    <div class="glass-panel hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl p-5 sm:p-6 transition-all shadow-lg group">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-black/5 dark:border-white/10">
                             <div class="flex items-center space-x-3">
-                                <span class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 font-outfit font-extrabold text-xs shadow-[0_0_10px_rgba(59,130,246,0.15)] group-hover:shadow-[0_0_15px_rgba(59,130,246,0.25)] transition-all">${s.data}</span>
-                                <span class="text-xs font-semibold text-zinc-300 font-outfit">${s.hora.replace('\n', ' • ')}</span>
+                                <span class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-outfit font-extrabold text-xs shadow-[0_0_10px_rgba(59,130,246,0.15)]">${s.data}</span>
+                                <span class="text-xs font-semibold text-zinc-600 dark:text-zinc-300 font-outfit">${s.hora.replace('\n', ' • ')}</span>
                             </div>
-                            <div class="flex items-center space-x-2 text-xs bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                                <span class="text-zinc-400 font-medium">Mediador:</span>
-                                <span class="text-white font-bold font-outfit">${s.mediador}</span>
+                            <div class="flex items-center space-x-2 text-xs bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-lg border border-black/5 dark:border-white/5">
+                                <span class="text-zinc-500 dark:text-zinc-400 font-medium">Mediador:</span>
+                                <span class="dark:text-white text-zinc-900 font-bold font-outfit">${s.mediador}</span>
                             </div>
                         </div>
                         <div class="space-y-4 mt-4">
                             <div>
-                                <span class="text-[10px] font-bold text-blue-400/80 uppercase tracking-widest block mb-1">Apresentadores</span>
-                                <p class="text-sm font-bold text-white">${s.apresentadores}</p>
+                                <span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">Apresentadores</span>
+                                <p class="text-sm font-bold dark:text-white text-zinc-900">${s.apresentadores}</p>
                             </div>
                             <div>
-                                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-1">Temas Abordados</span>
-                                <p class="text-sm text-zinc-300 whitespace-pre-line leading-relaxed">${s.tema}</p>
+                                <span class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest block mb-1">Temas Abordados</span>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-300 whitespace-pre-line leading-relaxed">${s.tema}</p>
                             </div>
                         </div>
                     </div>
@@ -349,6 +406,101 @@
             });
             html += '</div>';
             containerTurnos.innerHTML = html;
+        }
+
+        window.renderizarCalendarioMensal = function() {
+            const idTrio = document.getElementById('grupo-select').value;
+            const dadosTrio = dadosEscala[idTrio];
+            const containerTurnos = document.getElementById('lista-turnos');
+
+            const meses = [
+                { nome: "Agosto de 2026", ano: 2026, mes: 7, diasNoMes: 31 },
+                { nome: "Setembro de 2026", ano: 2026, mes: 8, diasNoMes: 30 },
+                { nome: "Outubro de 2026", ano: 2026, mes: 9, diasNoMes: 4 }
+            ];
+
+            let html = '<div class="space-y-8">';
+            meses.forEach(m => {
+                html += `
+                    <div class="glass-panel rounded-3xl p-6 shadow-xl space-y-4">
+                        <div class="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/10">
+                            <h3 class="text-lg font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">${m.nome}</h3>
+                            <span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 font-outfit">Escala do ${dadosTrio.nomeGrupo.split(':')[0]}</span>
+                        </div>
+                        <div class="grid grid-cols-7 gap-2 text-center">
+                            <div class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Seg</div>
+                            <div class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Ter</div>
+                            <div class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Qua</div>
+                            <div class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Qui</div>
+                            <div class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Sex</div>
+                            <div class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Sáb</div>
+                            <div class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest py-1">Dom</div>
+                `;
+
+                let primeiroDiaIndex;
+                if(m.mes === 7) primeiroDiaIndex = 5; 
+                else if(m.mes === 8) primeiroDiaIndex = 1; 
+                else if(m.mes === 9) primeiroDiaIndex = 3; 
+
+                for(let i = 0; i < primeiroDiaIndex; i++) {
+                    html += `<div class="p-3 rounded-xl bg-black/5 dark:bg-black/10 border border-transparent opacity-20"></div>`;
+                }
+
+                for(let dia = 1; dia <= m.diasNoMes; dia++) {
+                    const dataObj = new Date(m.ano, m.mes, dia);
+                    let turnoInfo = obterTurnosDoDiaParaTrio(idTrio, dataObj);
+                    let temPlantao = turnoInfo.hasPlantao;
+
+                    let cardClass = temPlantao 
+                        ? 'bg-blue-600/10 dark:bg-blue-900/30 border-blue-500/40 text-zinc-900 dark:text-white shadow-[0_0_10px_rgba(59,130,246,0.15)]' 
+                        : 'bg-black/5 dark:bg-black/30 border-black/5 dark:border-white/5 text-zinc-400 dark:text-zinc-500';
+
+                    let tooltipHtml = turnoInfo.textoResumo ? `<div class="text-[9px] font-bold text-blue-600 dark:text-blue-300 mt-1 truncate">${turnoInfo.textoResumo}</div>` : `<div class="text-[9px] font-medium text-zinc-400 dark:text-zinc-600 mt-1">Livre</div>`;
+
+                    html += `
+                        <div class="p-2 sm:p-3 rounded-2xl border ${cardClass} flex flex-col justify-between min-h-[75px] transition-all hover:scale-105">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-outfit font-extrabold">${dia}</span>
+                                ${temPlantao ? '<span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]"></span>' : ''}
+                            </div>
+                            <div class="mt-1">${tooltipHtml}</div>
+                        </div>
+                    `;
+                }
+                html += `</div></div>`;
+            });
+            html += '</div>';
+            containerTurnos.innerHTML = html;
+        }
+
+        function obterTurnosDoDiaParaTrio(idTrio, dataObj) {
+            const dataInicioRodizio = new Date(2026, 7, 3);
+            const dataFimRodizio = new Date(2026, 9, 4, 23, 59, 59);
+
+            if(dataObj < dataInicioRodizio || dataObj > dataFimRodizio) {
+                return { hasPlantao: false, textoResumo: "" };
+            }
+
+            const diffTime = dataObj - dataInicioRodizio;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            let semanaNum = Math.floor(diffDays / 7) + 1;
+            if(semanaNum < 1) semanaNum = 1;
+            if(semanaNum > 9) semanaNum = 9;
+
+            const jsDay = dataObj.getDay();
+            const mapDias = { 1: "seg", 2: "ter", 3: "qua", 4: "qui", 5: "sex", 6: "sab", 0: "dom" };
+            const diaKey = mapDias[jsDay];
+
+            const diasSemanaTrio = dadosEscala[idTrio].semanas[semanaNum][diaKey];
+            let plantoesAtivos = [];
+            diasSemanaTrio.turnos.forEach(t => {
+                if(t.local !== "—") plantoesAtivos.push(t.local);
+            });
+
+            if(plantoesAtivos.length > 0) {
+                return { hasPlantao: true, textoResumo: plantoesAtivos.join(', ') };
+            }
+            return { hasPlantao: false, textoResumo: "" };
         }
 
         function detectarDiaESemanaAtual() {
@@ -459,7 +611,7 @@
                 const isSelected = (s === window.semanaSelecionadaGlobal);
                 const btnClass = isSelected 
                     ? 'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_0_15px_rgba(79,70,229,0.4)] transform scale-105' 
-                    : 'glass-panel text-zinc-400 hover:text-zinc-200 hover:bg-white/5';
+                    : 'glass-panel text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200';
                 
                 const inicioFim = semanasDatas[s][0] + " – " + semanasDatas[s][6];
 
@@ -498,7 +650,7 @@
                 const isSelected = (d.key === window.diaSelecionadoGlobal);
                 const btnClass = isSelected 
                     ? 'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_0_15px_rgba(79,70,229,0.4)] transform scale-105' 
-                    : 'glass-panel text-zinc-400 hover:text-zinc-200 hover:bg-white/5';
+                    : 'glass-panel text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200';
                 
                 container.innerHTML += `
                     <button onclick="selecionarDia('${d.key}')" class="border rounded-2xl p-3 flex flex-col items-center justify-center transition-all duration-300 ${btnClass} cursor-pointer">
@@ -516,7 +668,10 @@
         }
 
         window.mudarGrupo = function() {
-            if (window.modoVisualizacao === 'seminarios') return;
+            if (window.modoVisualizacao === 'seminarios' || window.modoVisualizacao === 'calendario') {
+                if (window.modoVisualizacao === 'calendario') renderizarCalendarioMensal();
+                return;
+            }
 
             const id = document.getElementById('grupo-select').value;
             const dados = dadosEscala[id];
@@ -529,10 +684,10 @@
             dados.membros.forEach(nome => {
                 listaMembros.innerHTML += `
                     <li class="flex items-center space-x-3.5 group cursor-default">
-                        <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-xs font-outfit font-extrabold text-zinc-300 shrink-0 group-hover:bg-blue-500/20 group-hover:text-blue-400 group-hover:border-blue-500/30 transition-all shadow-inner">
+                        <div class="w-9 h-9 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center text-xs font-outfit font-extrabold text-zinc-700 dark:text-zinc-300 shrink-0 group-hover:bg-blue-500/20 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-all shadow-inner">
                             ${getIniciais(nome)}
                         </div>
-                        <span class="text-sm font-medium text-zinc-200 leading-tight group-hover:text-white transition-colors">${nome}</span>
+                        <span class="text-sm font-medium text-zinc-700 dark:text-zinc-200 leading-tight group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">${nome}</span>
                     </li>
                 `;
             });
@@ -560,10 +715,10 @@
 
             document.getElementById('stat-atividades').innerText = `${totalAtividades}/${totalPossiveis}`;
             document.getElementById('stat-detalhes-turnos').innerHTML = `
-                <span class="bg-white/5 px-2 py-0.5 rounded border border-white/5">M: ${countManha}</span>
-                <span class="bg-white/5 px-2 py-0.5 rounded border border-white/5">T: ${countTarde}</span>
-                <span class="bg-white/5 px-2 py-0.5 rounded border border-white/5">N: ${countNoite}</span>
-                <span class="bg-white/5 px-2 py-0.5 rounded border border-white/5">FDS: ${countFds}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5">M: ${countManha}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5">T: ${countTarde}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5">N: ${countNoite}</span>
+                <span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5">FDS: ${countFds}</span>
             `;
 
             const containerTurnos = document.getElementById('lista-turnos');
@@ -572,28 +727,28 @@
             if (window.modoVisualizacao === 'individual') {
                 infoDia.turnos.forEach(t => {
                     let iconeTurno = '';
-                    if(t.periodo === 'Manhã') iconeTurno = '<svg class="w-5 h-5 text-amber-400 drop-shadow-[0_0_5px_rgba(251,191,36,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
-                    else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-5 h-5 text-orange-400 drop-shadow-[0_0_5px_rgba(251,146,60,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
-                    else iconeTurno = '<svg class="w-5 h-5 text-indigo-400 drop-shadow-[0_0_5px_rgba(129,140,248,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
+                    if(t.periodo === 'Manhã') iconeTurno = '<svg class="w-5 h-5 text-amber-500 dark:text-amber-400 drop-shadow-[0_0_5px_rgba(251,191,36,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+                    else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-5 h-5 text-orange-500 dark:text-orange-400 drop-shadow-[0_0_5px_rgba(251,146,60,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+                    else iconeTurno = '<svg class="w-5 h-5 text-indigo-500 dark:text-indigo-400 drop-shadow-[0_0_5px_rgba(129,140,248,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
 
                     const hasPlantao = t.local !== "—";
-                    const cardBorder = hasPlantao ? 'border-blue-500/30 bg-blue-900/10 shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]' : 'glass-panel';
+                    const cardBorder = hasPlantao ? 'border-blue-500/40 bg-blue-500/5 dark:bg-blue-900/10 shadow-[inset_0_0_20px_rgba(59,130,246,0.03)]' : 'glass-panel';
 
                     containerTurnos.innerHTML += `
-                        <div class="${cardBorder} hover:border-blue-500/50 rounded-2xl p-5 flex items-center justify-between transition-all duration-300 transform hover:-translate-y-1 shadow-lg group">
+                        <div class="${cardBorder} hover:border-blue-500/60 rounded-2xl p-5 flex items-center justify-between transition-all duration-300 transform hover:-translate-y-1 shadow-lg group">
                             <div class="flex items-center space-x-4">
-                                <div class="w-12 h-12 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                                <div class="w-12 h-12 rounded-xl bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-inner">
                                     ${iconeTurno}
                                 </div>
                                 <div>
                                     <div class="flex items-center space-x-2.5">
-                                        <span class="text-[11px] font-outfit font-extrabold text-zinc-400 uppercase tracking-widest">${t.periodo}</span>
-                                        <span class="text-[10px] font-bold font-outfit text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded shadow-[0_0_8px_rgba(59,130,246,0.15)]">${t.horario}</span>
+                                        <span class="text-[11px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">${t.periodo}</span>
+                                        <span class="text-[10px] font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded shadow-[0_0_8px_rgba(59,130,246,0.15)]">${t.horario}</span>
                                     </div>
-                                    <h4 class="text-base sm:text-lg font-outfit font-bold text-white mt-1">${t.local}</h4>
+                                    <h4 class="text-base sm:text-lg font-outfit font-bold dark:text-white text-zinc-900 mt-1">${t.local}</h4>
                                 </div>
                             </div>
-                            <span class="px-4 py-1.5 rounded-xl bg-white/5 border border-white/10 text-zinc-300 text-xs font-outfit font-bold group-hover:bg-blue-600 group-hover:border-blue-500 group-hover:text-white transition-colors shadow-sm">${t.local !== "—" ? "Obrigatório" : "Livre"}</span>
+                            <span class="px-4 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-zinc-700 dark:text-zinc-300 text-xs font-outfit font-bold group-hover:bg-blue-600 group-hover:border-blue-500 group-hover:text-white transition-colors shadow-sm">${t.local !== "—" ? "Obrigatório" : "Livre"}</span>
                         </div>
                     `;
                 });
@@ -606,25 +761,25 @@
                     let turnosTrioHtml = '';
                     infoDiaTrio.turnos.forEach(t => {
                         const hasPlantao = t.local !== "—";
-                        const badgeColor = hasPlantao ? 'text-blue-400 bg-blue-500/10 border-blue-500/20 shadow-[0_0_8px_rgba(59,130,246,0.1)]' : 'text-zinc-500 bg-black/20 border-white/5';
+                        const badgeColor = hasPlantao ? 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20 shadow-[0_0_8px_rgba(59,130,246,0.1)]' : 'text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5';
                         turnosTrioHtml += `
-                            <div class="flex items-center justify-between text-xs py-1.5 px-3 rounded-xl bg-black/30 border border-white/5 shadow-inner">
-                                <span class="text-zinc-400 font-bold font-outfit tracking-wide">${t.periodo}</span>
+                            <div class="flex items-center justify-between text-xs py-1.5 px-3 rounded-xl bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5 shadow-inner">
+                                <span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit tracking-wide">${t.periodo}</span>
                                 <span class="font-extrabold font-outfit ${badgeColor} px-2.5 py-0.5 rounded-lg border">${t.local}</span>
                             </div>
                         `;
                     });
 
                     gridHtml += `
-                        <div class="glass-panel hover:bg-white/5 rounded-2xl p-5 space-y-4 transition-all duration-300 shadow-lg group hover:-translate-y-1">
+                        <div class="glass-panel hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl p-5 space-y-4 transition-all duration-300 shadow-lg group hover:-translate-y-1">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-400 font-outfit font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+                                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-outfit font-black text-sm flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
                                         A${i}
                                     </div>
-                                    <h4 class="text-sm font-outfit font-bold text-white tracking-tight truncate max-w-[170px] sm:max-w-[190px]">${dadosTrio.nomeGrupo.split(':')[1] || dadosTrio.nomeGrupo}</h4>
+                                    <h4 class="text-sm font-outfit font-bold dark:text-white text-zinc-900 tracking-tight truncate max-w-[170px] sm:max-w-[190px]">${dadosTrio.nomeGrupo.split(':')[1] || dadosTrio.nomeGrupo}</h4>
                                 </div>
-                                <button onclick="document.getElementById('grupo-select').value='${i}'; alternarModo('individual');" class="text-[11px] font-outfit font-black text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-3 py-1.5 rounded-lg transition-all cursor-pointer">Ver Trio</button>
+                                <button onclick="document.getElementById('grupo-select').value='${i}'; alternarModo('individual');" class="text-[11px] font-outfit font-black text-blue-600 dark:text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-3 py-1.5 rounded-lg transition-all cursor-pointer">Ver Trio</button>
                             </div>
                             <div class="space-y-2">
                                 ${turnosTrioHtml}
@@ -644,6 +799,11 @@
         }
 
         window.onload = () => {
+            if (localStorage.getItem('tema') === 'claro') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
             detectarDiaESemanaAtual();
             window.renderizarSemanas();
             window.renderizarAbasDias();
