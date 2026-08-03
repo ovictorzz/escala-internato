@@ -541,7 +541,7 @@ function atualizarProximaAtividadeDinamica(alunoNome) {
                 return;
             }
 
-            // Verifica se a variável global de escalas existe
+            // Garante que os dados da escala estão carregados
             if (typeof dadosEscala === 'undefined' || !dadosEscala[trioId]) {
                 if(painelNovo) painelNovo.innerHTML = `<span class="text-zinc-400">A carregar escala...</span>`;
                 return;
@@ -557,7 +557,7 @@ function atualizarProximaAtividadeDinamica(alunoNome) {
                 return;
             }
 
-            // --- 1. Badge Pequeno (Turno Atual) ---
+            // --- 1. Badge Pequeno (Turno Atual de Hoje) ---
             const diffTime = agora - dataInicioRodizio;
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
             let semanaNum = Math.floor(diffDays / 7) + 1;
@@ -587,7 +587,7 @@ function atualizarProximaAtividadeDinamica(alunoNome) {
                 badgeAtividade.innerText = "Atual: Sem atividade";
             }
 
-            // --- 2. Cartão Grande: PRÓXIMA ATIVIDADE OBRIGATÓRIA (Ignora o turno atual e avança para a próxima real) ---
+            // --- 2. Cartão Grande: PRÓXIMA ATIVIDADE OBRIGATÓRIA (Pula o turno atual e busca a seguinte) ---
             if (painelNovo) {
                 const dadosTrio = dadosEscala[trioId];
                 let proximaAtividade = null;
@@ -609,7 +609,7 @@ function atualizarProximaAtividadeDinamica(alunoNome) {
                         const anoAtual = agora.getFullYear();
                         const dataDiaObj = new Date(anoAtual, parseInt(mesStr) - 1, parseInt(diaStr));
 
-                        // Considera apenas hoje e dias futuros
+                        // Considera hoje e dias futuros
                         if (dataDiaObj >= hojeDateObj) {
                             const ehHoje = dataDiaObj.getTime() === hojeDateObj.getTime();
                             const turnos = infoDia.turnos || [];
@@ -620,7 +620,7 @@ function atualizarProximaAtividadeDinamica(alunoNome) {
                                     
                                     if (ehHoje) {
                                         let pesoDeste = ordemTurnos[t.periodo] || 1;
-                                        // Se for hoje, obrigatoriamente tem de ser um turno posterior ao atual
+                                        // Se for hoje, tem de ser obrigatoriamente um turno posterior ao atual
                                         if (pesoDeste > pesoTurnoAtual) {
                                             proximaAtividade = {
                                                 diaNome: infoDia.nome,
@@ -632,7 +632,7 @@ function atualizarProximaAtividadeDinamica(alunoNome) {
                                             break;
                                         }
                                     } else {
-                                        // Se for amanhã ou dias seguintes, qualquer atividade com local serve
+                                        // Se for amanhã ou dias seguintes, qualquer atividade obrigatória serve
                                         proximaAtividade = {
                                             diaNome: infoDia.nome,
                                             data: infoDia.data,
