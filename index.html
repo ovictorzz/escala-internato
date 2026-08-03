@@ -1327,11 +1327,13 @@ const escalaTrio02 = {
 "21/08": { tarde: "HRSM" },
 "22/08": { manha: "PS BOX" },
 "23/08": { manha: "PS BOX" },
-"28/09": { manha: "Amb Mírian (HRAN)" },
-"30/09": { tarde: "CO (HRAN)" },
-"01/10": { tarde: "CO (HRAN)" },
-"02/10": { tarde: "CO (HRAN)" },
-"03/10": { noite: "CO (HRAN)" }
+"28/09": { manha: "Amb Mírian (HRAN)", noite: "—" },
+"29/09": { manha: "—", tarde: "—" },
+"30/09": { manha: "—", tarde: "CO (HRAN)", noite: "—" },
+"01/10": { manha: "—", tarde: "CO (HRAN)", noite: "—" },
+"02/10": { manha: "—", tarde: "CO (HRAN)", noite: "—" },
+"03/10": { manha: "—", tarde: "—", noite: "CO (HRAN)" },
+"04/10": { manha: "—", tarde: "—", noite: "—" }
 };
 
 const indiceTurnoPorChave = { manha: 0, tarde: 1, noite: 2 };
@@ -1593,6 +1595,27 @@ horario: "18h30-21h30",
 local: "Avaliação Somativa — UNIEURO (50 questões)"
 };
 }
+
+// Nas semanas do HRAN cuja escala já foi enviada, turnos não informados são livres.
+const datasHRANPorTrio = {
+"2": ["28/09", "29/09", "30/09", "01/10", "02/10", "03/10", "04/10"],
+"3": ["21/09", "22/09", "23/09", "24/09", "25/09", "26/09", "27/09"],
+"4": ["07/09", "08/09", "09/09", "10/09", "11/09", "12/09", "13/09"],
+"5": ["14/09", "15/09", "16/09", "17/09", "18/09", "19/09"],
+"6": ["31/08", "01/09", "02/09", "03/09", "04/09", "05/09", "06/09"],
+"7": ["24/08", "25/08", "26/08", "27/08", "28/08", "29/08", "30/08"]
+};
+
+Object.entries(datasHRANPorTrio).forEach(([idTrio, datas]) => {
+for (let s = 1; s <= 9; s++) {
+Object.values(dadosEscala[idTrio].semanas[s]).forEach(infoDia => {
+if (!datas.includes(infoDia.data)) return;
+infoDia.turnos.forEach(turno => {
+if (turno.local === ESCALA_NAO_ENVIADA) turno.local = "—";
+});
+});
+}
+});
 window.semanaSelecionadaGlobal = 1;
 window.diaSelecionadoGlobal = "seg";
 window.renderizarSemanas = function() {
