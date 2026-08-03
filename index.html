@@ -1307,6 +1307,278 @@ infoDia.turnos = [
 ];
 });
 }
+
+// Escala específica do Trio 02. Os turnos não indicados preservam a regra geral:
+// livres até 23/08 e pendentes a partir de 24/08.
+const escalaTrio02 = {
+"04/08": { manha: "CC (HRC)", tarde: "CO (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"05/08": { manha: "Amb UNIEURO" },
+"06/08": { tarde: "Gilmária (HRC)" },
+"07/08": { manha: "Nádia (EUD) (HRC)", tarde: "Rocha (HRC)" },
+"10/08": { manha: "Gilmária (HRC)" },
+"11/08": { manha: "PS FICHA", noite: "Seminário de G.O. — UNIEURO" },
+"12/08": { manha: "Caio (PNAR) (HRC)" },
+"13/08": { tarde: "Lucimara (HRC)", noite: "CO (HRC)" },
+"14/08": { manha: "CC" },
+"16/08": { tarde: "HRSM" },
+"18/08": { tarde: "HRSM", noite: "Seminário de G.O. — UNIEURO" },
+"19/08": { tarde: "HRSM" },
+"20/08": { tarde: "HRSM" },
+"21/08": { tarde: "HRSM" },
+"22/08": { manha: "PS BOX" },
+"23/08": { manha: "PS BOX" },
+"28/09": { manha: "Amb Mírian (HRAN)" },
+"30/09": { tarde: "CO (HRAN)" },
+"01/10": { tarde: "CO (HRAN)" },
+"02/10": { tarde: "CO (HRAN)" },
+"03/10": { noite: "CO (HRAN)" }
+};
+
+const indiceTurnoPorChave = { manha: 0, tarde: 1, noite: 2 };
+function aplicarEscalaEspecifica(idTrio, escala) {
+for (let s = 1; s <= 9; s++) {
+Object.values(dadosEscala[idTrio].semanas[s]).forEach(infoDia => {
+const atividade = escala[infoDia.data];
+if (!atividade) return;
+Object.entries(atividade).forEach(([turno, local]) => {
+infoDia.turnos[indiceTurnoPorChave[turno]].local = local;
+});
+});
+}
+}
+aplicarEscalaEspecifica("2", escalaTrio02);
+
+// Escala específica do Trio 03.
+const escalaTrio03 = {
+"04/08": { manha: "PS FICHA (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"05/08": { manha: "Caio (PNAR) (HRC)" },
+"06/08": { tarde: "Lucimara (HRC)" },
+"07/08": { manha: "CC (HRC)" },
+"09/08": { noite: "CO (HRC)" },
+"10/08": { manha: "Marta (HRC)" },
+"11/08": { manha: "CC (HRC)", tarde: "CO (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"12/08": { manha: "Amb EURO (HRC)" },
+"13/08": { tarde: "Gilmária (HRC)", noite: "PS FICHA (HRC)" },
+"14/08": { manha: "Nádia (EUD) (HRC)", tarde: "Rocha (HRC)" },
+"18/08": { tarde: "Marta (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"20/08": { manha: "PS BOX (HRC)" },
+"21/08": { manha: "PS BOX (HRC)", tarde: "CO (HRC)" },
+"22/08": { tarde: "HRSM" },
+"23/08": { tarde: "HRSM" },
+"25/08": { tarde: "HRSM", noite: "Seminário de G.O. — UNIEURO" },
+"26/08": { tarde: "HRSM" },
+"27/08": { tarde: "HRSM" },
+"21/09": { manha: "Amb Mírian (HRAN)" },
+"23/09": { tarde: "CO (HRAN)" },
+"24/09": { tarde: "CO (HRAN)" },
+"25/09": { tarde: "CO (HRAN)" },
+"26/09": { noite: "CO (HRAN)" }
+};
+aplicarEscalaEspecifica("3", escalaTrio03);
+
+// Escala específica do Trio 04.
+const escalaTrio04 = {
+"04/08": { manha: "Adnir (ECO) (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"05/08": { manha: "PS FICHA (HRC)" },
+"06/08": { manha: "CC (HRC)", tarde: "Caio (PNAR) (HRC)" },
+"07/08": { manha: "F. Mota (HRC)" },
+"09/08": { manha: "CO (HRC)" },
+"10/08": { manha: "F. Mota (HRC)" },
+"11/08": { manha: "ALCON (HRC)", tarde: "Nádia (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"13/08": { manha: "ALCON (HRC)", tarde: "Hellen (ECO) (HRC)" },
+"14/08": { manha: "Caio (PNAR) (HRC)" },
+"16/08": { manha: "ALCON (HRC)" },
+"17/08": { manha: "Gilmária (HRC)" },
+"18/08": { manha: "PS FICHA (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"19/08": { manha: "Caio (PNAR) (HRC)" },
+"20/08": { tarde: "Lucimara (HRC)", noite: "CO (HRC)" },
+"21/08": { manha: "CC (HRC)" },
+"23/08": { manha: "CO (HRC)" },
+"25/08": { noite: "Seminário de G.O. — UNIEURO" },
+"28/08": { tarde: "HRSM" },
+"29/08": { tarde: "HRSM" },
+"30/08": { tarde: "HRSM" },
+"01/09": { tarde: "HRSM", noite: "Seminário de G.O. — UNIEURO" },
+"02/09": { tarde: "HRSM" },
+"07/09": { manha: "Amb Mírian (HRAN)" },
+"09/09": { tarde: "CO (HRAN)" },
+"10/09": { tarde: "CO (HRAN)" },
+"11/09": { tarde: "CO (HRAN)" },
+"12/09": { noite: "CO (HRAN)" }
+};
+aplicarEscalaEspecifica("4", escalaTrio04);
+
+// Escala específica do Trio 05.
+const escalaTrio05 = {
+"04/08": { manha: "ALCON (HRC)", tarde: "PS BOX (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"06/08": { manha: "ALCON (HRC)" },
+"07/08": { manha: "Gilmária (HRC)" },
+"09/08": { manha: "ALCON (HRC)" },
+"10/08": { manha: "CC (HRC)" },
+"11/08": { manha: "Adnir (ECO) (HRC)", tarde: "PS FICHA (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"12/08": { manha: "Lorena (ECO)" },
+"13/08": { manha: "CC (HRC)", tarde: "Caio (PNAR) (HRC)" },
+"14/08": { manha: "CO (HRC)" },
+"16/08": { manha: "CO (HRC)" },
+"17/08": { manha: "Nádia (HRC)" },
+"18/08": { manha: "BL (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"19/08": { tarde: "PS FICHA" },
+"20/08": { manha: "BL (HRC)" },
+"21/08": { tarde: "Flávia (HRC)", noite: "CO (HRC)" },
+"23/08": { tarde: "CO (HRC)" },
+"25/08": { noite: "Seminário de G.O. — UNIEURO" },
+"03/09": { tarde: "HRSM" },
+"04/09": { tarde: "HRSM" },
+"05/09": { tarde: "HRSM" },
+"06/09": { tarde: "HRSM" },
+"08/09": { tarde: "HRSM", noite: "Seminário de G.O. — UNIEURO" },
+"14/09": { manha: "Amb Mírian (HRAN)" },
+"16/09": { tarde: "CO (HRAN)" },
+"17/09": { tarde: "CO (HRAN)" },
+"18/09": { tarde: "CO (HRAN)" },
+"19/09": { noite: "CO (HRAN)" }
+};
+aplicarEscalaEspecifica("5", escalaTrio05);
+
+// Escala específica do Trio 06.
+const escalaTrio06 = {
+"04/08": { manha: "BL (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"05/08": { manha: "Lorena (ECO) (HRC)", tarde: "PS FICHA (HRC)" },
+"06/08": { manha: "BL (HRC)" },
+"07/08": { tarde: "Flávia (HRC)", noite: "CO (HRC)" },
+"11/08": { manha: "ALCON (HRC)", tarde: "PS BOX (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"12/08": { manha: "PS FICHA" },
+"13/08": { manha: "ALCON (HRC)", tarde: "CC (HRC)" },
+"14/08": { manha: "Gilmária" },
+"16/08": { manha: "ALCON (HRC)" },
+"17/08": { manha: "CC (HRC)" },
+"18/08": { manha: "Adnir (ECO) (HRC)", tarde: "PS FICHA (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"19/08": { manha: "Lorena (ECO)" },
+"20/08": { manha: "CC (HRC)", tarde: "Caio (PNAR)" },
+"21/08": { manha: "CO (HRC)" },
+"25/08": { noite: "Seminário de G.O. — UNIEURO" },
+"31/08": { manha: "Amb Mírian (HRAN)" },
+"02/09": { tarde: "CO (HRAN)" },
+"03/09": { tarde: "CO (HRAN)" },
+"04/09": { tarde: "CO (HRAN)" },
+"05/09": { noite: "CO (HRAN)" },
+"06/09": { manha: "—", tarde: "—", noite: "—" },
+"09/09": { tarde: "HRSM" },
+"10/09": { tarde: "HRSM" },
+"11/09": { tarde: "HRSM" },
+"12/09": { tarde: "HRSM" },
+"13/09": { tarde: "HRSM" }
+};
+aplicarEscalaEspecifica("6", escalaTrio06);
+
+// Escala específica do Trio 07.
+const escalaTrio07 = {
+"04/08": { tarde: "Marta (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"06/08": { manha: "PS BOX (HRC)", tarde: "Sádia (HRC)" },
+"07/08": { manha: "PS BOX (HRC)", tarde: "CO (HRC)" },
+"09/08": { tarde: "CO (HRC)" },
+"10/08": { manha: "Nádia (HRC)" },
+"11/08": { manha: "BL (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"13/08": { manha: "BL (HRC)" },
+"14/08": { tarde: "Flávia (HRC)", noite: "CO (HRC)" },
+"15/08": { manha: "PS BOX (HRC)" },
+"16/08": { manha: "PS BOX (HRC)" },
+"17/08": { manha: "Marta (HRC)" },
+"18/08": { manha: "CC (HRC)", tarde: "CO (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"20/08": { tarde: "Gilmária (HRC)" },
+"21/08": { manha: "Nádia (EUD) (HRC)", tarde: "Rocha (HRC)" },
+"23/08": { noite: "CO (HRC)" },
+"24/08": { manha: "Amb Mírian (HRAN)" },
+"25/08": { noite: "Seminário de G.O. — UNIEURO" },
+"26/08": { tarde: "CO (HRAN)" },
+"27/08": { tarde: "CO (HRAN)" },
+"28/08": { tarde: "CO (HRAN)" },
+"29/08": { noite: "CO (HRAN)" },
+"30/08": { manha: "—", tarde: "—", noite: "—" },
+"15/09": { tarde: "HRSM", noite: "Seminário de G.O. — UNIEURO" },
+"16/09": { tarde: "HRSM" },
+"17/09": { tarde: "HRSM" },
+"18/09": { tarde: "HRSM" },
+"19/09": { tarde: "HRSM" },
+"20/09": { manha: "—", tarde: "—", noite: "—" }
+};
+aplicarEscalaEspecifica("7", escalaTrio07);
+
+// Escala específica do Trio 08.
+const escalaTrio08 = {
+"04/08": { manha: "ALCON (HRC)", tarde: "PS FICHA (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"06/08": { manha: "ALCON (HRC)", tarde: "PS FICHA (HRC)" },
+"07/08": { manha: "Caio (PNAR) (HRC)" },
+"09/08": { manha: "ALCON (HRC)" },
+"10/08": { manha: "Hellen (ECO) (HRC)" },
+"11/08": { tarde: "Marta (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"13/08": { manha: "PS BOX (HRC)", tarde: "Sádia (HRC)" },
+"14/08": { manha: "PS BOX (HRC)", tarde: "CO (HRC)" },
+"16/08": { tarde: "CO (HRC)" },
+"17/08": { manha: "Amb Mírian (HRAN)" },
+"18/08": { noite: "Seminário de G.O. — UNIEURO" },
+"19/08": { tarde: "CO (HRAN)" },
+"20/08": { tarde: "CO (HRAN)" },
+"21/08": { tarde: "CO (HRAN)" },
+"22/08": { noite: "CO (HRAN)" },
+"20/09": { tarde: "HRSM" },
+"22/09": { tarde: "HRSM", noite: "Seminário de G.O. — UNIEURO" },
+"23/09": { tarde: "HRSM" },
+"24/09": { tarde: "HRSM" },
+"25/09": { tarde: "HRSM" }
+};
+aplicarEscalaEspecifica("8", escalaTrio08);
+
+// Escala específica do Trio 09.
+const escalaTrio09 = {
+"04/08": { tarde: "Sádia (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"05/08": { manha: "Amb UNIEURO" },
+"06/08": { noite: "CO (HRC)" },
+"07/08": { manha: "CO (HRC)" },
+"08/08": { manha: "PS BOX (HRC)" },
+"09/08": { manha: "PS BOX (HRC)" },
+"10/08": { manha: "Amb Mírian (HRAN)" },
+"11/08": { noite: "Seminário de G.O. — UNIEURO" },
+"12/08": { tarde: "CO (HRAN)" },
+"13/08": { tarde: "CO (HRAN)" },
+"14/08": { tarde: "CO (HRAN)" },
+"15/08": { noite: "CO (HRAN)" },
+"18/08": { manha: "ALCON (HRC)", tarde: "PS BOX (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"19/08": { manha: "PS FICHA (HRC)" },
+"20/08": { manha: "ALCON (HRC)", tarde: "PS FICHA (HRC)" },
+"21/08": { manha: "Gilmária (HRC)" },
+"23/08": { manha: "ALCON (HRC)" },
+"26/09": { tarde: "HRSM" },
+"27/09": { tarde: "HRSM" },
+"29/09": { tarde: "HRSM", noite: "Seminário de G.O. — UNIEURO" },
+"30/09": { tarde: "HRSM" }
+};
+aplicarEscalaEspecifica("9", escalaTrio09);
+
+// Escala específica do Trio 10.
+const escalaTrio10 = {
+"04/08": { noite: "Seminário de G.O. — UNIEURO" },
+"05/08": { tarde: "CO (HRAN)" },
+"06/08": { tarde: "CO (HRAN)" },
+"07/08": { tarde: "CO (HRAN)" },
+"08/08": { noite: "CO (HRAN)" },
+"11/08": { manha: "CO (HRC)", tarde: "Gilmária (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"12/08": { manha: "Amb UNIEURO" },
+"13/08": { tarde: "CO (HRC)" },
+"14/08": { manha: "F. Mota (HRC)", tarde: "PS FICHA (HRC)" },
+"15/08": { noite: "CO (HRC)" },
+"17/08": { manha: "Hellen (ECO) (HRC)" },
+"18/08": { manha: "ALCON (HRC)", noite: "Seminário de G.O. — UNIEURO" },
+"19/08": { manha: "Amb UNIEURO" },
+"20/08": { manha: "ALCON (HRC)", tarde: "Sádia (HRC)" },
+"21/08": { manha: "Caio (PNAR) (HRC)" },
+"23/08": { manha: "ALCON (HRC)" },
+"01/10": { tarde: "HRSM" },
+"02/10": { tarde: "HRSM" },
+"03/10": { tarde: "HRSM" },
+"04/10": { tarde: "HRSM" }
+};
+aplicarEscalaEspecifica("10", escalaTrio10);
 window.semanaSelecionadaGlobal = 1;
 window.diaSelecionadoGlobal = "seg";
 window.renderizarSemanas = function() {
