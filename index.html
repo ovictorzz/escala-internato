@@ -1268,7 +1268,11 @@ return Boolean(local && local !== "—" && local !== ESCALA_NAO_ENVIADA);
 }
 
 const ANO_ESCALA = 2026;
-const ORDEM_TURNOS_TEMPORAL = { 'Manhã': 1, 'Tarde': 2, 'Noite': 3 };
+const HORARIOS_PADRAO_TURNOS = {
+'Manhã': { inicio: 7 * 60, fim: 13 * 60 },
+'Tarde': { inicio: 13 * 60, fim: 18 * 60 },
+'Noite': { inicio: 18 * 60, fim: 22 * 60 }
+};
 
 function inicioDoDiaPainel(data = new Date()) {
 return new Date(data.getFullYear(), data.getMonth(), data.getDate());
@@ -1282,9 +1286,28 @@ return new Date(ANO_ESCALA, mes - 1, dia, fimDoDia ? 23 : 0, fimDoDia ? 59 : 0, 
 
 function obterTurnoVigente(agora = new Date()) {
 const minutos = agora.getHours() * 60 + agora.getMinutes();
-if (minutos < 13 * 60) return 'Manhã';
-if (minutos < 18 * 60) return 'Tarde';
-return 'Noite';
+if (minutos >= 7 * 60 && minutos < 13 * 60) return 'Manhã';
+if (minutos >= 13 * 60 && minutos < 18 * 60) return 'Tarde';
+if (minutos >= 18 * 60 && minutos < 22 * 60) return 'Noite';
+return null;
+}
+
+function obterFaixaHorarioTurno(horario, periodo) {
+const encontrados = [...String(horario || '').matchAll(/(\d{1,2})h(?:(\d{2}))?/gi)]
+.map(resultado => Number(resultado[1]) * 60 + Number(resultado[2] || 0));
+const padrao = HORARIOS_PADRAO_TURNOS[periodo] || HORARIOS_PADRAO_TURNOS['Manhã'];
+return {
+inicio: Number.isFinite(encontrados[0]) ? encontrados[0] : padrao.inicio,
+fim: Number.isFinite(encontrados[1]) ? encontrados[1] : padrao.fim
+};
+}
+
+function obterDataHoraInicioAtividade(dataBr, turno) {
+const data = dataEscalaParaDate(dataBr);
+if (!data) return null;
+const faixa = obterFaixaHorarioTurno(turno?.horario, turno?.periodo);
+data.setHours(Math.floor(faixa.inicio / 60), faixa.inicio % 60, 0, 0);
+return data;
 }
 
 function obterEstadoTemporalData(dataBr, agora = new Date()) {
@@ -1296,28 +1319,29 @@ if (dataEscala > hoje) return 'futuro';
 return 'hoje';
 }
 
-function obterEstadoTemporalTurno(dataBr, periodo, agora = new Date()) {
+function obterEstadoTemporalTurno(dataBr, periodo, horario = '', agora = new Date()) {
 const estadoDia = obterEstadoTemporalData(dataBr, agora);
 if (estadoDia === 'passado') return 'passado';
 if (estadoDia === 'futuro') return 'futuro';
-const ordemTurno = ORDEM_TURNOS_TEMPORAL[periodo] || 1;
-const ordemAtual = ORDEM_TURNOS_TEMPORAL[obterTurnoVigente(agora)] || 1;
-if (ordemTurno < ordemAtual) return 'passado';
-if (ordemTurno > ordemAtual) return 'futuro';
+const faixa = obterFaixaHorarioTurno(horario, periodo);
+const minutosAgora = agora.getHours() * 60 + agora.getMinutes();
+if (minutosAgora < faixa.inicio) return 'futuro';
+if (minutosAgora >= faixa.fim) return 'passado';
 return 'agora';
 }
 
 function irParaTurnoVigente() {
-const turnoAtual = document.querySelector('#lista-turnos [data-estado-temporal="agora"]');
-if (!turnoAtual) return;
-turnoAtual.setAttribute('tabindex', '-1');
+const turnoAlvo = document.querySelector('#lista-turnos [data-estado-temporal="agora"]')
+|| document.querySelector('#lista-turnos [data-estado-temporal="futuro"]');
+if (!turnoAlvo) return;
+turnoAlvo.setAttribute('tabindex', '-1');
 if (window.innerWidth < 1024) {
-setTimeout(() => turnoAtual.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+setTimeout(() => turnoAlvo.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
 }
 }
 
 function gerarMarcadorTemporal(agora = new Date()) {
-return `${agora.getFullYear()}-${agora.getMonth()}-${agora.getDate()}-${obterTurnoVigente(agora)}`;
+return `${agora.getFullYear()}-${agora.getMonth()}-${agora.getDate()}-${agora.getHours()}-${Math.floor(agora.getMinutes() / 30)}`;
 }
 
 function atualizarProximaAtividadeDinamica(alunoNome) {
@@ -1356,65 +1380,42 @@ if (semanaNum > 9) semanaNum = 9;
 const jsDay = agora.getDay();
 const mapDias = { 1: "seg", 2: "ter", 3: "qua", 4: "qui", 5: "sex", 6: "sab", 0: "dom" };
 const diaKey = mapDias[jsDay];
-const turnosHoje = dadosEscala[trioId].semanas[semanaNum] && dadosEscala[trioId].semanas[semanaNum][diaKey] ? dadosEscala[trioId].semanas[semanaNum][diaKey].turnos : [];
-const horaAtual = agora.getHours();
-let turnoAtual = null;
-if (horaAtual < 13) {
-turnoAtual = turnosHoje.find(t => t.periodo === 'Manhã') || turnosHoje[0];
-} else if (horaAtual >= 13 && horaAtual < 18) {
-turnoAtual = turnosHoje.find(t => t.periodo === 'Tarde') || turnosHoje[1];
-} else {
-turnoAtual = turnosHoje.find(t => t.periodo === 'Noite') || turnosHoje[2];
-}
+const infoHoje = dadosEscala[trioId].semanas[semanaNum]?.[diaKey];
+const turnosHoje = infoHoje?.turnos || [];
+const turnoAtual = turnosHoje.find(t => obterEstadoTemporalTurno(infoHoje.data, t.periodo, t.horario, agora) === 'agora') || null;
 if (turnoAtual) {
 const localStr = turnoAtual.local !== "—" ? turnoAtual.local : "Livre (Sem plantão)";
 badgeAtividade.innerHTML = `Atual (<span class="font-bold text-blue-500 dark:text-blue-400">${turnoAtual.periodo}</span>): ${localStr}`;
 } else {
-badgeAtividade.innerText = "Atual: Sem atividade";
+badgeAtividade.innerText = "Agora: Nenhum turno em andamento";
 }
-// --- 2. Cartão Grande: PRÓXIMA ATIVIDADE OBRIGATÓRIA (Pula o turno atual e busca a seguinte) ---
+// --- 2. Cartão Grande: PRÓXIMA ATIVIDADE OBRIGATÓRIA (considera o horário real de início) ---
 if (painelNovo) {
 const dadosTrio = dadosEscala[trioId];
 let proximaAtividade = null;
-const ordemTurnos = { 'Manhã': 1, 'Tarde': 2, 'Noite': 3 };
-let pesoTurnoAtual = horaAtual < 13 ? 1 : (horaAtual < 18 ? 2 : 3);
 for (let s = semanaNum; s <= 9; s++) {
 if (!dadosTrio.semanas[s]) continue;
-const diasDaSemana = dadosTrio.semanas[s];
-for (let dK in diasDaSemana) {
-const infoDia = diasDaSemana[dK];
+const diasDaSemana = Object.values(dadosTrio.semanas[s])
+.filter(infoDia => infoDia?.data)
+.sort((a, b) => dataEscalaParaDate(a.data) - dataEscalaParaDate(b.data));
+for (const infoDia of diasDaSemana) {
 if (!infoDia || !infoDia.data) continue;
-const [diaStr, mesStr] = infoDia.data.split('/');
-const dataDiaObj = new Date(anoAtual, parseInt(mesStr) - 1, parseInt(diaStr));
-if (dataDiaObj >= hojeLocal) {
-const ehHoje = dataDiaObj.getTime() === hojeLocal.getTime();
 const turnos = infoDia.turnos || [];
 for (let t of turnos) {
-if (atividadeConfirmada(t.local)) {
-if (ehHoje) {
-let pesoDeste = ordemTurnos[t.periodo] || 1;
-if (pesoDeste > pesoTurnoAtual) {
+if (!atividadeConfirmada(t.local)) continue;
+const inicioAtividade = obterDataHoraInicioAtividade(infoDia.data, t);
+if (inicioAtividade && inicioAtividade > agora) {
 proximaAtividade = {
 diaNome: infoDia.nome,
 data: infoDia.data,
 periodo: t.periodo || t.turno,
+horario: t.horario || "Horário não informado",
 local: t.local,
 atividade: t.atividade || "Atividade Obrigatória"
 };
 break;
 }
-} else {
-proximaAtividade = {
-diaNome: infoDia.nome,
-data: infoDia.data,
-periodo: t.periodo || t.turno,
-local: t.local,
-atividade: t.atividade || "Atividade Obrigatória"
-};
-break;
-}
-}
-}
+if (proximaAtividade) break;
 }
 if (proximaAtividade) break;
 }
@@ -1427,6 +1428,7 @@ painelNovo.innerHTML = `
 <span class="px-1.5 py-0.5 rounded bg-blue-600/50 text-blue-200 text-[10px]">${proximaAtividade.periodo}</span>
 </div>
 <div class="text-[11px] text-zinc-300 mt-0.5">
+<div><strong>Horário:</strong> ${proximaAtividade.horario}</div>
 <div><strong>Local:</strong> ${proximaAtividade.local}</div>
 <div class="text-zinc-400"><strong>Tipo:</strong> ${proximaAtividade.atividade}</div>
 </div>
@@ -2131,7 +2133,7 @@ let turnosHtml = '';
 turnosDia.forEach(t => {
 const sigla = t.periodo === 'Manhã' ? 'M' : t.periodo === 'Tarde' ? 'T' : 'N';
 const ativo = atividadeConfirmada(t.local);
-const estadoTurno = obterEstadoTemporalTurno(dataBr, t.periodo);
+const estadoTurno = obterEstadoTemporalTurno(dataBr, t.periodo, t.horario);
 const classeTurnoTemporal = estadoTurno === 'passado' ? 'linha-turno-passado' : (estadoTurno === 'agora' ? 'linha-turno-atual' : '');
 const corBadge = ativo
 ? 'bg-blue-600 text-white font-bold shadow-sm'
@@ -2822,7 +2824,7 @@ else iconeTurno = '<svg class="w-7 h-7 text-indigo-500 dark:text-indigo-400" fil
 const hasPlantao = atividadeConfirmada(t.local);
 const cardBorder = hasPlantao ? 'border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-900/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]' : 'glass-panel opacity-70';
 const turnoClass = t.periodo === 'Manhã' ? 'turno-manha' : (t.periodo === 'Tarde' ? 'turno-tarde' : 'turno-noite');
-const estadoTemporal = obterEstadoTemporalTurno(infoDia.data, t.periodo);
+const estadoTemporal = obterEstadoTemporalTurno(infoDia.data, t.periodo, t.horario);
 const classeTemporal = estadoTemporal === 'passado' ? 'turno-passado-card' : (estadoTemporal === 'agora' ? 'turno-atual-card' : '');
 const indicadorTemporal = estadoTemporal === 'passado'
 ? '<span class="temporal-status-badge temporal-status-passado">Concluído</span>'
@@ -2856,7 +2858,7 @@ let turnosTrioHtml = '';
 infoDiaTrio.turnos.forEach(t => {
 const hasPlantao = atividadeConfirmada(t.local);
 const badgeColor = hasPlantao ? 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20 shadow-inner' : 'text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5';
-const estadoTemporal = obterEstadoTemporalTurno(infoDiaTrio.data, t.periodo);
+const estadoTemporal = obterEstadoTemporalTurno(infoDiaTrio.data, t.periodo, t.horario);
 const classeLinhaTemporal = estadoTemporal === 'passado' ? 'linha-turno-passado' : (estadoTemporal === 'agora' ? 'linha-turno-atual' : '');
 const marcadorAgora = estadoTemporal === 'agora' ? '<span class="ml-1 text-[7px] font-black uppercase tracking-wider text-blue-500">Agora</span>' : '';
 turnosTrioHtml += `
