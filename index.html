@@ -9,6 +9,11 @@
 tailwind.config = {
 darkMode: 'class',
 }
+try {
+if (localStorage.getItem('corPainel') === 'rosa') {
+document.documentElement.classList.add('tema-rosa');
+}
+} catch (e) {}
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -419,36 +424,6 @@ transform: scaleY(1);
 .hero-subtitle { max-width: 78%; font-size: .66rem; }
 }
 
-.calendar-action {
-display: inline-flex;
-align-items: center;
-justify-content: center;
-gap: .4rem;
-padding: .5rem .7rem;
-border-radius: .65rem;
-font-family: 'Outfit', sans-serif;
-font-size: .64rem;
-font-weight: 800;
-letter-spacing: .02em;
-color: #60a5fa;
-background: rgba(59,130,246,.1);
-border: 1px solid rgba(96,165,250,.22);
-transition: transform .2s ease, background .2s ease, color .2s ease;
-}
-
-.calendar-action:hover {
-transform: translateY(-1px);
-background: #2563eb;
-color: white;
-}
-
-.calendar-modal-card {
-width: min(92vw, 430px);
-background: linear-gradient(155deg, rgba(18,20,31,.98), rgba(7,9,16,.97));
-border: 1px solid rgba(96,165,250,.22);
-box-shadow: 0 35px 90px -28px rgba(37,99,235,.55);
-}
-
 .admin-nav-card {
 position: relative;
 overflow: hidden;
@@ -512,6 +487,184 @@ color: #71717a;
 .admin-preview {
 background: linear-gradient(145deg, rgba(37,99,235,.12), rgba(99,102,241,.06));
 border: 1px solid rgba(96,165,250,.18);
+}
+
+/* Seletor de identidade visual: azul ou rosa */
+.accent-selector {
+padding: .65rem;
+border-radius: .9rem;
+background: rgba(0, 0, 0, .08);
+border: 1px solid rgba(148, 163, 184, .12);
+box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025);
+}
+
+.accent-selector-track {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: .3rem;
+padding: .25rem;
+border-radius: .75rem;
+background: rgba(0, 0, 0, .18);
+border: 1px solid rgba(148, 163, 184, .1);
+}
+
+html:not(.dark) .accent-selector,
+html:not(.dark) .accent-selector-track {
+background: rgba(241, 245, 249, .8);
+}
+
+.accent-option {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: .4rem;
+min-height: 34px;
+border-radius: .6rem;
+font-size: .68rem;
+font-weight: 800;
+color: #71717a;
+border: 1px solid transparent;
+cursor: pointer;
+}
+
+.accent-option::before {
+content: "";
+width: .55rem;
+height: .55rem;
+border-radius: 999px;
+box-shadow: 0 0 0 3px rgba(255, 255, 255, .04);
+}
+
+.accent-option[data-cor="azul"]::before { background: #3b82f6; }
+.accent-option[data-cor="rosa"]::before { background: #ec4899; }
+
+.accent-option[data-active="true"] {
+color: #fff;
+background: linear-gradient(135deg, #2563eb, #4f46e5);
+border-color: rgba(147, 197, 253, .28);
+box-shadow: 0 8px 18px -11px rgba(37, 99, 235, .95), inset 0 1px 0 rgba(255,255,255,.16);
+}
+
+.accent-option[data-active="true"]::before {
+background: #fff;
+box-shadow: 0 0 0 3px rgba(255, 255, 255, .15);
+}
+
+/* Paleta rosa — elegante e independente do modo claro/escuro */
+html.tema-rosa {
+--brand-blue: #ec4899;
+--brand-indigo: #c026d3;
+--brand-cyan: #fb7185;
+}
+
+.tema-rosa.dark body {
+background-color: #080309;
+background-image:
+radial-gradient(circle at 18% -10%, rgba(219, 39, 119, .28), transparent 34%),
+radial-gradient(circle at 92% 108%, rgba(162, 28, 175, .24), transparent 36%),
+linear-gradient(145deg, #070308 0%, #110711 52%, #060207 100%);
+}
+
+html.tema-rosa:not(.dark) body {
+background-color: #fff7fb;
+background-image:
+radial-gradient(circle at 15% -10%, rgba(244, 114, 182, .2), transparent 34%),
+radial-gradient(circle at 95% 105%, rgba(216, 70, 239, .13), transparent 33%),
+linear-gradient(145deg, #fffafd, #fdf2f8 55%, #fff7fb);
+}
+
+.tema-rosa body::before {
+background-image:
+linear-gradient(rgba(236, 72, 153, .035) 1px, transparent 1px),
+linear-gradient(90deg, rgba(192, 38, 211, .035) 1px, transparent 1px);
+}
+
+.tema-rosa.dark body > aside {
+background: linear-gradient(180deg, rgba(23, 8, 19, .97), rgba(10, 4, 10, .95));
+border-right-color: rgba(244, 114, 182, .16);
+}
+
+.tema-rosa body > aside::after {
+background: linear-gradient(to bottom, transparent, rgba(236, 72, 153, .75), transparent);
+}
+
+.tema-rosa #banner-hero {
+background:
+radial-gradient(circle at 88% 20%, rgba(251, 113, 133, .14), transparent 22%),
+linear-gradient(115deg, rgba(219, 39, 119, .22), rgba(192, 38, 211, .09) 45%, rgba(24, 4, 18, .08));
+border-color: rgba(244, 114, 182, .36);
+box-shadow: 0 22px 55px -38px rgba(219, 39, 119, .9), inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.tema-rosa #banner-hero::after { color: rgba(244, 114, 182, .09); }
+.tema-rosa #lista-turnos > div > div:hover,
+.tema-rosa #lista-turnos .glass-panel:hover { box-shadow: 0 22px 48px -32px rgba(219, 39, 119, .78); }
+.tema-rosa #login-overlay > .glass-panel { box-shadow: 0 35px 90px -30px rgba(219, 39, 119, .6), inset 0 1px 0 rgba(255,255,255,.08); }
+.tema-rosa #login-overlay > .glass-panel::before { background: linear-gradient(90deg, transparent, #f472b6, #d946ef, transparent); }
+.tema-rosa #contador-capotes-val { filter: drop-shadow(0 12px 22px rgba(236, 72, 153, .22)); }
+.tema-rosa .dashboard-status { background: rgba(236, 72, 153, .08); border-color: rgba(244, 114, 182, .2); }
+.tema-rosa .dashboard-clock { background: linear-gradient(135deg, rgba(219,39,119,.2), rgba(192,38,211,.18)); color: #f9a8d4; border-color: rgba(244,114,182,.26); }
+.tema-rosa .trio-spotlight::before,
+.tema-rosa .stat-card::before { background: radial-gradient(circle at 100% 0%, rgba(244,114,182,.13), transparent 38%); }
+.tema-rosa .stat-card:hover { border-color: rgba(244,114,182,.36); box-shadow: 0 22px 48px -34px rgba(219,39,119,.82); }
+.tema-rosa .stat-card::after { background: linear-gradient(90deg, transparent, rgba(244,114,182,.78), transparent); }
+.tema-rosa .stat-capotes::before { background: radial-gradient(circle at 50% 12%, rgba(192,38,211,.22), transparent 48%); }
+.tema-rosa .turno-noite::before { background: radial-gradient(circle at 50% 0%, #ec4899, transparent 48%); }
+.tema-rosa .turno-noite { border-top-color: rgba(236,72,153,.5) !important; }
+.tema-rosa #mobile-nav-menu button::after { background: linear-gradient(#f472b6, #c026d3); }
+.tema-rosa .admin-nav-card.admin-active { border-color: rgba(236,72,153,.55); background: linear-gradient(145deg, rgba(190,24,93,.18), rgba(192,38,211,.07)); box-shadow: 0 18px 42px -30px rgba(219,39,119,.92); }
+.tema-rosa .admin-field:focus { border-color: rgba(236,72,153,.78); box-shadow: 0 0 0 3px rgba(236,72,153,.11); }
+.tema-rosa .admin-preview { background: linear-gradient(145deg, rgba(219,39,119,.13), rgba(192,38,211,.07)); border-color: rgba(244,114,182,.22); }
+
+/* Conversão das classes de destaque geradas pelo Tailwind */
+.tema-rosa.dark [class*="text-blue-"],
+.tema-rosa.dark [class*="text-indigo-"] { color: #f9a8d4 !important; }
+.tema-rosa:not(.dark) [class*="text-blue-"],
+.tema-rosa:not(.dark) [class*="text-indigo-"] { color: #be185d !important; }
+.tema-rosa [class~="bg-blue-400"] { background-color: #f472b6 !important; }
+.tema-rosa [class~="bg-blue-500"] { background-color: #ec4899 !important; }
+.tema-rosa [class~="bg-indigo-500"] { background-color: #d946ef !important; }
+.tema-rosa [class~="bg-blue-600"],
+.tema-rosa [class~="bg-indigo-600"] { background-color: #db2777 !important; }
+.tema-rosa [class~="bg-blue-500/10"],
+.tema-rosa [class~="bg-indigo-500/10"],
+.tema-rosa [class~="bg-blue-600/10"] { background-color: rgba(236, 72, 153, .1) !important; }
+.tema-rosa [class~="bg-blue-500/20"],
+.tema-rosa [class~="bg-indigo-600/20"],
+.tema-rosa [class~="bg-blue-600/20"] { background-color: rgba(236, 72, 153, .2) !important; }
+.tema-rosa [class~="bg-blue-600/50"] { background-color: rgba(219, 39, 119, .5) !important; }
+.tema-rosa [class~="bg-blue-900"],
+.tema-rosa [class~="bg-blue-950"],
+.tema-rosa [class~="bg-blue-950/40"] { background-color: rgba(80, 7, 36, .55) !important; }
+.tema-rosa.dark [class~="dark:bg-blue-900/35"] { background-color: rgba(80, 7, 36, .35) !important; }
+.tema-rosa [class*="border-blue-"],
+.tema-rosa [class*="border-indigo-"] { border-color: rgba(244, 114, 182, .36) !important; }
+.tema-rosa [class*="from-blue-"] {
+--tw-gradient-from: #ec4899 var(--tw-gradient-from-position) !important;
+--tw-gradient-to: rgb(236 72 153 / 0) var(--tw-gradient-to-position) !important;
+}
+.tema-rosa [class*="from-indigo-"] {
+--tw-gradient-from: #c026d3 var(--tw-gradient-from-position) !important;
+--tw-gradient-to: rgb(192 38 211 / 0) var(--tw-gradient-to-position) !important;
+}
+.tema-rosa [class*="to-indigo-"] { --tw-gradient-to: #c026d3 var(--tw-gradient-to-position) !important; }
+.tema-rosa [class*="to-blue-"] { --tw-gradient-to: #ec4899 var(--tw-gradient-to-position) !important; }
+.tema-rosa [class*="hover:border-blue-"]:hover,
+.tema-rosa [class*="hover:border-indigo-"]:hover { border-color: rgba(244, 114, 182, .65) !important; }
+.tema-rosa [class~="hover:bg-blue-500"]:hover,
+.tema-rosa [class~="hover:bg-blue-600"]:hover,
+.tema-rosa [class~="hover:bg-indigo-500"]:hover,
+.tema-rosa [class~="hover:bg-indigo-600"]:hover { background-color: #be185d !important; color: #fff !important; }
+.tema-rosa [class~="hover:bg-blue-500/20"]:hover { background-color: rgba(236, 72, 153, .2) !important; }
+.tema-rosa [class~="hover:bg-blue-600/40"]:hover { background-color: rgba(219, 39, 119, .4) !important; }
+.tema-rosa [class*="focus:border-blue-"]:focus,
+.tema-rosa [class*="focus:border-indigo-"]:focus { border-color: #ec4899 !important; }
+.tema-rosa ::selection { background: #ec4899; color: #fff; }
+
+.tema-rosa .accent-option[data-active="true"] {
+background: linear-gradient(135deg, #ec4899, #c026d3);
+border-color: rgba(251, 207, 232, .3);
+box-shadow: 0 8px 18px -11px rgba(219, 39, 119, .98), inset 0 1px 0 rgba(255,255,255,.18);
 }
 </style>
 </head>
@@ -652,6 +805,16 @@ Próxima: Carregando...
 </nav>
 </div>
 <div id="mobile-footer-menu" class="hidden lg:block pt-5 border-t border-black/10 dark:border-white/5 space-y-3 font-outfit">
+<div class="accent-selector" aria-label="Cor do painel">
+<div class="flex items-center justify-between px-1 pb-2">
+<span class="text-[9px] font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.16em]">Cor do painel</span>
+<span id="cor-painel-status" class="text-[9px] font-bold text-blue-500">Azul</span>
+</div>
+<div class="accent-selector-track" role="group" aria-label="Escolha a cor do painel">
+<button type="button" id="cor-painel-azul" class="accent-option" data-cor="azul" data-active="true" aria-pressed="true" onclick="alterarCorPainel('azul')">Azul</button>
+<button type="button" id="cor-painel-rosa" class="accent-option" data-cor="rosa" data-active="false" aria-pressed="false" onclick="alterarCorPainel('rosa')">Rosa</button>
+</div>
+</div>
 <div class="flex items-center justify-between">
 <span class="text-xs font-bold text-zinc-400">Turma T7A</span>
 <div class="flex items-center space-x-2">
@@ -848,6 +1011,30 @@ localStorage.setItem('tema', 'claro');
 htmlEl.classList.add('dark');
 localStorage.setItem('tema', 'escuro');
 }
+};
+function atualizarSeletorCorPainel() {
+const rosaAtivo = document.documentElement.classList.contains('tema-rosa');
+const botaoAzul = document.getElementById('cor-painel-azul');
+const botaoRosa = document.getElementById('cor-painel-rosa');
+const status = document.getElementById('cor-painel-status');
+if (botaoAzul) {
+botaoAzul.dataset.active = String(!rosaAtivo);
+botaoAzul.setAttribute('aria-pressed', String(!rosaAtivo));
+}
+if (botaoRosa) {
+botaoRosa.dataset.active = String(rosaAtivo);
+botaoRosa.setAttribute('aria-pressed', String(rosaAtivo));
+}
+if (status) {
+status.textContent = rosaAtivo ? 'Rosa' : 'Azul';
+status.setAttribute('aria-live', 'polite');
+}
+}
+window.alterarCorPainel = function(cor) {
+const usarRosa = cor === 'rosa';
+document.documentElement.classList.toggle('tema-rosa', usarRosa);
+localStorage.setItem('corPainel', usarRosa ? 'rosa' : 'azul');
+atualizarSeletorCorPainel();
 };
 window.verificarSenha = async function() {
 const alunoSelect = document.getElementById('aluno-select').value;
@@ -1587,96 +1774,6 @@ alert('Não foi possível desfazer a alteração.');
 }
 }
 
-function codificarEventoCalendario(evento) {
-return encodeURIComponent(JSON.stringify(evento)).replace(/'/g, '%27');
-}
-
-function extrairHorariosCalendario(horario, periodo) {
-const encontrados = [...String(horario || '').matchAll(/(\d{1,2})h?(\d{2})?/g)]
-.map(item => ({ hora: Number(item[1]), minuto: Number(item[2] || 0) }))
-.filter(item => item.hora <= 23 && item.minuto <= 59);
-if (encontrados.length >= 2) return { inicio: encontrados[0], fim: encontrados[encontrados.length - 1] };
-const padrao = periodo === 'Manhã'
-? [{hora: 7, minuto: 0}, {hora: 13, minuto: 0}]
-: periodo === 'Tarde'
-? [{hora: 13, minuto: 0}, {hora: 18, minuto: 0}]
-: [{hora: 18, minuto: 30}, {hora: 21, minuto: 30}];
-return { inicio: padrao[0], fim: padrao[1] };
-}
-
-function prepararEventoCalendario(payloadCodificado) {
-const evento = JSON.parse(decodeURIComponent(payloadCodificado));
-const [dia, mes] = evento.data.split('/').map(Number);
-const horarios = extrairHorariosCalendario(evento.horario, evento.periodo);
-const compactar = horario => `2026${String(mes).padStart(2,'0')}${String(dia).padStart(2,'0')}T${String(horario.hora).padStart(2,'0')}${String(horario.minuto).padStart(2,'0')}00`;
-const localDetalhado = evento.local.includes('UNIEURO') ? 'UNIEURO' : evento.local.includes('HRC') ? 'Hospital Regional de Ceilândia (HRC)' : evento.local.includes('HRAN') ? 'Hospital Regional da Asa Norte (HRAN)' : evento.local.includes('HRSM') ? 'Hospital Regional de Santa Maria (HRSM)' : evento.local;
-return {
-...evento,
-inicio: compactar(horarios.inicio),
-fim: compactar(horarios.fim),
-titulo: `${evento.local} — ${evento.periodo}`,
-descricao: `Escala de G.O. • ${evento.trio || 'Turma T7A'} • ${evento.periodo} • ${evento.horario}`,
-localDetalhado
-};
-}
-
-window.abrirOpcoesCalendario = function(payloadCodificado) {
-document.getElementById('calendar-modal')?.remove();
-const evento = prepararEventoCalendario(payloadCodificado);
-const modal = document.createElement('div');
-modal.id = 'calendar-modal';
-modal.className = 'fixed inset-0 z-[100] bg-black/75 backdrop-blur-md flex items-center justify-center p-4';
-modal.innerHTML = `
-<div class="calendar-modal-card rounded-3xl p-6 relative">
-<button onclick="document.getElementById('calendar-modal').remove()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10">×</button>
-<span class="text-[9px] font-extrabold uppercase tracking-[0.18em] text-blue-400">Adicionar ao calendário</span>
-<h3 class="text-lg font-outfit font-black text-white mt-2 pr-8">${escaparHtmlAdmin(evento.local)}</h3>
-<p class="text-xs text-zinc-400 mt-1">${escaparHtmlAdmin(evento.data)} • ${escaparHtmlAdmin(evento.periodo)} • ${escaparHtmlAdmin(evento.horario)}</p>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
-<button onclick="adicionarGoogleCalendar('${payloadCodificado}')" class="p-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-left transition-all">
-<span class="block text-xs font-outfit font-extrabold">Google Calendar</span><span class="block text-[10px] text-blue-100 mt-1">Abrir evento preenchido</span>
-</button>
-<button onclick="baixarEventoIcs('${payloadCodificado}')" class="p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-left transition-all">
-<span class="block text-xs font-outfit font-extrabold">Apple / Outlook</span><span class="block text-[10px] text-zinc-400 mt-1">Baixar arquivo .ics</span>
-</button>
-</div>
-</div>`;
-modal.addEventListener('click', eventoClique => { if (eventoClique.target === modal) modal.remove(); });
-document.body.appendChild(modal);
-}
-
-window.adicionarGoogleCalendar = function(payloadCodificado) {
-const evento = prepararEventoCalendario(payloadCodificado);
-const parametros = new URLSearchParams({
-action: 'TEMPLATE', text: evento.titulo, dates: `${evento.inicio}/${evento.fim}`,
-details: evento.descricao, location: evento.localDetalhado, ctz: 'America/Sao_Paulo'
-});
-window.open(`https://calendar.google.com/calendar/render?${parametros.toString()}`, '_blank', 'noopener');
-}
-
-window.baixarEventoIcs = function(payloadCodificado) {
-const evento = prepararEventoCalendario(payloadCodificado);
-const limparIcs = texto => String(texto).replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
-const conteudo = [
-'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Painel GO T7A//PT-BR','CALSCALE:GREGORIAN','BEGIN:VEVENT',
-`UID:${Date.now()}-${Math.random().toString(36).slice(2)}@painel-go-t7a`,
-`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'')}`,
-`DTSTART;TZID=America/Sao_Paulo:${evento.inicio}`,
-`DTEND;TZID=America/Sao_Paulo:${evento.fim}`,
-`SUMMARY:${limparIcs(evento.titulo)}`,
-`DESCRIPTION:${limparIcs(evento.descricao)}`,
-`LOCATION:${limparIcs(evento.localDetalhado)}`,
-'END:VEVENT','END:VCALENDAR'
-].join('\r\n');
-const url = URL.createObjectURL(new Blob([conteudo], { type: 'text/calendar;charset=utf-8' }));
-const link = document.createElement('a');
-link.href = url;
-link.download = `escala-go-${evento.data.replace('/','-')}.ics`;
-document.body.appendChild(link);
-link.click();
-link.remove();
-URL.revokeObjectURL(url);
-}
 const dadosSeminariosList = [
 { data: "28/07", hora: "08h30–11h00", mediador: "TODOS", apresentadores: "TODOS", tema: "APRESENTAÇÃO DO INTERNATO EM SAÚDE DA MULHER – GINECOLOGIA & OBSTETRÍCIA" },
 { data: "04/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Marta", apresentadores: "André Victor, Davi Carvalho, Letícia Barbosa", tema: "• Fisiologia do Ciclo Menstrual\n• Pré-Natal de Risco Habitual" },
@@ -1694,7 +1791,6 @@ window.renderizarSeminariosView = function() {
 const containerTurnos = document.getElementById('lista-turnos');
 let html = '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-full overflow-y-auto pr-1 pb-4">';
 dadosSeminariosList.forEach(s => {
-const eventoSeminario = codificarEventoCalendario({ data: s.data, periodo: 'Noite', horario: s.hora, local: s.data === '29/09' ? 'Avaliação Somativa — UNIEURO' : 'Seminário de G.O. — UNIEURO', trio: 'Turma T7A' });
 html += `
 <div class="glass-panel hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl p-4 transition-all shadow-md group border border-black/5 dark:border-white/10 flex flex-col h-full relative overflow-hidden">
 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/50 to-indigo-500/50"></div>
@@ -1708,10 +1804,6 @@ html += `
 <span class="dark:text-white text-zinc-900 font-bold font-outfit">${s.mediador}</span>
 </div>
 </div>
-<button onclick="abrirOpcoesCalendario('${eventoSeminario}')" class="calendar-action self-start mb-3" aria-label="Adicionar atividade de ${s.data} ao calendário">
-<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-Adicionar ao calendário
-</button>
 <div class="space-y-3 flex-grow flex flex-col">
 <div>
 <span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">Apresentadores</span>
@@ -2494,7 +2586,6 @@ else iconeTurno = '<svg class="w-7 h-7 text-indigo-500 dark:text-indigo-400" fil
 const hasPlantao = atividadeConfirmada(t.local);
 const cardBorder = hasPlantao ? 'border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-900/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]' : 'glass-panel opacity-70';
 const turnoClass = t.periodo === 'Manhã' ? 'turno-manha' : (t.periodo === 'Tarde' ? 'turno-tarde' : 'turno-noite');
-const eventoCalendario = hasPlantao ? codificarEventoCalendario({ data: infoDia.data, periodo: t.periodo, horario: t.horario, local: t.local, trio: dados.nomeGrupo }) : '';
 html += `
 <div class="turno-card ${turnoClass} ${cardBorder} border hover:border-blue-500/60 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all duration-300 shadow-md group relative overflow-hidden h-full min-h-[200px]">
 ${hasPlantao ? '<div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>' : ''}
@@ -2508,7 +2599,6 @@ ${iconeTurno}
 <span class="text-xs font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">${t.horario}</span>
 <span class="px-3 py-1.5 rounded-lg ${hasPlantao ? 'bg-blue-600 text-white shadow-md' : 'bg-black/5 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 border border-black/10 dark:border-white/10'} text-[10px] font-outfit font-bold uppercase tracking-wide transition-colors">${hasPlantao ? "Obrigatório" : (t.local === ESCALA_NAO_ENVIADA ? "Pendente" : "Livre")}</span>
 </div>
-${hasPlantao ? `<button onclick="abrirOpcoesCalendario('${eventoCalendario}')" class="calendar-action w-full mt-3" aria-label="Adicionar ${t.periodo} de ${infoDia.data} ao calendário"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>Adicionar ao calendário</button>` : ''}
 </div>
 </div>
 `;
@@ -2572,6 +2662,12 @@ document.documentElement.classList.remove('dark');
 } else {
 document.documentElement.classList.add('dark');
 }
+if (localStorage.getItem('corPainel') === 'rosa') {
+document.documentElement.classList.add('tema-rosa');
+} else {
+document.documentElement.classList.remove('tema-rosa');
+}
+atualizarSeletorCorPainel();
 detectarDiaESemanaAtual();
 window.renderizarSemanas();
 window.renderizarAbasDias();
