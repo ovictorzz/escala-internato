@@ -285,6 +285,69 @@ color: #93c5fd;
 border: 1px solid rgba(96,165,250,.22);
 }
 
+.descanso-motion {
+position: relative;
+display: inline-flex;
+align-items: center;
+gap: .35rem;
+width: 100%;
+overflow: hidden;
+color: #c4b5fd;
+font-family: 'Outfit', sans-serif;
+font-weight: 800;
+letter-spacing: .01em;
+}
+
+.descanso-motion::after {
+content: "";
+position: absolute;
+top: -80%;
+bottom: -80%;
+width: 24%;
+left: -35%;
+transform: rotate(18deg);
+background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+animation: descanso-shimmer 4.2s ease-in-out infinite;
+}
+
+.descanso-lua {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-size: .9rem;
+line-height: 1;
+color: #ddd6fe;
+filter: drop-shadow(0 0 7px rgba(167,139,250,.65));
+animation: descanso-lua-motion 3.1s ease-in-out infinite;
+}
+
+.descanso-estrela {
+margin-left: auto;
+font-size: .55rem;
+color: #93c5fd;
+animation: descanso-estrela-motion 1.9s ease-in-out infinite;
+}
+
+.tema-rosa .descanso-motion { color: #fbcfe8; }
+.tema-rosa .descanso-lua { color: #fce7f3; filter: drop-shadow(0 0 7px rgba(244,114,182,.68)); }
+.tema-rosa .descanso-estrela { color: #f9a8d4; }
+
+@keyframes descanso-lua-motion {
+0%, 100% { transform: translateY(1px) rotate(-8deg); }
+50% { transform: translateY(-3px) rotate(8deg); }
+}
+
+@keyframes descanso-estrela-motion {
+0%, 100% { opacity: .35; transform: scale(.72) rotate(0deg); }
+50% { opacity: 1; transform: scale(1.15) rotate(22deg); }
+}
+
+@keyframes descanso-shimmer {
+0%, 35% { left: -35%; opacity: 0; }
+55% { opacity: 1; }
+78%, 100% { left: 125%; opacity: 0; }
+}
+
 .status-orbit {
 position: relative;
 display: inline-flex;
@@ -1386,6 +1449,14 @@ const turnoAtual = turnosHoje.find(t => obterEstadoTemporalTurno(infoHoje.data, 
 if (turnoAtual) {
 const localStr = turnoAtual.local !== "—" ? turnoAtual.local : "Livre (Sem plantão)";
 badgeAtividade.innerHTML = `Atual (<span class="font-bold text-blue-500 dark:text-blue-400">${turnoAtual.periodo}</span>): ${localStr}`;
+} else if (agora.getHours() < 7) {
+badgeAtividade.innerHTML = `
+<span class="descanso-motion" aria-label="Bom descanso, interno">
+<span class="descanso-lua" aria-hidden="true">☾</span>
+<span>Bom descanso, interno</span>
+<span class="descanso-estrela" aria-hidden="true">✦</span>
+</span>
+`;
 } else {
 badgeAtividade.innerText = "Agora: Nenhum turno em andamento";
 }
