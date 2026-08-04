@@ -249,6 +249,175 @@ animation-iteration-count: 1 !important;
 scroll-behavior: auto !important;
 }
 }
+
+/* Camada premium — identidade, bento e turnos */
+.dashboard-topbar {
+min-height: 58px;
+}
+
+.dashboard-status {
+display: flex;
+align-items: center;
+gap: .7rem;
+padding: .45rem .55rem .45rem .75rem;
+border-radius: 999px;
+background: rgba(59, 130, 246, .07);
+border: 1px solid rgba(96, 165, 250, .16);
+box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.dashboard-clock {
+min-width: 58px;
+padding: .35rem .65rem;
+border-radius: 999px;
+font-family: 'Outfit', sans-serif;
+font-weight: 800;
+font-size: .72rem;
+letter-spacing: .08em;
+text-align: center;
+background: linear-gradient(135deg, rgba(37,99,235,.18), rgba(99,102,241,.18));
+color: #93c5fd;
+border: 1px solid rgba(96,165,250,.22);
+}
+
+.status-orbit {
+position: relative;
+display: inline-flex;
+width: 8px;
+height: 8px;
+border-radius: 999px;
+background: #34d399;
+box-shadow: 0 0 0 4px rgba(52,211,153,.1), 0 0 14px rgba(52,211,153,.65);
+}
+
+.trio-spotlight,
+.stat-card {
+position: relative;
+overflow: hidden;
+}
+
+.trio-spotlight::before,
+.stat-card::before {
+content: "";
+position: absolute;
+inset: 0;
+pointer-events: none;
+background: radial-gradient(circle at 100% 0%, rgba(96,165,250,.11), transparent 38%);
+}
+
+.stat-card {
+min-height: 128px;
+transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.stat-card:hover {
+transform: translateY(-3px);
+border-color: rgba(96,165,250,.32);
+box-shadow: 0 22px 48px -34px rgba(37,99,235,.75);
+}
+
+.stat-card::after {
+content: "";
+position: absolute;
+left: 22%;
+right: 22%;
+bottom: -1px;
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(96,165,250,.72), transparent);
+opacity: .48;
+}
+
+.stat-capotes::before {
+background: radial-gradient(circle at 50% 12%, rgba(99,102,241,.2), transparent 48%);
+}
+
+.hero-subtitle {
+max-width: 540px;
+font-size: .72rem;
+line-height: 1.45;
+color: #71717a;
+font-weight: 600;
+}
+
+.dark .hero-subtitle { color: #a1a1aa; }
+
+.turno-card {
+isolation: isolate;
+background: linear-gradient(155deg, rgba(18,20,31,.9), rgba(7,9,16,.76));
+}
+
+html:not(.dark) .turno-card {
+background: linear-gradient(155deg, rgba(255,255,255,.96), rgba(248,250,252,.88));
+}
+
+.turno-card::before {
+content: "";
+position: absolute;
+inset: 0;
+z-index: -1;
+pointer-events: none;
+opacity: .16;
+transition: opacity .25s ease;
+}
+
+.turno-card:hover::before { opacity: .3; }
+
+.turno-manha::before {
+background: radial-gradient(circle at 50% 0%, #f59e0b, transparent 48%);
+}
+
+.turno-tarde::before {
+background: radial-gradient(circle at 50% 0%, #f97316, transparent 48%);
+}
+
+.turno-noite::before {
+background: radial-gradient(circle at 50% 0%, #6366f1, transparent 48%);
+}
+
+.turno-manha { border-top-color: rgba(245,158,11,.42) !important; }
+.turno-tarde { border-top-color: rgba(249,115,22,.42) !important; }
+.turno-noite { border-top-color: rgba(99,102,241,.48) !important; }
+
+.turno-card h4 {
+letter-spacing: -.025em;
+text-wrap: balance;
+}
+
+.turno-card > div:first-of-type:not(.absolute) {
+box-shadow: 0 15px 28px -20px rgba(59,130,246,.7), inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+#mobile-nav-menu button {
+position: relative;
+overflow: hidden;
+}
+
+#mobile-nav-menu button::after {
+content: "";
+position: absolute;
+left: 0;
+top: 24%;
+bottom: 24%;
+width: 2px;
+border-radius: 99px;
+background: linear-gradient(#60a5fa, #6366f1);
+opacity: 0;
+transform: scaleY(.4);
+transition: opacity .2s ease, transform .2s ease;
+}
+
+#mobile-nav-menu button:hover::after {
+opacity: 1;
+transform: scaleY(1);
+}
+
+@media (max-width: 640px) {
+.dashboard-status { gap: .45rem; padding: .35rem; }
+.dashboard-status-copy { display: none; }
+.dashboard-clock { min-width: 54px; }
+.stat-card { min-height: 104px; }
+.hero-subtitle { max-width: 78%; font-size: .66rem; }
+}
 </style>
 </head>
 <body class="flex flex-col lg:flex-row selection:bg-blue-500 selection:text-white">
@@ -410,16 +579,24 @@ Próxima: Carregando...
 </div>
 </aside>
 <main class="flex-grow flex flex-col min-w-0 p-4 sm:p-5 space-y-4 relative lg:overflow-y-auto h-full">
-<header class="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/5 shrink-0">
+<header class="dashboard-topbar flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/5 shrink-0">
 <div>
 <h2 class="text-base sm:text-xl font-outfit font-extrabold dark:text-white text-zinc-900 tracking-tight leading-tight">
 Internato de Ginecologia & Obstetrícia
 </h2>
 <p id="contador-dias" class="text-[11px] text-blue-600 dark:text-blue-400 font-bold mt-1">Calculando prazo...</p>
 </div>
+<div class="dashboard-status" aria-label="Status do painel">
+<span class="status-orbit" aria-hidden="true"></span>
+<div class="dashboard-status-copy leading-tight">
+<span class="block text-[9px] font-extrabold uppercase tracking-[0.18em] text-zinc-400">Semestre</span>
+<span class="block text-[11px] font-outfit font-extrabold text-zinc-700 dark:text-zinc-200">2026.2 • Em andamento</span>
+</div>
+<div id="relogio-dashboard" class="dashboard-clock" aria-label="Horário atual">--:--</div>
+</div>
 </header>
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
-<div class="lg:col-span-5 glass-panel rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col justify-between gap-3">
+<div class="trio-spotlight lg:col-span-5 glass-panel rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col justify-between gap-3">
 <div class="flex items-center space-x-4 w-full">
 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-outfit font-black text-lg shrink-0 shadow-[0_0_20px_rgba(79,70,229,0.4)]" id="grupo-badge-num">
 A1
@@ -448,16 +625,16 @@ A1
 </div>
 </div>
 <div class="lg:col-span-7 grid grid-cols-3 gap-3 sm:gap-4">
-<div class="glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+<div class="stat-card stat-periodo glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center">
 <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Período</span>
 <span class="text-base sm:text-xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-white dark:to-zinc-300 truncate" id="stat-semana">-- de 9</span>
 </div>
-<div class="glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+<div class="stat-card stat-turnos glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center">
 <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Turnos/Sem.</span>
 <span class="text-base sm:text-xl font-outfit font-black dark:text-white text-zinc-900" id="stat-atividades">--</span>
 <div id="stat-detalhes-turnos" class="flex flex-wrap justify-center items-center gap-x-1.5 gap-y-1 mt-2 text-[9px] sm:text-[10px] text-zinc-600 dark:text-zinc-300 font-semibold tracking-wide px-1"></div>
 </div>
-<div class="glass-panel rounded-2xl p-4 flex flex-col items-center justify-between text-center bg-gradient-to-br from-blue-500/5 to-indigo-500/5 border border-blue-500/20 shadow-md">
+<div class="stat-card stat-capotes glass-panel rounded-2xl p-4 flex flex-col items-center justify-between text-center bg-gradient-to-br from-blue-500/5 to-indigo-500/5 border border-blue-500/20 shadow-md">
 <div class="w-full flex flex-col items-center justify-center py-2">
 <span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-2">Capotes</span>
 <div class="flex items-center justify-center space-x-1.5">
@@ -490,6 +667,7 @@ A1
 <h2 id="titulo-banner-hero" class="text-lg sm:text-2xl font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-zinc-900 to-zinc-600 dark:from-white dark:to-zinc-400 tracking-tight">
 Escala Diária por Turnos
 </h2>
+<p class="hero-subtitle">Visualize rapidamente seus compromissos, locais e horários do rodízio.</p>
 </div>
 </div>
 <div class="grid grid-cols-4 sm:grid-cols-7 gap-2.5 w-full shrink-0" id="container-abas-dias"></div>
@@ -1932,8 +2110,9 @@ else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-7 h-7 text-orange-500
 else iconeTurno = '<svg class="w-7 h-7 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
 const hasPlantao = atividadeConfirmada(t.local);
 const cardBorder = hasPlantao ? 'border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-900/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]' : 'glass-panel opacity-70';
+const turnoClass = t.periodo === 'Manhã' ? 'turno-manha' : (t.periodo === 'Tarde' ? 'turno-tarde' : 'turno-noite');
 html += `
-<div class="${cardBorder} border hover:border-blue-500/60 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all duration-300 shadow-md group relative overflow-hidden h-full min-h-[200px]">
+<div class="turno-card ${turnoClass} ${cardBorder} border hover:border-blue-500/60 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all duration-300 shadow-md group relative overflow-hidden h-full min-h-[200px]">
 ${hasPlantao ? '<div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>' : ''}
 <div class="w-14 h-14 rounded-full bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 flex items-center justify-center shadow-inner mb-4 group-hover:scale-110 transition-transform duration-300">
 ${iconeTurno}
@@ -1991,6 +2170,15 @@ const partes = nome.trim().split(' ');
 if (partes.length > 1) return (partes[0][0] + partes[1][0]).toUpperCase();
 return (nome[0] + nome[1]).toUpperCase();
 }
+function atualizarRelogioDashboard() {
+const relogio = document.getElementById('relogio-dashboard');
+if (!relogio) return;
+relogio.textContent = new Intl.DateTimeFormat('pt-BR', {
+hour: '2-digit',
+minute: '2-digit',
+hour12: false
+}).format(new Date());
+}
 window.onload = () => {
 if (localStorage.getItem('tema') === 'claro') {
 document.documentElement.classList.remove('dark');
@@ -2002,6 +2190,8 @@ window.renderizarSemanas();
 window.renderizarAbasDias();
 window.mudarGrupo();
 iniciarContadores();
+atualizarRelogioDashboard();
+setInterval(atualizarRelogioDashboard, 30000);
 if (sessionStorage.getItem('autenticado') === 'true') {
 document.getElementById('login-overlay').style.display = 'none';
 atualizarIdentificacaoAluno();
