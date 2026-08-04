@@ -3,7 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Painel G.O. - Internato T7A</title>
+<title>GO T7A • Painel do Internato</title>
+<meta name="description" content="Painel oficial da Turma T7A para acompanhar escalas, seminários, avisos e atividades do internato de Ginecologia e Obstetrícia.">
+<meta name="theme-color" content="#050816">
+<meta name="color-scheme" content="dark light">
+<meta name="application-name" content="GO T7A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GO T7A">
+<meta property="og:type" content="website">
+<meta property="og:title" content="GO T7A • Painel do Internato">
+<meta property="og:description" content="Escalas, seminários e avisos da Turma T7A em um só lugar.">
+<meta property="og:locale" content="pt_BR">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%233b82f6'/%3E%3Cstop offset='1' stop-color='%236366f1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='url(%23g)'/%3E%3Cpath d='M20 19h24v26H20z' fill='none' stroke='white' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M26 15v8m12-8v8M26 31h12M32 25v12' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+const accent = document.documentElement.classList.contains('tema-rosa') ? '#ec4899' : '#3b82f6';
+const icon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='" + encodeURIComponent(accent) + "'/%3E%3Cpath d='M20 19h24v26H20z' fill='none' stroke='white' stroke-width='4'/%3E%3Cpath d='M26 15v8m12-8v8M26 31h12M32 25v12' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E";
+const manifest = { name: 'GO T7A • Painel do Internato', short_name: 'GO T7A', description: 'Escalas, seminários e avisos da Turma T7A.', start_url: location.pathname, display: 'standalone', background_color: '#050816', theme_color: accent, icons: [{ src: icon, sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }] };
+const link = document.createElement('link');
+link.rel = 'manifest';
+link.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' }));
+document.head.appendChild(link);
+});
+</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -874,9 +897,105 @@ box-shadow: inset 0 1px 0 rgba(255,255,255,.09);
 .tema-rosa .accent-option[data-active="true"]::before {
 box-shadow: 0 0 0 3px rgba(236, 72, 153, .16), 0 0 9px rgba(236, 72, 153, .75);
 }
+
+/* Experiência premium — identidade, Hoje, busca e navegação mobile */
+#app-splash {
+background:
+radial-gradient(circle at 50% 40%, rgba(59,130,246,.22), transparent 34%),
+linear-gradient(145deg, #03050d, #070b1c 58%, #02030a);
+transition: opacity .45s ease, visibility .45s ease;
+}
+.tema-rosa #app-splash { background: radial-gradient(circle at 50% 40%, rgba(236,72,153,.23), transparent 34%), linear-gradient(145deg, #09030a, #190818 58%, #050205); }
+#app-splash.splash-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.splash-logo { animation: splash-float 1.7s ease-in-out infinite; box-shadow: 0 24px 80px -24px rgba(59,130,246,.75); }
+.tema-rosa .splash-logo { box-shadow: 0 24px 80px -24px rgba(236,72,153,.75); }
+.splash-progress::after { content: ''; display: block; width: 42%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--brand-blue), var(--brand-indigo)); animation: splash-progress 1.15s ease-in-out infinite; }
+@keyframes splash-float { 50% { transform: translateY(-7px) scale(1.025); } }
+@keyframes splash-progress { 0% { transform: translateX(-110%); } 100% { transform: translateX(340%); } }
+
+.premium-action { position: relative; width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 13px; border: 1px solid rgba(113,113,122,.16); background: rgba(255,255,255,.045); color: #a1a1aa; transition: transform .2s ease, color .2s ease, border-color .2s ease, background .2s ease; }
+.premium-action:hover { transform: translateY(-2px); color: #60a5fa; border-color: rgba(96,165,250,.4); background: rgba(59,130,246,.1); }
+.tema-rosa .premium-action:hover { color: #f472b6; border-color: rgba(244,114,182,.42); background: rgba(236,72,153,.1); }
+.profile-initials { width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 13px; color: #fff; font: 800 11px 'Outfit', sans-serif; background: linear-gradient(135deg, var(--brand-blue), var(--brand-indigo)); box-shadow: 0 12px 28px -16px rgba(59,130,246,.85); }
+.notification-count { position: absolute; top: -4px; right: -4px; min-width: 17px; height: 17px; padding: 0 4px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: #f43f5e; color: #fff; font: 800 9px 'Outfit', sans-serif; border: 2px solid #090b12; }
+
+.view-enter { animation: view-enter .38s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes view-enter { from { opacity: 0; transform: translateY(10px) scale(.992); } to { opacity: 1; transform: none; } }
+
+.today-shell { min-height: 100%; }
+.today-hero { position: relative; overflow: hidden; background: linear-gradient(125deg, rgba(37,99,235,.18), rgba(79,70,229,.08) 48%, rgba(7,9,18,.1)); border: 1px solid rgba(96,165,250,.24); }
+.today-hero::after { content: 'HOJE'; position: absolute; right: -6px; bottom: -27px; font: 900 74px 'Outfit', sans-serif; letter-spacing: -.06em; color: rgba(96,165,250,.055); pointer-events: none; }
+.tema-rosa .today-hero { background: linear-gradient(125deg, rgba(219,39,119,.2), rgba(192,38,211,.08) 48%, rgba(16,5,14,.08)); border-color: rgba(244,114,182,.26); }
+.tema-rosa .today-hero::after { color: rgba(244,114,182,.06); }
+.timeline-list { position: relative; }
+.timeline-list::before { content: ''; position: absolute; left: 24px; top: 25px; bottom: 25px; width: 2px; background: linear-gradient(to bottom, rgba(59,130,246,.18), rgba(99,102,241,.55), rgba(59,130,246,.08)); }
+.tema-rosa .timeline-list::before { background: linear-gradient(to bottom, rgba(236,72,153,.18), rgba(192,38,211,.55), rgba(236,72,153,.08)); }
+.timeline-item { position: relative; display: grid; grid-template-columns: 50px minmax(0,1fr); gap: 13px; padding: 9px 0; }
+.timeline-dot { position: relative; z-index: 1; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 17px; background: rgba(24,24,27,.96); border: 1px solid rgba(255,255,255,.08); color: #71717a; box-shadow: 0 12px 30px -20px #000; }
+html:not(.dark) .timeline-dot { background: rgba(255,255,255,.96); border-color: rgba(0,0,0,.08); }
+.timeline-card { border-radius: 18px; padding: 15px 16px; border: 1px solid rgba(113,113,122,.14); background: rgba(255,255,255,.025); transition: transform .22s ease, border-color .22s ease, opacity .22s ease; }
+.timeline-item[data-state="agora"] .timeline-dot { color: #fff; border-color: rgba(96,165,250,.65); background: linear-gradient(135deg, #2563eb, #6366f1); box-shadow: 0 0 0 6px rgba(59,130,246,.1), 0 15px 34px -18px rgba(59,130,246,.9); animation: current-pulse 2.3s ease-in-out infinite; }
+.timeline-item[data-state="agora"] .timeline-card { border-color: rgba(96,165,250,.46); background: linear-gradient(135deg, rgba(37,99,235,.14), rgba(99,102,241,.06)); transform: translateX(3px); }
+.timeline-item[data-state="passado"] { opacity: .48; }
+.timeline-item[data-state="passado"] .timeline-card { filter: saturate(.35); }
+.timeline-item[data-state="futuro"]:first-of-type .timeline-card { border-color: rgba(113,113,122,.2); }
+.tema-rosa .timeline-item[data-state="agora"] .timeline-dot { border-color: rgba(244,114,182,.7); background: linear-gradient(135deg, #db2777, #c026d3); box-shadow: 0 0 0 6px rgba(236,72,153,.1), 0 15px 34px -18px rgba(236,72,153,.9); }
+.tema-rosa .timeline-item[data-state="agora"] .timeline-card { border-color: rgba(244,114,182,.46); background: linear-gradient(135deg, rgba(219,39,119,.15), rgba(192,38,211,.06)); }
+@keyframes current-pulse { 50% { box-shadow: 0 0 0 9px rgba(59,130,246,.04), 0 15px 34px -18px rgba(59,130,246,.9); } }
+.quick-card { position: relative; overflow: hidden; border: 1px solid rgba(113,113,122,.14); transition: transform .22s ease, border-color .22s ease; }
+.quick-card:hover { transform: translateY(-3px); border-color: rgba(96,165,250,.36); }
+.tema-rosa .quick-card:hover { border-color: rgba(244,114,182,.4); }
+
+.overlay-surface { background: rgba(2,3,8,.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.command-dialog { background: rgba(12,14,24,.97); border: 1px solid rgba(255,255,255,.1); box-shadow: 0 40px 100px -32px rgba(0,0,0,.92); }
+html:not(.dark) .command-dialog { background: rgba(255,255,255,.98); border-color: rgba(0,0,0,.1); box-shadow: 0 40px 100px -40px rgba(15,23,42,.45); }
+.search-result { transition: background .18s ease, transform .18s ease, border-color .18s ease; }
+.search-result:hover { background: rgba(59,130,246,.09); border-color: rgba(96,165,250,.28); transform: translateX(3px); }
+.tema-rosa .search-result:hover { background: rgba(236,72,153,.09); border-color: rgba(244,114,182,.28); }
+.toast-show { animation: toast-in .28s ease both; }
+@keyframes toast-in { from { opacity: 0; transform: translate(-50%, 12px) scale(.96); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
+
+.admin-kpi { position: relative; overflow: hidden; }
+.admin-kpi::after { content: ''; position: absolute; width: 75px; height: 75px; right: -25px; top: -28px; border-radius: 50%; background: rgba(99,102,241,.09); }
+.install-hint { border: 1px dashed rgba(96,165,250,.3); background: linear-gradient(135deg, rgba(59,130,246,.08), rgba(99,102,241,.04)); }
+
+#mobile-bottom-nav { padding-bottom: max(8px, env(safe-area-inset-bottom)); background: rgba(7,9,16,.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,.08); }
+html:not(.dark) #mobile-bottom-nav { background: rgba(255,255,255,.92); border-top-color: rgba(0,0,0,.08); }
+.mobile-bottom-item { min-width: 58px; color: #71717a; transition: color .2s ease, transform .2s ease; }
+.mobile-bottom-item.is-active { color: #60a5fa; transform: translateY(-2px); }
+.tema-rosa .mobile-bottom-item.is-active { color: #f472b6; }
+.mobile-bottom-item.is-active .mobile-bottom-icon { background: rgba(59,130,246,.13); box-shadow: inset 0 0 0 1px rgba(96,165,250,.18); }
+.tema-rosa .mobile-bottom-item.is-active .mobile-bottom-icon { background: rgba(236,72,153,.13); box-shadow: inset 0 0 0 1px rgba(244,114,182,.2); }
+
+@media (max-width: 1023px) {
+body { padding-bottom: 76px; }
+main { padding-bottom: 26px !important; }
+.dashboard-topbar { gap: 10px; }
+.dashboard-status-copy { display: none; }
+.today-hero::after { font-size: 58px; bottom: -20px; }
+}
+@media (max-width: 639px) {
+.premium-action { width: 36px; height: 36px; border-radius: 12px; }
+.profile-initials { width: 36px; height: 36px; border-radius: 12px; }
+.timeline-card { padding: 13px; }
+.timeline-item { grid-template-columns: 44px minmax(0,1fr); gap: 10px; }
+.timeline-dot { width: 44px; height: 44px; border-radius: 15px; }
+.timeline-list::before { left: 21px; }
+}
+@media (prefers-reduced-motion: reduce) {
+*, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+}
 </style>
 </head>
 <body class="flex flex-col lg:flex-row selection:bg-blue-500 selection:text-white">
+<div id="app-splash" class="fixed inset-0 z-[80] flex flex-col items-center justify-center text-white" aria-label="Carregando o painel">
+<div class="splash-logo w-20 h-20 rounded-[1.6rem] bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-5 border border-white/20">
+<svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 3v3m8-3v3M5 9h14M6 5h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2zm6 7v6m-3-3h6"/></svg>
+</div>
+<p class="font-outfit font-black text-xl tracking-tight">GO T7A</p>
+<p class="text-[10px] text-zinc-400 font-bold uppercase tracking-[.24em] mt-1">Painel do Internato</p>
+<div class="splash-progress mt-6 w-36 h-1.5 rounded-full bg-white/10 overflow-hidden" aria-hidden="true"></div>
+</div>
 <a href="https://wa.me/5561994559190?text=Olá%20André,%20estou%20a%20acessar%20o%20Painel%20de%20G.O." target="_blank" class="hidden lg:flex fixed bottom-4 right-4 z-50 w-12 h-12 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full items-center justify-center shadow-[0_4px_15px_rgba(16,185,129,0.4)] transition-all transform hover:scale-110 active:scale-95 group" title="Falar com André Victor no WhatsApp">
 <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
 </a>
@@ -990,6 +1109,10 @@ Próxima: Carregando...
 </div>
 <nav id="mobile-nav-menu" class="hidden lg:block space-y-2.5 font-outfit pt-2">
 <p class="text-[11px] font-bold text-zinc-400 dark:text-zinc-400 uppercase tracking-widest px-2 mb-3 hidden lg:block">Menu Principal</p>
+<button onclick="alternarModo('hoje')" id="btn-modo-hoje" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm">
+<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l9-9 9 9M5 10v10h14V10M9 20v-6h6v6"/></svg>
+<span>Hoje</span>
+</button>
 <button onclick="alternarModo('individual')" id="btn-modo-ind" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm">
 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
 <span>Meu Trio</span>
@@ -1032,6 +1155,14 @@ Próxima: Carregando...
 </button>
 </div>
 </div>
+<div class="grid grid-cols-2 gap-2">
+<button id="install-button" onclick="instalarPainel()" class="install-hint py-2.5 px-3 rounded-xl text-[11px] font-bold text-blue-600 dark:text-blue-300 transition-all hover:bg-blue-500/15 flex items-center justify-center gap-2" title="Instalar o painel como aplicativo">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg><span>Instalar</span>
+</button>
+<button onclick="compartilharPainel()" class="py-2.5 px-3 rounded-xl glass-panel text-[11px] font-bold text-zinc-600 dark:text-zinc-300 transition-all hover:text-blue-500 flex items-center justify-center gap-2" title="Compartilhar o painel">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.7 12.8l6.6 3.8M15.3 7.4l-6.6 3.8M18 5a3 3 0 11-6 0 3 3 0 016 0zM6 14a3 3 0 110 6 3 3 0 010-6zm12 2a3 3 0 110 6 3 3 0 010-6z"/></svg><span>Compartilhar</span>
+</button>
+</div>
 <button onclick="alternarModo('admin')" id="btn-header-admin" class="w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-sm font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm">
 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
 <span>Painel Admin</span>
@@ -1046,13 +1177,32 @@ Internato de Ginecologia & Obstetrícia
 </h2>
 <p id="contador-dias" class="text-[11px] text-blue-600 dark:text-blue-400 font-bold mt-1">Calculando prazo...</p>
 </div>
-<div class="dashboard-status" aria-label="Status do painel">
+<div class="flex items-center gap-2 sm:gap-2.5">
+<button onclick="abrirBusca()" class="premium-action" title="Buscar no painel (Ctrl+K)" aria-label="Buscar no painel">
+<svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"/></svg>
+</button>
+<div class="relative">
+<button onclick="toggleNotificacoes()" class="premium-action" title="Central de notificações" aria-label="Abrir notificações">
+<svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 00-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 01-6 0"/></svg>
+<span id="notification-count" class="notification-count hidden">0</span>
+</button>
+<div id="notification-panel" class="hidden absolute right-0 top-12 z-[60] w-[min(92vw,380px)] command-dialog rounded-2xl p-3 shadow-2xl">
+<div class="flex items-center justify-between px-2 py-2 border-b border-white/5"><div><p class="font-outfit font-extrabold text-sm text-zinc-900 dark:text-white">Notificações</p><p class="text-[10px] text-zinc-500">O que merece sua atenção</p></div><button onclick="toggleNotificacoes(false)" class="text-zinc-500 hover:text-zinc-900 dark:hover:text-white p-2" aria-label="Fechar">×</button></div>
+<div id="notification-list" class="space-y-2 max-h-[420px] overflow-y-auto pt-2"></div>
+</div>
+</div>
+<button onclick="compartilharPainel()" class="premium-action hidden sm:inline-flex" title="Compartilhar o painel" aria-label="Compartilhar">
+<svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.7 12.8l6.6 3.8M15.3 7.4l-6.6 3.8M18 5a3 3 0 11-6 0 3 3 0 016 0zM6 14a3 3 0 110 6 3 3 0 010-6zm12 2a3 3 0 110 6 3 3 0 010-6z"/></svg>
+</button>
+<span id="profile-initials" class="profile-initials" title="Aluno conectado">T7</span>
+<div class="dashboard-status hidden md:flex" aria-label="Status do painel">
 <span class="status-orbit" aria-hidden="true"></span>
 <div class="dashboard-status-copy leading-tight">
 <span class="block text-[9px] font-extrabold uppercase tracking-[0.18em] text-zinc-400">Semestre</span>
 <span class="block text-[11px] font-outfit font-extrabold text-zinc-700 dark:text-zinc-200">2026.2 • Em andamento</span>
 </div>
 <div id="relogio-dashboard" class="dashboard-clock" aria-label="Horário atual">--:--</div>
+</div>
 </div>
 </header>
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
@@ -1156,6 +1306,36 @@ Escala Diária por Turnos
 </div>
 </div>
 </main>
+<nav id="mobile-bottom-nav" class="fixed bottom-0 inset-x-0 z-40 lg:hidden flex items-center justify-around px-2 pt-2" aria-label="Navegação principal no celular">
+<button data-mobile-mode="hoje" onclick="alternarModo('hoje')" class="mobile-bottom-item is-active flex flex-col items-center gap-1 pb-1.5"><span class="mobile-bottom-icon w-9 h-8 rounded-xl flex items-center justify-center"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l9-9 9 9M5 10v10h14V10M9 20v-6h6v6"/></svg></span><span class="text-[9px] font-bold">Hoje</span></button>
+<button data-mobile-mode="individual" onclick="alternarModo('individual')" class="mobile-bottom-item flex flex-col items-center gap-1 pb-1.5"><span class="mobile-bottom-icon w-9 h-8 rounded-xl flex items-center justify-center"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM5 21a7 7 0 0114 0"/></svg></span><span class="text-[9px] font-bold">Meu trio</span></button>
+<button data-mobile-mode="calendario" onclick="alternarModo('calendario')" class="mobile-bottom-item flex flex-col items-center gap-1 pb-1.5"><span class="mobile-bottom-icon w-9 h-8 rounded-xl flex items-center justify-center"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 3v4m8-4v4M4 10h16M5 5h14a1 1 0 011 1v14H4V6a1 1 0 011-1z"/></svg></span><span class="text-[9px] font-bold">Agenda</span></button>
+<button data-mobile-mode="seminarios" onclick="alternarModo('seminarios')" class="mobile-bottom-item flex flex-col items-center gap-1 pb-1.5"><span class="mobile-bottom-icon w-9 h-8 rounded-xl flex items-center justify-center"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h7a3 3 0 013 3v11a3 3 0 00-3-3H4V5zm16 0h-3a3 3 0 00-3 3v11a3 3 0 013-3h3V5z"/></svg></span><span class="text-[9px] font-bold">Seminários</span></button>
+<button onclick="toggleMobileMenu()" class="mobile-bottom-item flex flex-col items-center gap-1 pb-1.5"><span class="mobile-bottom-icon w-9 h-8 rounded-xl flex items-center justify-center"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/></svg></span><span class="text-[9px] font-bold">Mais</span></button>
+</nav>
+
+<div id="search-modal" class="hidden fixed inset-0 z-[65] overlay-surface p-3 sm:p-6" role="dialog" aria-modal="true" aria-label="Busca geral">
+<div class="command-dialog w-full max-w-2xl mx-auto mt-[6vh] sm:mt-[10vh] rounded-3xl overflow-hidden">
+<div class="flex items-center gap-3 p-4 sm:p-5 border-b border-black/5 dark:border-white/10">
+<svg class="w-5 h-5 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"/></svg>
+<input id="global-search-input" oninput="executarBusca(this.value)" type="search" autocomplete="off" placeholder="Busque por local, data, trio ou atividade..." class="flex-1 bg-transparent outline-none text-sm sm:text-base font-semibold text-zinc-900 dark:text-white placeholder:text-zinc-500">
+<button onclick="fecharBusca()" class="text-[10px] font-bold text-zinc-500 border border-black/10 dark:border-white/10 rounded-lg px-2 py-1">ESC</button>
+</div>
+<div id="global-search-results" class="p-3 sm:p-4 max-h-[62vh] overflow-y-auto"><div class="text-center py-10 text-zinc-500"><span class="block text-2xl mb-2">⌘</span><p class="text-xs font-semibold">Encontre qualquer item da escala em segundos.</p></div></div>
+</div>
+</div>
+
+<div id="install-modal" class="hidden fixed inset-0 z-[66] overlay-surface p-4 flex items-center justify-center" role="dialog" aria-modal="true" aria-label="Instalar o painel">
+<div class="command-dialog rounded-3xl p-6 max-w-md w-full relative">
+<button onclick="fecharInstalacao()" class="absolute top-4 right-4 text-zinc-500 hover:text-white text-xl" aria-label="Fechar">×</button>
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center mb-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg></div>
+<h3 class="font-outfit font-black text-xl text-zinc-900 dark:text-white">Leve o painel com você</h3>
+<p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2 leading-relaxed">No iPhone, abra o menu de compartilhamento do navegador e escolha “Adicionar à Tela de Início”. No Android, abra o menu do navegador e escolha “Instalar aplicativo”.</p>
+<button onclick="fecharInstalacao()" class="mt-5 w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-outfit font-bold text-sm">Entendi</button>
+</div>
+</div>
+
+<div id="app-toast" class="hidden fixed left-1/2 bottom-24 lg:bottom-6 z-[75] -translate-x-1/2 rounded-xl bg-zinc-900/95 border border-white/10 text-white px-4 py-3 shadow-2xl text-xs font-semibold whitespace-nowrap"></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
 import { getFirestore, doc, setDoc, updateDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
@@ -1172,7 +1352,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const SENHA_ACESSO = "unieurot7a";
 const SENHA_ADMIN = "@admin980";
-window.modoVisualizacao = 'individual';
+window.modoVisualizacao = 'hoje';
 let capotesCount = 0;
 let recadosListaGlobal = [];
 let historicoRecadosGlobal = [];
@@ -1231,7 +1411,9 @@ window.alterarCorPainel = function(cor) {
 const usarRosa = cor === 'rosa';
 document.documentElement.classList.toggle('tema-rosa', usarRosa);
 localStorage.setItem('corPainel', usarRosa ? 'rosa' : 'azul');
+document.querySelector('meta[name="theme-color"]')?.setAttribute('content', usarRosa ? '#160713' : '#050816');
 atualizarSeletorCorPainel();
+if (window.modoVisualizacao === 'hoje' && typeof window.renderizarHojeView === 'function') renderizarHojeView();
 };
 window.verificarSenha = async function() {
 const alunoSelect = document.getElementById('aluno-select').value;
@@ -1274,8 +1456,7 @@ detectarDiaESemanaAtual();
 if (typeof window.renderizarSemanas === 'function') window.renderizarSemanas();
 if (typeof window.renderizarAbasDias === 'function') window.renderizarAbasDias();
 document.getElementById('grupo-select').value = trioId;
-alternarModo('individual');
-setTimeout(irParaTurnoVigente, 100);
+alternarModo('hoje');
 }
 }
 async function registrarSaidaSistema() {
@@ -1312,6 +1493,7 @@ function atualizarIdentificacaoAluno() {
 const aluno = sessionStorage.getItem('alunoLogado');
 const badge = document.getElementById('aluno-logado-badge');
 const saudacao = document.getElementById('saudacao-aluno');
+const profile = document.getElementById('profile-initials');
 if (aluno && badge && saudacao) {
 const hora = new Date().getHours();
 let mensagemHorario = "Bom dia";
@@ -1322,7 +1504,12 @@ mensagemHorario = "Boa noite";
 }
 saudacao.innerText = `${mensagemHorario},`;
 badge.innerText = aluno;
+if (profile) {
+profile.innerText = getIniciais(aluno);
+profile.title = aluno;
+}
 atualizarProximaAtividadeDinamica(aluno);
+atualizarNotificacoes();
 }
 }
 const ESCALA_NAO_ENVIADA = "Escala não enviada até o momento";
@@ -1405,6 +1592,252 @@ setTimeout(() => turnoAlvo.scrollIntoView({ behavior: 'smooth', block: 'center' 
 
 function gerarMarcadorTemporal(agora = new Date()) {
 return `${agora.getFullYear()}-${agora.getMonth()}-${agora.getDate()}-${agora.getHours()}-${Math.floor(agora.getMinutes() / 30)}`;
+}
+
+function escaparHTML(valor = '') {
+return String(valor).replace(/[&<>'"]/g, caractere => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[caractere]));
+}
+
+function dataHojePainel(agora = new Date()) {
+return `${String(agora.getDate()).padStart(2, '0')}/${String(agora.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function localizarDiaDoTrioPorData(trioId, dataBr) {
+const trio = dadosEscala?.[trioId];
+if (!trio) return null;
+for (let semana = 1; semana <= 9; semana++) {
+for (const [diaKey, infoDia] of Object.entries(trio.semanas?.[semana] || {})) {
+if (infoDia?.data === dataBr) return { semana, diaKey, infoDia };
+}
+}
+return null;
+}
+
+function encontrarProximaAtividadeObrigatoria(trioId, agora = new Date()) {
+const trio = dadosEscala?.[trioId];
+if (!trio) return null;
+let proxima = null;
+for (let semana = 1; semana <= 9; semana++) {
+for (const [diaKey, infoDia] of Object.entries(trio.semanas?.[semana] || {})) {
+for (const turno of infoDia?.turnos || []) {
+if (!atividadeConfirmada(turno.local)) continue;
+const inicio = obterDataHoraInicioAtividade(infoDia.data, turno);
+if (!inicio || inicio <= agora || (proxima && inicio >= proxima.inicio)) continue;
+proxima = { trioId: String(trioId), semana, diaKey, infoDia, turno, inicio };
+}
+}
+}
+return proxima;
+}
+
+function obterIconeAtividade(local, periodo) {
+const texto = String(local || '').toLowerCase();
+if (texto.includes('unieuro') || texto.includes('seminário') || texto.includes('somativa')) {
+return '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h7a3 3 0 013 3v11a3 3 0 00-3-3H4V5zm16 0h-3a3 3 0 00-3 3v11a3 3 0 013-3h3V5z"/></svg>';
+}
+if (texto.includes('hrc') || texto.includes('hrsm') || texto.includes('hran')) {
+return '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 21V5h16v16M9 9h6m-3-3v6M8 21v-5h8v5"/></svg>';
+}
+if (periodo === 'Noite') return '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 15.4A9 9 0 018.6 4 9 9 0 1020 15.4z"/></svg>';
+return '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.4 6.4L17 17M7 7 5.6 5.6M18.4 5.6 17 7M7 17l-1.4 1.4M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+}
+
+function animarEntradaConteudo() {
+const container = document.getElementById('lista-turnos');
+if (!container) return;
+container.classList.remove('view-enter');
+void container.offsetWidth;
+container.classList.add('view-enter');
+}
+
+window.renderizarHojeView = function() {
+const container = document.getElementById('lista-turnos');
+const idTrio = document.getElementById('grupo-select')?.value || '1';
+const trio = dadosEscala?.[idTrio];
+if (!container || !trio) return;
+const agora = new Date();
+const hojeEncontrado = localizarDiaDoTrioPorData(idTrio, dataHojePainel(agora));
+const proxima = encontrarProximaAtividadeObrigatoria(idTrio, agora);
+document.getElementById('grupo-badge-num').innerText = `A${idTrio}`;
+document.getElementById('titulo-grupo-header').innerText = trio.nomeGrupo;
+document.getElementById('label-dia-topo').innerText = hojeEncontrado ? `${hojeEncontrado.infoDia.nome.toUpperCase()} • ${hojeEncontrado.infoDia.data}` : 'VISÃO PESSOAL • HOJE';
+document.getElementById('titulo-banner-hero').innerText = hojeEncontrado ? 'Seu dia no internato' : 'Sua próxima atividade';
+
+if (!hojeEncontrado) {
+container.innerHTML = `<div class="today-shell grid place-items-center min-h-[320px]"><div class="glass-panel rounded-3xl p-7 max-w-lg text-center border border-blue-500/20"><div class="w-14 h-14 mx-auto rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4">${obterIconeAtividade(proxima?.turno?.local, proxima?.turno?.periodo)}</div><h3 class="font-outfit font-black text-xl text-zinc-900 dark:text-white">Nenhuma atividade para hoje</h3><p class="text-xs text-zinc-500 mt-2">${proxima ? `A próxima atividade é ${escaparHTML(proxima.infoDia.nome)}, ${proxima.infoDia.data}, no turno da ${escaparHTML(proxima.turno.periodo.toLowerCase())}.` : 'O rodízio não possui outras atividades cadastradas.'}</p>${proxima ? `<button onclick="abrirResultadoBusca('${idTrio}', ${proxima.semana}, '${proxima.diaKey}')" class="mt-5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold">Ver próxima atividade</button>` : ''}</div></div>`;
+animarEntradaConteudo();
+return;
+}
+
+window.semanaSelecionadaGlobal = hojeEncontrado.semana;
+window.diaSelecionadoGlobal = hojeEncontrado.diaKey;
+const infoDia = hojeEncontrado.infoDia;
+const turnos = infoDia.turnos || [];
+const diasSemanaAtual = trio.semanas[hojeEncontrado.semana] || {};
+let totalAtividades = 0, totalTurnos = 0, manha = 0, tarde = 0, noite = 0, fds = 0;
+Object.entries(diasSemanaAtual).forEach(([diaKey, dia]) => (dia.turnos || []).forEach(turno => {
+totalTurnos++;
+if (!atividadeConfirmada(turno.local)) return;
+totalAtividades++;
+if (turno.periodo === 'Manhã') manha++;
+if (turno.periodo === 'Tarde') tarde++;
+if (turno.periodo === 'Noite') noite++;
+if (diaKey === 'sab' || diaKey === 'dom') fds++;
+}));
+document.getElementById('stat-semana').innerText = `Semana ${hojeEncontrado.semana} de 9`;
+document.getElementById('stat-atividades').innerText = `${totalAtividades}/${totalTurnos}`;
+document.getElementById('stat-detalhes-turnos').innerHTML = `<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5">🌅 Manhã: ${manha}</span><span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5">☀️ Tarde: ${tarde}</span><span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5">🌙 Noite: ${noite}</span><span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5">🏖️ FDS: ${fds}</span>`;
+let primeiroFuturoMarcado = false;
+let timelineHtml = '';
+turnos.forEach(turno => {
+const estado = obterEstadoTemporalTurno(infoDia.data, turno.periodo, turno.horario, agora);
+const confirmado = atividadeConfirmada(turno.local);
+const pendente = turno.local === ESCALA_NAO_ENVIADA;
+let rotulo = estado === 'agora' ? 'Agora' : (estado === 'passado' ? 'Concluído' : 'Mais tarde');
+if (estado === 'futuro' && !primeiroFuturoMarcado) { rotulo = 'Próximo'; primeiroFuturoMarcado = true; }
+const local = confirmado ? turno.local : (pendente ? ESCALA_NAO_ENVIADA : 'Horário livre');
+const status = confirmado ? (turno.atividade || 'Atividade obrigatória') : (pendente ? 'Aguardando envio da escala' : 'Sem atividade programada');
+timelineHtml += `<div class="timeline-item" data-state="${estado}"><div class="timeline-dot">${obterIconeAtividade(turno.local, turno.periodo)}</div><div class="timeline-card"><div class="flex items-start justify-between gap-3"><div><div class="flex items-center gap-2 flex-wrap"><span class="text-[10px] font-black uppercase tracking-[.18em] text-blue-500">${escaparHTML(turno.periodo)}</span><span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${estado === 'agora' ? 'bg-blue-500 text-white' : 'bg-black/5 dark:bg-white/5 text-zinc-500'}">${rotulo}</span></div><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-1.5">${escaparHTML(local)}</h4><p class="text-[10px] text-zinc-500 mt-1">${escaparHTML(status)}</p></div><span class="shrink-0 text-[10px] font-bold text-zinc-600 dark:text-zinc-300 bg-black/5 dark:bg-black/25 border border-black/5 dark:border-white/5 px-2.5 py-1.5 rounded-lg">${escaparHTML(turno.horario)}</span></div></div></div>`;
+});
+
+const recado = recadosListaGlobal[0];
+const proximaTexto = proxima ? `${proxima.infoDia.nome}, ${proxima.infoDia.data} • ${proxima.turno.periodo}` : 'Nenhuma atividade futura';
+const atividadesHoje = turnos.filter(turno => atividadeConfirmada(turno.local)).length;
+container.innerHTML = `<div class="today-shell space-y-4 pb-4"><section class="today-hero glass-panel rounded-3xl p-5 sm:p-6"><div class="relative z-10 flex items-start justify-between gap-4"><div><span class="text-[10px] font-black uppercase tracking-[.2em] text-blue-500">${agora.getHours() < 7 ? '☾ Bom descanso, interno ✦' : 'Resumo personalizado'}</span><h3 class="font-outfit font-black text-2xl sm:text-3xl text-zinc-900 dark:text-white mt-2">${escaparHTML(infoDia.nome)}, ${infoDia.data}</h3><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2">${atividadesHoje ? `${atividadesHoje} atividade${atividadesHoje > 1 ? 's' : ''} programada${atividadesHoje > 1 ? 's' : ''} para o Trio A${idTrio}.` : 'Seu trio está livre hoje.'}</p></div><span class="hidden sm:inline-flex px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold">● Painel atualizado</span></div></section><div class="grid grid-cols-1 xl:grid-cols-12 gap-4"><section class="xl:col-span-8 glass-panel rounded-3xl p-4 sm:p-5"><div class="flex items-center justify-between mb-3"><div><span class="text-[9px] font-black uppercase tracking-[.2em] text-blue-500">Linha do tempo</span><h3 class="font-outfit font-extrabold text-lg text-zinc-900 dark:text-white mt-1">Manhã, tarde e noite</h3></div><span class="text-[10px] font-mono font-bold text-zinc-500">${agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span></div><div class="timeline-list">${timelineHtml}</div></section><aside class="xl:col-span-4 space-y-4"><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-blue-500">Próxima atividade</span><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-2">${escaparHTML(proximaTexto)}</h4><p class="text-[11px] text-zinc-500 mt-1">${proxima ? escaparHTML(proxima.turno.local) : 'Aproveite o tempo livre.'}</p>${proxima ? `<button onclick="abrirResultadoBusca('${idTrio}', ${proxima.semana}, '${proxima.diaKey}')" class="mt-4 text-[10px] font-bold text-blue-500 hover:text-blue-400">Abrir na escala →</button>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><div class="flex items-center justify-between"><span class="text-[9px] font-black uppercase tracking-[.18em] text-violet-500">Último recado</span><button onclick="alternarModo('recados')" class="text-[9px] font-bold text-blue-500">Ver mural</button></div><p class="text-xs text-zinc-600 dark:text-zinc-300 mt-3 leading-relaxed">${recado ? escaparHTML(recado.texto) : 'Nenhum aviso publicado até o momento.'}</p>${recado ? `<span class="block text-[9px] text-zinc-500 mt-2">${escaparHTML(recado.autor || 'Turma T7A')}</span>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-emerald-500">Controle do C.O.</span><div class="flex items-end justify-between mt-2"><div><strong class="font-outfit font-black text-3xl text-zinc-900 dark:text-white">${capotesCount}</strong><span class="text-[10px] text-zinc-500 ml-1">capotes</span></div><button onclick="alterarCapotes(-1)" class="px-3 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold border border-emerald-500/20">Peguei 1</button></div></div></aside></div></div>`;
+animarEntradaConteudo();
+}
+
+window.abrirResultadoBusca = function(trioId, semana, diaKey) {
+document.getElementById('grupo-select').value = String(trioId);
+window.semanaSelecionadaGlobal = Number(semana);
+window.diaSelecionadoGlobal = diaKey;
+fecharBusca();
+window.renderizarSemanas();
+window.renderizarAbasDias();
+alternarModo('individual');
+setTimeout(irParaTurnoVigente, 80);
+}
+
+function normalizarBusca(texto) {
+return String(texto || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
+window.abrirBusca = function() {
+const modal = document.getElementById('search-modal');
+modal.classList.remove('hidden');
+const campo = document.getElementById('global-search-input');
+campo.value = '';
+document.getElementById('global-search-results').innerHTML = '<div class="text-center py-10 text-zinc-500"><span class="block text-2xl mb-2">⌘</span><p class="text-xs font-semibold">Busque por hospital, professor, data, trio ou turno.</p></div>';
+setTimeout(() => campo.focus(), 50);
+}
+
+window.fecharBusca = function() { document.getElementById('search-modal')?.classList.add('hidden'); }
+
+window.executarBusca = function(termo) {
+const container = document.getElementById('global-search-results');
+const busca = normalizarBusca(termo);
+if (busca.length < 2) { container.innerHTML = '<p class="text-center text-xs text-zinc-500 py-10">Digite pelo menos 2 caracteres.</p>'; return; }
+const resultados = [];
+for (let trioId = 1; trioId <= 10; trioId++) {
+const trio = dadosEscala[trioId];
+for (let semana = 1; semana <= 9; semana++) {
+for (const [diaKey, infoDia] of Object.entries(trio.semanas[semana] || {})) {
+for (const turno of infoDia.turnos || []) {
+const texto = `${trio.nomeGrupo} trio a${trioId} ${infoDia.nome} ${infoDia.data} ${turno.periodo} ${turno.horario} ${turno.local} ${turno.atividade || ''}`;
+if (normalizarBusca(texto).includes(busca)) resultados.push({ trioId, semana, diaKey, infoDia, turno });
+}
+}
+}
+}
+const seminarios = (typeof dadosSeminariosList !== 'undefined' ? dadosSeminariosList : []).filter(item => normalizarBusca(`${item.data} ${item.mediador} ${item.apresentadores} ${item.tema}`).includes(busca));
+if (!resultados.length && !seminarios.length) { container.innerHTML = '<div class="text-center py-10"><p class="font-outfit font-bold text-zinc-700 dark:text-zinc-300">Nada encontrado</p><p class="text-xs text-zinc-500 mt-1">Tente outro local, nome ou data.</p></div>'; return; }
+let html = `<div class="flex items-center justify-between px-1 pb-3"><span class="text-[10px] font-black uppercase tracking-[.18em] text-zinc-500">Resultados</span><span class="text-[10px] text-zinc-500">${resultados.length + seminarios.length} encontrado(s)</span></div><div class="space-y-2">`;
+resultados.slice(0, 36).forEach(item => { html += `<button onclick="abrirResultadoBusca('${item.trioId}', ${item.semana}, '${item.diaKey}')" class="search-result w-full text-left rounded-2xl border border-black/5 dark:border-white/5 p-3.5 flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-outfit font-black text-[11px] shrink-0">A${item.trioId}</span><span class="min-w-0 flex-1"><strong class="block text-xs text-zinc-900 dark:text-white font-outfit truncate">${escaparHTML(item.turno.local)}</strong><span class="block text-[10px] text-zinc-500 mt-1 truncate">${item.infoDia.nome}, ${item.infoDia.data} • ${item.turno.periodo} • ${item.turno.horario}</span></span><span class="text-zinc-500">›</span></button>`; });
+seminarios.slice(0, 8).forEach(item => { html += `<button onclick="fecharBusca(); alternarModo('seminarios')" class="search-result w-full text-left rounded-2xl border border-black/5 dark:border-white/5 p-3.5 flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-violet-500/10 text-violet-500 flex items-center justify-center shrink-0">${obterIconeAtividade('UNIEURO', 'Noite')}</span><span class="min-w-0 flex-1"><strong class="block text-xs text-zinc-900 dark:text-white font-outfit truncate">Seminário • ${item.data}</strong><span class="block text-[10px] text-zinc-500 mt-1 truncate">${escaparHTML(item.tema.replace(/\n/g, ' '))}</span></span><span class="text-zinc-500">›</span></button>`; });
+container.innerHTML = `${html}</div>`;
+}
+
+function montarNotificacoes() {
+const idTrio = document.getElementById('grupo-select')?.value || alunoTrioMap[sessionStorage.getItem('alunoLogado')] || '1';
+const agora = new Date();
+const itens = [];
+const proxima = encontrarProximaAtividadeObrigatoria(idTrio, agora);
+if (proxima) {
+const horas = (proxima.inicio - agora) / 3600000;
+itens.push({ cor: 'blue', titulo: horas <= 24 ? 'Próxima atividade em até 24h' : 'Próxima atividade do trio', texto: `${proxima.infoDia.nome}, ${proxima.infoDia.data} • ${proxima.turno.periodo} — ${proxima.turno.local}` });
+}
+const hoje = localizarDiaDoTrioPorData(idTrio, dataHojePainel(agora));
+if (hoje?.infoDia.turnos.some(turno => turno.local === ESCALA_NAO_ENVIADA)) itens.push({ cor: 'amber', titulo: 'Escala pendente hoje', texto: 'Há pelo menos um turno aguardando envio da escala.' });
+const proximoSeminario = (typeof dadosSeminariosList !== 'undefined' ? dadosSeminariosList : []).map(item => ({ ...item, dataObj: dataEscalaParaDate(item.data) })).filter(item => item.dataObj && item.dataObj >= inicioDoDiaPainel(agora)).sort((a,b) => a.dataObj - b.dataObj)[0];
+if (proximoSeminario) itens.push({ cor: 'violet', titulo: proximoSeminario.tema.includes('SOMATIVA') ? 'Avaliação somativa' : 'Próximo seminário', texto: `${proximoSeminario.data} • ${proximoSeminario.hora.replace('\n', ' e ')}` });
+recadosListaGlobal.slice(0, 2).forEach(recado => itens.push({ cor: 'emerald', titulo: `Recado de ${recado.autor || 'Turma T7A'}`, texto: recado.texto }));
+return itens;
+}
+
+window.atualizarNotificacoes = function() {
+const lista = document.getElementById('notification-list');
+const contador = document.getElementById('notification-count');
+if (!lista || !contador || typeof dadosEscala === 'undefined') return;
+const itens = montarNotificacoes();
+contador.textContent = String(Math.min(itens.length, 9));
+contador.classList.toggle('hidden', itens.length === 0);
+if (!itens.length) { lista.innerHTML = '<div class="text-center py-8 text-xs text-zinc-500">Tudo em dia por aqui.</div>'; return; }
+const cores = { blue: 'bg-blue-500', amber: 'bg-amber-500', violet: 'bg-violet-500', emerald: 'bg-emerald-500' };
+lista.innerHTML = itens.map(item => `<div class="rounded-xl border border-black/5 dark:border-white/5 p-3 bg-black/[.02] dark:bg-white/[.025]"><div class="flex gap-3"><span class="mt-1 w-2 h-2 rounded-full ${cores[item.cor] || 'bg-blue-500'} shrink-0"></span><div class="min-w-0"><strong class="block text-[11px] font-outfit text-zinc-900 dark:text-white">${escaparHTML(item.titulo)}</strong><p class="text-[10px] text-zinc-500 mt-1 leading-relaxed line-clamp-3">${escaparHTML(item.texto)}</p></div></div></div>`).join('');
+}
+
+window.toggleNotificacoes = function(forcar) {
+const painel = document.getElementById('notification-panel');
+if (!painel) return;
+if (forcar === false) painel.classList.add('hidden');
+else { atualizarNotificacoes(); painel.classList.toggle('hidden'); }
+}
+
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', evento => { evento.preventDefault(); deferredInstallPrompt = evento; document.getElementById('install-button')?.classList.add('ring-1', 'ring-blue-500/30'); });
+window.instalarPainel = async function() {
+if (deferredInstallPrompt) {
+deferredInstallPrompt.prompt();
+await deferredInstallPrompt.userChoice;
+deferredInstallPrompt = null;
+return;
+}
+document.getElementById('install-modal')?.classList.remove('hidden');
+}
+window.fecharInstalacao = function() { document.getElementById('install-modal')?.classList.add('hidden'); }
+
+window.mostrarToast = function(mensagem) {
+const toast = document.getElementById('app-toast');
+if (!toast) return;
+toast.textContent = mensagem;
+toast.classList.remove('hidden', 'toast-show');
+void toast.offsetWidth;
+toast.classList.add('toast-show');
+clearTimeout(window.toastTimer);
+window.toastTimer = setTimeout(() => toast.classList.add('hidden'), 2800);
+}
+
+window.compartilharPainel = async function() {
+const dados = { title: 'GO T7A • Painel do Internato', text: 'Acesse as escalas, seminários e avisos da Turma T7A.', url: location.href };
+try {
+if (navigator.share) await navigator.share(dados);
+else { await navigator.clipboard.writeText(location.href); mostrarToast('Link copiado para compartilhar.'); }
+} catch (erro) { if (erro?.name !== 'AbortError') mostrarToast('Não foi possível compartilhar agora.'); }
+}
+
+function inicializarExperienciaPremium() {
+setTimeout(() => document.getElementById('app-splash')?.classList.add('splash-hidden'), 850);
+document.addEventListener('keydown', evento => {
+if ((evento.ctrlKey || evento.metaKey) && evento.key.toLowerCase() === 'k') { evento.preventDefault(); abrirBusca(); }
+if (evento.key === 'Escape') { fecharBusca(); toggleNotificacoes(false); fecharInstalacao(); }
+});
+document.getElementById('search-modal')?.addEventListener('click', evento => { if (evento.target.id === 'search-modal') fecharBusca(); });
+document.getElementById('install-modal')?.addEventListener('click', evento => { if (evento.target.id === 'install-modal') fecharInstalacao(); });
+document.addEventListener('click', evento => {
+const painel = document.getElementById('notification-panel');
+if (painel && !painel.classList.contains('hidden') && !painel.parentElement.contains(evento.target)) painel.classList.add('hidden');
+});
+atualizarNotificacoes();
 }
 
 function atualizarProximaAtividadeDinamica(alunoNome) {
@@ -1515,6 +1948,7 @@ if (docSnap.exists()) {
 capotesCount = docSnap.data().capotes || 0;
 const el = document.getElementById('contador-capotes-val');
 if (el) el.innerText = capotesCount;
+if (window.modoVisualizacao === 'hoje') renderizarHojeView();
 } else {
 setDoc(contadorRef, { capotes: 0 }).catch(err => console.error(err));
 }
@@ -1527,9 +1961,12 @@ recadosListaGlobal.push({ id: docSnap.id, ...docSnap.data() });
 });
 if (window.modoVisualizacao === 'recados') {
 renderizarRecadosView();
+} else if (window.modoVisualizacao === 'hoje') {
+renderizarHojeView();
 } else if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
 renderizarAdminRecados();
 }
+atualizarNotificacoes();
 });
 const historicoRecadosQuery = query(collection(db, "historico_recados"), orderBy("timestamp", "desc"));
 onSnapshot(historicoRecadosQuery, (snapshot) => {
@@ -1645,6 +2082,7 @@ document.getElementById('mobile-nav-menu').classList.add('hidden');
 document.getElementById('mobile-footer-menu').classList.add('hidden');
 }
 const btnInd = document.getElementById('btn-modo-ind');
+const btnHoje = document.getElementById('btn-modo-hoje');
 const btnGeral = document.getElementById('btn-modo-geral');
 const btnSeminarios = document.getElementById('btn-modo-seminarios');
 const btnCalendario = document.getElementById('btn-modo-calendario');
@@ -1658,12 +2096,24 @@ const bannerHero = document.getElementById('banner-hero');
 const wrapperSemanas = document.getElementById('wrapper-semanas-tabs');
 const classAtivo = "w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)] transition-all cursor-pointer";
 const classInativo = "w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-semibold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer";
+btnHoje.className = classInativo;
 btnInd.className = classInativo;
 btnGeral.className = classInativo;
 btnSeminarios.className = classInativo;
 btnCalendario.className = classInativo;
 btnRecados.className = classInativo;
-if (modo === 'individual') {
+document.querySelectorAll('[data-mobile-mode]').forEach(botao => botao.classList.toggle('is-active', botao.dataset.mobileMode === modo));
+if (modo === 'hoje') {
+btnHeaderAdmin.className = "w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-sm font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm";
+btnHoje.className = classAtivo;
+colunaMembros.style.display = 'none';
+colunaTurnos.className = "lg:col-span-12 flex flex-col h-full";
+tituloSecao.innerHTML = `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l9-9 9 9M5 10v10h14V10M9 20v-6h6v6"/></svg><span>Hoje • Linha do tempo do seu trio</span>`;
+containerAbas.style.display = 'none';
+bannerHero.style.display = 'flex';
+wrapperSemanas.style.display = 'none';
+renderizarHojeView();
+} else if (modo === 'individual') {
 btnHeaderAdmin.className = "w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-sm font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm";
 btnInd.className = classAtivo;
 colunaMembros.style.display = 'flex';
@@ -1727,6 +2177,7 @@ renderizarAdminLogin();
 renderizarAdminPainelPrincipal();
 }
 }
+setTimeout(animarEntradaConteudo, 0);
 }
 window.renderizarAdminLogin = function() {
 const container = document.getElementById('lista-turnos');
@@ -1757,6 +2208,12 @@ container.innerHTML = `
 <h3 class="text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">Painel Administrativo</h3>
 </div>
 <span class="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold">● Sessão autorizada</span>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Acessos</span><strong class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${historicoLoginsGlobal.length}</strong><span class="text-[9px] text-emerald-500">Histórico sincronizado</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Recados ativos</span><strong class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${recadosListaGlobal.length}</strong><span class="text-[9px] text-blue-500">Visíveis para a turma</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Ajustes de escala</span><strong class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${escalaOverridesGlobal.length}</strong><span class="text-[9px] text-violet-500">Alterações publicadas</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Sistema</span><strong class="block font-outfit font-black text-base text-emerald-500 mt-2">Operacional</strong><span class="text-[9px] text-zinc-500">Dados em tempo real</span></div>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 shrink-0">
 <div data-admin-secao="historico_logins" onclick="abrirAdminSecao('historico_logins')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
@@ -2294,7 +2751,7 @@ if (window.ultimoMarcadorTemporal && window.ultimoMarcadorTemporal !== marcadorT
 detectarDiaESemanaAtual();
 window.renderizarSemanas();
 window.renderizarAbasDias();
-if (window.modoVisualizacao === 'individual' || window.modoVisualizacao === 'geral') {
+if (window.modoVisualizacao === 'individual' || window.modoVisualizacao === 'geral' || window.modoVisualizacao === 'hoje') {
 window.mudarGrupo();
 if (window.modoVisualizacao === 'individual') setTimeout(irParaTurnoVigente, 80);
 }
@@ -2746,7 +3203,7 @@ if (!turno) return;
 turno.local = item.local;
 turno.horario = item.horario;
 });
-if ((window.modoVisualizacao === 'individual' || window.modoVisualizacao === 'geral') && typeof window.mudarGrupo === 'function') window.mudarGrupo();
+if ((window.modoVisualizacao === 'individual' || window.modoVisualizacao === 'geral' || window.modoVisualizacao === 'hoje') && typeof window.mudarGrupo === 'function') window.mudarGrupo();
 if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'escalas') renderizarAdminEscalas();
 }
 
@@ -2837,6 +3294,11 @@ window.renderizarAbasDias();
 window.mudarGrupo();
 }
 window.mudarGrupo = function() {
+if (window.modoVisualizacao === 'hoje') {
+renderizarHojeView();
+atualizarNotificacoes();
+return;
+}
 if (window.modoVisualizacao === 'seminarios' || window.modoVisualizacao === 'calendario' || window.modoVisualizacao === 'recados' || window.modoVisualizacao === 'admin') {
 if (window.modoVisualizacao === 'calendario') renderizarCalendarioMensal();
 if (window.modoVisualizacao === 'recados') renderizarRecadosView();
@@ -2989,10 +3451,11 @@ atualizarSeletorCorPainel();
 detectarDiaESemanaAtual();
 window.renderizarSemanas();
 window.renderizarAbasDias();
-window.mudarGrupo();
+window.alternarModo('hoje');
 iniciarContadores();
 atualizarRelogioDashboard();
 setInterval(atualizarRelogioDashboard, 30000);
+inicializarExperienciaPremium();
 if (sessionStorage.getItem('autenticado') === 'true') {
 document.getElementById('login-overlay').style.display = 'none';
 atualizarIdentificacaoAluno();
