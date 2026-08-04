@@ -418,6 +418,101 @@ transform: scaleY(1);
 .stat-card { min-height: 104px; }
 .hero-subtitle { max-width: 78%; font-size: .66rem; }
 }
+
+.calendar-action {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: .4rem;
+padding: .5rem .7rem;
+border-radius: .65rem;
+font-family: 'Outfit', sans-serif;
+font-size: .64rem;
+font-weight: 800;
+letter-spacing: .02em;
+color: #60a5fa;
+background: rgba(59,130,246,.1);
+border: 1px solid rgba(96,165,250,.22);
+transition: transform .2s ease, background .2s ease, color .2s ease;
+}
+
+.calendar-action:hover {
+transform: translateY(-1px);
+background: #2563eb;
+color: white;
+}
+
+.calendar-modal-card {
+width: min(92vw, 430px);
+background: linear-gradient(155deg, rgba(18,20,31,.98), rgba(7,9,16,.97));
+border: 1px solid rgba(96,165,250,.22);
+box-shadow: 0 35px 90px -28px rgba(37,99,235,.55);
+}
+
+.admin-nav-card {
+position: relative;
+overflow: hidden;
+min-height: 112px;
+}
+
+.admin-nav-card::after {
+content: "";
+position: absolute;
+left: 18%;
+right: 18%;
+bottom: 0;
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(129,140,248,.7), transparent);
+opacity: 0;
+transition: opacity .2s ease;
+}
+
+.admin-nav-card:hover::after,
+.admin-nav-card.admin-active::after { opacity: 1; }
+
+.admin-nav-card.admin-active {
+border-color: rgba(99,102,241,.52);
+background: linear-gradient(145deg, rgba(79,70,229,.16), rgba(37,99,235,.06));
+box-shadow: 0 18px 42px -30px rgba(79,70,229,.9);
+}
+
+.admin-field {
+width: 100%;
+border-radius: .8rem;
+padding: .72rem .85rem;
+font-size: .78rem;
+font-weight: 650;
+background: rgba(0,0,0,.18);
+border: 1px solid rgba(255,255,255,.1);
+color: #e4e4e7;
+outline: none;
+}
+
+.admin-field:focus {
+border-color: rgba(99,102,241,.75);
+box-shadow: 0 0 0 3px rgba(99,102,241,.1);
+}
+
+html:not(.dark) .admin-field {
+background: rgba(255,255,255,.78);
+border-color: rgba(15,23,42,.12);
+color: #18181b;
+}
+
+.admin-label {
+display: block;
+margin-bottom: .4rem;
+font-size: .58rem;
+font-weight: 800;
+letter-spacing: .14em;
+text-transform: uppercase;
+color: #71717a;
+}
+
+.admin-preview {
+background: linear-gradient(145deg, rgba(37,99,235,.12), rgba(99,102,241,.06));
+border: 1px solid rgba(96,165,250,.18);
+}
 </style>
 </head>
 <body class="flex flex-col lg:flex-row selection:bg-blue-500 selection:text-white">
@@ -718,6 +813,8 @@ let recadosListaGlobal = [];
 let historicoRecadosGlobal = [];
 let historicoLoginsGlobal = [];
 let isAdminAutenticado = false;
+let escalaOverridesGlobal = [];
+let adminSecaoAtiva = 'historico_logins';
 let currentLoginSessionId = null;
 const alunoTrioMap = {
 "André Victor": "1", "Davi Carvalho": "1", "Letícia Barbosa": "1",
@@ -1203,18 +1300,33 @@ window.renderizarAdminPainelPrincipal = function() {
 const container = document.getElementById('lista-turnos');
 container.innerHTML = `
 <div class="space-y-4 h-full flex flex-col">
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 shrink-0">
-<div onclick="abrirAdminSecao('historico_logins')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group border border-indigo-500/30 bg-indigo-600/5">
+<div class="flex items-center justify-between gap-3 flex-wrap">
+<div>
+<span class="text-[9px] font-extrabold uppercase tracking-[0.18em] text-indigo-400">Central de Gestão</span>
+<h3 class="text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">Painel Administrativo</h3>
+</div>
+<span class="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold">● Sessão autorizada</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 shrink-0">
+<div data-admin-secao="historico_logins" onclick="abrirAdminSecao('historico_logins')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 mb-3">↗</span>
 <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Logins</h4>
 <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Nome, data, entrada e saída.</p>
 </div>
-<div onclick="abrirAdminSecao('historico_recados')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<div data-admin-secao="historico_recados" onclick="abrirAdminSecao('historico_recados')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400 mb-3">≡</span>
 <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Recados</h4>
 <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Avisos enviados, editados e apagados.</p>
 </div>
-<div onclick="abrirAdminSecao('recados')" class="glass-panel p-5 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<div data-admin-secao="recados" onclick="abrirAdminSecao('recados')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-violet-500/10 text-violet-400 mb-3">✦</span>
 <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Gerir Recados</h4>
-<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Publicar ou remover avisos oficias.</p>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Publicar, editar ou remover avisos oficiais.</p>
+</div>
+<div data-admin-secao="escalas" onclick="abrirAdminSecao('escalas')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 mb-3">▦</span>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Editar Escalas</h4>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Alterar trio, data, turno, horário e local.</p>
 </div>
 </div>
 <div id="admin-subconteudo" class="glass-panel rounded-2xl p-5 shadow-md flex-1">
@@ -1225,6 +1337,10 @@ container.innerHTML = `
 abrirAdminSecao('historico_logins');
 }
 window.abrirAdminSecao = function(secao) {
+adminSecaoAtiva = secao;
+document.querySelectorAll('[data-admin-secao]').forEach(card => {
+card.classList.toggle('admin-active', card.dataset.adminSecao === secao);
+});
 const sub = document.getElementById('admin-subconteudo');
 if (secao === 'historico_logins') {
 let html = `
@@ -1292,6 +1408,8 @@ html += `</div>`;
 sub.innerHTML = html;
 } else if (secao === 'recados') {
 renderizarAdminRecados();
+} else if (secao === 'escalas') {
+renderizarAdminEscalas();
 }
 }
 window.renderizarAdminRecados = function() {
@@ -1316,13 +1434,248 @@ html += `
 <span class="text-[11px] font-outfit font-bold text-indigo-400">${r.autor}</span>
 <p class="text-[11px] text-zinc-300 mt-1">${r.texto}</p>
 </div>
-<button onclick="deletarRecado('${r.id}')" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white text-[10px] font-bold transition-all cursor-pointer shrink-0">Apagar</button>
+<div class="flex items-center gap-2 shrink-0">
+<button onclick="editarRecado('${r.id}')" class="px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 hover:bg-amber-500 hover:text-white text-[10px] font-bold transition-all cursor-pointer">Editar</button>
+<button onclick="deletarRecado('${r.id}')" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white text-[10px] font-bold transition-all cursor-pointer">Apagar</button>
+</div>
 </div>
 `;
 });
 }
 html += `</div>`;
 sub.innerHTML = html;
+}
+
+function escaparHtmlAdmin(valor) {
+return String(valor ?? '').replace(/[&<>'"]/g, caractere => ({
+'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+})[caractere]);
+}
+
+function dataIsoParaBr(dataIso) {
+if (!dataIso) return '';
+const [ano, mes, dia] = dataIso.split('-');
+return `${dia}/${mes}`;
+}
+
+function localizarDiaEscala(trioId, dataBr) {
+if (typeof dadosEscala === 'undefined' || !dadosEscala[trioId]) return null;
+for (let semana = 1; semana <= 9; semana++) {
+const dias = dadosEscala[trioId].semanas[semana];
+for (const [diaKey, infoDia] of Object.entries(dias)) {
+if (infoDia.data === dataBr) return { semana, diaKey, infoDia };
+}
+}
+return null;
+}
+
+window.renderizarAdminEscalas = function() {
+const sub = document.getElementById('admin-subconteudo');
+if (!sub) return;
+const opcoesTrios = Array.from({length: 10}, (_, i) => `<option value="${i + 1}">Trio A${i + 1}</option>`).join('');
+let overridesHtml = '';
+if (escalaOverridesGlobal.length === 0) {
+overridesHtml = `<p class="text-xs text-zinc-500 py-5 text-center">Nenhuma alteração administrativa registrada.</p>`;
+} else {
+overridesHtml = escalaOverridesGlobal
+.slice()
+.sort((a, b) => `${a.data}-${a.periodo}`.localeCompare(`${b.data}-${b.periodo}`))
+.map(item => `
+<div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-black/5 dark:bg-black/20 border border-black/5 dark:border-white/5">
+<div class="min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<span class="text-[10px] font-extrabold text-indigo-400">TRIO A${escaparHtmlAdmin(item.trio)}</span>
+<span class="text-[10px] font-bold text-zinc-500">${escaparHtmlAdmin(item.data)} • ${escaparHtmlAdmin(item.periodo)}</span>
+</div>
+<p class="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate mt-1">${escaparHtmlAdmin(item.local)}</p>
+<p class="text-[10px] text-zinc-500 mt-0.5">${escaparHtmlAdmin(item.horario)}</p>
+</div>
+<button onclick="removerAlteracaoEscala('${escaparHtmlAdmin(item.id)}')" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white text-[10px] font-bold shrink-0">Desfazer</button>
+</div>`).join('');
+}
+sub.innerHTML = `
+<div class="flex items-start justify-between gap-4 mb-5">
+<div>
+<span class="text-[9px] font-extrabold uppercase tracking-[0.16em] text-indigo-400">Editor de Escalas</span>
+<h3 class="text-base font-outfit font-black text-zinc-900 dark:text-white mt-1">Alterar um turno</h3>
+<p class="text-[11px] text-zinc-500 mt-1">A alteração é aplicada para todos imediatamente e fica registrada abaixo.</p>
+</div>
+<span class="hidden sm:inline-flex px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold">Sincronização em tempo real</span>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
+<form onsubmit="salvarAlteracaoEscala(event)" class="xl:col-span-7 space-y-4">
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<label><span class="admin-label">Trio</span><select id="admin-escala-trio" class="admin-field" onchange="atualizarPreviewAdminEscala()">${opcoesTrios}</select></label>
+<label><span class="admin-label">Data</span><input id="admin-escala-data" type="date" min="2026-08-03" max="2026-10-04" value="2026-08-04" required class="admin-field" onchange="atualizarPreviewAdminEscala()"></label>
+<label><span class="admin-label">Turno</span><select id="admin-escala-periodo" class="admin-field" onchange="atualizarPreviewAdminEscala()"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></label>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<label><span class="admin-label">Horário</span><input id="admin-escala-horario" type="text" value="07h00-13h00" required class="admin-field" placeholder="Ex.: 07h00-13h00"></label>
+<label class="sm:col-span-2"><span class="admin-label">Atividade / local</span><input id="admin-escala-local" type="text" required class="admin-field" list="admin-locais-comuns" placeholder="Ex.: CO (HRC)"></label>
+</div>
+<datalist id="admin-locais-comuns">
+<option value="CO (HRC)"><option value="CO (HRAN)"><option value="HRSM"><option value="PS FICHA (HRC)"><option value="PS BOX (HRC)"><option value="Amb UNIEURO"><option value="Sessões Clínicas Integradas (Aula Teórica) — UNIEURO"><option value="Seminário de G.O. — UNIEURO">
+</datalist>
+<div class="flex flex-wrap gap-2">
+<button type="button" onclick="preencherStatusEscala('livre')" class="px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold">Marcar como livre</button>
+<button type="button" onclick="preencherStatusEscala('pendente')" class="px-3 py-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-bold">Escala não enviada</button>
+</div>
+<div id="admin-escala-preview" class="admin-preview rounded-xl p-4"></div>
+<button type="submit" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs font-outfit font-extrabold shadow-[0_12px_28px_-16px_rgba(79,70,229,.85)]">Salvar e publicar alteração</button>
+</form>
+<div class="xl:col-span-5 xl:border-l border-black/5 dark:border-white/10 xl:pl-4">
+<div class="flex items-center justify-between mb-3">
+<h4 class="text-xs font-outfit font-extrabold text-zinc-900 dark:text-white">Alterações ativas</h4>
+<span class="px-2 py-1 rounded-md bg-indigo-500/10 text-indigo-400 text-[9px] font-bold">${escalaOverridesGlobal.length}</span>
+</div>
+<div class="space-y-2 max-h-[360px] overflow-y-auto pr-1">${overridesHtml}</div>
+</div>
+</div>`;
+atualizarPreviewAdminEscala();
+}
+
+window.atualizarPreviewAdminEscala = function() {
+const preview = document.getElementById('admin-escala-preview');
+if (!preview) return;
+const trio = document.getElementById('admin-escala-trio').value;
+const dataBr = dataIsoParaBr(document.getElementById('admin-escala-data').value);
+const periodo = document.getElementById('admin-escala-periodo').value;
+const encontrado = localizarDiaEscala(trio, dataBr);
+const turno = encontrado?.infoDia.turnos.find(t => t.periodo === periodo);
+preview.innerHTML = `
+<span class="admin-label">Como está atualmente</span>
+<div class="flex items-center justify-between gap-3">
+<div><p class="text-xs font-extrabold text-zinc-900 dark:text-white">Trio A${trio} • ${dataBr || '--/--'} • ${periodo}</p><p class="text-[11px] text-zinc-500 mt-1">${escaparHtmlAdmin(turno?.horario || 'Horário não encontrado')}</p></div>
+<span class="max-w-[55%] text-right text-xs font-bold text-blue-500">${escaparHtmlAdmin(turno?.local || 'Sem informação')}</span>
+</div>`;
+}
+
+window.preencherStatusEscala = function(status) {
+const local = document.getElementById('admin-escala-local');
+if (!local) return;
+local.value = status === 'livre' ? '—' : ESCALA_NAO_ENVIADA;
+}
+
+window.salvarAlteracaoEscala = async function(event) {
+event.preventDefault();
+const trio = document.getElementById('admin-escala-trio').value;
+const data = dataIsoParaBr(document.getElementById('admin-escala-data').value);
+const periodo = document.getElementById('admin-escala-periodo').value;
+const horario = document.getElementById('admin-escala-horario').value.trim();
+const local = document.getElementById('admin-escala-local').value.trim();
+if (!localizarDiaEscala(trio, data)) return alert('A data selecionada não pertence ao período do rodízio.');
+const id = `${trio}_${data.replace('/', '-')}_${periodo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`;
+try {
+await setDoc(doc(db, 'escala_overrides', id), { trio, data, periodo, horario, local, atualizadoPor: 'Representante T7A', timestamp: serverTimestamp() });
+await addDoc(collection(db, 'historico_escalas'), { acao: 'Alteração publicada', trio, data, periodo, horario, local, timestamp: serverTimestamp() });
+alert('Escala atualizada com sucesso.');
+} catch (erro) {
+console.error(erro);
+alert('Não foi possível salvar a alteração. Verifique a conexão e tente novamente.');
+}
+}
+
+window.removerAlteracaoEscala = async function(id) {
+if (!confirm('Deseja desfazer esta alteração e restaurar a escala original?')) return;
+try {
+const item = escalaOverridesGlobal.find(o => o.id === id);
+await deleteDoc(doc(db, 'escala_overrides', id));
+if (item) await addDoc(collection(db, 'historico_escalas'), { acao: 'Alteração desfeita', ...item, timestamp: serverTimestamp() });
+} catch (erro) {
+console.error(erro);
+alert('Não foi possível desfazer a alteração.');
+}
+}
+
+function codificarEventoCalendario(evento) {
+return encodeURIComponent(JSON.stringify(evento)).replace(/'/g, '%27');
+}
+
+function extrairHorariosCalendario(horario, periodo) {
+const encontrados = [...String(horario || '').matchAll(/(\d{1,2})h?(\d{2})?/g)]
+.map(item => ({ hora: Number(item[1]), minuto: Number(item[2] || 0) }))
+.filter(item => item.hora <= 23 && item.minuto <= 59);
+if (encontrados.length >= 2) return { inicio: encontrados[0], fim: encontrados[encontrados.length - 1] };
+const padrao = periodo === 'Manhã'
+? [{hora: 7, minuto: 0}, {hora: 13, minuto: 0}]
+: periodo === 'Tarde'
+? [{hora: 13, minuto: 0}, {hora: 18, minuto: 0}]
+: [{hora: 18, minuto: 30}, {hora: 21, minuto: 30}];
+return { inicio: padrao[0], fim: padrao[1] };
+}
+
+function prepararEventoCalendario(payloadCodificado) {
+const evento = JSON.parse(decodeURIComponent(payloadCodificado));
+const [dia, mes] = evento.data.split('/').map(Number);
+const horarios = extrairHorariosCalendario(evento.horario, evento.periodo);
+const compactar = horario => `2026${String(mes).padStart(2,'0')}${String(dia).padStart(2,'0')}T${String(horario.hora).padStart(2,'0')}${String(horario.minuto).padStart(2,'0')}00`;
+const localDetalhado = evento.local.includes('UNIEURO') ? 'UNIEURO' : evento.local.includes('HRC') ? 'Hospital Regional de Ceilândia (HRC)' : evento.local.includes('HRAN') ? 'Hospital Regional da Asa Norte (HRAN)' : evento.local.includes('HRSM') ? 'Hospital Regional de Santa Maria (HRSM)' : evento.local;
+return {
+...evento,
+inicio: compactar(horarios.inicio),
+fim: compactar(horarios.fim),
+titulo: `${evento.local} — ${evento.periodo}`,
+descricao: `Escala de G.O. • ${evento.trio || 'Turma T7A'} • ${evento.periodo} • ${evento.horario}`,
+localDetalhado
+};
+}
+
+window.abrirOpcoesCalendario = function(payloadCodificado) {
+document.getElementById('calendar-modal')?.remove();
+const evento = prepararEventoCalendario(payloadCodificado);
+const modal = document.createElement('div');
+modal.id = 'calendar-modal';
+modal.className = 'fixed inset-0 z-[100] bg-black/75 backdrop-blur-md flex items-center justify-center p-4';
+modal.innerHTML = `
+<div class="calendar-modal-card rounded-3xl p-6 relative">
+<button onclick="document.getElementById('calendar-modal').remove()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10">×</button>
+<span class="text-[9px] font-extrabold uppercase tracking-[0.18em] text-blue-400">Adicionar ao calendário</span>
+<h3 class="text-lg font-outfit font-black text-white mt-2 pr-8">${escaparHtmlAdmin(evento.local)}</h3>
+<p class="text-xs text-zinc-400 mt-1">${escaparHtmlAdmin(evento.data)} • ${escaparHtmlAdmin(evento.periodo)} • ${escaparHtmlAdmin(evento.horario)}</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
+<button onclick="adicionarGoogleCalendar('${payloadCodificado}')" class="p-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-left transition-all">
+<span class="block text-xs font-outfit font-extrabold">Google Calendar</span><span class="block text-[10px] text-blue-100 mt-1">Abrir evento preenchido</span>
+</button>
+<button onclick="baixarEventoIcs('${payloadCodificado}')" class="p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-left transition-all">
+<span class="block text-xs font-outfit font-extrabold">Apple / Outlook</span><span class="block text-[10px] text-zinc-400 mt-1">Baixar arquivo .ics</span>
+</button>
+</div>
+</div>`;
+modal.addEventListener('click', eventoClique => { if (eventoClique.target === modal) modal.remove(); });
+document.body.appendChild(modal);
+}
+
+window.adicionarGoogleCalendar = function(payloadCodificado) {
+const evento = prepararEventoCalendario(payloadCodificado);
+const parametros = new URLSearchParams({
+action: 'TEMPLATE', text: evento.titulo, dates: `${evento.inicio}/${evento.fim}`,
+details: evento.descricao, location: evento.localDetalhado, ctz: 'America/Sao_Paulo'
+});
+window.open(`https://calendar.google.com/calendar/render?${parametros.toString()}`, '_blank', 'noopener');
+}
+
+window.baixarEventoIcs = function(payloadCodificado) {
+const evento = prepararEventoCalendario(payloadCodificado);
+const limparIcs = texto => String(texto).replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+const conteudo = [
+'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Painel GO T7A//PT-BR','CALSCALE:GREGORIAN','BEGIN:VEVENT',
+`UID:${Date.now()}-${Math.random().toString(36).slice(2)}@painel-go-t7a`,
+`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'')}`,
+`DTSTART;TZID=America/Sao_Paulo:${evento.inicio}`,
+`DTEND;TZID=America/Sao_Paulo:${evento.fim}`,
+`SUMMARY:${limparIcs(evento.titulo)}`,
+`DESCRIPTION:${limparIcs(evento.descricao)}`,
+`LOCATION:${limparIcs(evento.localDetalhado)}`,
+'END:VEVENT','END:VCALENDAR'
+].join('\r\n');
+const url = URL.createObjectURL(new Blob([conteudo], { type: 'text/calendar;charset=utf-8' }));
+const link = document.createElement('a');
+link.href = url;
+link.download = `escala-go-${evento.data.replace('/','-')}.ics`;
+document.body.appendChild(link);
+link.click();
+link.remove();
+URL.revokeObjectURL(url);
 }
 const dadosSeminariosList = [
 { data: "28/07", hora: "08h30–11h00", mediador: "TODOS", apresentadores: "TODOS", tema: "APRESENTAÇÃO DO INTERNATO EM SAÚDE DA MULHER – GINECOLOGIA & OBSTETRÍCIA" },
@@ -1341,6 +1694,7 @@ window.renderizarSeminariosView = function() {
 const containerTurnos = document.getElementById('lista-turnos');
 let html = '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-full overflow-y-auto pr-1 pb-4">';
 dadosSeminariosList.forEach(s => {
+const eventoSeminario = codificarEventoCalendario({ data: s.data, periodo: 'Noite', horario: s.hora, local: s.data === '29/09' ? 'Avaliação Somativa — UNIEURO' : 'Seminário de G.O. — UNIEURO', trio: 'Turma T7A' });
 html += `
 <div class="glass-panel hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl p-4 transition-all shadow-md group border border-black/5 dark:border-white/10 flex flex-col h-full relative overflow-hidden">
 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/50 to-indigo-500/50"></div>
@@ -1354,6 +1708,10 @@ html += `
 <span class="dark:text-white text-zinc-900 font-bold font-outfit">${s.mediador}</span>
 </div>
 </div>
+<button onclick="abrirOpcoesCalendario('${eventoSeminario}')" class="calendar-action self-start mb-3" aria-label="Adicionar atividade de ${s.data} ao calendário">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+Adicionar ao calendário
+</button>
 <div class="space-y-3 flex-grow flex flex-col">
 <div>
 <span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">Apresentadores</span>
@@ -1996,6 +2354,31 @@ if (locaisPadronizados[turno.local]) turno.local = locaisPadronizados[turno.loca
 });
 }
 }
+
+// Mantém uma cópia imutável da escala original para permitir desfazer alterações administrativas.
+const dadosEscalaBaseSnapshot = JSON.parse(JSON.stringify(dadosEscala));
+
+function aplicarAlteracoesAdministrativasEscala() {
+for (let idTrio = 1; idTrio <= 10; idTrio++) {
+dadosEscala[idTrio].semanas = JSON.parse(JSON.stringify(dadosEscalaBaseSnapshot[idTrio].semanas));
+}
+escalaOverridesGlobal.forEach(item => {
+const encontrado = localizarDiaEscala(String(item.trio), item.data);
+if (!encontrado) return;
+const turno = encontrado.infoDia.turnos.find(t => t.periodo === item.periodo);
+if (!turno) return;
+turno.local = item.local;
+turno.horario = item.horario;
+});
+if ((window.modoVisualizacao === 'individual' || window.modoVisualizacao === 'geral') && typeof window.mudarGrupo === 'function') window.mudarGrupo();
+if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'escalas') renderizarAdminEscalas();
+}
+
+onSnapshot(collection(db, 'escala_overrides'), snapshot => {
+escalaOverridesGlobal = snapshot.docs.map(documento => ({ id: documento.id, ...documento.data() }));
+aplicarAlteracoesAdministrativasEscala();
+}, erro => console.error('Erro ao sincronizar alterações de escala:', erro));
+
 window.semanaSelecionadaGlobal = 1;
 window.diaSelecionadoGlobal = "seg";
 window.renderizarSemanas = function() {
@@ -2111,6 +2494,7 @@ else iconeTurno = '<svg class="w-7 h-7 text-indigo-500 dark:text-indigo-400" fil
 const hasPlantao = atividadeConfirmada(t.local);
 const cardBorder = hasPlantao ? 'border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-900/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]' : 'glass-panel opacity-70';
 const turnoClass = t.periodo === 'Manhã' ? 'turno-manha' : (t.periodo === 'Tarde' ? 'turno-tarde' : 'turno-noite');
+const eventoCalendario = hasPlantao ? codificarEventoCalendario({ data: infoDia.data, periodo: t.periodo, horario: t.horario, local: t.local, trio: dados.nomeGrupo }) : '';
 html += `
 <div class="turno-card ${turnoClass} ${cardBorder} border hover:border-blue-500/60 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all duration-300 shadow-md group relative overflow-hidden h-full min-h-[200px]">
 ${hasPlantao ? '<div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>' : ''}
@@ -2119,9 +2503,12 @@ ${iconeTurno}
 </div>
 <span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">${t.periodo}</span>
 <h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight mb-5">${t.local}</h4>
-<div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10 flex justify-between items-center">
+<div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10">
+<div class="flex justify-between items-center gap-2">
 <span class="text-xs font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">${t.horario}</span>
 <span class="px-3 py-1.5 rounded-lg ${hasPlantao ? 'bg-blue-600 text-white shadow-md' : 'bg-black/5 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 border border-black/10 dark:border-white/10'} text-[10px] font-outfit font-bold uppercase tracking-wide transition-colors">${hasPlantao ? "Obrigatório" : (t.local === ESCALA_NAO_ENVIADA ? "Pendente" : "Livre")}</span>
+</div>
+${hasPlantao ? `<button onclick="abrirOpcoesCalendario('${eventoCalendario}')" class="calendar-action w-full mt-3" aria-label="Adicionar ${t.periodo} de ${infoDia.data} ao calendário"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>Adicionar ao calendário</button>` : ''}
 </div>
 </div>
 `;
