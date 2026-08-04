@@ -7,26 +7,11 @@
 <meta name="description" content="Painel oficial da Turma T7A para acompanhar escalas, seminários, avisos e atividades do internato de Ginecologia e Obstetrícia.">
 <meta name="theme-color" content="#050816">
 <meta name="color-scheme" content="dark light">
-<meta name="application-name" content="GO T7A">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="GO T7A">
 <meta property="og:type" content="website">
 <meta property="og:title" content="GO T7A • Painel do Internato">
 <meta property="og:description" content="Escalas, seminários e avisos da Turma T7A em um só lugar.">
 <meta property="og:locale" content="pt_BR">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%233b82f6'/%3E%3Cstop offset='1' stop-color='%236366f1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='url(%23g)'/%3E%3Cpath d='M20 19h24v26H20z' fill='none' stroke='white' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M26 15v8m12-8v8M26 31h12M32 25v12' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-const accent = document.documentElement.classList.contains('tema-rosa') ? '#ec4899' : '#3b82f6';
-const icon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='" + encodeURIComponent(accent) + "'/%3E%3Cpath d='M20 19h24v26H20z' fill='none' stroke='white' stroke-width='4'/%3E%3Cpath d='M26 15v8m12-8v8M26 31h12M32 25v12' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E";
-const manifest = { name: 'GO T7A • Painel do Internato', short_name: 'GO T7A', description: 'Escalas, seminários e avisos da Turma T7A.', start_url: location.pathname, display: 'standalone', background_color: '#050816', theme_color: accent, icons: [{ src: icon, sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }] };
-const link = document.createElement('link');
-link.rel = 'manifest';
-link.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' }));
-document.head.appendChild(link);
-});
-</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -898,7 +883,7 @@ box-shadow: inset 0 1px 0 rgba(255,255,255,.09);
 box-shadow: 0 0 0 3px rgba(236, 72, 153, .16), 0 0 9px rgba(236, 72, 153, .75);
 }
 
-/* Experiência premium — identidade, Hoje, busca e navegação mobile */
+/* Experiência premium — identidade, Hoje e navegação mobile */
 #app-splash {
 background:
 radial-gradient(circle at 50% 40%, rgba(59,130,246,.22), transparent 34%),
@@ -949,16 +934,8 @@ html:not(.dark) .timeline-dot { background: rgba(255,255,255,.96); border-color:
 .overlay-surface { background: rgba(2,3,8,.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
 .command-dialog { background: rgba(12,14,24,.97); border: 1px solid rgba(255,255,255,.1); box-shadow: 0 40px 100px -32px rgba(0,0,0,.92); }
 html:not(.dark) .command-dialog { background: rgba(255,255,255,.98); border-color: rgba(0,0,0,.1); box-shadow: 0 40px 100px -40px rgba(15,23,42,.45); }
-.search-result { transition: background .18s ease, transform .18s ease, border-color .18s ease; }
-.search-result:hover { background: rgba(59,130,246,.09); border-color: rgba(96,165,250,.28); transform: translateX(3px); }
-.tema-rosa .search-result:hover { background: rgba(236,72,153,.09); border-color: rgba(244,114,182,.28); }
-.toast-show { animation: toast-in .28s ease both; }
-@keyframes toast-in { from { opacity: 0; transform: translate(-50%, 12px) scale(.96); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
-
 .admin-kpi { position: relative; overflow: hidden; }
 .admin-kpi::after { content: ''; position: absolute; width: 75px; height: 75px; right: -25px; top: -28px; border-radius: 50%; background: rgba(99,102,241,.09); }
-.install-hint { border: 1px dashed rgba(96,165,250,.3); background: linear-gradient(135deg, rgba(59,130,246,.08), rgba(99,102,241,.04)); }
-
 #mobile-bottom-nav { padding-bottom: max(8px, env(safe-area-inset-bottom)); background: rgba(7,9,16,.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,.08); }
 html:not(.dark) #mobile-bottom-nav { background: rgba(255,255,255,.92); border-top-color: rgba(0,0,0,.08); }
 .mobile-bottom-item { min-width: 58px; color: #71717a; transition: color .2s ease, transform .2s ease; }
@@ -1155,14 +1132,6 @@ Próxima: Carregando...
 </button>
 </div>
 </div>
-<div class="grid grid-cols-2 gap-2">
-<button id="install-button" onclick="instalarPainel()" class="install-hint py-2.5 px-3 rounded-xl text-[11px] font-bold text-blue-600 dark:text-blue-300 transition-all hover:bg-blue-500/15 flex items-center justify-center gap-2" title="Instalar o painel como aplicativo">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg><span>Instalar</span>
-</button>
-<button onclick="compartilharPainel()" class="py-2.5 px-3 rounded-xl glass-panel text-[11px] font-bold text-zinc-600 dark:text-zinc-300 transition-all hover:text-blue-500 flex items-center justify-center gap-2" title="Compartilhar o painel">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.7 12.8l6.6 3.8M15.3 7.4l-6.6 3.8M18 5a3 3 0 11-6 0 3 3 0 016 0zM6 14a3 3 0 110 6 3 3 0 010-6zm12 2a3 3 0 110 6 3 3 0 010-6z"/></svg><span>Compartilhar</span>
-</button>
-</div>
 <button onclick="alternarModo('admin')" id="btn-header-admin" class="w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-sm font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm">
 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
 <span>Painel Admin</span>
@@ -1178,9 +1147,6 @@ Internato de Ginecologia & Obstetrícia
 <p id="contador-dias" class="text-[11px] text-blue-600 dark:text-blue-400 font-bold mt-1">Calculando prazo...</p>
 </div>
 <div class="flex items-center gap-2 sm:gap-2.5">
-<button onclick="abrirBusca()" class="premium-action" title="Buscar no painel (Ctrl+K)" aria-label="Buscar no painel">
-<svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"/></svg>
-</button>
 <div class="relative">
 <button onclick="toggleNotificacoes()" class="premium-action" title="Central de notificações" aria-label="Abrir notificações">
 <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 00-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 01-6 0"/></svg>
@@ -1191,9 +1157,6 @@ Internato de Ginecologia & Obstetrícia
 <div id="notification-list" class="space-y-2 max-h-[420px] overflow-y-auto pt-2"></div>
 </div>
 </div>
-<button onclick="compartilharPainel()" class="premium-action hidden sm:inline-flex" title="Compartilhar o painel" aria-label="Compartilhar">
-<svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.7 12.8l6.6 3.8M15.3 7.4l-6.6 3.8M18 5a3 3 0 11-6 0 3 3 0 016 0zM6 14a3 3 0 110 6 3 3 0 010-6zm12 2a3 3 0 110 6 3 3 0 010-6z"/></svg>
-</button>
 <span id="profile-initials" class="profile-initials" title="Aluno conectado">T7</span>
 <div class="dashboard-status hidden md:flex" aria-label="Status do painel">
 <span class="status-orbit" aria-hidden="true"></span>
@@ -1314,28 +1277,6 @@ Escala Diária por Turnos
 <button onclick="toggleMobileMenu()" class="mobile-bottom-item flex flex-col items-center gap-1 pb-1.5"><span class="mobile-bottom-icon w-9 h-8 rounded-xl flex items-center justify-center"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/></svg></span><span class="text-[9px] font-bold">Mais</span></button>
 </nav>
 
-<div id="search-modal" class="hidden fixed inset-0 z-[65] overlay-surface p-3 sm:p-6" role="dialog" aria-modal="true" aria-label="Busca geral">
-<div class="command-dialog w-full max-w-2xl mx-auto mt-[6vh] sm:mt-[10vh] rounded-3xl overflow-hidden">
-<div class="flex items-center gap-3 p-4 sm:p-5 border-b border-black/5 dark:border-white/10">
-<svg class="w-5 h-5 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"/></svg>
-<input id="global-search-input" oninput="executarBusca(this.value)" type="search" autocomplete="off" placeholder="Busque por local, data, trio ou atividade..." class="flex-1 bg-transparent outline-none text-sm sm:text-base font-semibold text-zinc-900 dark:text-white placeholder:text-zinc-500">
-<button onclick="fecharBusca()" class="text-[10px] font-bold text-zinc-500 border border-black/10 dark:border-white/10 rounded-lg px-2 py-1">ESC</button>
-</div>
-<div id="global-search-results" class="p-3 sm:p-4 max-h-[62vh] overflow-y-auto"><div class="text-center py-10 text-zinc-500"><span class="block text-2xl mb-2">⌘</span><p class="text-xs font-semibold">Encontre qualquer item da escala em segundos.</p></div></div>
-</div>
-</div>
-
-<div id="install-modal" class="hidden fixed inset-0 z-[66] overlay-surface p-4 flex items-center justify-center" role="dialog" aria-modal="true" aria-label="Instalar o painel">
-<div class="command-dialog rounded-3xl p-6 max-w-md w-full relative">
-<button onclick="fecharInstalacao()" class="absolute top-4 right-4 text-zinc-500 hover:text-white text-xl" aria-label="Fechar">×</button>
-<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center mb-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg></div>
-<h3 class="font-outfit font-black text-xl text-zinc-900 dark:text-white">Leve o painel com você</h3>
-<p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2 leading-relaxed">No iPhone, abra o menu de compartilhamento do navegador e escolha “Adicionar à Tela de Início”. No Android, abra o menu do navegador e escolha “Instalar aplicativo”.</p>
-<button onclick="fecharInstalacao()" class="mt-5 w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-outfit font-bold text-sm">Entendi</button>
-</div>
-</div>
-
-<div id="app-toast" class="hidden fixed left-1/2 bottom-24 lg:bottom-6 z-[75] -translate-x-1/2 rounded-xl bg-zinc-900/95 border border-white/10 text-white px-4 py-3 shadow-2xl text-xs font-semibold whitespace-nowrap"></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
 import { getFirestore, doc, setDoc, updateDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
@@ -1664,7 +1605,7 @@ document.getElementById('label-dia-topo').innerText = hojeEncontrado ? `${hojeEn
 document.getElementById('titulo-banner-hero').innerText = hojeEncontrado ? 'Seu dia no internato' : 'Sua próxima atividade';
 
 if (!hojeEncontrado) {
-container.innerHTML = `<div class="today-shell grid place-items-center min-h-[320px]"><div class="glass-panel rounded-3xl p-7 max-w-lg text-center border border-blue-500/20"><div class="w-14 h-14 mx-auto rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4">${obterIconeAtividade(proxima?.turno?.local, proxima?.turno?.periodo)}</div><h3 class="font-outfit font-black text-xl text-zinc-900 dark:text-white">Nenhuma atividade para hoje</h3><p class="text-xs text-zinc-500 mt-2">${proxima ? `A próxima atividade é ${escaparHTML(proxima.infoDia.nome)}, ${proxima.infoDia.data}, no turno da ${escaparHTML(proxima.turno.periodo.toLowerCase())}.` : 'O rodízio não possui outras atividades cadastradas.'}</p>${proxima ? `<button onclick="abrirResultadoBusca('${idTrio}', ${proxima.semana}, '${proxima.diaKey}')" class="mt-5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold">Ver próxima atividade</button>` : ''}</div></div>`;
+container.innerHTML = `<div class="today-shell grid place-items-center min-h-[320px]"><div class="glass-panel rounded-3xl p-7 max-w-lg text-center border border-blue-500/20"><div class="w-14 h-14 mx-auto rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4">${obterIconeAtividade(proxima?.turno?.local, proxima?.turno?.periodo)}</div><h3 class="font-outfit font-black text-xl text-zinc-900 dark:text-white">Nenhuma atividade para hoje</h3><p class="text-xs text-zinc-500 mt-2">${proxima ? `A próxima atividade é ${escaparHTML(proxima.infoDia.nome)}, ${proxima.infoDia.data}, no turno da ${escaparHTML(proxima.turno.periodo.toLowerCase())}.` : 'O rodízio não possui outras atividades cadastradas.'}</p>${proxima ? `<button onclick="abrirDiaDaEscala('${idTrio}', ${proxima.semana}, '${proxima.diaKey}')" class="mt-5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold">Ver próxima atividade</button>` : ''}</div></div>`;
 animarEntradaConteudo();
 return;
 }
@@ -1703,58 +1644,18 @@ timelineHtml += `<div class="timeline-item" data-state="${estado}"><div class="t
 const recado = recadosListaGlobal[0];
 const proximaTexto = proxima ? `${proxima.infoDia.nome}, ${proxima.infoDia.data} • ${proxima.turno.periodo}` : 'Nenhuma atividade futura';
 const atividadesHoje = turnos.filter(turno => atividadeConfirmada(turno.local)).length;
-container.innerHTML = `<div class="today-shell space-y-4 pb-4"><section class="today-hero glass-panel rounded-3xl p-5 sm:p-6"><div class="relative z-10 flex items-start justify-between gap-4"><div><span class="text-[10px] font-black uppercase tracking-[.2em] text-blue-500">${agora.getHours() < 7 ? '☾ Bom descanso, interno ✦' : 'Resumo personalizado'}</span><h3 class="font-outfit font-black text-2xl sm:text-3xl text-zinc-900 dark:text-white mt-2">${escaparHTML(infoDia.nome)}, ${infoDia.data}</h3><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2">${atividadesHoje ? `${atividadesHoje} atividade${atividadesHoje > 1 ? 's' : ''} programada${atividadesHoje > 1 ? 's' : ''} para o Trio A${idTrio}.` : 'Seu trio está livre hoje.'}</p></div><span class="hidden sm:inline-flex px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold">● Painel atualizado</span></div></section><div class="grid grid-cols-1 xl:grid-cols-12 gap-4"><section class="xl:col-span-8 glass-panel rounded-3xl p-4 sm:p-5"><div class="flex items-center justify-between mb-3"><div><span class="text-[9px] font-black uppercase tracking-[.2em] text-blue-500">Linha do tempo</span><h3 class="font-outfit font-extrabold text-lg text-zinc-900 dark:text-white mt-1">Manhã, tarde e noite</h3></div><span class="text-[10px] font-mono font-bold text-zinc-500">${agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span></div><div class="timeline-list">${timelineHtml}</div></section><aside class="xl:col-span-4 space-y-4"><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-blue-500">Próxima atividade</span><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-2">${escaparHTML(proximaTexto)}</h4><p class="text-[11px] text-zinc-500 mt-1">${proxima ? escaparHTML(proxima.turno.local) : 'Aproveite o tempo livre.'}</p>${proxima ? `<button onclick="abrirResultadoBusca('${idTrio}', ${proxima.semana}, '${proxima.diaKey}')" class="mt-4 text-[10px] font-bold text-blue-500 hover:text-blue-400">Abrir na escala →</button>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><div class="flex items-center justify-between"><span class="text-[9px] font-black uppercase tracking-[.18em] text-violet-500">Último recado</span><button onclick="alternarModo('recados')" class="text-[9px] font-bold text-blue-500">Ver mural</button></div><p class="text-xs text-zinc-600 dark:text-zinc-300 mt-3 leading-relaxed">${recado ? escaparHTML(recado.texto) : 'Nenhum aviso publicado até o momento.'}</p>${recado ? `<span class="block text-[9px] text-zinc-500 mt-2">${escaparHTML(recado.autor || 'Turma T7A')}</span>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-emerald-500">Controle do C.O.</span><div class="flex items-end justify-between mt-2"><div><strong class="font-outfit font-black text-3xl text-zinc-900 dark:text-white">${capotesCount}</strong><span class="text-[10px] text-zinc-500 ml-1">capotes</span></div><button onclick="alterarCapotes(-1)" class="px-3 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold border border-emerald-500/20">Peguei 1</button></div></div></aside></div></div>`;
+container.innerHTML = `<div class="today-shell space-y-4 pb-4"><section class="today-hero glass-panel rounded-3xl p-5 sm:p-6"><div class="relative z-10 flex items-start justify-between gap-4"><div><span class="text-[10px] font-black uppercase tracking-[.2em] text-blue-500">${agora.getHours() < 7 ? '☾ Bom descanso, interno ✦' : 'Resumo personalizado'}</span><h3 class="font-outfit font-black text-2xl sm:text-3xl text-zinc-900 dark:text-white mt-2">${escaparHTML(infoDia.nome)}, ${infoDia.data}</h3><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2">${atividadesHoje ? `${atividadesHoje} atividade${atividadesHoje > 1 ? 's' : ''} programada${atividadesHoje > 1 ? 's' : ''} para o Trio A${idTrio}.` : 'Seu trio está livre hoje.'}</p></div><span class="hidden sm:inline-flex px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold">● Painel atualizado</span></div></section><div class="grid grid-cols-1 xl:grid-cols-12 gap-4"><section class="xl:col-span-8 glass-panel rounded-3xl p-4 sm:p-5"><div class="flex items-center justify-between mb-3"><div><span class="text-[9px] font-black uppercase tracking-[.2em] text-blue-500">Linha do tempo</span><h3 class="font-outfit font-extrabold text-lg text-zinc-900 dark:text-white mt-1">Manhã, tarde e noite</h3></div><span class="text-[10px] font-mono font-bold text-zinc-500">${agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span></div><div class="timeline-list">${timelineHtml}</div></section><aside class="xl:col-span-4 space-y-4"><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-blue-500">Próxima atividade</span><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-2">${escaparHTML(proximaTexto)}</h4><p class="text-[11px] text-zinc-500 mt-1">${proxima ? escaparHTML(proxima.turno.local) : 'Aproveite o tempo livre.'}</p>${proxima ? `<button onclick="abrirDiaDaEscala('${idTrio}', ${proxima.semana}, '${proxima.diaKey}')" class="mt-4 text-[10px] font-bold text-blue-500 hover:text-blue-400">Abrir na escala →</button>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><div class="flex items-center justify-between"><span class="text-[9px] font-black uppercase tracking-[.18em] text-violet-500">Último recado</span><button onclick="alternarModo('recados')" class="text-[9px] font-bold text-blue-500">Ver mural</button></div><p class="text-xs text-zinc-600 dark:text-zinc-300 mt-3 leading-relaxed">${recado ? escaparHTML(recado.texto) : 'Nenhum aviso publicado até o momento.'}</p>${recado ? `<span class="block text-[9px] text-zinc-500 mt-2">${escaparHTML(recado.autor || 'Turma T7A')}</span>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-emerald-500">Controle do C.O.</span><div class="flex items-end justify-between mt-2"><div><strong class="font-outfit font-black text-3xl text-zinc-900 dark:text-white">${capotesCount}</strong><span class="text-[10px] text-zinc-500 ml-1">capotes</span></div><button onclick="alterarCapotes(-1)" class="px-3 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold border border-emerald-500/20">Peguei 1</button></div></div></aside></div></div>`;
 animarEntradaConteudo();
 }
 
-window.abrirResultadoBusca = function(trioId, semana, diaKey) {
+window.abrirDiaDaEscala = function(trioId, semana, diaKey) {
 document.getElementById('grupo-select').value = String(trioId);
 window.semanaSelecionadaGlobal = Number(semana);
 window.diaSelecionadoGlobal = diaKey;
-fecharBusca();
 window.renderizarSemanas();
 window.renderizarAbasDias();
 alternarModo('individual');
 setTimeout(irParaTurnoVigente, 80);
-}
-
-function normalizarBusca(texto) {
-return String(texto || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
-}
-
-window.abrirBusca = function() {
-const modal = document.getElementById('search-modal');
-modal.classList.remove('hidden');
-const campo = document.getElementById('global-search-input');
-campo.value = '';
-document.getElementById('global-search-results').innerHTML = '<div class="text-center py-10 text-zinc-500"><span class="block text-2xl mb-2">⌘</span><p class="text-xs font-semibold">Busque por hospital, professor, data, trio ou turno.</p></div>';
-setTimeout(() => campo.focus(), 50);
-}
-
-window.fecharBusca = function() { document.getElementById('search-modal')?.classList.add('hidden'); }
-
-window.executarBusca = function(termo) {
-const container = document.getElementById('global-search-results');
-const busca = normalizarBusca(termo);
-if (busca.length < 2) { container.innerHTML = '<p class="text-center text-xs text-zinc-500 py-10">Digite pelo menos 2 caracteres.</p>'; return; }
-const resultados = [];
-for (let trioId = 1; trioId <= 10; trioId++) {
-const trio = dadosEscala[trioId];
-for (let semana = 1; semana <= 9; semana++) {
-for (const [diaKey, infoDia] of Object.entries(trio.semanas[semana] || {})) {
-for (const turno of infoDia.turnos || []) {
-const texto = `${trio.nomeGrupo} trio a${trioId} ${infoDia.nome} ${infoDia.data} ${turno.periodo} ${turno.horario} ${turno.local} ${turno.atividade || ''}`;
-if (normalizarBusca(texto).includes(busca)) resultados.push({ trioId, semana, diaKey, infoDia, turno });
-}
-}
-}
-}
-const seminarios = (typeof dadosSeminariosList !== 'undefined' ? dadosSeminariosList : []).filter(item => normalizarBusca(`${item.data} ${item.mediador} ${item.apresentadores} ${item.tema}`).includes(busca));
-if (!resultados.length && !seminarios.length) { container.innerHTML = '<div class="text-center py-10"><p class="font-outfit font-bold text-zinc-700 dark:text-zinc-300">Nada encontrado</p><p class="text-xs text-zinc-500 mt-1">Tente outro local, nome ou data.</p></div>'; return; }
-let html = `<div class="flex items-center justify-between px-1 pb-3"><span class="text-[10px] font-black uppercase tracking-[.18em] text-zinc-500">Resultados</span><span class="text-[10px] text-zinc-500">${resultados.length + seminarios.length} encontrado(s)</span></div><div class="space-y-2">`;
-resultados.slice(0, 36).forEach(item => { html += `<button onclick="abrirResultadoBusca('${item.trioId}', ${item.semana}, '${item.diaKey}')" class="search-result w-full text-left rounded-2xl border border-black/5 dark:border-white/5 p-3.5 flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-outfit font-black text-[11px] shrink-0">A${item.trioId}</span><span class="min-w-0 flex-1"><strong class="block text-xs text-zinc-900 dark:text-white font-outfit truncate">${escaparHTML(item.turno.local)}</strong><span class="block text-[10px] text-zinc-500 mt-1 truncate">${item.infoDia.nome}, ${item.infoDia.data} • ${item.turno.periodo} • ${item.turno.horario}</span></span><span class="text-zinc-500">›</span></button>`; });
-seminarios.slice(0, 8).forEach(item => { html += `<button onclick="fecharBusca(); alternarModo('seminarios')" class="search-result w-full text-left rounded-2xl border border-black/5 dark:border-white/5 p-3.5 flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-violet-500/10 text-violet-500 flex items-center justify-center shrink-0">${obterIconeAtividade('UNIEURO', 'Noite')}</span><span class="min-w-0 flex-1"><strong class="block text-xs text-zinc-900 dark:text-white font-outfit truncate">Seminário • ${item.data}</strong><span class="block text-[10px] text-zinc-500 mt-1 truncate">${escaparHTML(item.tema.replace(/\n/g, ' '))}</span></span><span class="text-zinc-500">›</span></button>`; });
-container.innerHTML = `${html}</div>`;
 }
 
 function montarNotificacoes() {
@@ -1793,46 +1694,11 @@ if (forcar === false) painel.classList.add('hidden');
 else { atualizarNotificacoes(); painel.classList.toggle('hidden'); }
 }
 
-let deferredInstallPrompt = null;
-window.addEventListener('beforeinstallprompt', evento => { evento.preventDefault(); deferredInstallPrompt = evento; document.getElementById('install-button')?.classList.add('ring-1', 'ring-blue-500/30'); });
-window.instalarPainel = async function() {
-if (deferredInstallPrompt) {
-deferredInstallPrompt.prompt();
-await deferredInstallPrompt.userChoice;
-deferredInstallPrompt = null;
-return;
-}
-document.getElementById('install-modal')?.classList.remove('hidden');
-}
-window.fecharInstalacao = function() { document.getElementById('install-modal')?.classList.add('hidden'); }
-
-window.mostrarToast = function(mensagem) {
-const toast = document.getElementById('app-toast');
-if (!toast) return;
-toast.textContent = mensagem;
-toast.classList.remove('hidden', 'toast-show');
-void toast.offsetWidth;
-toast.classList.add('toast-show');
-clearTimeout(window.toastTimer);
-window.toastTimer = setTimeout(() => toast.classList.add('hidden'), 2800);
-}
-
-window.compartilharPainel = async function() {
-const dados = { title: 'GO T7A • Painel do Internato', text: 'Acesse as escalas, seminários e avisos da Turma T7A.', url: location.href };
-try {
-if (navigator.share) await navigator.share(dados);
-else { await navigator.clipboard.writeText(location.href); mostrarToast('Link copiado para compartilhar.'); }
-} catch (erro) { if (erro?.name !== 'AbortError') mostrarToast('Não foi possível compartilhar agora.'); }
-}
-
 function inicializarExperienciaPremium() {
 setTimeout(() => document.getElementById('app-splash')?.classList.add('splash-hidden'), 850);
 document.addEventListener('keydown', evento => {
-if ((evento.ctrlKey || evento.metaKey) && evento.key.toLowerCase() === 'k') { evento.preventDefault(); abrirBusca(); }
-if (evento.key === 'Escape') { fecharBusca(); toggleNotificacoes(false); fecharInstalacao(); }
+if (evento.key === 'Escape') toggleNotificacoes(false);
 });
-document.getElementById('search-modal')?.addEventListener('click', evento => { if (evento.target.id === 'search-modal') fecharBusca(); });
-document.getElementById('install-modal')?.addEventListener('click', evento => { if (evento.target.id === 'install-modal') fecharInstalacao(); });
 document.addEventListener('click', evento => {
 const painel = document.getElementById('notification-panel');
 if (painel && !painel.classList.contains('hidden') && !painel.parentElement.contains(evento.target)) painel.classList.add('hidden');
