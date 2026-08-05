@@ -610,6 +610,99 @@ outline-offset: 2px;
 box-shadow: 0 12px 28px -18px color-mix(in srgb, var(--brand-blue) 82%, transparent) !important;
 }
 
+/* Calendário mensal: prioriza leitura da escala em qualquer tela */
+.calendar-months {
+width: 100%;
+}
+
+.calendar-month-grid {
+width: 100%;
+}
+
+.calendar-day-card {
+min-height: 154px;
+height: auto;
+}
+
+.calendar-day-card.calendario-dia-passado {
+opacity: .64;
+filter: saturate(.3);
+}
+
+.calendar-day-card.calendario-dia-passado .linha-turno-passado {
+opacity: .9;
+}
+
+.calendar-shift {
+display: grid;
+grid-template-columns: 3.4rem minmax(0, 1fr);
+align-items: start;
+gap: .45rem;
+font-size: 10px;
+line-height: 1.28;
+padding: .38rem .45rem;
+border-radius: .5rem;
+white-space: normal;
+}
+
+.calendar-shift-period {
+font-size: 9px;
+font-weight: 900;
+letter-spacing: .035em;
+line-height: 1.35;
+}
+
+.calendar-shift-text {
+min-width: 0;
+font-weight: 700;
+text-align: left;
+white-space: normal;
+overflow: visible;
+text-overflow: clip;
+overflow-wrap: anywhere;
+word-break: normal;
+}
+
+@media (min-width: 1024px) {
+.calendar-day-card { min-height: 166px; }
+.calendar-shift { font-size: 11px; padding: .42rem .5rem; }
+.calendar-shift-period { font-size: 10px; }
+}
+
+@media (max-width: 767px) {
+.calendar-month-grid {
+display: flex !important;
+flex-direction: column;
+gap: .65rem;
+}
+
+.calendar-weekday,
+.calendar-empty {
+display: none !important;
+}
+
+.calendar-day-card {
+min-height: 0;
+height: auto !important;
+padding: .8rem;
+gap: .6rem;
+transform: none !important;
+}
+
+.calendar-shift {
+grid-template-columns: 4rem minmax(0, 1fr);
+gap: .6rem;
+font-size: 12px;
+line-height: 1.35;
+padding: .55rem .65rem;
+border-radius: .65rem;
+}
+
+.calendar-shift-period { font-size: 10px; padding-top: .08rem; }
+.calendar-shift-text { font-size: 12px; }
+.calendar-day-card.calendario-dia-passado { opacity: .72; }
+}
+
 @keyframes temporal-pulse {
 0%, 100% { opacity: 1; transform: scale(1); }
 50% { opacity: .48; transform: scale(.72); }
@@ -1458,6 +1551,16 @@ function atividadeConfirmada(local) {
 return Boolean(local && local !== "—" && local !== ESCALA_NAO_ENVIADA);
 }
 
+function mensagemTurnoLivre(periodo, compacta = false) {
+if (compacta) {
+if (periodo === 'Noite') return 'Livre • Bom descanso 🌙';
+return 'Livre • Bons estudos 📚';
+}
+if (periodo === 'Manhã') return '☀️ Bons estudos! Aproveite para colocar as revisões em dia.';
+if (periodo === 'Tarde') return '📚 Bons estudos! Aproveite o turno livre para adiantar o conteúdo.';
+return '🌙 Faça uma revisão leve e aproveite também para descansar.';
+}
+
 const ANO_ESCALA = 2026;
 const HORARIOS_PADRAO_TURNOS = {
 'Manhã': { inicio: 7 * 60, fim: 13 * 60 },
@@ -1636,8 +1739,8 @@ const confirmado = atividadeConfirmada(turno.local);
 const pendente = turno.local === ESCALA_NAO_ENVIADA;
 let rotulo = estado === 'agora' ? 'Agora' : (estado === 'passado' ? 'Concluído' : 'Mais tarde');
 if (estado === 'futuro' && !primeiroFuturoMarcado) { rotulo = 'Próximo'; primeiroFuturoMarcado = true; }
-const local = confirmado ? turno.local : (pendente ? ESCALA_NAO_ENVIADA : 'Horário livre');
-const status = confirmado ? (turno.atividade || 'Atividade obrigatória') : (pendente ? 'Aguardando envio da escala' : 'Sem atividade programada');
+const local = confirmado ? turno.local : (pendente ? ESCALA_NAO_ENVIADA : 'Turno livre');
+const status = confirmado ? (turno.atividade || 'Atividade obrigatória') : (pendente ? 'Aguardando envio da escala' : mensagemTurnoLivre(turno.periodo));
 timelineHtml += `<div class="timeline-item" data-state="${estado}"><div class="timeline-dot">${obterIconeAtividade(turno.local, turno.periodo)}</div><div class="timeline-card"><div class="flex items-start justify-between gap-3"><div><div class="flex items-center gap-2 flex-wrap"><span class="text-[10px] font-black uppercase tracking-[.18em] text-blue-500">${escaparHTML(turno.periodo)}</span><span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${estado === 'agora' ? 'bg-blue-500 text-white' : 'bg-black/5 dark:bg-white/5 text-zinc-500'}">${rotulo}</span></div><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-1.5">${escaparHTML(local)}</h4><p class="text-[10px] text-zinc-500 mt-1">${escaparHTML(status)}</p></div><span class="shrink-0 text-[10px] font-bold text-zinc-600 dark:text-zinc-300 bg-black/5 dark:bg-black/25 border border-black/5 dark:border-white/5 px-2.5 py-1.5 rounded-lg">${escaparHTML(turno.horario)}</span></div></div></div>`;
 });
 
@@ -2487,7 +2590,7 @@ const meses = [
 { nome: "Setembro de 2026", ano: 2026, mes: 8, diasNoMes: 30 },
 { nome: "Outubro de 2026", ano: 2026, mes: 9, diasNoMes: 4 }
 ];
-let html = '<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5 pb-4 h-full overflow-y-auto pr-1">';
+let html = '<div class="calendar-months grid grid-cols-1 gap-5 pb-4 h-full overflow-y-auto pr-1">';
 meses.forEach(m => {
 html += `
 <div class="glass-panel rounded-2xl p-4 shadow-lg space-y-3 h-fit border border-black/5 dark:border-white/5">
@@ -2495,26 +2598,27 @@ html += `
 <h3 class="text-sm font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">${m.nome}</h3>
 <span class="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 font-outfit">Escala do ${dadosTrio.nomeGrupo.split(':')[0]}</span>
 </div>
-<div class="grid grid-cols-7 gap-1.5 text-center">
-<div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Seg</div>
-<div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Ter</div>
-<div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Qua</div>
-<div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Qui</div>
-<div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Sex</div>
-<div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Sáb</div>
-<div class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest py-1">Dom</div>
+<div class="calendar-month-grid grid grid-cols-7 gap-2 text-center">
+<div class="calendar-weekday text-[10px] font-bold text-zinc-400 uppercase tracking-widest py-1">Seg</div>
+<div class="calendar-weekday text-[10px] font-bold text-zinc-400 uppercase tracking-widest py-1">Ter</div>
+<div class="calendar-weekday text-[10px] font-bold text-zinc-400 uppercase tracking-widest py-1">Qua</div>
+<div class="calendar-weekday text-[10px] font-bold text-zinc-400 uppercase tracking-widest py-1">Qui</div>
+<div class="calendar-weekday text-[10px] font-bold text-zinc-400 uppercase tracking-widest py-1">Sex</div>
+<div class="calendar-weekday text-[10px] font-bold text-zinc-400 uppercase tracking-widest py-1">Sáb</div>
+<div class="calendar-weekday text-[10px] font-bold text-zinc-400 uppercase tracking-widest py-1">Dom</div>
 `;
 let primeiroDiaIndex;
 if(m.mes === 7) primeiroDiaIndex = 5;
 else if(m.mes === 8) primeiroDiaIndex = 1;
 else if(m.mes === 9) primeiroDiaIndex = 3;
 for(let i = 0; i < primeiroDiaIndex; i++) {
-html += `<div class="rounded-xl bg-black/5 dark:bg-black/20 opacity-20 h-[90px]"></div>`;
+html += `<div class="calendar-empty rounded-xl bg-black/5 dark:bg-black/20 opacity-20 min-h-[154px]"></div>`;
 }
 let totalCelulas = primeiroDiaIndex;
 for(let dia = 1; dia <= m.diasNoMes; dia++) {
 const dataObj = new Date(m.ano, m.mes, dia);
 const dataBr = `${String(dia).padStart(2, '0')}/${String(m.mes + 1).padStart(2, '0')}`;
+const nomeDiaCurto = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][dataObj.getDay()];
 const estadoData = obterEstadoTemporalData(dataBr);
 const turnosDia = obterDetalhesTurnosDia(idTrio, dataObj);
 const temAlgumPlantao = turnosDia.some(t => atividadeConfirmada(t.local));
@@ -2525,24 +2629,27 @@ let cardClass = temAlgumPlantao
 : (isWeekend ? 'bg-black/10 dark:bg-black/40 border-black/10 dark:border-white/10 text-zinc-400 dark:text-zinc-500' : 'bg-black/5 dark:bg-black/30 border-black/5 dark:border-white/5 text-zinc-500 dark:text-zinc-400');
 let turnosHtml = '';
 turnosDia.forEach(t => {
-const sigla = t.periodo === 'Manhã' ? 'M' : t.periodo === 'Tarde' ? 'T' : 'N';
 const ativo = atividadeConfirmada(t.local);
 const estadoTurno = obterEstadoTemporalTurno(dataBr, t.periodo, t.horario);
 const classeTurnoTemporal = estadoTurno === 'passado' ? 'linha-turno-passado' : (estadoTurno === 'agora' ? 'linha-turno-atual' : '');
 const corBadge = ativo
 ? 'bg-blue-600 text-white font-bold shadow-sm'
 : 'bg-black/10 dark:bg-white/5 text-zinc-400 dark:text-zinc-500';
+const textoTurnoCalendario = t.local === "—" ? (t.periodo === 'Noite' ? 'Livre 🌙' : 'Livre 📚') : t.local;
 turnosHtml += `
-<div class="${classeTurnoTemporal} flex items-center justify-between text-[8px] px-1.5 py-0.5 rounded-md ${corBadge} truncate" title="${t.periodo}: ${t.local}">
-<span class="uppercase font-mono">${sigla}</span>
-<span class="truncate ml-1 font-medium">${t.local !== "—" ? t.local : "—"}</span>
+<div class="${classeTurnoTemporal} calendar-shift ${corBadge}" title="${t.periodo}: ${t.local === '—' ? mensagemTurnoLivre(t.periodo) : t.local}">
+<span class="calendar-shift-period uppercase font-mono">${t.periodo}</span>
+<span class="calendar-shift-text">${textoTurnoCalendario}</span>
 </div>
 `;
 });
 html += `
-<div class="${estadoData === 'passado' ? 'calendario-dia-passado' : (estadoData === 'hoje' ? 'calendario-dia-hoje' : '')} p-1.5 rounded-xl border ${cardClass} flex flex-col justify-between h-[90px] box-border space-y-1 transition-transform hover:scale-[1.02]">
+<div class="calendar-day-card ${estadoData === 'passado' ? 'calendario-dia-passado' : (estadoData === 'hoje' ? 'calendario-dia-hoje' : '')} p-2 rounded-xl border ${cardClass} flex flex-col justify-between box-border space-y-1.5 transition-transform hover:scale-[1.01]">
 <div class="flex items-center justify-between px-0.5">
-<span class="text-[11px] font-outfit font-extrabold">${dia}</span>
+<div class="flex items-baseline gap-2">
+<span class="text-sm font-outfit font-extrabold">${dia}</span>
+<span class="md:hidden text-[10px] uppercase tracking-widest font-bold opacity-70">${nomeDiaCurto}</span>
+</div>
 ${estadoData === 'hoje' ? '<span class="text-[6px] font-black uppercase tracking-wider text-blue-500">Hoje</span>' : (temAlgumPlantao ? '<span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]"></span>' : '')}
 </div>
 <div class="space-y-1">
@@ -2556,7 +2663,7 @@ const resto = totalCelulas % 7;
 if (resto !== 0) {
 const celulasFaltantes = 7 - resto;
 for(let i = 0; i < celulasFaltantes; i++) {
-html += `<div class="rounded-xl bg-black/5 dark:bg-black/20 opacity-15 h-[90px]"></div>`;
+html += `<div class="calendar-empty rounded-xl bg-black/5 dark:bg-black/20 opacity-15 min-h-[154px]"></div>`;
 }
 }
 html += `</div></div>`;
@@ -3221,6 +3328,8 @@ if(t.periodo === 'Manhã') iconeTurno = '<svg class="w-7 h-7 text-amber-500 dark
 else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-7 h-7 text-orange-500 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
 else iconeTurno = '<svg class="w-7 h-7 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
 const hasPlantao = atividadeConfirmada(t.local);
+const turnoLivre = t.local === "—";
+const tituloLocal = turnoLivre ? 'Turno livre' : t.local;
 const cardBorder = hasPlantao ? 'border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-900/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]' : 'glass-panel opacity-70';
 const turnoClass = t.periodo === 'Manhã' ? 'turno-manha' : (t.periodo === 'Tarde' ? 'turno-tarde' : 'turno-noite');
 const estadoTemporal = obterEstadoTemporalTurno(infoDia.data, t.periodo, t.horario);
@@ -3236,7 +3345,8 @@ ${hasPlantao ? '<div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r 
 ${iconeTurno}
 </div>
 <span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">${t.periodo}</span>
-<h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight mb-5">${t.local}</h4>
+<h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight ${turnoLivre ? 'mb-2' : 'mb-5'}">${tituloLocal}</h4>
+${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4 max-w-[230px]">${mensagemTurnoLivre(t.periodo)}</p>` : ''}
 <div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10">
 <div class="flex justify-between items-center gap-2">
 <span class="text-xs font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">${t.horario}</span>
@@ -3256,6 +3366,7 @@ const infoDiaTrio = dadosTrio.semanas[window.semanaSelecionadaGlobal][window.dia
 let turnosTrioHtml = '';
 infoDiaTrio.turnos.forEach(t => {
 const hasPlantao = atividadeConfirmada(t.local);
+const textoLocal = t.local === "—" ? mensagemTurnoLivre(t.periodo, true) : t.local;
 const badgeColor = hasPlantao ? 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20 shadow-inner' : 'text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5';
 const estadoTemporal = obterEstadoTemporalTurno(infoDiaTrio.data, t.periodo, t.horario);
 const classeLinhaTemporal = estadoTemporal === 'passado' ? 'linha-turno-passado' : (estadoTemporal === 'agora' ? 'linha-turno-atual' : '');
@@ -3263,7 +3374,7 @@ const marcadorAgora = estadoTemporal === 'agora' ? '<span class="ml-1 text-[7px]
 turnosTrioHtml += `
 <div data-estado-temporal="${estadoTemporal}" class="${classeLinhaTemporal} flex items-center justify-between text-[10px] py-1.5 px-3 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5">
 <span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit uppercase tracking-widest">${t.periodo}${marcadorAgora}</span>
-<span class="font-extrabold font-outfit ${badgeColor} px-2 py-0.5 rounded whitespace-normal leading-tight text-center border">${t.local}</span>
+<span class="font-extrabold font-outfit ${badgeColor} px-2 py-0.5 rounded whitespace-normal leading-tight text-center border">${textoLocal}</span>
 </div>
 `;
 });
