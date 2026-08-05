@@ -1617,7 +1617,7 @@ A1
 </div>
 </div>
 </div>
-<div class="lg:col-span-7 grid grid-cols-3 gap-3 sm:gap-4">
+<div class="lg:col-span-7 grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
 <div class="stat-card stat-periodo glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center">
 <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Período</span>
 <span class="text-base sm:text-xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-white dark:to-zinc-300 truncate" id="stat-semana">-- de 9</span>
@@ -1626,6 +1626,11 @@ A1
 <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Turnos/Sem.</span>
 <span class="text-base sm:text-xl font-outfit font-black dark:text-white text-zinc-900" id="stat-atividades">--</span>
 <div id="stat-detalhes-turnos" class="flex flex-wrap justify-center items-center gap-x-1.5 gap-y-1 mt-2 text-[9px] sm:text-[10px] text-zinc-600 dark:text-zinc-300 font-semibold tracking-wide px-1"></div>
+</div>
+<div class="stat-card stat-carga glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+<span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Carga Horária</span>
+<span class="text-base sm:text-xl font-outfit font-black text-violet-600 dark:text-violet-400" id="stat-carga-semanal">--</span>
+<div id="stat-carga-detalhes" class="mt-2 text-[9px] sm:text-[10px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed">Semana confirmada<br>Total: -- • Teóricas: --</div>
 </div>
 <div class="stat-card stat-capotes glass-panel rounded-2xl p-4 flex flex-col items-center justify-between text-center bg-gradient-to-br from-blue-500/5 to-indigo-500/5 border border-blue-500/20 shadow-md">
 <div class="w-full flex flex-col items-center justify-center py-2">
@@ -1699,7 +1704,7 @@ Escala Diária por Turnos
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
-import { getFirestore, doc, setDoc, updateDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, updateDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, runTransaction, writeBatch } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 const firebaseConfig = {
 apiKey: "AIzaSyBOwnygs2V5ADR1C5xPRATXbU2M18VaKm4",
 authDomain: "painel-go-t7a.firebaseapp.com",
@@ -1936,6 +1941,66 @@ fim: Number.isFinite(encontrados[1]) ? encontrados[1] : padrao.fim
 };
 }
 
+function calcularMinutosTurno(horario, periodo) {
+const horarios = [...String(horario || '').matchAll(/(\d{1,2})h(?:(\d{2}))?/gi)]
+.map(resultado => Number(resultado[1]) * 60 + Number(resultado[2] || 0));
+let total = 0;
+for (let indice = 0; indice + 1 < horarios.length; indice += 2) {
+const duracao = horarios[indice + 1] - horarios[indice];
+if (duracao > 0) total += duracao;
+}
+if (total > 0) return total;
+const padrao = HORARIOS_PADRAO_TURNOS[periodo] || HORARIOS_PADRAO_TURNOS['Manhã'];
+return padrao.fim - padrao.inicio;
+}
+
+function formatarCargaHoraria(minutos = 0) {
+const total = Math.max(0, Math.round(Number(minutos) || 0));
+const horas = Math.floor(total / 60);
+const restante = total % 60;
+return restante ? `${horas}h${String(restante).padStart(2, '0')}` : `${horas}h`;
+}
+
+function atividadeTeoricaFixa(diaKey, periodo) {
+return (diaKey === 'seg' && periodo === 'Tarde') || (diaKey === 'ter' && periodo === 'Noite');
+}
+
+function calcularCargaHorariaTrio(trioId, semanaFiltro = null) {
+const trio = dadosEscala?.[String(trioId)];
+const resultado = { total: 0, teorica: 0, pratica: 0, turnos: 0, semanas: {} };
+if (!trio) return resultado;
+for (let semana = 1; semana <= 9; semana++) {
+const resumoSemana = { total: 0, teorica: 0, pratica: 0, turnos: 0 };
+Object.entries(trio.semanas?.[semana] || {}).forEach(([diaKey, dia]) => {
+(dia.turnos || []).forEach(turno => {
+if (!atividadeConfirmada(turno.local)) return;
+const minutos = calcularMinutosTurno(turno.horario, turno.periodo);
+resumoSemana.total += minutos;
+resumoSemana.turnos++;
+if (atividadeTeoricaFixa(diaKey, turno.periodo)) resumoSemana.teorica += minutos;
+else resumoSemana.pratica += minutos;
+});
+});
+resultado.semanas[semana] = resumoSemana;
+if (semanaFiltro === null || Number(semanaFiltro) === semana) {
+resultado.total += resumoSemana.total;
+resultado.teorica += resumoSemana.teorica;
+resultado.pratica += resumoSemana.pratica;
+resultado.turnos += resumoSemana.turnos;
+}
+}
+return resultado;
+}
+
+function atualizarCargaHorariaResumo(trioId, semana) {
+const semanal = calcularCargaHorariaTrio(trioId, Number(semana));
+const acumulada = calcularCargaHorariaTrio(trioId);
+const valor = document.getElementById('stat-carga-semanal');
+const detalhes = document.getElementById('stat-carga-detalhes');
+if (valor) valor.innerText = formatarCargaHoraria(semanal.total);
+if (detalhes) detalhes.innerHTML = `Semana confirmada<br><span class="text-violet-500">Teórica: ${formatarCargaHoraria(semanal.teorica)}</span> • Total: ${formatarCargaHoraria(acumulada.total)}<br><span class="text-zinc-500">Teóricas acumuladas: ${formatarCargaHoraria(acumulada.teorica)}</span>`;
+}
+
 function obterDataHoraInicioAtividade(dataBr, turno) {
 const data = dataEscalaParaDate(dataBr);
 if (!data) return null;
@@ -2046,6 +2111,7 @@ document.getElementById('grupo-badge-num').innerText = `A${idTrio}`;
 document.getElementById('titulo-grupo-header').innerText = trio.nomeGrupo;
 document.getElementById('label-dia-topo').innerText = hojeEncontrado ? `${hojeEncontrado.infoDia.nome.toUpperCase()} • ${hojeEncontrado.infoDia.data}` : 'VISÃO PESSOAL • HOJE';
 document.getElementById('titulo-banner-hero').innerText = hojeEncontrado ? 'Seu dia no internato' : 'Sua próxima atividade';
+atualizarCargaHorariaResumo(idTrio, hojeEncontrado?.semana || window.semanaSelecionadaGlobal || 1);
 
 if (!hojeEncontrado) {
 container.innerHTML = `<div class="today-shell grid place-items-center min-h-[320px]"><div class="glass-panel rounded-3xl p-7 max-w-lg text-center border border-blue-500/20"><div class="w-14 h-14 mx-auto rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4">${obterIconeAtividade(proxima?.turno?.local, proxima?.turno?.periodo)}</div><h3 class="font-outfit font-black text-xl text-zinc-900 dark:text-white">Nenhuma atividade para hoje</h3><p class="text-xs text-zinc-500 mt-2">${proxima ? `A próxima atividade é ${escaparHTML(proxima.infoDia.nome)}, ${proxima.infoDia.data}, no turno da ${escaparHTML(proxima.turno.periodo.toLowerCase())}.` : 'O rodízio não possui outras atividades cadastradas.'}</p>${proxima ? `<button onclick="abrirDiaDaEscala('${idTrio}', ${proxima.semana}, '${proxima.diaKey}')" class="mt-5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold">Ver próxima atividade</button>` : ''}</div></div>`;
@@ -2071,6 +2137,7 @@ if (diaKey === 'sab' || diaKey === 'dom') fds++;
 document.getElementById('stat-semana').innerText = `Semana ${hojeEncontrado.semana} de 9`;
 document.getElementById('stat-atividades').innerText = `${totalAtividades}/${totalTurnos}`;
 document.getElementById('stat-detalhes-turnos').innerHTML = `<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5">🌅 Manhã: ${manha}</span><span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5">☀️ Tarde: ${tarde}</span><span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5">🌙 Noite: ${noite}</span><span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5">🏖️ FDS: ${fds}</span>`;
+atualizarCargaHorariaResumo(idTrio, hojeEncontrado.semana);
 let primeiroFuturoMarcado = false;
 let timelineHtml = '';
 turnos.forEach(turno => {
@@ -2322,7 +2389,10 @@ historicoEscalasGlobal = [];
 snapshot.forEach((docSnap) => {
 historicoEscalasGlobal.push({ id: docSnap.id, ...docSnap.data() });
 });
-if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
+if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
+if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
+else if (adminSecaoAtiva === 'historico_escalas') abrirAdminSecao('historico_escalas');
+}
 });
 async function registrarHistorico(acao, autor, texto) {
 try {
@@ -2592,6 +2662,66 @@ renderizarAdminDashboard();
 }
 }
 
+let limpezaHistoricoEmAndamento = false;
+window.limparHistoricoAdmin = async function(tipo) {
+if (!isAdminAutenticado || limpezaHistoricoEmAndamento) return;
+const configuracoes = {
+logins: { colecao: 'historico_logins', titulo: 'histórico de acessos', itens: historicoLoginsGlobal },
+capotes: { colecao: 'historico_capotes', titulo: 'histórico do contador de capotes', itens: historicoCapotesGlobal },
+recados: { colecao: 'historico_recados', titulo: 'histórico de auditoria dos recados', itens: historicoRecadosGlobal },
+escalas: { colecao: 'historico_escalas', titulo: 'histórico de auditoria das escalas', itens: historicoEscalasGlobal }
+};
+const config = configuracoes[tipo];
+if (!config) return;
+const ids = config.itens.map(item => item.id).filter(Boolean);
+if (!ids.length) {
+alert(`O ${config.titulo} já está vazio.`);
+return;
+}
+const confirmou = confirm(`Limpar ${config.titulo}?\n\nSerão apagados ${ids.length} registro(s). Esta ação não pode ser desfeita.`);
+if (!confirmou) return;
+limpezaHistoricoEmAndamento = true;
+try {
+for (let inicio = 0; inicio < ids.length; inicio += 400) {
+const lote = writeBatch(db);
+ids.slice(inicio, inicio + 400).forEach(id => lote.delete(doc(db, config.colecao, id)));
+await lote.commit();
+}
+if (tipo === 'logins') {
+currentLoginSessionId = null;
+sessionStorage.removeItem('loginSessionId');
+}
+alert(`${config.titulo.charAt(0).toUpperCase() + config.titulo.slice(1)} limpo com sucesso.`);
+} catch (erro) {
+console.error('Erro ao limpar histórico:', erro);
+alert('Não foi possível limpar esse histórico. Verifique a conexão e tente novamente.');
+} finally {
+limpezaHistoricoEmAndamento = false;
+}
+};
+
+window.excluirRegistroHistoricoAdmin = async function(tipo, id) {
+if (!isAdminAutenticado || !id) return;
+const configuracoes = {
+logins: { colecao: 'historico_logins', titulo: 'este acesso' },
+capotes: { colecao: 'historico_capotes', titulo: 'esta movimentação de capote' },
+recados: { colecao: 'historico_recados', titulo: 'este registro de recado' },
+escalas: { colecao: 'historico_escalas', titulo: 'este registro de escala' }
+};
+const config = configuracoes[tipo];
+if (!config || !confirm(`Apagar ${config.titulo} do histórico?\n\nEsta ação não pode ser desfeita.`)) return;
+try {
+await deleteDoc(doc(db, config.colecao, id));
+if (tipo === 'logins' && (sessionStorage.getItem('loginSessionId') === id || currentLoginSessionId === id)) {
+currentLoginSessionId = null;
+sessionStorage.removeItem('loginSessionId');
+}
+} catch (erro) {
+console.error('Erro ao apagar registro do histórico:', erro);
+alert('Não foi possível apagar esse registro. Tente novamente.');
+}
+};
+
 function prepararAnalyticsAdmin() {
 const agora = new Date();
 const inicioHoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
@@ -2632,23 +2762,26 @@ const rankingUsuarios = [...rankingMap.entries()]
 const cargaTrios = [];
 const turnosEscala = { 'Manhã': 0, 'Tarde': 0, 'Noite': 0 };
 let atividadesFds = 0;
+let totalMinutosCarga = 0;
+let totalMinutosTeoricos = 0;
 if (typeof dadosEscala !== 'undefined') {
 Object.entries(dadosEscala).forEach(([trioId, trio]) => {
-let totalTrio = 0;
+const cargaTrio = calcularCargaHorariaTrio(trioId);
 Object.values(trio.semanas || {}).forEach(semana => {
 Object.entries(semana || {}).forEach(([diaKey, dia]) => {
 (dia.turnos || []).forEach(turno => {
 if (!atividadeConfirmada(turno.local)) return;
-totalTrio++;
 if (turnosEscala[turno.periodo] !== undefined) turnosEscala[turno.periodo]++;
 if (diaKey === 'sab' || diaKey === 'dom') atividadesFds++;
 });
 });
 });
-cargaTrios.push({ nome: `Trio A${trioId}`, valor: totalTrio });
+totalMinutosCarga += cargaTrio.total;
+totalMinutosTeoricos += cargaTrio.teorica;
+cargaTrios.push({ trioId: Number(trioId), nome: `Trio A${trioId}`, valor: cargaTrio.total, teorica: cargaTrio.teorica, pratica: cargaTrio.pratica, semanas: cargaTrio.semanas });
 });
 }
-cargaTrios.sort((a, b) => b.valor - a.valor);
+cargaTrios.sort((a, b) => a.trioId - b.trioId);
 
 const capotesAdicionados = historicoCapotesGlobal.filter(item => item.alteracao === '+1').length;
 const capotesRetirados = historicoCapotesGlobal.filter(item => item.alteracao === '-1').length;
@@ -2686,6 +2819,8 @@ rankingUsuarios,
 cargaTrios,
 turnosEscala,
 totalTurnos,
+totalMinutosCarga,
+totalMinutosTeoricos,
 atividadesFds,
 capotesAdicionados,
 capotesRetirados,
@@ -2710,8 +2845,14 @@ const donutAcessos = criarDonutAdmin(dados.periodosAcesso.map(item => item.valor
 const legendaAcessos = dados.periodosAcesso.map(item => `<div class="flex items-center justify-between gap-3"><span class="flex items-center gap-2 text-[10px] text-zinc-500 dark:text-zinc-400"><i class="admin-legend-dot" style="background:${item.cor};color:${item.cor}"></i>${item.nome}</span><strong class="text-[11px] text-zinc-800 dark:text-zinc-200">${item.valor}</strong></div>`).join('');
 const maxRanking = Math.max(1, ...dados.rankingUsuarios.map(item => item.valor));
 const rankingHtml = dados.rankingUsuarios.length ? dados.rankingUsuarios.map((item, indice) => `<div class="space-y-1.5"><div class="flex items-start justify-between gap-3 text-[10px]"><span class="font-bold text-zinc-600 dark:text-zinc-300 leading-snug"><i class="text-zinc-500 mr-1">#${indice + 1}</i>${escaparHtmlAdmin(item.nome)}</span><strong class="text-blue-500 shrink-0">${item.valor}</strong></div><div class="admin-rank-track"><div class="admin-rank-fill" style="width:${Math.max(6, Math.round((item.valor / maxRanking) * 100))}%"></div></div></div>`).join('') : '<p class="text-[11px] text-zinc-500 py-5 text-center">Ainda não há acessos suficientes para formar o ranking.</p>';
-const maxCarga = Math.max(1, ...dados.cargaTrios.map(item => item.valor));
-const cargaTriosHtml = dados.cargaTrios.map(item => `<div class="grid grid-cols-[58px_1fr_30px] items-center gap-2"><span class="text-[9px] font-bold text-zinc-500">${item.nome}</span><div class="admin-rank-track"><div class="admin-rank-fill" style="width:${Math.max(5, Math.round((item.valor / maxCarga) * 100))}%"></div></div><strong class="text-[9px] text-zinc-700 dark:text-zinc-300 text-right">${item.valor}</strong></div>`).join('');
+const cargaTriosHtml = dados.cargaTrios.map(item => {
+const semanasHtml = Array.from({ length: 9 }, (_, indice) => {
+const numero = indice + 1;
+const semana = item.semanas[numero] || { total: 0, teorica: 0 };
+return `<div class="rounded-lg bg-black/5 dark:bg-white/[.045] border border-black/5 dark:border-white/5 px-2 py-2 text-center" title="Semana ${numero}: ${formatarCargaHoraria(semana.total)} confirmadas, ${formatarCargaHoraria(semana.teorica)} teóricas"><span class="block text-[8px] font-black uppercase tracking-wider text-zinc-500">S${numero}</span><strong class="block text-[10px] text-zinc-800 dark:text-zinc-200 mt-1">${formatarCargaHoraria(semana.total)}</strong>${semana.teorica ? `<span class="block text-[8px] text-violet-500 mt-0.5">T ${formatarCargaHoraria(semana.teorica)}</span>` : ''}</div>`;
+}).join('');
+return `<article class="rounded-xl p-3.5 bg-black/[.025] dark:bg-black/20 border border-black/5 dark:border-white/5"><div class="flex items-center justify-between gap-3 flex-wrap"><div><strong class="font-outfit font-black text-sm text-zinc-900 dark:text-white">${item.nome}</strong><span class="block text-[9px] text-zinc-500 mt-0.5">Confirmado até agora</span></div><div class="flex items-center gap-2"><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 text-violet-500 text-[9px] font-bold">Teóricas ${formatarCargaHoraria(item.teorica)}</span><span class="px-2.5 py-1.5 rounded-lg bg-blue-500/10 text-blue-500 text-[10px] font-black">Total ${formatarCargaHoraria(item.valor)}</span></div></div><div class="grid grid-cols-3 sm:grid-cols-5 xl:grid-cols-9 gap-1.5 mt-3">${semanasHtml}</div></article>`;
+}).join('');
 const valoresTurnos = [dados.turnosEscala['Manhã'], dados.turnosEscala['Tarde'], dados.turnosEscala['Noite']];
 const coresTurnos = ['#38bdf8', '#f59e0b', '#818cf8'];
 const donutTurnos = criarDonutAdmin(valoresTurnos, coresTurnos);
@@ -2734,7 +2875,7 @@ sub.innerHTML = `
 <div class="admin-mini-kpi rounded-2xl p-4"><span class="text-[8px] font-black uppercase tracking-[.15em] text-zinc-500">Sessões totais</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">${historicoLoginsGlobal.length}</strong><span class="text-[9px] text-blue-500">${dados.usuariosUnicos} usuários únicos</span></div>
 <div class="admin-mini-kpi rounded-2xl p-4"><span class="text-[8px] font-black uppercase tracking-[.15em] text-zinc-500">Ações administrativas</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">${historicoRecadosGlobal.length + historicoEscalasGlobal.length}</strong><span class="text-[9px] text-violet-500">Recados e escalas</span></div>
 <div class="admin-mini-kpi rounded-2xl p-4"><span class="text-[8px] font-black uppercase tracking-[.15em] text-zinc-500">Movimento líquido</span><strong class="block text-2xl font-outfit font-black ${variacaoCapotes >= 0 ? 'text-emerald-500' : 'text-rose-500'} mt-2">${variacaoCapotes > 0 ? '+' : ''}${variacaoCapotes}</strong><span class="text-[9px] text-zinc-500">No contador de capotes</span></div>
-<div class="admin-mini-kpi rounded-2xl p-4"><span class="text-[8px] font-black uppercase tracking-[.15em] text-zinc-500">Carga cadastrada</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">${dados.totalTurnos}</strong><span class="text-[9px] text-amber-500">${dados.atividadesFds} atividades no FDS</span></div>
+<div class="admin-mini-kpi rounded-2xl p-4"><span class="text-[8px] font-black uppercase tracking-[.15em] text-zinc-500">Carga confirmada</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">${formatarCargaHoraria(dados.totalMinutosCarga)}</strong><span class="text-[9px] text-violet-500">${formatarCargaHoraria(dados.totalMinutosTeoricos)} de atividade teórica</span></div>
 </div>
 
 <div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
@@ -2746,13 +2887,15 @@ sub.innerHTML = `
 
 <section class="admin-analytics-card rounded-2xl p-4 xl:col-span-7"><div class="relative z-10"><div class="flex items-start justify-between gap-3"><div><h4 class="admin-chart-title">Movimentação dos capotes</h4><p class="admin-chart-subtitle">Entradas e retiradas registradas no contador.</p></div><strong class="text-3xl font-outfit font-black text-emerald-500">${capotesCount}</strong></div><div class="grid grid-cols-2 gap-3 mt-5"><div class="rounded-xl p-4 bg-emerald-500/10 border border-emerald-500/15"><span class="text-[9px] font-black uppercase tracking-widest text-emerald-500">Adicionados</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">+${dados.capotesAdicionados}</strong></div><div class="rounded-xl p-4 bg-rose-500/10 border border-rose-500/15"><span class="text-[9px] font-black uppercase tracking-widest text-rose-500">Retirados</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">−${dados.capotesRetirados}</strong></div></div><div class="flex h-2 rounded-full overflow-hidden bg-zinc-500/10 mt-4"><span class="bg-emerald-500" style="width:${historicoCapotesGlobal.length ? (dados.capotesAdicionados / historicoCapotesGlobal.length) * 100 : 0}%"></span><span class="bg-rose-500" style="width:${historicoCapotesGlobal.length ? (dados.capotesRetirados / historicoCapotesGlobal.length) * 100 : 0}%"></span></div><div class="flex justify-between mt-2 text-[9px] text-zinc-500"><span>${historicoCapotesGlobal.length} movimentações</span><span>Saldo: ${variacaoCapotes > 0 ? '+' : ''}${variacaoCapotes}</span></div></div></section>
 
-<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-7"><div class="relative z-10"><h4 class="admin-chart-title">Carga programada por trio</h4><p class="admin-chart-subtitle">Total de turnos com atividade confirmada em todo o rodízio.</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-5">${cargaTriosHtml}</div></div></section>
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><div class="flex items-start justify-between gap-3 flex-wrap"><div><h4 class="admin-chart-title">Carga horária confirmada por trio</h4><p class="admin-chart-subtitle">Resumo semanal e total da escala enviada até agora. “T” identifica as horas teóricas.</p></div><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-500 text-[9px] font-bold">Teóricas fixas: segunda à tarde + terça à noite</span></div><div class="space-y-2.5 mt-5">${cargaTriosHtml}</div></div></section>
 
-<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-5"><div class="relative z-10"><h4 class="admin-chart-title">Atividades por turno</h4><p class="admin-chart-subtitle">Composição da carga total cadastrada.</p><div class="flex items-center justify-center gap-5 mt-5"><div class="admin-donut" style="background:${donutTurnos}" role="img" aria-label="Distribuição das atividades por turno"><div class="admin-donut-center"><strong>${dados.totalTurnos}</strong><span>turnos</span></div></div><div class="space-y-2.5 min-w-[112px]">${['Manhã','Tarde','Noite'].map((nome, i) => `<div class="flex items-center justify-between gap-3"><span class="flex items-center gap-2 text-[10px] text-zinc-500"><i class="admin-legend-dot" style="background:${coresTurnos[i]};color:${coresTurnos[i]}"></i>${nome}</span><strong class="text-[11px] text-zinc-800 dark:text-zinc-200">${valoresTurnos[i]}</strong></div>`).join('')}<div class="pt-2 mt-2 border-t border-black/5 dark:border-white/5 text-[9px] text-zinc-500">${dados.atividadesFds} no fim de semana</div></div></div></div></section>
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-5"><div class="relative z-10"><h4 class="admin-chart-title">Atividades por turno</h4><p class="admin-chart-subtitle">Composição dos turnos confirmados na escala.</p><div class="flex items-center justify-center gap-5 mt-5"><div class="admin-donut" style="background:${donutTurnos}" role="img" aria-label="Distribuição das atividades por turno"><div class="admin-donut-center"><strong>${dados.totalTurnos}</strong><span>turnos</span></div></div><div class="space-y-2.5 min-w-[112px]">${['Manhã','Tarde','Noite'].map((nome, i) => `<div class="flex items-center justify-between gap-3"><span class="flex items-center gap-2 text-[10px] text-zinc-500"><i class="admin-legend-dot" style="background:${coresTurnos[i]};color:${coresTurnos[i]}"></i>${nome}</span><strong class="text-[11px] text-zinc-800 dark:text-zinc-200">${valoresTurnos[i]}</strong></div>`).join('')}<div class="pt-2 mt-2 border-t border-black/5 dark:border-white/5 text-[9px] text-zinc-500">${dados.atividadesFds} no fim de semana<br>${formatarCargaHoraria(dados.totalMinutosTeoricos)} teóricas</div></div></div></div></section>
 
-<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-5"><div class="relative z-10"><h4 class="admin-chart-title">Auditoria de conteúdo</h4><p class="admin-chart-subtitle">Ações registradas em recados e escalas.</p><div class="flex h-2.5 rounded-full overflow-hidden bg-zinc-500/10 mt-5"><span class="admin-audit-segment bg-blue-500" style="width:${pctAuditoria(dados.auditoriaRecados.enviados)}%"></span><span class="admin-audit-segment bg-amber-500" style="width:${pctAuditoria(dados.auditoriaRecados.editados)}%"></span><span class="admin-audit-segment bg-rose-500" style="width:${pctAuditoria(dados.auditoriaRecados.apagados)}%"></span><span class="admin-audit-segment bg-violet-500" style="width:${pctAuditoria(historicoEscalasGlobal.length)}%"></span></div><div class="grid grid-cols-2 gap-3 mt-5"><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-blue-500 font-bold">Recados enviados</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${dados.auditoriaRecados.enviados}</strong></div><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-amber-500 font-bold">Editados</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${dados.auditoriaRecados.editados}</strong></div><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-rose-500 font-bold">Apagados</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${dados.auditoriaRecados.apagados}</strong></div><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-violet-500 font-bold">Ações em escalas</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${historicoEscalasGlobal.length}</strong></div></div></div></section>
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-7"><div class="relative z-10"><h4 class="admin-chart-title">Auditoria de conteúdo</h4><p class="admin-chart-subtitle">Ações registradas em recados e escalas.</p><div class="flex h-2.5 rounded-full overflow-hidden bg-zinc-500/10 mt-5"><span class="admin-audit-segment bg-blue-500" style="width:${pctAuditoria(dados.auditoriaRecados.enviados)}%"></span><span class="admin-audit-segment bg-amber-500" style="width:${pctAuditoria(dados.auditoriaRecados.editados)}%"></span><span class="admin-audit-segment bg-rose-500" style="width:${pctAuditoria(dados.auditoriaRecados.apagados)}%"></span><span class="admin-audit-segment bg-violet-500" style="width:${pctAuditoria(historicoEscalasGlobal.length)}%"></span></div><div class="grid grid-cols-2 gap-3 mt-5"><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-blue-500 font-bold">Recados enviados</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${dados.auditoriaRecados.enviados}</strong></div><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-amber-500 font-bold">Editados</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${dados.auditoriaRecados.editados}</strong></div><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-rose-500 font-bold">Apagados</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${dados.auditoriaRecados.apagados}</strong></div><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-violet-500 font-bold">Ações em escalas</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${historicoEscalasGlobal.length}</strong></div></div></div></section>
 
-<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-7"><div class="relative z-10"><div class="flex items-start justify-between gap-3"><div><h4 class="admin-chart-title">Atividade recente</h4><p class="admin-chart-subtitle">Últimos eventos importantes registrados no painel.</p></div><span class="text-[9px] text-zinc-500">Mais recentes primeiro</span></div><div class="relative mt-5"><span class="admin-activity-line"></span>${recentesHtml}</div></div></section>
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><div class="flex items-start justify-between gap-3"><div><h4 class="admin-chart-title">Atividade recente</h4><p class="admin-chart-subtitle">Últimos eventos importantes registrados no painel.</p></div><span class="text-[9px] text-zinc-500">Mais recentes primeiro</span></div><div class="relative mt-5"><span class="admin-activity-line"></span>${recentesHtml}</div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><h4 class="admin-chart-title">Gerenciar históricos</h4><p class="admin-chart-subtitle">Limpe somente a categoria desejada. Recados ativos e alterações de escala publicadas não serão apagados.</p><div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 mt-5"><button onclick="limparHistoricoAdmin('logins')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar acessos</span><span class="text-[9px] text-zinc-500">${historicoLoginsGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdmin('capotes')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar capotes</span><span class="text-[9px] text-zinc-500">${historicoCapotesGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdmin('recados')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar auditoria de recados</span><span class="text-[9px] text-zinc-500">${historicoRecadosGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdmin('escalas')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar auditoria de escalas</span><span class="text-[9px] text-zinc-500">${historicoEscalasGlobal.length} registro(s)</span></button></div></div></section>
 </div>
 </div>`;
 atualizarKpisAdmin();
@@ -2777,7 +2920,7 @@ container.innerHTML = `
 <div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Capotes</span><strong id="admin-kpi-capotes" class="block font-outfit font-black text-2xl text-emerald-500 mt-1">${capotesCount}</strong><span class="text-[9px] text-zinc-500">Disponíveis agora</span></div>
 <div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Movimentações</span><strong id="admin-kpi-capotes-movimentos" class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${historicoCapotesGlobal.length}</strong><span class="text-[9px] text-amber-500">Histórico de capotes</span></div>
 </div>
-<div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 shrink-0">
+<div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 shrink-0">
 <div data-admin-secao="dashboard" onclick="abrirAdminSecao('dashboard')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
 <span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400 mb-3">⌁</span>
 <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Visão Geral</h4>
@@ -2797,6 +2940,11 @@ container.innerHTML = `
 <span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400 mb-3">≡</span>
 <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Recados</h4>
 <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Avisos enviados, editados e apagados.</p>
+</div>
+<div data-admin-secao="historico_escalas" onclick="abrirAdminSecao('historico_escalas')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-violet-500/10 text-violet-400 mb-3">↺</span>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Escalas</h4>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Auditoria das alterações publicadas.</p>
 </div>
 <div data-admin-secao="recados" onclick="abrirAdminSecao('recados')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
 <span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-violet-500/10 text-violet-400 mb-3">✦</span>
@@ -2826,9 +2974,9 @@ if (secao === 'dashboard') {
 renderizarAdminDashboard();
 } else if (secao === 'historico_logins') {
 let html = `
-<h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between">
+<h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between gap-3 flex-wrap">
 <span>Histórico de Logins (Entrada e Saída)</span>
-<span class="text-[10px] text-zinc-400 font-normal">Monitoramento de Acessos</span>
+<span class="flex items-center gap-2"><span class="text-[10px] text-zinc-400 font-normal">${historicoLoginsGlobal.length} acesso(s)</span><button onclick="limparHistoricoAdmin('logins')" class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[9px] font-black hover:bg-rose-500/20">Limpar histórico</button></span>
 </h3>
 <div class="space-y-3 max-h-[350px] overflow-y-auto pr-2" id="sub-sec-historico-logins">
 `;
@@ -2842,9 +2990,12 @@ html += `
 <span class="text-sm font-outfit font-bold text-indigo-400">${l.nome}</span>
 <p class="text-[10px] text-zinc-400 mt-1">Data: ${l.data}</p>
 </div>
+<div class="flex items-center gap-2 flex-wrap justify-end">
 <div class="text-right">
 <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">Entrada: ${l.entrada}</span>
 <span class="text-[10px] font-mono text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-md border border-rose-500/20 ml-2">Saída: ${l.saida}</span>
+</div>
+<button onclick="excluirRegistroHistoricoAdmin('logins','${l.id}')" class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500/20" title="Apagar somente este acesso" aria-label="Apagar este acesso">×</button>
 </div>
 </div>
 `;
@@ -2856,7 +3007,7 @@ sub.innerHTML = html;
 let html = `
 <h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between gap-3 flex-wrap">
 <span>Histórico do Contador de Capotes</span>
-<span class="text-[10px] text-zinc-400 font-normal">${historicoCapotesGlobal.length} movimentações registradas</span>
+<span class="flex items-center gap-2"><span class="text-[10px] text-zinc-400 font-normal">${historicoCapotesGlobal.length} movimentações</span><button onclick="limparHistoricoAdmin('capotes')" class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[9px] font-black hover:bg-rose-500/20">Limpar histórico</button></span>
 </h3>
 <div class="space-y-3 max-h-[350px] overflow-y-auto pr-2" id="sub-sec-historico-capotes">
 `;
@@ -2886,6 +3037,7 @@ html += `
 <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/5 dark:bg-black/25 border border-black/5 dark:border-white/5 text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-300">
 <span>${escaparHtmlAdmin(h.valorAnterior ?? '—')}</span><span class="text-zinc-500">→</span><span class="text-blue-500">${escaparHtmlAdmin(h.valorNovo ?? '—')}</span>
 </span>
+<button onclick="excluirRegistroHistoricoAdmin('capotes','${h.id}')" class="ml-2 w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500/20" title="Apagar somente esta movimentação" aria-label="Apagar esta movimentação">×</button>
 </div>
 </div>`;
 });
@@ -2894,9 +3046,9 @@ html += `</div>`;
 sub.innerHTML = html;
 } else if (secao === 'historico_recados') {
 let html = `
-<h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between">
+<h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between gap-3 flex-wrap">
 <span>Histórico de Auditoria de Recados</span>
-<span class="text-[10px] text-zinc-400 font-normal">Enviadas, Editadas e Apagadas</span>
+<span class="flex items-center gap-2"><span class="text-[10px] text-zinc-400 font-normal">${historicoRecadosGlobal.length} registro(s)</span><button onclick="limparHistoricoAdmin('recados')" class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[9px] font-black hover:bg-rose-500/20">Limpar histórico</button></span>
 </h3>
 <div class="space-y-3 max-h-[350px] overflow-y-auto pr-2" id="sub-sec-historico-recados">
 `;
@@ -2919,11 +3071,33 @@ html += `
 <span class="px-2.5 py-1 rounded-md border text-[10px] font-bold ${badgeColor}">${h.acao}</span>
 <span class="text-xs font-outfit font-bold text-zinc-300">${h.autor}</span>
 </div>
-<span class="text-[10px] text-zinc-400 font-mono">${dataFormatada}</span>
+<span class="flex items-center gap-2"><span class="text-[10px] text-zinc-400 font-mono">${dataFormatada}</span><button onclick="excluirRegistroHistoricoAdmin('recados','${h.id}')" class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500/20" title="Apagar somente este registro" aria-label="Apagar este registro">×</button></span>
 </div>
 <p class="text-[11px] text-zinc-400 dark:text-zinc-300 font-mono leading-relaxed bg-black/5 dark:bg-black/30 p-2 rounded-lg">${h.texto}</p>
 </div>
 `;
+});
+}
+html += `</div>`;
+sub.innerHTML = html;
+} else if (secao === 'historico_escalas') {
+let html = `
+<h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between gap-3 flex-wrap">
+<span>Histórico de Auditoria das Escalas</span>
+<span class="flex items-center gap-2"><span class="text-[10px] text-zinc-400 font-normal">${historicoEscalasGlobal.length} registro(s)</span><button onclick="limparHistoricoAdmin('escalas')" class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[9px] font-black hover:bg-rose-500/20">Limpar histórico</button></span>
+</h3>
+<div class="space-y-3 max-h-[350px] overflow-y-auto pr-2" id="sub-sec-historico-escalas">`;
+if (historicoEscalasGlobal.length === 0) {
+html += `<p class="text-xs text-zinc-400 py-2">Nenhuma alteração de escala registrada ainda.</p>`;
+} else {
+historicoEscalasGlobal.forEach(item => {
+let dataFormatada = 'Recentemente';
+if (item.timestamp && item.timestamp.toDate) {
+const dataEvento = item.timestamp.toDate();
+dataFormatada = dataEvento.toLocaleDateString('pt-BR') + ' às ' + dataEvento.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+}
+const desfeita = String(item.acao || '').toLowerCase().includes('desfeita');
+html += `<div class="p-3.5 rounded-xl glass-panel border border-black/5 dark:border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div class="min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="px-2.5 py-1 rounded-md border text-[10px] font-black ${desfeita ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' : 'bg-violet-500/10 text-violet-400 border-violet-500/20'}">${escaparHtmlAdmin(item.acao || 'Alteração')}</span><strong class="text-xs text-zinc-800 dark:text-zinc-200">Trio A${escaparHtmlAdmin(item.trio || '—')}</strong><span class="text-[10px] text-zinc-500">${escaparHtmlAdmin(item.data || '')} • ${escaparHtmlAdmin(item.periodo || '')}</span></div><p class="text-[11px] text-zinc-600 dark:text-zinc-300 mt-2">${escaparHtmlAdmin(item.local || '—')} <span class="text-zinc-500">• ${escaparHtmlAdmin(item.horario || '—')}</span></p></div><span class="flex items-center gap-2 shrink-0"><span class="text-[9px] text-zinc-400 font-mono">${dataFormatada}</span><button onclick="excluirRegistroHistoricoAdmin('escalas','${item.id}')" class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500/20" title="Apagar somente este registro" aria-label="Apagar este registro">×</button></span></div>`;
 });
 }
 html += `</div>`;
@@ -3983,6 +4157,7 @@ document.getElementById('stat-detalhes-turnos').innerHTML = `
 <span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">&#127769; Noite: ${countNoite}</span>
 <span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">&#127958;&#65039; FDS: ${countFds}</span>
 `;
+atualizarCargaHorariaResumo(id, window.semanaSelecionadaGlobal);
 const containerTurnos = document.getElementById('lista-turnos');
 containerTurnos.innerHTML = '';
 if (window.modoVisualizacao === 'individual') {
