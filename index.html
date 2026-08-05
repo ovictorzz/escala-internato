@@ -923,6 +923,215 @@ background: linear-gradient(145deg, rgba(37,99,235,.12), rgba(99,102,241,.06));
 border: 1px solid rgba(96,165,250,.18);
 }
 
+/* Central analítica do Painel Admin */
+.admin-analytics-card {
+position: relative;
+overflow: hidden;
+background: linear-gradient(150deg, rgba(17,20,32,.92), rgba(7,9,16,.72));
+border: 1px solid rgba(148,163,184,.12);
+box-shadow: inset 0 1px 0 rgba(255,255,255,.035), 0 20px 48px -38px rgba(37,99,235,.72);
+}
+
+html:not(.dark) .admin-analytics-card {
+background: linear-gradient(150deg, rgba(255,255,255,.97), rgba(248,250,252,.9));
+border-color: rgba(15,23,42,.09);
+}
+
+.admin-analytics-card::before {
+content: "";
+position: absolute;
+inset: 0;
+pointer-events: none;
+background: radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--brand-blue) 13%, transparent), transparent 43%);
+}
+
+.admin-chart-title {
+font-size: .72rem;
+font-weight: 900;
+letter-spacing: -.015em;
+color: #e4e4e7;
+}
+
+html:not(.dark) .admin-chart-title { color: #18181b; }
+
+.admin-chart-subtitle {
+margin-top: .2rem;
+font-size: .58rem;
+line-height: 1.35;
+color: #71717a;
+}
+
+.admin-mini-kpi {
+position: relative;
+overflow: hidden;
+min-height: 108px;
+background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.012));
+border: 1px solid rgba(148,163,184,.11);
+}
+
+.admin-mini-kpi::after {
+content: "";
+position: absolute;
+width: 58px;
+height: 58px;
+right: -20px;
+top: -22px;
+border-radius: 999px;
+background: color-mix(in srgb, var(--brand-blue) 12%, transparent);
+}
+
+.admin-bars {
+display: grid;
+grid-template-columns: repeat(7, minmax(0, 1fr));
+align-items: end;
+gap: .5rem;
+height: 155px;
+padding-top: 1.2rem;
+}
+
+.admin-bar-column {
+display: flex;
+height: 100%;
+min-width: 0;
+flex-direction: column;
+align-items: center;
+justify-content: flex-end;
+gap: .35rem;
+}
+
+.admin-bar-value {
+font-size: .52rem;
+font-weight: 900;
+color: #a1a1aa;
+}
+
+.admin-bar-track {
+position: relative;
+display: flex;
+align-items: flex-end;
+width: min(24px, 68%);
+height: 108px;
+border-radius: 999px;
+overflow: hidden;
+background: rgba(113,113,122,.12);
+}
+
+.admin-bar-fill {
+width: 100%;
+min-height: 4px;
+border-radius: inherit;
+background: linear-gradient(180deg, var(--brand-blue), var(--brand-indigo));
+box-shadow: 0 0 18px color-mix(in srgb, var(--brand-blue) 32%, transparent);
+transition: height .45s ease;
+}
+
+.admin-bar-label {
+font-size: .5rem;
+font-weight: 800;
+color: #71717a;
+white-space: nowrap;
+}
+
+.admin-donut {
+position: relative;
+display: grid;
+place-items: center;
+width: 132px;
+height: 132px;
+flex: 0 0 auto;
+border-radius: 50%;
+}
+
+.admin-donut::after {
+content: "";
+position: absolute;
+inset: 20px;
+border-radius: 50%;
+background: #0c0e17;
+box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+}
+
+html:not(.dark) .admin-donut::after {
+background: #fff;
+box-shadow: inset 0 0 0 1px rgba(15,23,42,.06);
+}
+
+.admin-donut-center {
+position: relative;
+z-index: 1;
+text-align: center;
+}
+
+.admin-donut-center strong {
+display: block;
+font-family: 'Outfit', sans-serif;
+font-size: 1.45rem;
+font-weight: 900;
+line-height: 1;
+color: #f4f4f5;
+}
+
+html:not(.dark) .admin-donut-center strong { color: #18181b; }
+.admin-donut-center span { font-size: .48rem; font-weight: 800; color: #71717a; text-transform: uppercase; letter-spacing: .12em; }
+
+.admin-legend-dot {
+width: .5rem;
+height: .5rem;
+border-radius: 999px;
+box-shadow: 0 0 10px color-mix(in srgb, currentColor 50%, transparent);
+}
+
+.admin-rank-track {
+height: .42rem;
+border-radius: 999px;
+overflow: hidden;
+background: rgba(113,113,122,.12);
+}
+
+.admin-rank-fill {
+height: 100%;
+border-radius: inherit;
+background: linear-gradient(90deg, var(--brand-blue), var(--brand-indigo));
+}
+
+.admin-audit-segment {
+height: .62rem;
+min-width: 4px;
+transition: width .35s ease;
+}
+
+.admin-activity-line {
+position: absolute;
+left: .72rem;
+top: 1.15rem;
+bottom: 1.15rem;
+width: 1px;
+background: linear-gradient(transparent, color-mix(in srgb, var(--brand-blue) 38%, transparent), transparent);
+}
+
+.admin-activity-dot {
+position: relative;
+z-index: 1;
+display: grid;
+place-items: center;
+width: 1.5rem;
+height: 1.5rem;
+border-radius: .55rem;
+font-size: .58rem;
+font-weight: 900;
+background: color-mix(in srgb, var(--brand-blue) 15%, #0b0d15);
+border: 1px solid color-mix(in srgb, var(--brand-blue) 30%, transparent);
+color: color-mix(in srgb, var(--brand-blue) 82%, white);
+}
+
+@media (max-width: 640px) {
+.admin-bars { height: 135px; gap: .3rem; }
+.admin-bar-track { height: 90px; width: min(20px, 74%); }
+.admin-donut { width: 116px; height: 116px; }
+.admin-donut::after { inset: 18px; }
+.admin-nav-card { min-height: 96px; }
+}
+
 /* Seletor de identidade visual: azul ou rosa */
 .accent-selector {
 display: inline-flex;
@@ -1511,9 +1720,10 @@ let recadosListaGlobal = [];
 let historicoRecadosGlobal = [];
 let historicoLoginsGlobal = [];
 let historicoCapotesGlobal = [];
+let historicoEscalasGlobal = [];
 let isAdminAutenticado = false;
 let escalaOverridesGlobal = [];
-let adminSecaoAtiva = 'historico_logins';
+let adminSecaoAtiva = 'dashboard';
 let currentLoginSessionId = null;
 const alunoTrioMap = {
 "André Victor": "1", "Davi Carvalho": "1", "Letícia Barbosa": "1",
@@ -2050,6 +2260,7 @@ if (el) el.innerText = capotesCount;
 const adminKpiCapotes = document.getElementById('admin-kpi-capotes');
 if (adminKpiCapotes) adminKpiCapotes.innerText = capotesCount;
 if (window.modoVisualizacao === 'hoje') renderizarHojeView();
+if (window.modoVisualizacao === 'admin' && isAdminAutenticado) atualizarAnalyticsAdminSeAtivo();
 } else {
 setDoc(contadorRef, { capotes: 0 }).catch(err => console.error(err));
 }
@@ -2065,7 +2276,8 @@ renderizarRecadosView();
 } else if (window.modoVisualizacao === 'hoje') {
 renderizarHojeView();
 } else if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
-renderizarAdminRecados();
+if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
+else if (adminSecaoAtiva === 'recados') renderizarAdminRecados();
 }
 atualizarNotificacoes();
 });
@@ -2076,7 +2288,8 @@ snapshot.forEach((docSnap) => {
 historicoRecadosGlobal.push({ id: docSnap.id, ...docSnap.data() });
 });
 if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
-if (document.getElementById('sub-sec-historico-recados')) abrirAdminSecao('historico_recados');
+if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
+else if (adminSecaoAtiva === 'historico_recados' && document.getElementById('sub-sec-historico-recados')) abrirAdminSecao('historico_recados');
 }
 });
 const historicoLoginsQuery = query(collection(db, "historico_logins"), orderBy("timestamp", "desc"));
@@ -2085,8 +2298,9 @@ historicoLoginsGlobal = [];
 snapshot.forEach((docSnap) => {
 historicoLoginsGlobal.push({ id: docSnap.id, ...docSnap.data() });
 });
-if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'historico_logins') {
-abrirAdminSecao('historico_logins');
+if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
+if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
+else if (adminSecaoAtiva === 'historico_logins') abrirAdminSecao('historico_logins');
 }
 });
 const historicoCapotesQuery = query(collection(db, "historico_capotes"), orderBy("timestamp", "desc"));
@@ -2095,11 +2309,20 @@ historicoCapotesGlobal = [];
 snapshot.forEach((docSnap) => {
 historicoCapotesGlobal.push({ id: docSnap.id, ...docSnap.data() });
 });
-const adminKpiHistorico = document.getElementById('admin-kpi-capotes-historico');
-if (adminKpiHistorico) adminKpiHistorico.innerText = `${historicoCapotesGlobal.length} movimentações registradas`;
-if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'historico_capotes') {
-abrirAdminSecao('historico_capotes');
+const adminKpiHistorico = document.getElementById('admin-kpi-capotes-movimentos');
+if (adminKpiHistorico) adminKpiHistorico.innerText = historicoCapotesGlobal.length;
+if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
+if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
+else if (adminSecaoAtiva === 'historico_capotes') abrirAdminSecao('historico_capotes');
 }
+});
+const historicoEscalasQuery = query(collection(db, "historico_escalas"), orderBy("timestamp", "desc"));
+onSnapshot(historicoEscalasQuery, (snapshot) => {
+historicoEscalasGlobal = [];
+snapshot.forEach((docSnap) => {
+historicoEscalasGlobal.push({ id: docSnap.id, ...docSnap.data() });
+});
+if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
 });
 async function registrarHistorico(acao, autor, texto) {
 try {
@@ -2325,6 +2548,216 @@ container.innerHTML = `
 </div>
 `;
 }
+function obterDataEventoAdmin(item) {
+if (item?.timestamp?.toDate) return item.timestamp.toDate();
+if (!item?.data) return null;
+const partesData = String(item.data).split('/').map(Number);
+if (partesData.length !== 3 || partesData.some(numero => !Number.isFinite(numero))) return null;
+const partesHora = String(item.entrada || '00:00').split(':').map(Number);
+return new Date(partesData[2], partesData[1] - 1, partesData[0], partesHora[0] || 0, partesHora[1] || 0, partesHora[2] || 0);
+}
+
+function criarDonutAdmin(valores, cores) {
+const total = valores.reduce((soma, valor) => soma + valor, 0);
+if (!total) return 'conic-gradient(rgba(113,113,122,.18) 0 100%)';
+let acumulado = 0;
+const segmentos = valores.map((valor, indice) => {
+const inicio = acumulado;
+acumulado += (valor / total) * 100;
+return `${cores[indice]} ${inicio.toFixed(2)}% ${acumulado.toFixed(2)}%`;
+});
+return `conic-gradient(${segmentos.join(', ')})`;
+}
+
+function atualizarKpisAdmin() {
+const usuariosUnicos = new Set(historicoLoginsGlobal.map(item => item.nome).filter(Boolean)).size;
+const valores = {
+'admin-kpi-acessos': historicoLoginsGlobal.length,
+'admin-kpi-usuarios': usuariosUnicos,
+'admin-kpi-recados': recadosListaGlobal.length,
+'admin-kpi-escalas': escalaOverridesGlobal.length,
+'admin-kpi-capotes': capotesCount,
+'admin-kpi-capotes-movimentos': historicoCapotesGlobal.length
+};
+Object.entries(valores).forEach(([id, valor]) => {
+const elemento = document.getElementById(id);
+if (elemento) elemento.innerText = valor;
+});
+}
+
+function atualizarAnalyticsAdminSeAtivo() {
+atualizarKpisAdmin();
+if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'dashboard' && document.getElementById('admin-subconteudo')) {
+renderizarAdminDashboard();
+}
+}
+
+function prepararAnalyticsAdmin() {
+const agora = new Date();
+const inicioHoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+const acessosPorDia = Array.from({ length: 7 }, (_, indice) => {
+const data = new Date(inicioHoje);
+data.setDate(data.getDate() - (6 - indice));
+return {
+chave: data.toLocaleDateString('pt-BR'),
+rotulo: data.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', ''),
+dataCurta: data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+valor: 0
+};
+});
+const mapaDias = new Map(acessosPorDia.map(item => [item.chave, item]));
+const periodosAcesso = [
+{ nome: 'Madrugada', valor: 0, cor: '#64748b' },
+{ nome: 'Manhã', valor: 0, cor: '#38bdf8' },
+{ nome: 'Tarde', valor: 0, cor: '#f59e0b' },
+{ nome: 'Noite', valor: 0, cor: '#818cf8' }
+];
+const rankingMap = new Map();
+historicoLoginsGlobal.forEach(login => {
+const data = obterDataEventoAdmin(login);
+if (data) {
+const itemDia = mapaDias.get(data.toLocaleDateString('pt-BR'));
+if (itemDia) itemDia.valor++;
+const hora = data.getHours();
+const indicePeriodo = hora < 6 ? 0 : hora < 12 ? 1 : hora < 18 ? 2 : 3;
+periodosAcesso[indicePeriodo].valor++;
+}
+if (login.nome) rankingMap.set(login.nome, (rankingMap.get(login.nome) || 0) + 1);
+});
+const rankingUsuarios = [...rankingMap.entries()]
+.map(([nome, valor]) => ({ nome, valor }))
+.sort((a, b) => b.valor - a.valor || a.nome.localeCompare(b.nome))
+.slice(0, 6);
+
+const cargaTrios = [];
+const turnosEscala = { 'Manhã': 0, 'Tarde': 0, 'Noite': 0 };
+let atividadesFds = 0;
+if (typeof dadosEscala !== 'undefined') {
+Object.entries(dadosEscala).forEach(([trioId, trio]) => {
+let totalTrio = 0;
+Object.values(trio.semanas || {}).forEach(semana => {
+Object.entries(semana || {}).forEach(([diaKey, dia]) => {
+(dia.turnos || []).forEach(turno => {
+if (!atividadeConfirmada(turno.local)) return;
+totalTrio++;
+if (turnosEscala[turno.periodo] !== undefined) turnosEscala[turno.periodo]++;
+if (diaKey === 'sab' || diaKey === 'dom') atividadesFds++;
+});
+});
+});
+cargaTrios.push({ nome: `Trio A${trioId}`, valor: totalTrio });
+});
+}
+cargaTrios.sort((a, b) => b.valor - a.valor);
+
+const capotesAdicionados = historicoCapotesGlobal.filter(item => item.alteracao === '+1').length;
+const capotesRetirados = historicoCapotesGlobal.filter(item => item.alteracao === '-1').length;
+const auditoriaRecados = {
+enviados: historicoRecadosGlobal.filter(item => item.acao === 'Enviado').length,
+editados: historicoRecadosGlobal.filter(item => item.acao === 'Editado').length,
+apagados: historicoRecadosGlobal.filter(item => item.acao === 'Apagado').length
+};
+
+const eventosRecentes = [];
+historicoLoginsGlobal.forEach(item => {
+const data = obterDataEventoAdmin(item);
+if (data) eventosRecentes.push({ data, icone: '↗', titulo: 'Acesso ao painel', detalhe: item.nome || 'Aluno T7A', cor: 'blue' });
+});
+historicoCapotesGlobal.forEach(item => {
+const data = obterDataEventoAdmin(item);
+if (data) eventosRecentes.push({ data, icone: item.alteracao === '+1' ? '+' : '−', titulo: `${item.alteracao || '±1'} no contador`, detalhe: `${item.autor || 'Usuário'} • ${item.valorAnterior ?? '—'} → ${item.valorNovo ?? '—'}`, cor: item.alteracao === '+1' ? 'emerald' : 'rose' });
+});
+historicoRecadosGlobal.forEach(item => {
+const data = obterDataEventoAdmin(item);
+if (data) eventosRecentes.push({ data, icone: '≡', titulo: `Recado ${String(item.acao || '').toLowerCase()}`, detalhe: item.autor || 'Representante T7A', cor: 'amber' });
+});
+historicoEscalasGlobal.forEach(item => {
+const data = obterDataEventoAdmin(item);
+if (data) eventosRecentes.push({ data, icone: '▦', titulo: item.acao || 'Escala alterada', detalhe: `Trio A${item.trio || '—'} • ${item.data || ''} ${item.periodo || ''}`, cor: 'violet' });
+});
+eventosRecentes.sort((a, b) => b.data - a.data);
+
+const totalTurnos = Object.values(turnosEscala).reduce((soma, valor) => soma + valor, 0);
+const periodoPico = [...periodosAcesso].sort((a, b) => b.valor - a.valor)[0];
+return {
+acessosPorDia,
+periodosAcesso,
+rankingUsuarios,
+cargaTrios,
+turnosEscala,
+totalTurnos,
+atividadesFds,
+capotesAdicionados,
+capotesRetirados,
+auditoriaRecados,
+eventosRecentes: eventosRecentes.slice(0, 8),
+periodoPico: periodoPico?.valor ? periodoPico.nome : 'Sem dados',
+usuarioMaisAtivo: rankingUsuarios[0]?.nome || 'Sem dados',
+usuariosUnicos: rankingMap.size
+};
+}
+
+window.renderizarAdminDashboard = function() {
+const sub = document.getElementById('admin-subconteudo');
+if (!sub) return;
+const dados = prepararAnalyticsAdmin();
+const maxAcessosDia = Math.max(1, ...dados.acessosPorDia.map(item => item.valor));
+const barrasAcesso = dados.acessosPorDia.map(item => {
+const altura = item.valor ? Math.max(10, Math.round((item.valor / maxAcessosDia) * 100)) : 4;
+return `<div class="admin-bar-column" title="${item.dataCurta}: ${item.valor} acesso(s)"><span class="admin-bar-value">${item.valor}</span><div class="admin-bar-track"><span class="admin-bar-fill" style="height:${altura}%"></span></div><span class="admin-bar-label">${escaparHtmlAdmin(item.rotulo)}</span></div>`;
+}).join('');
+const donutAcessos = criarDonutAdmin(dados.periodosAcesso.map(item => item.valor), dados.periodosAcesso.map(item => item.cor));
+const legendaAcessos = dados.periodosAcesso.map(item => `<div class="flex items-center justify-between gap-3"><span class="flex items-center gap-2 text-[10px] text-zinc-500 dark:text-zinc-400"><i class="admin-legend-dot" style="background:${item.cor};color:${item.cor}"></i>${item.nome}</span><strong class="text-[11px] text-zinc-800 dark:text-zinc-200">${item.valor}</strong></div>`).join('');
+const maxRanking = Math.max(1, ...dados.rankingUsuarios.map(item => item.valor));
+const rankingHtml = dados.rankingUsuarios.length ? dados.rankingUsuarios.map((item, indice) => `<div class="space-y-1.5"><div class="flex items-start justify-between gap-3 text-[10px]"><span class="font-bold text-zinc-600 dark:text-zinc-300 leading-snug"><i class="text-zinc-500 mr-1">#${indice + 1}</i>${escaparHtmlAdmin(item.nome)}</span><strong class="text-blue-500 shrink-0">${item.valor}</strong></div><div class="admin-rank-track"><div class="admin-rank-fill" style="width:${Math.max(6, Math.round((item.valor / maxRanking) * 100))}%"></div></div></div>`).join('') : '<p class="text-[11px] text-zinc-500 py-5 text-center">Ainda não há acessos suficientes para formar o ranking.</p>';
+const maxCarga = Math.max(1, ...dados.cargaTrios.map(item => item.valor));
+const cargaTriosHtml = dados.cargaTrios.map(item => `<div class="grid grid-cols-[58px_1fr_30px] items-center gap-2"><span class="text-[9px] font-bold text-zinc-500">${item.nome}</span><div class="admin-rank-track"><div class="admin-rank-fill" style="width:${Math.max(5, Math.round((item.valor / maxCarga) * 100))}%"></div></div><strong class="text-[9px] text-zinc-700 dark:text-zinc-300 text-right">${item.valor}</strong></div>`).join('');
+const valoresTurnos = [dados.turnosEscala['Manhã'], dados.turnosEscala['Tarde'], dados.turnosEscala['Noite']];
+const coresTurnos = ['#38bdf8', '#f59e0b', '#818cf8'];
+const donutTurnos = criarDonutAdmin(valoresTurnos, coresTurnos);
+const totalAuditoria = dados.auditoriaRecados.enviados + dados.auditoriaRecados.editados + dados.auditoriaRecados.apagados + historicoEscalasGlobal.length;
+const pctAuditoria = valor => totalAuditoria ? Math.max(2, (valor / totalAuditoria) * 100) : 0;
+const recentesHtml = dados.eventosRecentes.length ? dados.eventosRecentes.map(evento => {
+const dataTexto = evento.data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' • ' + evento.data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+return `<div class="relative flex items-start gap-3"><span class="admin-activity-dot">${evento.icone}</span><div class="min-w-0 flex-1 pb-3"><div class="flex items-start justify-between gap-3"><strong class="text-[11px] text-zinc-800 dark:text-zinc-200">${escaparHtmlAdmin(evento.titulo)}</strong><span class="text-[8px] font-mono text-zinc-500 shrink-0">${dataTexto}</span></div><p class="text-[9px] text-zinc-500 mt-1 leading-snug">${escaparHtmlAdmin(evento.detalhe)}</p></div></div>`;
+}).join('') : '<p class="text-[11px] text-zinc-500 py-6 text-center">As próximas ações registradas aparecerão aqui.</p>';
+const variacaoCapotes = dados.capotesAdicionados - dados.capotesRetirados;
+
+sub.innerHTML = `
+<div id="admin-analytics-root" class="space-y-4">
+<div class="flex items-start justify-between gap-4 flex-wrap">
+<div><span class="text-[9px] font-black uppercase tracking-[.18em] text-indigo-400">Central Analítica</span><h3 class="text-base font-outfit font-black text-zinc-900 dark:text-white mt-1">Visão geral do painel</h3><p class="text-[10px] text-zinc-500 mt-1">Indicadores calculados em tempo real a partir dos registros da turma.</p></div>
+<div class="flex flex-wrap gap-2"><span class="px-2.5 py-1.5 rounded-lg bg-blue-500/10 text-blue-500 text-[9px] font-bold border border-blue-500/20">Pico: ${dados.periodoPico}</span><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 text-violet-500 text-[9px] font-bold border border-violet-500/20">Mais ativo: ${escaparHtmlAdmin(dados.usuarioMaisAtivo)}</span><span class="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 text-[9px] font-bold border border-emerald-500/20">● Ao vivo</span></div>
+</div>
+
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+<div class="admin-mini-kpi rounded-2xl p-4"><span class="text-[8px] font-black uppercase tracking-[.15em] text-zinc-500">Sessões totais</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">${historicoLoginsGlobal.length}</strong><span class="text-[9px] text-blue-500">${dados.usuariosUnicos} usuários únicos</span></div>
+<div class="admin-mini-kpi rounded-2xl p-4"><span class="text-[8px] font-black uppercase tracking-[.15em] text-zinc-500">Ações administrativas</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">${historicoRecadosGlobal.length + historicoEscalasGlobal.length}</strong><span class="text-[9px] text-violet-500">Recados e escalas</span></div>
+<div class="admin-mini-kpi rounded-2xl p-4"><span class="text-[8px] font-black uppercase tracking-[.15em] text-zinc-500">Movimento líquido</span><strong class="block text-2xl font-outfit font-black ${variacaoCapotes >= 0 ? 'text-emerald-500' : 'text-rose-500'} mt-2">${variacaoCapotes > 0 ? '+' : ''}${variacaoCapotes}</strong><span class="text-[9px] text-zinc-500">No contador de capotes</span></div>
+<div class="admin-mini-kpi rounded-2xl p-4"><span class="text-[8px] font-black uppercase tracking-[.15em] text-zinc-500">Carga cadastrada</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">${dados.totalTurnos}</strong><span class="text-[9px] text-amber-500">${dados.atividadesFds} atividades no FDS</span></div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-7"><div class="relative z-10"><div class="flex items-start justify-between gap-3"><div><h4 class="admin-chart-title">Acessos nos últimos 7 dias</h4><p class="admin-chart-subtitle">Quantidade de sessões iniciadas por dia.</p></div><span class="text-[9px] font-bold text-blue-500 px-2 py-1 rounded-md bg-blue-500/10">${dados.acessosPorDia.reduce((soma, item) => soma + item.valor, 0)} acessos</span></div><div class="admin-bars">${barrasAcesso}</div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-5"><div class="relative z-10"><h4 class="admin-chart-title">Horários de maior acesso</h4><p class="admin-chart-subtitle">Distribuição de todas as entradas por período.</p><div class="flex items-center justify-center gap-5 mt-5"><div class="admin-donut" style="background:${donutAcessos}" role="img" aria-label="Distribuição de acessos por período"><div class="admin-donut-center"><strong>${historicoLoginsGlobal.length}</strong><span>acessos</span></div></div><div class="space-y-2.5 min-w-[112px]">${legendaAcessos}</div></div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-5"><div class="relative z-10"><h4 class="admin-chart-title">Usuários mais ativos</h4><p class="admin-chart-subtitle">Ranking por quantidade de sessões registradas.</p><div class="space-y-3.5 mt-5">${rankingHtml}</div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-7"><div class="relative z-10"><div class="flex items-start justify-between gap-3"><div><h4 class="admin-chart-title">Movimentação dos capotes</h4><p class="admin-chart-subtitle">Entradas e retiradas registradas no contador.</p></div><strong class="text-3xl font-outfit font-black text-emerald-500">${capotesCount}</strong></div><div class="grid grid-cols-2 gap-3 mt-5"><div class="rounded-xl p-4 bg-emerald-500/10 border border-emerald-500/15"><span class="text-[9px] font-black uppercase tracking-widest text-emerald-500">Adicionados</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">+${dados.capotesAdicionados}</strong></div><div class="rounded-xl p-4 bg-rose-500/10 border border-rose-500/15"><span class="text-[9px] font-black uppercase tracking-widest text-rose-500">Retirados</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">−${dados.capotesRetirados}</strong></div></div><div class="flex h-2 rounded-full overflow-hidden bg-zinc-500/10 mt-4"><span class="bg-emerald-500" style="width:${historicoCapotesGlobal.length ? (dados.capotesAdicionados / historicoCapotesGlobal.length) * 100 : 0}%"></span><span class="bg-rose-500" style="width:${historicoCapotesGlobal.length ? (dados.capotesRetirados / historicoCapotesGlobal.length) * 100 : 0}%"></span></div><div class="flex justify-between mt-2 text-[9px] text-zinc-500"><span>${historicoCapotesGlobal.length} movimentações</span><span>Saldo: ${variacaoCapotes > 0 ? '+' : ''}${variacaoCapotes}</span></div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-7"><div class="relative z-10"><h4 class="admin-chart-title">Carga programada por trio</h4><p class="admin-chart-subtitle">Total de turnos com atividade confirmada em todo o rodízio.</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-5">${cargaTriosHtml}</div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-5"><div class="relative z-10"><h4 class="admin-chart-title">Atividades por turno</h4><p class="admin-chart-subtitle">Composição da carga total cadastrada.</p><div class="flex items-center justify-center gap-5 mt-5"><div class="admin-donut" style="background:${donutTurnos}" role="img" aria-label="Distribuição das atividades por turno"><div class="admin-donut-center"><strong>${dados.totalTurnos}</strong><span>turnos</span></div></div><div class="space-y-2.5 min-w-[112px]">${['Manhã','Tarde','Noite'].map((nome, i) => `<div class="flex items-center justify-between gap-3"><span class="flex items-center gap-2 text-[10px] text-zinc-500"><i class="admin-legend-dot" style="background:${coresTurnos[i]};color:${coresTurnos[i]}"></i>${nome}</span><strong class="text-[11px] text-zinc-800 dark:text-zinc-200">${valoresTurnos[i]}</strong></div>`).join('')}<div class="pt-2 mt-2 border-t border-black/5 dark:border-white/5 text-[9px] text-zinc-500">${dados.atividadesFds} no fim de semana</div></div></div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-5"><div class="relative z-10"><h4 class="admin-chart-title">Auditoria de conteúdo</h4><p class="admin-chart-subtitle">Ações registradas em recados e escalas.</p><div class="flex h-2.5 rounded-full overflow-hidden bg-zinc-500/10 mt-5"><span class="admin-audit-segment bg-blue-500" style="width:${pctAuditoria(dados.auditoriaRecados.enviados)}%"></span><span class="admin-audit-segment bg-amber-500" style="width:${pctAuditoria(dados.auditoriaRecados.editados)}%"></span><span class="admin-audit-segment bg-rose-500" style="width:${pctAuditoria(dados.auditoriaRecados.apagados)}%"></span><span class="admin-audit-segment bg-violet-500" style="width:${pctAuditoria(historicoEscalasGlobal.length)}%"></span></div><div class="grid grid-cols-2 gap-3 mt-5"><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-blue-500 font-bold">Recados enviados</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${dados.auditoriaRecados.enviados}</strong></div><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-amber-500 font-bold">Editados</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${dados.auditoriaRecados.editados}</strong></div><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-rose-500 font-bold">Apagados</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${dados.auditoriaRecados.apagados}</strong></div><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-violet-500 font-bold">Ações em escalas</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${historicoEscalasGlobal.length}</strong></div></div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-7"><div class="relative z-10"><div class="flex items-start justify-between gap-3"><div><h4 class="admin-chart-title">Atividade recente</h4><p class="admin-chart-subtitle">Últimos eventos importantes registrados no painel.</p></div><span class="text-[9px] text-zinc-500">Mais recentes primeiro</span></div><div class="relative mt-5"><span class="admin-activity-line"></span>${recentesHtml}</div></div></section>
+</div>
+</div>`;
+atualizarKpisAdmin();
+}
+
 window.renderizarAdminPainelPrincipal = function() {
 const container = document.getElementById('lista-turnos');
 container.innerHTML = `
@@ -2336,13 +2769,20 @@ container.innerHTML = `
 </div>
 <span class="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold">● Sessão autorizada</span>
 </div>
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Acessos</span><strong class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${historicoLoginsGlobal.length}</strong><span class="text-[9px] text-emerald-500">Histórico sincronizado</span></div>
-<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Recados ativos</span><strong class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${recadosListaGlobal.length}</strong><span class="text-[9px] text-blue-500">Visíveis para a turma</span></div>
-<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Ajustes de escala</span><strong class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${escalaOverridesGlobal.length}</strong><span class="text-[9px] text-violet-500">Alterações publicadas</span></div>
-<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Capotes</span><strong id="admin-kpi-capotes" class="block font-outfit font-black text-2xl text-emerald-500 mt-1">${capotesCount}</strong><span id="admin-kpi-capotes-historico" class="text-[9px] text-zinc-500">${historicoCapotesGlobal.length} movimentações registradas</span></div>
+<div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Acessos</span><strong id="admin-kpi-acessos" class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${historicoLoginsGlobal.length}</strong><span class="text-[9px] text-emerald-500">Sessões registradas</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Usuários</span><strong id="admin-kpi-usuarios" class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${new Set(historicoLoginsGlobal.map(item => item.nome).filter(Boolean)).size}</strong><span class="text-[9px] text-sky-500">Pessoas diferentes</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Recados ativos</span><strong id="admin-kpi-recados" class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${recadosListaGlobal.length}</strong><span class="text-[9px] text-blue-500">Visíveis para a turma</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Ajustes ativos</span><strong id="admin-kpi-escalas" class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${escalaOverridesGlobal.length}</strong><span class="text-[9px] text-violet-500">Mudanças publicadas</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Capotes</span><strong id="admin-kpi-capotes" class="block font-outfit font-black text-2xl text-emerald-500 mt-1">${capotesCount}</strong><span class="text-[9px] text-zinc-500">Disponíveis agora</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Movimentações</span><strong id="admin-kpi-capotes-movimentos" class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${historicoCapotesGlobal.length}</strong><span class="text-[9px] text-amber-500">Histórico de capotes</span></div>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 shrink-0">
+<div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 shrink-0">
+<div data-admin-secao="dashboard" onclick="abrirAdminSecao('dashboard')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400 mb-3">⌁</span>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Visão Geral</h4>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Indicadores e infográficos do painel.</p>
+</div>
 <div data-admin-secao="historico_logins" onclick="abrirAdminSecao('historico_logins')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
 <span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 mb-3">↗</span>
 <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Logins</h4>
@@ -2374,7 +2814,7 @@ container.innerHTML = `
 </div>
 </div>
 `;
-abrirAdminSecao('historico_logins');
+abrirAdminSecao('dashboard');
 }
 window.abrirAdminSecao = function(secao) {
 adminSecaoAtiva = secao;
@@ -2382,7 +2822,9 @@ document.querySelectorAll('[data-admin-secao]').forEach(card => {
 card.classList.toggle('admin-active', card.dataset.adminSecao === secao);
 });
 const sub = document.getElementById('admin-subconteudo');
-if (secao === 'historico_logins') {
+if (secao === 'dashboard') {
+renderizarAdminDashboard();
+} else if (secao === 'historico_logins') {
 let html = `
 <h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between">
 <span>Histórico de Logins (Entrada e Saída)</span>
@@ -3400,6 +3842,7 @@ turno.horario = item.horario;
 });
 if ((window.modoVisualizacao === 'individual' || window.modoVisualizacao === 'geral' || window.modoVisualizacao === 'hoje') && typeof window.mudarGrupo === 'function') window.mudarGrupo();
 if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'escalas') renderizarAdminEscalas();
+if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
 }
 
 onSnapshot(collection(db, 'escala_overrides'), snapshot => {
