@@ -3628,7 +3628,7 @@ const classeTurnoTemporal = estadoTurno === 'passado' ? 'linha-turno-passado' : 
 const corBadge = ativo
 ? 'bg-blue-600 text-white font-bold shadow-sm'
 : 'bg-black/10 dark:bg-white/5 text-zinc-400 dark:text-zinc-500';
-const textoTurnoCalendario = t.local === "—" ? (t.periodo === 'Noite' ? 'Livre 🌙' : 'Livre 📚') : t.local;
+const textoTurnoCalendario = t.local === "—" ? 'Livre' : t.local;
 turnosHtml += `
 <div class="${classeTurnoTemporal} calendar-shift ${corBadge}" title="${t.periodo}: ${t.local === '—' ? mensagemTurnoLivre(t.periodo) : t.local}">
 <span class="calendar-shift-period uppercase font-mono"><span class="calendar-shift-period-full">${t.periodo}</span><span class="calendar-shift-period-short">${sigla}</span></span>
