@@ -619,6 +619,40 @@ width: 100%;
 width: 100%;
 }
 
+.calendar-view-switch {
+display: none;
+align-items: center;
+gap: .25rem;
+padding: .25rem;
+border-radius: .8rem;
+background: rgba(0,0,0,.16);
+border: 1px solid rgba(148,163,184,.14);
+backdrop-filter: blur(12px);
+}
+
+.calendar-view-btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: .35rem;
+min-height: 34px;
+padding: .42rem .72rem;
+border-radius: .62rem;
+font-size: 10px;
+font-weight: 900;
+letter-spacing: .045em;
+text-transform: uppercase;
+color: #71717a;
+transition: color .2s ease, background .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.calendar-view-btn:active { transform: scale(.96); }
+.calendar-view-btn.is-active {
+color: #fff;
+background: linear-gradient(135deg, var(--brand-blue), var(--brand-indigo));
+box-shadow: 0 8px 20px -12px color-mix(in srgb, var(--brand-blue) 85%, transparent);
+}
+
 .calendar-day-card {
 min-height: 154px;
 height: auto;
@@ -652,6 +686,8 @@ letter-spacing: .035em;
 line-height: 1.35;
 }
 
+.calendar-shift-period-short { display: none; }
+
 .calendar-shift-text {
 min-width: 0;
 font-weight: 700;
@@ -670,6 +706,8 @@ word-break: normal;
 }
 
 @media (max-width: 767px) {
+.calendar-view-switch { display: flex; }
+
 .calendar-month-grid {
 display: flex !important;
 flex-direction: column;
@@ -701,6 +739,86 @@ border-radius: .65rem;
 .calendar-shift-period { font-size: 10px; padding-top: .08rem; }
 .calendar-shift-text { font-size: 12px; }
 .calendar-day-card.calendario-dia-passado { opacity: .72; }
+
+/* Modo Grade: recupera a visão compacta de 7 colunas usada anteriormente. */
+.calendar-months.calendar-mobile-grid .calendar-month-grid {
+display: grid !important;
+grid-template-columns: repeat(7, minmax(0, 1fr));
+gap: .3rem;
+}
+
+.calendar-months.calendar-mobile-grid .calendar-weekday,
+.calendar-months.calendar-mobile-grid .calendar-empty {
+display: block !important;
+}
+
+.calendar-months.calendar-mobile-grid .calendar-month-card {
+padding: .7rem !important;
+}
+
+.calendar-months.calendar-mobile-grid .calendar-empty {
+min-height: 92px !important;
+}
+
+.calendar-months.calendar-mobile-grid .calendar-day-card {
+min-height: 92px;
+height: 92px !important;
+padding: .28rem !important;
+gap: .2rem;
+border-radius: .55rem;
+}
+
+.calendar-months.calendar-mobile-grid .calendar-day-card > div:first-child {
+min-height: 12px;
+}
+
+.calendar-months.calendar-mobile-grid .calendar-day-card > div:last-child {
+display: flex;
+flex-direction: column;
+gap: .2rem;
+}
+
+.calendar-months.calendar-mobile-grid .calendar-day-number {
+font-size: 10px !important;
+line-height: 1;
+}
+
+.calendar-months.calendar-mobile-grid .calendar-day-name-mobile {
+display: none !important;
+}
+
+.calendar-months.calendar-mobile-grid .calendar-shift {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: .15rem;
+min-width: 0;
+padding: .16rem .22rem;
+border-radius: .3rem;
+font-size: 7px;
+line-height: 1.15;
+overflow: hidden;
+}
+
+.calendar-months.calendar-mobile-grid .calendar-shift-period {
+font-size: 7px;
+line-height: 1;
+padding: 0;
+flex: 0 0 auto;
+}
+
+.calendar-months.calendar-mobile-grid .calendar-shift-period-full { display: none; }
+.calendar-months.calendar-mobile-grid .calendar-shift-period-short { display: inline; }
+
+.calendar-months.calendar-mobile-grid .calendar-shift-text {
+font-size: 7px;
+line-height: 1.05;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+overflow-wrap: normal;
+text-align: right;
+}
 }
 
 @keyframes temporal-pulse {
@@ -1372,7 +1490,7 @@ Escala Diária por Turnos
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
-import { getFirestore, doc, setDoc, updateDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, updateDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 const firebaseConfig = {
 apiKey: "AIzaSyBOwnygs2V5ADR1C5xPRATXbU2M18VaKm4",
 authDomain: "painel-go-t7a.firebaseapp.com",
@@ -1385,12 +1503,14 @@ measurementId: "G-EHQSXVSYVS"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const SENHA_ACESSO = "unieurot7a";
+const SENHA_ANDRE = "3009";
 const SENHA_ADMIN = "@admin980";
 window.modoVisualizacao = 'hoje';
 let capotesCount = 0;
 let recadosListaGlobal = [];
 let historicoRecadosGlobal = [];
 let historicoLoginsGlobal = [];
+let historicoCapotesGlobal = [];
 let isAdminAutenticado = false;
 let escalaOverridesGlobal = [];
 let adminSecaoAtiva = 'historico_logins';
@@ -1458,10 +1578,18 @@ erroMsg.innerText = "Por favor, selecione o seu nome na lista.";
 erroMsg.classList.remove('hidden');
 return;
 }
-if (digitada === SENHA_ACESSO) {
+const senhaEsperada = alunoSelect === 'André Victor' ? SENHA_ANDRE : SENHA_ACESSO;
+if (digitada === senhaEsperada) {
 document.getElementById('login-overlay').style.display = 'none';
 sessionStorage.setItem('autenticado', 'true');
 sessionStorage.setItem('alunoLogado', alunoSelect);
+if (alunoSelect === 'André Victor') {
+isAdminAutenticado = true;
+sessionStorage.setItem('adminAutenticado', 'true');
+} else {
+isAdminAutenticado = false;
+sessionStorage.removeItem('adminAutenticado');
+}
 try {
 const agora = new Date();
 const docRef = await addDoc(collection(db, "historico_logins"), {
@@ -1509,7 +1637,9 @@ await registrarSaidaSistema();
 sessionStorage.removeItem('autenticado');
 sessionStorage.removeItem('alunoLogado');
 sessionStorage.removeItem('loginSessionId');
+sessionStorage.removeItem('adminAutenticado');
 currentLoginSessionId = null;
+isAdminAutenticado = false;
 document.getElementById('senha-input').value = '';
 document.getElementById('aluno-select').selectedIndex = 0;
 document.getElementById('login-overlay').style.display = 'flex';
@@ -1917,6 +2047,8 @@ if (docSnap.exists()) {
 capotesCount = docSnap.data().capotes || 0;
 const el = document.getElementById('contador-capotes-val');
 if (el) el.innerText = capotesCount;
+const adminKpiCapotes = document.getElementById('admin-kpi-capotes');
+if (adminKpiCapotes) adminKpiCapotes.innerText = capotesCount;
 if (window.modoVisualizacao === 'hoje') renderizarHojeView();
 } else {
 setDoc(contadorRef, { capotes: 0 }).catch(err => console.error(err));
@@ -1953,8 +2085,20 @@ historicoLoginsGlobal = [];
 snapshot.forEach((docSnap) => {
 historicoLoginsGlobal.push({ id: docSnap.id, ...docSnap.data() });
 });
-if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
+if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'historico_logins') {
 abrirAdminSecao('historico_logins');
+}
+});
+const historicoCapotesQuery = query(collection(db, "historico_capotes"), orderBy("timestamp", "desc"));
+onSnapshot(historicoCapotesQuery, (snapshot) => {
+historicoCapotesGlobal = [];
+snapshot.forEach((docSnap) => {
+historicoCapotesGlobal.push({ id: docSnap.id, ...docSnap.data() });
+});
+const adminKpiHistorico = document.getElementById('admin-kpi-capotes-historico');
+if (adminKpiHistorico) adminKpiHistorico.innerText = `${historicoCapotesGlobal.length} movimentações registradas`;
+if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'historico_capotes') {
+abrirAdminSecao('historico_capotes');
 }
 });
 async function registrarHistorico(acao, autor, texto) {
@@ -2030,16 +2174,30 @@ const senha = document.getElementById('admin-senha-input').value;
 const erro = document.getElementById('admin-erro');
 if (senha === SENHA_ADMIN) {
 isAdminAutenticado = true;
+sessionStorage.setItem('adminAutenticado', 'true');
 renderizarAdminPainelPrincipal();
 } else {
 erro.classList.remove('hidden');
 }
 }
 window.alterarCapotes = async function(delta) {
-let novoValor = capotesCount + delta;
-if (novoValor < 0) novoValor = 0;
+const ajuste = Number(delta) > 0 ? 1 : -1;
+const autor = sessionStorage.getItem('alunoLogado') || 'Usuário não identificado';
 try {
-await updateDoc(contadorRef, { capotes: novoValor });
+await runTransaction(db, async (transaction) => {
+const contadorSnap = await transaction.get(contadorRef);
+const valorAnterior = contadorSnap.exists() ? Number(contadorSnap.data().capotes || 0) : 0;
+const valorNovo = Math.max(0, valorAnterior + ajuste);
+const historicoRef = doc(collection(db, "historico_capotes"));
+transaction.set(contadorRef, { capotes: valorNovo }, { merge: true });
+transaction.set(historicoRef, {
+autor,
+alteracao: ajuste > 0 ? '+1' : '-1',
+valorAnterior,
+valorNovo,
+timestamp: serverTimestamp()
+});
+});
 } catch (error) {
 console.error(error);
 }
@@ -2182,13 +2340,18 @@ container.innerHTML = `
 <div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Acessos</span><strong class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${historicoLoginsGlobal.length}</strong><span class="text-[9px] text-emerald-500">Histórico sincronizado</span></div>
 <div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Recados ativos</span><strong class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${recadosListaGlobal.length}</strong><span class="text-[9px] text-blue-500">Visíveis para a turma</span></div>
 <div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Ajustes de escala</span><strong class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${escalaOverridesGlobal.length}</strong><span class="text-[9px] text-violet-500">Alterações publicadas</span></div>
-<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Sistema</span><strong class="block font-outfit font-black text-base text-emerald-500 mt-2">Operacional</strong><span class="text-[9px] text-zinc-500">Dados em tempo real</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Capotes</span><strong id="admin-kpi-capotes" class="block font-outfit font-black text-2xl text-emerald-500 mt-1">${capotesCount}</strong><span id="admin-kpi-capotes-historico" class="text-[9px] text-zinc-500">${historicoCapotesGlobal.length} movimentações registradas</span></div>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 shrink-0">
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 shrink-0">
 <div data-admin-secao="historico_logins" onclick="abrirAdminSecao('historico_logins')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
 <span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 mb-3">↗</span>
 <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Logins</h4>
 <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Nome, data, entrada e saída.</p>
+</div>
+<div data-admin-secao="historico_capotes" onclick="abrirAdminSecao('historico_capotes')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 mb-3">±</span>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Capotes</h4>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Quem alterou, horário e valor antes/depois.</p>
 </div>
 <div data-admin-secao="historico_recados" onclick="abrirAdminSecao('historico_recados')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
 <span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400 mb-3">≡</span>
@@ -2243,6 +2406,46 @@ html += `
 </div>
 </div>
 `;
+});
+}
+html += `</div>`;
+sub.innerHTML = html;
+} else if (secao === 'historico_capotes') {
+let html = `
+<h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between gap-3 flex-wrap">
+<span>Histórico do Contador de Capotes</span>
+<span class="text-[10px] text-zinc-400 font-normal">${historicoCapotesGlobal.length} movimentações registradas</span>
+</h3>
+<div class="space-y-3 max-h-[350px] overflow-y-auto pr-2" id="sub-sec-historico-capotes">
+`;
+if (historicoCapotesGlobal.length === 0) {
+html += `<p class="text-xs text-zinc-400 py-2">Nenhuma alteração do contador foi registrada desde a ativação do histórico.</p>`;
+} else {
+historicoCapotesGlobal.forEach(h => {
+let dataFormatada = 'Agora há pouco';
+if (h.timestamp && h.timestamp.toDate) {
+const d = h.timestamp.toDate();
+dataFormatada = d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+}
+const positivo = h.alteracao === '+1';
+const badgeColor = positivo
+? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+: 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+html += `
+<div class="p-3.5 rounded-xl glass-panel border border-black/5 dark:border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+<div class="min-w-0">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-2.5 py-1 rounded-md border text-[10px] font-black ${badgeColor}">${escaparHtmlAdmin(h.alteracao || '—')}</span>
+<span class="text-sm font-outfit font-bold text-zinc-800 dark:text-zinc-200">${escaparHtmlAdmin(h.autor || 'Usuário não identificado')}</span>
+</div>
+<p class="text-[10px] text-zinc-400 mt-1.5 font-mono">${dataFormatada}</p>
+</div>
+<div class="sm:text-right">
+<span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/5 dark:bg-black/25 border border-black/5 dark:border-white/5 text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-300">
+<span>${escaparHtmlAdmin(h.valorAnterior ?? '—')}</span><span class="text-zinc-500">→</span><span class="text-blue-500">${escaparHtmlAdmin(h.valorNovo ?? '—')}</span>
+</span>
+</div>
+</div>`;
 });
 }
 html += `</div>`;
@@ -2581,19 +2784,37 @@ ${eDono ? `
 html += `</div></div></div>`;
 containerTurnos.innerHTML = html;
 }
+window.definirVisualizacaoCalendarioMobile = function(modo) {
+const visualizacao = modo === 'grade' ? 'grade' : 'lista';
+try { localStorage.setItem('calendarioMobileView', visualizacao); } catch (e) {}
+renderizarCalendarioMensal();
+}
 window.renderizarCalendarioMensal = function() {
 const idTrio = document.getElementById('grupo-select').value;
 const dadosTrio = dadosEscala[idTrio];
 const containerTurnos = document.getElementById('lista-turnos');
+let visualizacaoMobile = 'lista';
+try { visualizacaoMobile = localStorage.getItem('calendarioMobileView') === 'grade' ? 'grade' : 'lista'; } catch (e) {}
 const meses = [
 { nome: "Agosto de 2026", ano: 2026, mes: 7, diasNoMes: 31 },
 { nome: "Setembro de 2026", ano: 2026, mes: 8, diasNoMes: 30 },
 { nome: "Outubro de 2026", ano: 2026, mes: 9, diasNoMes: 4 }
 ];
-let html = '<div class="calendar-months grid grid-cols-1 gap-5 pb-4 h-full overflow-y-auto pr-1">';
+const classeVisualizacaoMobile = visualizacaoMobile === 'grade' ? 'calendar-mobile-grid' : 'calendar-mobile-list';
+let html = `<div class="calendar-months ${classeVisualizacaoMobile} grid grid-cols-1 gap-5 pb-4 h-full overflow-y-auto pr-1">
+<div class="md:hidden sticky top-0 z-20 flex items-center justify-between gap-3 px-1 py-1.5 bg-zinc-100/90 dark:bg-[#080a11]/90 backdrop-blur-xl rounded-xl">
+<div>
+<span class="block text-[9px] font-black uppercase tracking-[.14em] text-zinc-500">Visualização</span>
+<span class="block text-[10px] font-semibold text-zinc-400 mt-0.5">Escolha como ver o mês</span>
+</div>
+<div class="calendar-view-switch" role="group" aria-label="Visualização do calendário">
+<button type="button" onclick="definirVisualizacaoCalendarioMobile('lista')" aria-pressed="${visualizacaoMobile === 'lista'}" class="calendar-view-btn ${visualizacaoMobile === 'lista' ? 'is-active' : ''}">☰ Lista</button>
+<button type="button" onclick="definirVisualizacaoCalendarioMobile('grade')" aria-pressed="${visualizacaoMobile === 'grade'}" class="calendar-view-btn ${visualizacaoMobile === 'grade' ? 'is-active' : ''}">▦ Grade</button>
+</div>
+</div>`;
 meses.forEach(m => {
 html += `
-<div class="glass-panel rounded-2xl p-4 shadow-lg space-y-3 h-fit border border-black/5 dark:border-white/5">
+<div class="calendar-month-card glass-panel rounded-2xl p-4 shadow-lg space-y-3 h-fit border border-black/5 dark:border-white/5">
 <div class="flex items-center justify-between pb-2.5 border-b border-black/5 dark:border-white/10">
 <h3 class="text-sm font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">${m.nome}</h3>
 <span class="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 font-outfit">Escala do ${dadosTrio.nomeGrupo.split(':')[0]}</span>
@@ -2629,6 +2850,7 @@ let cardClass = temAlgumPlantao
 : (isWeekend ? 'bg-black/10 dark:bg-black/40 border-black/10 dark:border-white/10 text-zinc-400 dark:text-zinc-500' : 'bg-black/5 dark:bg-black/30 border-black/5 dark:border-white/5 text-zinc-500 dark:text-zinc-400');
 let turnosHtml = '';
 turnosDia.forEach(t => {
+const sigla = t.periodo === 'Manhã' ? 'M' : t.periodo === 'Tarde' ? 'T' : 'N';
 const ativo = atividadeConfirmada(t.local);
 const estadoTurno = obterEstadoTemporalTurno(dataBr, t.periodo, t.horario);
 const classeTurnoTemporal = estadoTurno === 'passado' ? 'linha-turno-passado' : (estadoTurno === 'agora' ? 'linha-turno-atual' : '');
@@ -2638,7 +2860,7 @@ const corBadge = ativo
 const textoTurnoCalendario = t.local === "—" ? (t.periodo === 'Noite' ? 'Livre 🌙' : 'Livre 📚') : t.local;
 turnosHtml += `
 <div class="${classeTurnoTemporal} calendar-shift ${corBadge}" title="${t.periodo}: ${t.local === '—' ? mensagemTurnoLivre(t.periodo) : t.local}">
-<span class="calendar-shift-period uppercase font-mono">${t.periodo}</span>
+<span class="calendar-shift-period uppercase font-mono"><span class="calendar-shift-period-full">${t.periodo}</span><span class="calendar-shift-period-short">${sigla}</span></span>
 <span class="calendar-shift-text">${textoTurnoCalendario}</span>
 </div>
 `;
@@ -2647,8 +2869,8 @@ html += `
 <div class="calendar-day-card ${estadoData === 'passado' ? 'calendario-dia-passado' : (estadoData === 'hoje' ? 'calendario-dia-hoje' : '')} p-2 rounded-xl border ${cardClass} flex flex-col justify-between box-border space-y-1.5 transition-transform hover:scale-[1.01]">
 <div class="flex items-center justify-between px-0.5">
 <div class="flex items-baseline gap-2">
-<span class="text-sm font-outfit font-extrabold">${dia}</span>
-<span class="md:hidden text-[10px] uppercase tracking-widest font-bold opacity-70">${nomeDiaCurto}</span>
+<span class="calendar-day-number text-sm font-outfit font-extrabold">${dia}</span>
+<span class="calendar-day-name-mobile md:hidden text-[10px] uppercase tracking-widest font-bold opacity-70">${nomeDiaCurto}</span>
 </div>
 ${estadoData === 'hoje' ? '<span class="text-[6px] font-black uppercase tracking-wider text-blue-500">Hoje</span>' : (temAlgumPlantao ? '<span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]"></span>' : '')}
 </div>
@@ -3437,6 +3659,10 @@ if (sessionStorage.getItem('autenticado') === 'true') {
 document.getElementById('login-overlay').style.display = 'none';
 atualizarIdentificacaoAluno();
 const alunoLogado = sessionStorage.getItem('alunoLogado');
+if (alunoLogado === 'André Victor' || sessionStorage.getItem('adminAutenticado') === 'true') {
+isAdminAutenticado = true;
+sessionStorage.setItem('adminAutenticado', 'true');
+}
 if (alunoLogado) {
 direcionarParaTrioDoAluno(alunoLogado);
 }
