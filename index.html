@@ -2021,13 +2021,7 @@ return Boolean(local && local !== "—" && local !== ESCALA_NAO_ENVIADA);
 }
 
 function mensagemTurnoLivre(periodo, compacta = false) {
-if (compacta) {
-if (periodo === 'Noite') return 'Livre • Bom descanso 🌙';
-return 'Livre • Bons estudos 📚';
-}
-if (periodo === 'Manhã') return '☀️ Bons estudos! Aproveite para colocar as revisões em dia.';
-if (periodo === 'Tarde') return '📚 Bons estudos! Aproveite o turno livre para adiantar o conteúdo.';
-return '🌙 Faça uma revisão leve e aproveite também para descansar.';
+return 'Livre';
 }
 
 const ANO_ESCALA = 2026;
