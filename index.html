@@ -2808,8 +2808,8 @@ let html = `<div class="calendar-months ${classeVisualizacaoMobile} grid grid-co
 <span class="block text-[10px] font-semibold text-zinc-400 mt-0.5">Escolha como ver o mês</span>
 </div>
 <div class="calendar-view-switch" role="group" aria-label="Visualização do calendário">
-<button type="button" onclick="definirVisualizacaoCalendarioMobile('lista')" aria-pressed="${visualizacaoMobile === 'lista'}" class="calendar-view-btn ${visualizacaoMobile === 'lista' ? 'is-active' : ''}">☰ Lista</button>
 <button type="button" onclick="definirVisualizacaoCalendarioMobile('grade')" aria-pressed="${visualizacaoMobile === 'grade'}" class="calendar-view-btn ${visualizacaoMobile === 'grade' ? 'is-active' : ''}">▦ Grade</button>
+<button type="button" onclick="definirVisualizacaoCalendarioMobile('lista')" aria-pressed="${visualizacaoMobile === 'lista'}" class="calendar-view-btn ${visualizacaoMobile === 'lista' ? 'is-active' : ''}">☰ Lista</button>
 </div>
 </div>`;
 meses.forEach(m => {
