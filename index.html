@@ -1396,7 +1396,7 @@ main { padding-bottom: 26px !important; }
 <a href="https://wa.me/5561994559190?text=Olá%20André,%20estou%20a%20acessar%20o%20Painel%20de%20G.O." target="_blank" class="hidden lg:flex fixed bottom-4 right-4 z-50 w-12 h-12 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full items-center justify-center shadow-[0_4px_15px_rgba(16,185,129,0.4)] transition-all transform hover:scale-110 active:scale-95 group" title="Falar com André Victor no WhatsApp">
 <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
 </a>
-<div id="login-overlay" class="fixed inset-0 z-50 backdrop-blur-xl flex items-center justify-center p-4 overflow-hidden" style="background-image: linear-gradient(to bottom, rgba(2, 2, 3, 0.85), rgba(2, 2, 3, 0.98)), url('fundo.jpg'); background-size: cover; background-position: bottom center;">
+<div id="login-overlay" class="fixed inset-0 z-50 backdrop-blur-xl flex items-start sm:items-center justify-center p-4 overflow-y-auto" style="background-image: linear-gradient(to bottom, rgba(2, 2, 3, 0.85), rgba(2, 2, 3, 0.98)), url('fundo.jpg'); background-size: cover; background-position: bottom center;">
 <div class="glass-panel rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4 text-center relative overflow-hidden transition-all duration-300 border border-blue-500/20">
 <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.4)] shrink-0">
 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
@@ -1473,6 +1473,17 @@ main { padding-bottom: 26px !important; }
 </div>
 <button onclick="verificarSenha()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-outfit font-bold tracking-wide py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] active:scale-95 cursor-pointer text-sm">ACESSAR SISTEMA</button>
 <p id="erro-msg" class="text-xs text-rose-400 font-semibold hidden text-center animate-pulse">Selecione o nome e digite a senha correta.</p>
+<div class="pt-1 border-t border-white/10">
+<button type="button" onclick="toggleTrocaSenhaLogin()" id="btn-trocar-senha-login" class="w-full py-2 text-[11px] font-bold text-blue-400 hover:text-blue-300 transition-colors">Trocar minha senha</button>
+<div id="troca-senha-login" class="hidden mt-2 p-3 rounded-xl bg-white/[.035] border border-white/10 space-y-2.5">
+<div class="text-center mb-1"><strong class="block text-xs font-outfit text-white">Alterar senha de acesso</strong><span class="text-[9px] text-zinc-500">Selecione seu nome acima e confirme a senha atual.</span></div>
+<input type="password" id="troca-senha-atual" autocomplete="current-password" placeholder="Senha atual" class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-white text-xs focus:outline-none focus:border-blue-500 text-center placeholder:text-zinc-600">
+<input type="password" id="troca-senha-nova" autocomplete="new-password" placeholder="Nova senha (mín. 4 caracteres)" class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-white text-xs focus:outline-none focus:border-blue-500 text-center placeholder:text-zinc-600">
+<input type="password" id="troca-senha-confirmar" autocomplete="new-password" placeholder="Repita a nova senha" class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-white text-xs focus:outline-none focus:border-blue-500 text-center placeholder:text-zinc-600">
+<button type="button" onclick="trocarMinhaSenha()" id="btn-confirmar-troca-senha" class="w-full rounded-lg bg-blue-500/15 border border-blue-500/25 text-blue-300 hover:bg-blue-500/25 py-2.5 text-[10px] font-black uppercase tracking-wider transition-colors">Salvar nova senha</button>
+<p id="troca-senha-msg" class="hidden text-[10px] font-semibold text-center leading-relaxed"></p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1704,7 +1715,7 @@ Escala Diária por Turnos
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
-import { getFirestore, doc, setDoc, updateDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, runTransaction, writeBatch } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, runTransaction, writeBatch } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 const firebaseConfig = {
 apiKey: "AIzaSyBOwnygs2V5ADR1C5xPRATXbU2M18VaKm4",
 authDomain: "painel-go-t7a.firebaseapp.com",
@@ -1724,12 +1735,14 @@ let capotesCount = 0;
 let recadosListaGlobal = [];
 let historicoRecadosGlobal = [];
 let historicoLoginsGlobal = [];
+let historicoSenhasGlobal = [];
 let historicoCapotesGlobal = [];
 let historicoEscalasGlobal = [];
 let isAdminAutenticado = false;
 let escalaOverridesGlobal = [];
 let adminSecaoAtiva = 'dashboard';
 let currentLoginSessionId = null;
+let cancelarHistoricoSenhasAdmin = null;
 const alunoTrioMap = {
 "André Victor": "1", "Davi Carvalho": "1", "Letícia Barbosa": "1",
 "Nadya Jarosczynski": "2", "Louise Mirindiba": "2", "Isabella Teixeira": "2",
@@ -1784,6 +1797,100 @@ document.querySelector('meta[name="theme-color"]')?.setAttribute('content', usar
 atualizarSeletorCorPainel();
 if (window.modoVisualizacao === 'hoje' && typeof window.renderizarHojeView === 'function') renderizarHojeView();
 };
+
+function senhaPadraoUsuario(nome) {
+return nome === 'André Victor' ? SENHA_ANDRE : SENHA_ACESSO;
+}
+
+function idDocumentoSenhaUsuario(nome) {
+return encodeURIComponent(String(nome || '').trim());
+}
+
+async function obterSenhaAtualUsuario(nome) {
+try {
+const snapshot = await getDoc(doc(db, 'senhas_usuarios', idDocumentoSenhaUsuario(nome)));
+if (snapshot.exists() && snapshot.data()?.senhaAtual) {
+return snapshot.data().senhaAtual;
+}
+return senhaPadraoUsuario(nome);
+} catch (erro) {
+console.error('Erro ao consultar senha do usuário:', erro);
+throw erro;
+}
+}
+
+window.toggleTrocaSenhaLogin = function(forcarAberto = null) {
+const painel = document.getElementById('troca-senha-login');
+const botao = document.getElementById('btn-trocar-senha-login');
+if (!painel) return;
+const abrir = forcarAberto === null ? painel.classList.contains('hidden') : Boolean(forcarAberto);
+painel.classList.toggle('hidden', !abrir);
+if (botao) botao.innerText = abrir ? 'Fechar alteração de senha' : 'Trocar minha senha';
+const mensagem = document.getElementById('troca-senha-msg');
+if (mensagem && !abrir) mensagem.classList.add('hidden');
+};
+
+function mostrarMensagemTrocaSenha(texto, sucesso = false) {
+const mensagem = document.getElementById('troca-senha-msg');
+if (!mensagem) return;
+mensagem.innerText = texto;
+mensagem.className = `text-[10px] font-semibold text-center leading-relaxed ${sucesso ? 'text-emerald-400' : 'text-rose-400'}`;
+}
+
+window.trocarMinhaSenha = async function() {
+const nome = document.getElementById('aluno-select')?.value || '';
+const senhaAtualInformada = document.getElementById('troca-senha-atual')?.value || '';
+const novaSenha = (document.getElementById('troca-senha-nova')?.value || '').trim();
+const confirmacao = (document.getElementById('troca-senha-confirmar')?.value || '').trim();
+const botao = document.getElementById('btn-confirmar-troca-senha');
+if (!nome) return mostrarMensagemTrocaSenha('Selecione o seu nome primeiro.');
+if (!senhaAtualInformada) return mostrarMensagemTrocaSenha('Digite a sua senha atual.');
+if (novaSenha.length < 4) return mostrarMensagemTrocaSenha('A nova senha precisa ter pelo menos 4 caracteres.');
+if (novaSenha !== confirmacao) return mostrarMensagemTrocaSenha('As duas novas senhas não coincidem.');
+if (novaSenha === senhaAtualInformada) return mostrarMensagemTrocaSenha('Escolha uma senha diferente da atual.');
+if (botao) { botao.disabled = true; botao.innerText = 'SALVANDO...'; }
+try {
+const senhaRef = doc(db, 'senhas_usuarios', idDocumentoSenhaUsuario(nome));
+const historicoRef = doc(collection(db, 'historico_senhas'));
+const agora = new Date();
+await runTransaction(db, async transaction => {
+const snapshot = await transaction.get(senhaRef);
+const senhaVigente = snapshot.exists() && snapshot.data()?.senhaAtual ? snapshot.data().senhaAtual : senhaPadraoUsuario(nome);
+if (senhaAtualInformada !== senhaVigente) {
+const erroSenha = new Error('Senha atual incorreta');
+erroSenha.code = 'senha-atual-incorreta';
+throw erroSenha;
+}
+transaction.set(senhaRef, {
+nome,
+senhaAnterior: senhaVigente,
+senhaAtual: novaSenha,
+alteradoEm: serverTimestamp()
+}, { merge: true });
+transaction.set(historicoRef, {
+nome,
+senhaAnterior: senhaVigente,
+senhaNova: novaSenha,
+data: agora.toLocaleDateString('pt-BR'),
+hora: agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+timestamp: serverTimestamp()
+});
+});
+document.getElementById('troca-senha-atual').value = '';
+document.getElementById('troca-senha-nova').value = '';
+document.getElementById('troca-senha-confirmar').value = '';
+mostrarMensagemTrocaSenha('Senha alterada com sucesso. Já pode entrar usando a nova senha.', true);
+} catch (erro) {
+if (erro?.code === 'senha-atual-incorreta') mostrarMensagemTrocaSenha('A senha atual informada está incorreta.');
+else {
+console.error('Erro ao alterar senha:', erro);
+mostrarMensagemTrocaSenha('Não foi possível alterar a senha agora. Tente novamente.');
+}
+} finally {
+if (botao) { botao.disabled = false; botao.innerText = 'SALVAR NOVA SENHA'; }
+}
+};
+
 window.verificarSenha = async function() {
 const alunoSelect = document.getElementById('aluno-select').value;
 const digitada = document.getElementById('senha-input').value;
@@ -1793,7 +1900,14 @@ erroMsg.innerText = "Por favor, selecione o seu nome na lista.";
 erroMsg.classList.remove('hidden');
 return;
 }
-const senhaEsperada = alunoSelect === 'André Victor' ? SENHA_ANDRE : SENHA_ACESSO;
+let senhaEsperada;
+try {
+senhaEsperada = await obterSenhaAtualUsuario(alunoSelect);
+} catch (erro) {
+erroMsg.innerText = "Não foi possível validar a senha agora. Verifique a conexão e tente novamente.";
+erroMsg.classList.remove('hidden');
+return;
+}
 if (digitada === senhaEsperada) {
 document.getElementById('login-overlay').style.display = 'none';
 sessionStorage.setItem('autenticado', 'true');
@@ -1849,6 +1963,11 @@ console.error("Erro ao registrar saída:", e);
 }
 window.sairSistema = async function() {
 await registrarSaidaSistema();
+if (cancelarHistoricoSenhasAdmin) {
+cancelarHistoricoSenhasAdmin();
+cancelarHistoricoSenhasAdmin = null;
+historicoSenhasGlobal = [];
+}
 sessionStorage.removeItem('autenticado');
 sessionStorage.removeItem('alunoLogado');
 sessionStorage.removeItem('loginSessionId');
@@ -1857,6 +1976,11 @@ currentLoginSessionId = null;
 isAdminAutenticado = false;
 document.getElementById('senha-input').value = '';
 document.getElementById('aluno-select').selectedIndex = 0;
+['troca-senha-atual', 'troca-senha-nova', 'troca-senha-confirmar'].forEach(id => {
+const campo = document.getElementById(id);
+if (campo) campo.value = '';
+});
+window.toggleTrocaSenhaLogin(false);
 document.getElementById('login-overlay').style.display = 'flex';
 }
 window.addEventListener('beforeunload', () => {
@@ -1998,7 +2122,7 @@ const acumulada = calcularCargaHorariaTrio(trioId);
 const valor = document.getElementById('stat-carga-semanal');
 const detalhes = document.getElementById('stat-carga-detalhes');
 if (valor) valor.innerText = formatarCargaHoraria(semanal.total);
-if (detalhes) detalhes.innerHTML = `Semana confirmada<br><span class="text-violet-500">Teórica: ${formatarCargaHoraria(semanal.teorica)}</span> • Total: ${formatarCargaHoraria(acumulada.total)}<br><span class="text-zinc-500">Teóricas acumuladas: ${formatarCargaHoraria(acumulada.teorica)}</span>`;
+if (detalhes) detalhes.innerHTML = `<span class="block text-emerald-500">${formatarCargaHoraria(semanal.pratica)} de prática</span><span class="block text-violet-500">${formatarCargaHoraria(semanal.teorica)} de teórica</span><span class="block text-zinc-500 mt-1">Total confirmado: ${formatarCargaHoraria(acumulada.total)}</span>`;
 }
 
 function obterDataHoraInicioAtividade(dataBr, turno) {
@@ -2370,6 +2494,20 @@ if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
 else if (adminSecaoAtiva === 'historico_logins') abrirAdminSecao('historico_logins');
 }
 });
+function iniciarHistoricoSenhasAdmin() {
+if (!isAdminAutenticado || cancelarHistoricoSenhasAdmin) return;
+const historicoSenhasQuery = query(collection(db, "historico_senhas"), orderBy("timestamp", "desc"));
+cancelarHistoricoSenhasAdmin = onSnapshot(historicoSenhasQuery, (snapshot) => {
+historicoSenhasGlobal = [];
+snapshot.forEach((docSnap) => {
+historicoSenhasGlobal.push({ id: docSnap.id, ...docSnap.data() });
+});
+if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
+if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
+else if (adminSecaoAtiva === 'historico_logins') abrirAdminSecao('historico_logins');
+}
+}, erro => console.error('Erro ao carregar histórico de senhas:', erro));
+}
 const historicoCapotesQuery = query(collection(db, "historico_capotes"), orderBy("timestamp", "desc"));
 onSnapshot(historicoCapotesQuery, (snapshot) => {
 historicoCapotesGlobal = [];
@@ -2667,6 +2805,7 @@ window.limparHistoricoAdmin = async function(tipo) {
 if (!isAdminAutenticado || limpezaHistoricoEmAndamento) return;
 const configuracoes = {
 logins: { colecao: 'historico_logins', titulo: 'histórico de acessos', itens: historicoLoginsGlobal },
+senhas: { colecao: 'historico_senhas', titulo: 'histórico de alterações de senha', itens: historicoSenhasGlobal },
 capotes: { colecao: 'historico_capotes', titulo: 'histórico do contador de capotes', itens: historicoCapotesGlobal },
 recados: { colecao: 'historico_recados', titulo: 'histórico de auditoria dos recados', itens: historicoRecadosGlobal },
 escalas: { colecao: 'historico_escalas', titulo: 'histórico de auditoria das escalas', itens: historicoEscalasGlobal }
@@ -2704,6 +2843,7 @@ window.excluirRegistroHistoricoAdmin = async function(tipo, id) {
 if (!isAdminAutenticado || !id) return;
 const configuracoes = {
 logins: { colecao: 'historico_logins', titulo: 'este acesso' },
+senhas: { colecao: 'historico_senhas', titulo: 'esta alteração de senha' },
 capotes: { colecao: 'historico_capotes', titulo: 'esta movimentação de capote' },
 recados: { colecao: 'historico_recados', titulo: 'este registro de recado' },
 escalas: { colecao: 'historico_escalas', titulo: 'este registro de escala' }
@@ -2848,10 +2988,10 @@ const rankingHtml = dados.rankingUsuarios.length ? dados.rankingUsuarios.map((it
 const cargaTriosHtml = dados.cargaTrios.map(item => {
 const semanasHtml = Array.from({ length: 9 }, (_, indice) => {
 const numero = indice + 1;
-const semana = item.semanas[numero] || { total: 0, teorica: 0 };
-return `<div class="rounded-lg bg-black/5 dark:bg-white/[.045] border border-black/5 dark:border-white/5 px-2 py-2 text-center" title="Semana ${numero}: ${formatarCargaHoraria(semana.total)} confirmadas, ${formatarCargaHoraria(semana.teorica)} teóricas"><span class="block text-[8px] font-black uppercase tracking-wider text-zinc-500">S${numero}</span><strong class="block text-[10px] text-zinc-800 dark:text-zinc-200 mt-1">${formatarCargaHoraria(semana.total)}</strong>${semana.teorica ? `<span class="block text-[8px] text-violet-500 mt-0.5">T ${formatarCargaHoraria(semana.teorica)}</span>` : ''}</div>`;
+const semana = item.semanas[numero] || { total: 0, teorica: 0, pratica: 0 };
+return `<div class="rounded-lg bg-black/5 dark:bg-white/[.045] border border-black/5 dark:border-white/5 px-2 py-2 text-center" title="Semana ${numero}: ${formatarCargaHoraria(semana.total)} no total, ${formatarCargaHoraria(semana.pratica)} práticas e ${formatarCargaHoraria(semana.teorica)} teóricas"><span class="block text-[8px] font-black uppercase tracking-wider text-zinc-500">S${numero}</span><strong class="block text-[10px] text-zinc-800 dark:text-zinc-200 mt-1">${formatarCargaHoraria(semana.total)}</strong><span class="block text-[8px] text-emerald-500 mt-0.5">P ${formatarCargaHoraria(semana.pratica)}</span><span class="block text-[8px] text-violet-500 mt-0.5">T ${formatarCargaHoraria(semana.teorica)}</span></div>`;
 }).join('');
-return `<article class="rounded-xl p-3.5 bg-black/[.025] dark:bg-black/20 border border-black/5 dark:border-white/5"><div class="flex items-center justify-between gap-3 flex-wrap"><div><strong class="font-outfit font-black text-sm text-zinc-900 dark:text-white">${item.nome}</strong><span class="block text-[9px] text-zinc-500 mt-0.5">Confirmado até agora</span></div><div class="flex items-center gap-2"><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 text-violet-500 text-[9px] font-bold">Teóricas ${formatarCargaHoraria(item.teorica)}</span><span class="px-2.5 py-1.5 rounded-lg bg-blue-500/10 text-blue-500 text-[10px] font-black">Total ${formatarCargaHoraria(item.valor)}</span></div></div><div class="grid grid-cols-3 sm:grid-cols-5 xl:grid-cols-9 gap-1.5 mt-3">${semanasHtml}</div></article>`;
+return `<article class="rounded-xl p-3.5 bg-black/[.025] dark:bg-black/20 border border-black/5 dark:border-white/5"><div class="flex items-center justify-between gap-3 flex-wrap"><div><strong class="font-outfit font-black text-sm text-zinc-900 dark:text-white">${item.nome}</strong><span class="block text-[9px] text-zinc-500 mt-0.5">Confirmado até agora</span></div><div class="flex items-center gap-2 flex-wrap"><span class="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 text-[9px] font-bold">Prática ${formatarCargaHoraria(item.pratica)}</span><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 text-violet-500 text-[9px] font-bold">Teórica ${formatarCargaHoraria(item.teorica)}</span><span class="px-2.5 py-1.5 rounded-lg bg-blue-500/10 text-blue-500 text-[10px] font-black">Total ${formatarCargaHoraria(item.valor)}</span></div></div><div class="grid grid-cols-3 sm:grid-cols-5 xl:grid-cols-9 gap-1.5 mt-3">${semanasHtml}</div></article>`;
 }).join('');
 const valoresTurnos = [dados.turnosEscala['Manhã'], dados.turnosEscala['Tarde'], dados.turnosEscala['Noite']];
 const coresTurnos = ['#38bdf8', '#f59e0b', '#818cf8'];
@@ -2887,7 +3027,7 @@ sub.innerHTML = `
 
 <section class="admin-analytics-card rounded-2xl p-4 xl:col-span-7"><div class="relative z-10"><div class="flex items-start justify-between gap-3"><div><h4 class="admin-chart-title">Movimentação dos capotes</h4><p class="admin-chart-subtitle">Entradas e retiradas registradas no contador.</p></div><strong class="text-3xl font-outfit font-black text-emerald-500">${capotesCount}</strong></div><div class="grid grid-cols-2 gap-3 mt-5"><div class="rounded-xl p-4 bg-emerald-500/10 border border-emerald-500/15"><span class="text-[9px] font-black uppercase tracking-widest text-emerald-500">Adicionados</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">+${dados.capotesAdicionados}</strong></div><div class="rounded-xl p-4 bg-rose-500/10 border border-rose-500/15"><span class="text-[9px] font-black uppercase tracking-widest text-rose-500">Retirados</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">−${dados.capotesRetirados}</strong></div></div><div class="flex h-2 rounded-full overflow-hidden bg-zinc-500/10 mt-4"><span class="bg-emerald-500" style="width:${historicoCapotesGlobal.length ? (dados.capotesAdicionados / historicoCapotesGlobal.length) * 100 : 0}%"></span><span class="bg-rose-500" style="width:${historicoCapotesGlobal.length ? (dados.capotesRetirados / historicoCapotesGlobal.length) * 100 : 0}%"></span></div><div class="flex justify-between mt-2 text-[9px] text-zinc-500"><span>${historicoCapotesGlobal.length} movimentações</span><span>Saldo: ${variacaoCapotes > 0 ? '+' : ''}${variacaoCapotes}</span></div></div></section>
 
-<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><div class="flex items-start justify-between gap-3 flex-wrap"><div><h4 class="admin-chart-title">Carga horária confirmada por trio</h4><p class="admin-chart-subtitle">Resumo semanal e total da escala enviada até agora. “T” identifica as horas teóricas.</p></div><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-500 text-[9px] font-bold">Teóricas fixas: segunda à tarde + terça à noite</span></div><div class="space-y-2.5 mt-5">${cargaTriosHtml}</div></div></section>
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><div class="flex items-start justify-between gap-3 flex-wrap"><div><h4 class="admin-chart-title">Carga horária confirmada por trio</h4><p class="admin-chart-subtitle">Cada semana separa prática (P) e teórica (T), além do total confirmado.</p></div><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-500 text-[9px] font-bold">Teóricas fixas: segunda à tarde + terça à noite</span></div><div class="space-y-2.5 mt-5">${cargaTriosHtml}</div></div></section>
 
 <section class="admin-analytics-card rounded-2xl p-4 xl:col-span-5"><div class="relative z-10"><h4 class="admin-chart-title">Atividades por turno</h4><p class="admin-chart-subtitle">Composição dos turnos confirmados na escala.</p><div class="flex items-center justify-center gap-5 mt-5"><div class="admin-donut" style="background:${donutTurnos}" role="img" aria-label="Distribuição das atividades por turno"><div class="admin-donut-center"><strong>${dados.totalTurnos}</strong><span>turnos</span></div></div><div class="space-y-2.5 min-w-[112px]">${['Manhã','Tarde','Noite'].map((nome, i) => `<div class="flex items-center justify-between gap-3"><span class="flex items-center gap-2 text-[10px] text-zinc-500"><i class="admin-legend-dot" style="background:${coresTurnos[i]};color:${coresTurnos[i]}"></i>${nome}</span><strong class="text-[11px] text-zinc-800 dark:text-zinc-200">${valoresTurnos[i]}</strong></div>`).join('')}<div class="pt-2 mt-2 border-t border-black/5 dark:border-white/5 text-[9px] text-zinc-500">${dados.atividadesFds} no fim de semana<br>${formatarCargaHoraria(dados.totalMinutosTeoricos)} teóricas</div></div></div></div></section>
 
@@ -2895,13 +3035,14 @@ sub.innerHTML = `
 
 <section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><div class="flex items-start justify-between gap-3"><div><h4 class="admin-chart-title">Atividade recente</h4><p class="admin-chart-subtitle">Últimos eventos importantes registrados no painel.</p></div><span class="text-[9px] text-zinc-500">Mais recentes primeiro</span></div><div class="relative mt-5"><span class="admin-activity-line"></span>${recentesHtml}</div></div></section>
 
-<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><h4 class="admin-chart-title">Gerenciar históricos</h4><p class="admin-chart-subtitle">Limpe somente a categoria desejada. Recados ativos e alterações de escala publicadas não serão apagados.</p><div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 mt-5"><button onclick="limparHistoricoAdmin('logins')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar acessos</span><span class="text-[9px] text-zinc-500">${historicoLoginsGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdmin('capotes')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar capotes</span><span class="text-[9px] text-zinc-500">${historicoCapotesGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdmin('recados')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar auditoria de recados</span><span class="text-[9px] text-zinc-500">${historicoRecadosGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdmin('escalas')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar auditoria de escalas</span><span class="text-[9px] text-zinc-500">${historicoEscalasGlobal.length} registro(s)</span></button></div></div></section>
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><h4 class="admin-chart-title">Gerenciar históricos</h4><p class="admin-chart-subtitle">Limpe somente a categoria desejada. Recados ativos, senhas atuais e alterações de escala publicadas não serão apagados.</p><div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 mt-5"><button onclick="limparHistoricoAdmin('logins')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar acessos</span><span class="text-[9px] text-zinc-500">${historicoLoginsGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdmin('senhas')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar alterações de senha</span><span class="text-[9px] text-zinc-500">${historicoSenhasGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdmin('capotes')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar capotes</span><span class="text-[9px] text-zinc-500">${historicoCapotesGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdmin('recados')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar auditoria de recados</span><span class="text-[9px] text-zinc-500">${historicoRecadosGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdmin('escalas')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar auditoria de escalas</span><span class="text-[9px] text-zinc-500">${historicoEscalasGlobal.length} registro(s)</span></button></div></div></section>
 </div>
 </div>`;
 atualizarKpisAdmin();
 }
 
 window.renderizarAdminPainelPrincipal = function() {
+iniciarHistoricoSenhasAdmin();
 const container = document.getElementById('lista-turnos');
 container.innerHTML = `
 <div class="space-y-4 h-full flex flex-col">
@@ -2929,7 +3070,7 @@ container.innerHTML = `
 <div data-admin-secao="historico_logins" onclick="abrirAdminSecao('historico_logins')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
 <span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 mb-3">↗</span>
 <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Logins</h4>
-<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Nome, data, entrada e saída.</p>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Acessos e alterações de senha.</p>
 </div>
 <div data-admin-secao="historico_capotes" onclick="abrirAdminSecao('historico_capotes')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
 <span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 mb-3">±</span>
@@ -3002,6 +3143,26 @@ html += `
 });
 }
 html += `</div>`;
+html += `
+<div class="mt-6 pt-5 border-t border-black/5 dark:border-white/10">
+<div class="flex items-center justify-between gap-3 flex-wrap mb-3">
+<div><span class="text-[9px] font-black uppercase tracking-[.16em] text-violet-500">Segurança de acesso</span><h4 class="text-sm font-outfit font-extrabold text-zinc-900 dark:text-white mt-1">Alterações de senha</h4></div>
+<span class="flex items-center gap-2"><span class="text-[10px] text-zinc-400">${historicoSenhasGlobal.length} alteração(ões)</span><button onclick="limparHistoricoAdmin('senhas')" class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[9px] font-black hover:bg-rose-500/20">Limpar histórico</button></span>
+</div>
+<div class="space-y-3 max-h-[320px] overflow-y-auto pr-2" id="sub-sec-historico-senhas">`;
+if (historicoSenhasGlobal.length === 0) {
+html += `<p class="text-xs text-zinc-400 py-3">Nenhuma alteração de senha registrada ainda.</p>`;
+} else {
+historicoSenhasGlobal.forEach(item => {
+let dataFormatada = `${item.data || 'Data não informada'}${item.hora ? ` às ${item.hora}` : ''}`;
+if (item.timestamp && item.timestamp.toDate) {
+const dataEvento = item.timestamp.toDate();
+dataFormatada = dataEvento.toLocaleDateString('pt-BR') + ' às ' + dataEvento.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+html += `<div class="p-3.5 rounded-xl glass-panel border border-violet-500/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div class="min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="px-2 py-1 rounded-md bg-violet-500/10 border border-violet-500/20 text-violet-500 text-[9px] font-black">SENHA ALTERADA</span><strong class="text-xs text-zinc-800 dark:text-zinc-200">${escaparHtmlAdmin(item.nome || 'Usuário')}</strong></div><span class="block text-[9px] text-zinc-500 font-mono mt-1.5">${dataFormatada}</span></div><div class="flex items-center gap-2 flex-wrap justify-end"><span class="px-2.5 py-1.5 rounded-lg bg-black/5 dark:bg-black/25 border border-black/5 dark:border-white/5 text-[10px] text-zinc-500">Antes: <strong class="font-mono text-rose-500">${escaparHtmlAdmin(item.senhaAnterior || '—')}</strong></span><span class="text-zinc-500">→</span><span class="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/15 text-[10px] text-zinc-500">Agora: <strong class="font-mono text-emerald-500">${escaparHtmlAdmin(item.senhaNova || '—')}</strong></span><button onclick="excluirRegistroHistoricoAdmin('senhas','${item.id}')" class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500/20" title="Apagar somente esta alteração" aria-label="Apagar esta alteração de senha">×</button></div></div>`;
+});
+}
+html += `</div></div>`;
 sub.innerHTML = html;
 } else if (secao === 'historico_capotes') {
 let html = `
