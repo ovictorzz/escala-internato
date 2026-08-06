@@ -3758,7 +3758,7 @@ const tardeSegunda = (semanaNum === 1)
 : "Sessões Clínicas Integradas (Aula Teórica) — UNIEURO";
 const localLivre = semanaNum >= 4 ? ESCALA_NAO_ENVIADA : "—";
 return {
-"seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: tardeSegunda }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] },
+"seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: semanaNum === 1 ? "13h-18h" : "14h-17h", local: tardeSegunda }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] },
 "ter": { nome: "Terça-feira", data: datasArray[1], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: localLivre }, { periodo: "Noite", horario: "18h30-21h30", local: "Seminário de G.O. — UNIEURO" } ] },
 "qua": { nome: "Quarta-feira", data: datasArray[2], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: localLivre }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] },
 "qui": { nome: "Quinta-feira", data: datasArray[3], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: localLivre }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] },
@@ -3822,7 +3822,7 @@ Object.values(dadosEscala["1"].semanas[s]).forEach(infoDia => {
 const atividade = escalaTrio01[infoDia.data] || {};
 infoDia.turnos = [
 { periodo: "Manhã", horario: "07h-13h", local: atividade.manha || "—" },
-{ periodo: "Tarde", horario: "13h-18h", local: atividade.tarde || (infoDia.nome === "Segunda-feira" ? (infoDia.data === "03/08" ? "Simulado — UNIEURO" : "Sessões Clínicas Integradas (Aula Teórica) — UNIEURO") : "—") },
+{ periodo: "Tarde", horario: infoDia.nome === "Segunda-feira" && infoDia.data !== "03/08" ? "14h-17h" : "13h-18h", local: atividade.tarde || (infoDia.nome === "Segunda-feira" ? (infoDia.data === "03/08" ? "Simulado — UNIEURO" : "Sessões Clínicas Integradas (Aula Teórica) — UNIEURO") : "—") },
 { periodo: "Noite", horario: infoDia.nome === "Terça-feira" ? "18h30-21h30" : "18h-22h", local: atividade.noite || (infoDia.nome === "Terça-feira" ? "Seminário de G.O. — UNIEURO" : "—") }
 ];
 });
