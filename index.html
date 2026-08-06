@@ -2703,7 +2703,7 @@ btnHeaderAdmin.className = "w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-in
 btnCalendario.className = classAtivo;
 colunaMembros.style.display = 'none';
 colunaTurnos.className = "lg:col-span-12 flex flex-col h-full";
-tituloSecao.innerHTML = `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span>Calendário Mensal do Trio Selecionado (Agosto a Outubro de 2026)</span>`;
+tituloSecao.innerHTML = `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span>Calendário Mensal do Trio Selecionado (Agosto a Novembro de 2026)</span>`;
 containerAbas.style.display = 'none';
 bannerHero.style.display = 'none';
 wrapperSemanas.style.display = 'none';
@@ -3572,7 +3572,8 @@ try { visualizacaoMobile = localStorage.getItem('calendarioMobileView') === 'gra
 const meses = [
 { nome: "Agosto de 2026", ano: 2026, mes: 7, diasNoMes: 31 },
 { nome: "Setembro de 2026", ano: 2026, mes: 8, diasNoMes: 30 },
-{ nome: "Outubro de 2026", ano: 2026, mes: 9, diasNoMes: 4 }
+{ nome: "Outubro de 2026", ano: 2026, mes: 9, diasNoMes: 31 },
+{ nome: "Novembro de 2026", ano: 2026, mes: 10, diasNoMes: 9 }
 ];
 const classeVisualizacaoMobile = visualizacaoMobile === 'grade' ? 'calendar-mobile-grid' : 'calendar-mobile-list';
 let html = `<div class="calendar-months ${classeVisualizacaoMobile} grid grid-cols-1 gap-5 pb-4 h-full overflow-y-auto pr-1">
@@ -3602,10 +3603,8 @@ html += `
 <div class="calendar-weekday text-[10px] font-bold text-zinc-400 uppercase tracking-widest py-1">Sáb</div>
 <div class="calendar-weekday text-[10px] font-bold text-zinc-400 uppercase tracking-widest py-1">Dom</div>
 `;
-let primeiroDiaIndex;
-if(m.mes === 7) primeiroDiaIndex = 5;
-else if(m.mes === 8) primeiroDiaIndex = 1;
-else if(m.mes === 9) primeiroDiaIndex = 3;
+const primeiroDiaSemana = new Date(m.ano, m.mes, 1).getDay();
+const primeiroDiaIndex = primeiroDiaSemana === 0 ? 6 : primeiroDiaSemana - 1;
 for(let i = 0; i < primeiroDiaIndex; i++) {
 html += `<div class="calendar-empty rounded-xl bg-black/5 dark:bg-black/20 opacity-20 min-h-[154px]"></div>`;
 }
@@ -3670,6 +3669,16 @@ containerTurnos.innerHTML = html;
 function obterDetalhesTurnosDia(idTrio, dataObj) {
 const dataInicioRodizio = new Date(2026, 7, 3);
 const dataFimRodizio = new Date(2026, 9, 4, 23, 59, 59);
+const dataFimCalendarioTeorico = new Date(2026, 10, 9, 23, 59, 59);
+if(dataObj > dataFimRodizio && dataObj <= dataFimCalendarioTeorico) {
+const dataBr = `${String(dataObj.getDate()).padStart(2, '0')}/${String(dataObj.getMonth() + 1).padStart(2, '0')}`;
+const programacaoSegunda = dataObj.getDay() === 1 ? obterProgramacaoSegunda(dataBr) : null;
+return [
+{ periodo: "Manhã", local: "—" },
+{ periodo: "Tarde", horario: programacaoSegunda?.horario || "13h-18h", local: programacaoSegunda?.local || "—" },
+{ periodo: "Noite", local: "—" }
+];
+}
 if(dataObj < dataInicioRodizio || dataObj > dataFimRodizio) {
 return [
 { periodo: "Manhã", local: "—" },
@@ -3752,13 +3761,23 @@ atualizarProximaAtividadeDinamica(alunoLogado);
 atualizar();
 setInterval(atualizar, 1000 * 60); // Verifica a cada 1 minuto para transicionar automaticamente os turnos
 }
+const SIMULADOS_SEGUNDA = {
+"03/08": "Simulado I — UNIEURO",
+"10/08": "Simulado II — UNIEURO",
+"31/08": "Simulado III — UNIEURO",
+"09/11": "Simulado IV — UNIEURO"
+};
+const SEGUNDAS_SEM_SCI = new Set(["07/09", "14/09", "12/10", "02/11"]);
+function obterProgramacaoSegunda(dataBr) {
+if (SIMULADOS_SEGUNDA[dataBr]) return { horario: "14h-17h", local: SIMULADOS_SEGUNDA[dataBr] };
+if (SEGUNDAS_SEM_SCI.has(dataBr)) return { horario: "14h-17h", local: "—" };
+return { horario: "14h-17h", local: "Sessões Clínicas Integradas (Aula Teórica) — UNIEURO" };
+}
 function gerarDiasSemana(semanaNum, datasArray) {
-const tardeSegunda = (semanaNum === 1)
-? "Simulado — UNIEURO"
-: "Sessões Clínicas Integradas (Aula Teórica) — UNIEURO";
+const programacaoSegunda = obterProgramacaoSegunda(datasArray[0]);
 const localLivre = semanaNum >= 4 ? ESCALA_NAO_ENVIADA : "—";
 return {
-"seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: semanaNum === 1 ? "13h-18h" : "14h-17h", local: tardeSegunda }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] },
+"seg": { nome: "Segunda-feira", data: datasArray[0], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: programacaoSegunda.horario, local: programacaoSegunda.local }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] },
 "ter": { nome: "Terça-feira", data: datasArray[1], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: localLivre }, { periodo: "Noite", horario: "18h30-21h30", local: "Seminário de G.O. — UNIEURO" } ] },
 "qua": { nome: "Quarta-feira", data: datasArray[2], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: localLivre }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] },
 "qui": { nome: "Quinta-feira", data: datasArray[3], turnos: [ { periodo: "Manhã", horario: "07h-13h", local: localLivre }, { periodo: "Tarde", horario: "13h-18h", local: localLivre }, { periodo: "Noite", horario: "18h-22h", local: localLivre } ] },
@@ -3820,9 +3839,10 @@ const escalaTrio01 = {
 for (let s = 1; s <= 3; s++) {
 Object.values(dadosEscala["1"].semanas[s]).forEach(infoDia => {
 const atividade = escalaTrio01[infoDia.data] || {};
+const programacaoSegunda = infoDia.nome === "Segunda-feira" ? obterProgramacaoSegunda(infoDia.data) : null;
 infoDia.turnos = [
 { periodo: "Manhã", horario: "07h-13h", local: atividade.manha || "—" },
-{ periodo: "Tarde", horario: infoDia.nome === "Segunda-feira" && infoDia.data !== "03/08" ? "14h-17h" : "13h-18h", local: atividade.tarde || (infoDia.nome === "Segunda-feira" ? (infoDia.data === "03/08" ? "Simulado — UNIEURO" : "Sessões Clínicas Integradas (Aula Teórica) — UNIEURO") : "—") },
+{ periodo: "Tarde", horario: programacaoSegunda?.horario || "13h-18h", local: atividade.tarde || programacaoSegunda?.local || "—" },
 { periodo: "Noite", horario: infoDia.nome === "Terça-feira" ? "18h30-21h30" : "18h-22h", local: atividade.noite || (infoDia.nome === "Terça-feira" ? "Seminário de G.O. — UNIEURO" : "—") }
 ];
 });
