@@ -2275,7 +2275,7 @@ timelineHtml += `<div class="timeline-item" data-state="${estado}"><div class="t
 const recado = recadosListaGlobal[0];
 const proximaTexto = proxima ? `${proxima.infoDia.nome}, ${proxima.infoDia.data} • ${proxima.turno.periodo}` : 'Nenhuma atividade futura';
 const atividadesHoje = turnos.filter(turno => atividadeConfirmada(turno.local)).length;
-container.innerHTML = `<div class="today-shell space-y-4 pb-4"><section class="today-hero glass-panel rounded-3xl p-5 sm:p-6"><div class="relative z-10 flex items-start justify-between gap-4"><div><span class="text-[10px] font-black uppercase tracking-[.2em] text-blue-500">${agora.getHours() < 7 ? '☾ Bom descanso, interno ✦' : 'Resumo personalizado'}</span><h3 class="font-outfit font-black text-2xl sm:text-3xl text-zinc-900 dark:text-white mt-2">${escaparHTML(infoDia.nome)}, ${infoDia.data}</h3><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2">${atividadesHoje ? `${atividadesHoje} atividade${atividadesHoje > 1 ? 's' : ''} programada${atividadesHoje > 1 ? 's' : ''} para o Trio A${idTrio}.` : 'Seu trio está livre hoje.'}</p></div><span class="hidden sm:inline-flex px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold">● Painel atualizado</span></div></section><div class="grid grid-cols-1 xl:grid-cols-12 gap-4"><section class="xl:col-span-8 glass-panel rounded-3xl p-4 sm:p-5"><div class="flex items-center justify-between mb-3"><div><span class="text-[9px] font-black uppercase tracking-[.2em] text-blue-500">Linha do tempo</span><h3 class="font-outfit font-extrabold text-lg text-zinc-900 dark:text-white mt-1">Manhã, tarde e noite</h3></div><span class="text-[10px] font-mono font-bold text-zinc-500">${agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span></div><div class="timeline-list">${timelineHtml}</div></section><aside class="xl:col-span-4 space-y-4"><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-blue-500">Próxima atividade</span><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-2">${escaparHTML(proximaTexto)}</h4><p class="text-[11px] text-zinc-500 mt-1">${proxima ? escaparHTML(proxima.turno.local) : 'Aproveite o tempo livre.'}</p>${proxima ? `<button onclick="abrirDiaDaEscala('${idTrio}', ${proxima.semana}, '${proxima.diaKey}')" class="mt-4 text-[10px] font-bold text-blue-500 hover:text-blue-400">Abrir na escala →</button>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><div class="flex items-center justify-between"><span class="text-[9px] font-black uppercase tracking-[.18em] text-violet-500">Último recado</span><button onclick="alternarModo('recados')" class="text-[9px] font-bold text-blue-500">Ver mural</button></div><p class="text-xs text-zinc-600 dark:text-zinc-300 mt-3 leading-relaxed">${recado ? escaparHTML(recado.texto) : 'Nenhum aviso publicado até o momento.'}</p>${recado ? `<span class="block text-[9px] text-zinc-500 mt-2">${escaparHTML(recado.autor || 'Turma T7A')}</span>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-emerald-500">Controle do C.O.</span><div class="flex items-end justify-between mt-2"><div><strong class="font-outfit font-black text-3xl text-zinc-900 dark:text-white">${capotesCount}</strong><span class="text-[10px] text-zinc-500 ml-1">capotes</span></div><button onclick="alterarCapotes(-1)" class="px-3 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold border border-emerald-500/20">Peguei 1</button></div></div></aside></div></div>`;
+container.innerHTML = `<div class="today-shell space-y-4 pb-4"><section class="today-hero glass-panel rounded-3xl p-5 sm:p-6"><div class="relative z-10 flex items-start justify-between gap-4"><div><span class="text-[10px] font-black uppercase tracking-[.2em] text-blue-500">${obterSaudacaoTemporal(agora)}</span><h3 class="font-outfit font-black text-2xl sm:text-3xl text-zinc-900 dark:text-white mt-2">${escaparHTML(infoDia.nome)}, ${infoDia.data}</h3><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2">${atividadesHoje ? `${atividadesHoje} atividade${atividadesHoje > 1 ? 's' : ''} programada${atividadesHoje > 1 ? 's' : ''} para o Trio A${idTrio}.` : 'Seu trio está livre hoje.'}</p></div><span class="hidden sm:inline-flex px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold">● Painel atualizado</span></div></section><div class="grid grid-cols-1 xl:grid-cols-12 gap-4"><section class="xl:col-span-8 glass-panel rounded-3xl p-4 sm:p-5"><div class="flex items-center justify-between mb-3"><div><span class="text-[9px] font-black uppercase tracking-[.2em] text-blue-500">Linha do tempo</span><h3 class="font-outfit font-extrabold text-lg text-zinc-900 dark:text-white mt-1">Manhã, tarde e noite</h3></div><span class="text-[10px] font-mono font-bold text-zinc-500">${agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span></div><div class="timeline-list">${timelineHtml}</div></section><aside class="xl:col-span-4 space-y-4"><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-blue-500">Próxima atividade</span><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-2">${escaparHTML(proximaTexto)}</h4><p class="text-[11px] text-zinc-500 mt-1">${proxima ? escaparHTML(proxima.turno.local) : 'Aproveite o tempo livre.'}</p>${proxima ? `<button onclick="abrirDiaDaEscala('${idTrio}', ${proxima.semana}, '${proxima.diaKey}')" class="mt-4 text-[10px] font-bold text-blue-500 hover:text-blue-400">Abrir na escala →</button>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><div class="flex items-center justify-between"><span class="text-[9px] font-black uppercase tracking-[.18em] text-violet-500">Último recado</span><button onclick="alternarModo('recados')" class="text-[9px] font-bold text-blue-500">Ver mural</button></div><p class="text-xs text-zinc-600 dark:text-zinc-300 mt-3 leading-relaxed">${recado ? escaparHTML(recado.texto) : 'Nenhum aviso publicado até o momento.'}</p>${recado ? `<span class="block text-[9px] text-zinc-500 mt-2">${escaparHTML(recado.autor || 'Turma T7A')}</span>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-emerald-500">Controle do C.O.</span><div class="flex items-end justify-between mt-2"><div><strong class="font-outfit font-black text-3xl text-zinc-900 dark:text-white">${capotesCount}</strong><span class="text-[10px] text-zinc-500 ml-1">capotes</span></div><button onclick="alterarCapotes(-1)" class="px-3 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold border border-emerald-500/20">Peguei 1</button></div></div></aside></div></div>`;
 animarEntradaConteudo();
 }
 
@@ -2337,6 +2337,37 @@ if (painel && !painel.classList.contains('hidden') && !painel.parentElement.cont
 atualizarNotificacoes();
 }
 
+function obterSaudacaoTemporal(agora = new Date()) {
+const hora = agora.getHours();
+if (hora >= 22 || hora < 6) return '☾ Bom descanso, interno ✦';
+if (hora >= 6 && hora < 7) return '✧ Bom dia, interno ✦';
+return 'Resumo personalizado';
+}
+
+function formatarContagemRegressiva(milisegundos) {
+const totalSegundos = Math.max(0, Math.floor(Number(milisegundos || 0) / 1000));
+const dias = Math.floor(totalSegundos / 86400);
+const horas = Math.floor((totalSegundos % 86400) / 3600);
+const minutos = Math.floor((totalSegundos % 3600) / 60);
+const segundos = totalSegundos % 60;
+const doisDigitos = valor => String(valor).padStart(2, '0');
+return `${dias}:${doisDigitos(horas)}:${doisDigitos(minutos)}:${doisDigitos(segundos)}`;
+}
+
+function atualizarContadorProximaAtividade() {
+const contador = document.getElementById('contador-proxima-atividade');
+if (!contador) return;
+const inicio = Number(contador.dataset.inicio || 0);
+if (!inicio) return;
+const restante = inicio - Date.now();
+contador.textContent = formatarContagemRegressiva(restante);
+if (restante <= 0 && contador.dataset.expirado !== '1') {
+contador.dataset.expirado = '1';
+const alunoLogado = sessionStorage.getItem('alunoLogado');
+if (alunoLogado) setTimeout(() => atualizarProximaAtividadeDinamica(alunoLogado), 250);
+}
+}
+
 function atualizarProximaAtividadeDinamica(alunoNome) {
 const badgeAtividade = document.getElementById('proxima-atividade-badge');
 const painelNovo = document.getElementById('proxima-atividade-conteudo');
@@ -2379,11 +2410,19 @@ const turnoAtual = turnosHoje.find(t => obterEstadoTemporalTurno(infoHoje.data, 
 if (turnoAtual) {
 const localStr = turnoAtual.local !== "—" ? turnoAtual.local : "Livre (Sem plantão)";
 badgeAtividade.innerHTML = `Atual (<span class="font-bold text-blue-500 dark:text-blue-400">${turnoAtual.periodo}</span>): ${localStr}`;
-} else if (agora.getHours() < 7) {
+} else if (agora.getHours() >= 22 || agora.getHours() < 6) {
 badgeAtividade.innerHTML = `
 <span class="descanso-motion" aria-label="Bom descanso, interno">
 <span class="descanso-lua" aria-hidden="true">☾</span>
 <span>Bom descanso, interno</span>
+<span class="descanso-estrela" aria-hidden="true">✦</span>
+</span>
+`;
+} else if (agora.getHours() >= 6 && agora.getHours() < 7) {
+badgeAtividade.innerHTML = `
+<span class="descanso-motion" aria-label="Bom dia, interno">
+<span class="descanso-lua" aria-hidden="true">✧</span>
+<span>Bom dia, interno</span>
 <span class="descanso-estrela" aria-hidden="true">✦</span>
 </span>
 `;
@@ -2412,7 +2451,8 @@ data: infoDia.data,
 periodo: t.periodo || t.turno,
 horario: t.horario || "Horário não informado",
 local: t.local,
-atividade: t.atividade || "Atividade Obrigatória"
+atividade: t.atividade || "Atividade Obrigatória",
+inicio: inicioAtividade.getTime()
 };
 break;
 }
@@ -2433,12 +2473,17 @@ painelNovo.innerHTML = `
 <div><strong>Local:</strong> ${proximaAtividade.local}</div>
 <div class="text-zinc-400"><strong>Tipo:</strong> ${proximaAtividade.atividade}</div>
 </div>
+<div class="mt-2.5 pt-2.5 border-t border-white/10 flex items-center justify-between gap-3">
+<span class="text-[9px] font-black uppercase tracking-[.14em] text-blue-300">Começa em</span>
+<strong id="contador-proxima-atividade" data-inicio="${proximaAtividade.inicio}" class="font-mono text-sm tracking-wider text-white tabular-nums">${formatarContagemRegressiva(proximaAtividade.inicio - Date.now())}</strong>
+</div>
 `;
 } else {
 painelNovo.innerHTML = `<span class="text-zinc-400">Nenhuma atividade obrigatória futura encontrada.</span>`;
 }
 }
 }
+setInterval(atualizarContadorProximaAtividade, 1000);
 const contadorRef = doc(db, "geral", "contador");
 onSnapshot(contadorRef, (docSnap) => {
 if (docSnap.exists()) {
@@ -2693,7 +2738,7 @@ btnHeaderAdmin.className = "w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-in
 btnSeminarios.className = classAtivo;
 colunaMembros.style.display = 'none';
 colunaTurnos.className = "lg:col-span-12 flex flex-col h-full";
-tituloSecao.innerHTML = `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg><span>Cronograma Oficial de Seminários (Sala 2)</span>`;
+tituloSecao.innerHTML = `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg><span>Cronograma de Seminários e Avaliação (Sala 2)</span>`;
 containerAbas.style.display = 'none';
 bannerHero.style.display = 'none';
 wrapperSemanas.style.display = 'none';
@@ -3444,41 +3489,64 @@ alert('Não foi possível desfazer a alteração.');
 const dadosSeminariosList = [
 { data: "28/07", hora: "08h30–11h00", mediador: "TODOS", apresentadores: "TODOS", tema: "APRESENTAÇÃO DO INTERNATO EM SAÚDE DA MULHER – GINECOLOGIA & OBSTETRÍCIA" },
 { data: "04/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Marta", apresentadores: "André Victor, Davi Carvalho, Letícia Barbosa", tema: "• Fisiologia do Ciclo Menstrual\n• Pré-Natal de Risco Habitual" },
-{ data: "11/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Louise Bonfim, Isabella de Lima", tema: "• Trabalho de Parto (Condutas, Indução e Condução)\n• Cardiotocografia: Avaliação da Vitalidade Fetal: Sofrimento Fetal" },
-{ data: "18/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Isabela Frota, Maria Eduarda Aquino, José Henrique", tema: "• Sangramento Uterino Anormal (PALM-COEIN): Miomatose, Adenomiose e Endometriose\n• Hemorragias da 1ª Metade e da 2ª Metade da Gravidez: Hemorragia Pós-Parto" },
+{ data: "11/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Nadya Jarosczynski, Louise Bonfim, Isabella de Lima", tema: "• Trabalho de Parto (Condutas, Indução e Condução)\n• Cardiotocografia: Avaliação da Vitalidade Fetal: Sofrimento Fetal" },
+{ data: "18/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Hiago Kaian, Isabela Frota, Maria Eduarda Aquino, José Henrique", tema: "• Sangramento Uterino Anormal (PALM-COEIN): Miomatose, Adenomiose e Endometriose\n• Hemorragias da 1ª Metade e da 2ª Metade da Gravidez: Hemorragia Pós-Parto" },
 { data: "25/08", hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Marta | Dra. Lucimara", apresentadores: "Heitor Stoduto, João Victor Tajra, Bruno Azevedo, Andressa Maboni", tema: "• Alterações Funcionais Benignas da Mama (AFBM): Patologias Benignas / Inflamatórias / Infecciosas da Mama\n• Câncer de Mama: Classificação BI-RADS" },
-{ data: "01/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Maria Eduarda Santiago, Luiza de Santes", tema: "• Métodos Contraceptivos (Indicações, Contraindicações, Complicações)\n• Trabalho de Parto Prematuro: Infecção do Trato Urinário em Obstetrícia" },
-{ data: "08/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Júlia Matos, Luiza Sales", tema: "• Anatomia Genital Feminina Aplicada à Uroginecologia: Incontinência Urinária Feminina\n• HPV e Câncer de Colo de Útero" },
-{ data: "15/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Carolina Banholi, Kamilly Lima", tema: "• Prolapsos Genitais: Classificação de Bump (POP-Q)\n• Tumores Benignos e Malignos do Ovário" },
-{ data: "22/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Rayane Maria, Sofia Dias", tema: "• Síndromes Hipertensivas e Gestação (Pré-Eclâmpsia/Eclâmpsia/Síndrome HELLP)\n• Diabetes Gestacional" },
+{ data: "01/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Maria Luiza, Maria Eduarda Santiago, Luiza de Santes", tema: "• Métodos Contraceptivos (Indicações, Contraindicações, Complicações)\n• Trabalho de Parto Prematuro: Infecção do Trato Urinário em Obstetrícia" },
+{ data: "08/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Leticia Teixeira, Júlia Matos, Luiza Sales", tema: "• Anatomia Genital Feminina Aplicada à Uroginecologia: Incontinência Urinária Feminina\n• HPV e Câncer de Colo de Útero" },
+{ data: "15/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Ana Clara, Carolina Banholi, Kamilly Lima", tema: "• Prolapsos Genitais: Classificação de Bump (POP-Q)\n• Tumores Benignos e Malignos do Ovário" },
+{ data: "22/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Giovanna Muniz, Rayane Maria, Sofia Dias", tema: "• Síndromes Hipertensivas e Gestação (Pré-Eclâmpsia/Eclâmpsia/Síndrome HELLP)\n• Diabetes Gestacional" },
 { data: "23/09", hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Lucimara", apresentadores: "Annelise Paiva, Camila Guidão, Gabriella Reis, Ana Luiza Daros", tema: "• Restrição de Crescimento Intrauterino: Oligoâmnio/Polidrâmnio\n• Leucorreias: Infecções Sexualmente Transmissíveis (IST) em GO e Doenças Inflamatórias Pélvica (DIP)" },
-{ data: "29/09", hora: "18h30–19h45\n20h00–21h30", mediador: "TODOS", apresentadores: "TODOS", tema: "AVALIAÇÃO SOMATIVA — 50 QUESTÕES" }
+{ data: "29/09", hora: "18h30–19h45\n20h00–21h30", mediador: "TODOS", apresentadores: "", tema: "AVALIAÇÃO SOMATIVA — 50 QUESTÕES", tipo: "avaliacao" }
 ];
+function obterFimEventoSeminario(item) {
+const data = dataEscalaParaDate(item?.data);
+if (!data) return null;
+const horarios = [...String(item?.hora || '').matchAll(/(\d{1,2})h(\d{2})/gi)];
+if (horarios.length) {
+const ultimo = horarios[horarios.length - 1];
+data.setHours(Number(ultimo[1]), Number(ultimo[2]), 0, 0);
+} else {
+data.setHours(23, 59, 59, 999);
+}
+return data;
+}
+
 window.renderizarSeminariosView = function() {
 const containerTurnos = document.getElementById('lista-turnos');
+const agora = new Date();
 let html = '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-full overflow-y-auto pr-1 pb-4">';
 dadosSeminariosList.forEach(s => {
+const avaliacao = s.tipo === 'avaliacao';
+const fimEvento = obterFimEventoSeminario(s);
+const passado = Boolean(fimEvento && fimEvento < agora);
+const cardClass = passado
+? 'opacity-50 saturate-[.45] bg-zinc-500/5 border-zinc-500/20 hover:opacity-60'
+: (avaliacao ? 'bg-amber-500/[.07] border-amber-500/35 shadow-[0_0_22px_rgba(245,158,11,.08)]' : 'border-black/5 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5');
+const barraClass = avaliacao
+? 'from-amber-400 to-orange-500'
+: (passado ? 'from-zinc-500/40 to-zinc-400/30' : 'from-blue-500/50 to-indigo-500/50');
+const dataClass = avaliacao
+? 'bg-amber-500/15 border-amber-500/30 text-amber-600 dark:text-amber-300'
+: (passado ? 'bg-zinc-500/10 border-zinc-500/20 text-zinc-500' : 'bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400');
+const cabecalhoDireito = avaliacao
+? '<span class="px-2.5 py-1 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-300 text-[9px] font-black uppercase tracking-widest">Avaliação</span>'
+: `<div class="flex items-center space-x-1.5 text-[10px] bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-md border border-black/5 dark:border-white/5"><span class="text-zinc-500 dark:text-zinc-400">Mediador:</span><span class="dark:text-white text-zinc-900 font-bold font-outfit">${s.mediador}</span></div>`;
 html += `
-<div class="glass-panel hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl p-4 transition-all shadow-md group border border-black/5 dark:border-white/10 flex flex-col h-full relative overflow-hidden">
-<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/50 to-indigo-500/50"></div>
+<div class="glass-panel rounded-2xl p-4 transition-all shadow-md group border flex flex-col h-full relative overflow-hidden ${cardClass}">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${barraClass}"></div>
 <div class="flex items-center justify-between gap-2 pb-3 border-b border-black/5 dark:border-white/10 mb-3">
 <div class="flex items-center space-x-2.5">
-<span class="px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-outfit font-extrabold text-[11px]">${s.data}</span>
+<span class="px-2.5 py-1 rounded-md border font-outfit font-extrabold text-[11px] ${dataClass}">${s.data}</span>
 <span class="text-[11px] font-semibold text-zinc-600 dark:text-zinc-300 font-outfit">${s.hora.replace('\n', ' • ')}</span>
 </div>
-<div class="flex items-center space-x-1.5 text-[10px] bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-md border border-black/5 dark:border-white/5">
-<span class="text-zinc-500 dark:text-zinc-400">Mediador:</span>
-<span class="dark:text-white text-zinc-900 font-bold font-outfit">${s.mediador}</span>
-</div>
+<div class="flex items-center gap-1.5">${cabecalhoDireito}${passado ? '<span class="px-2 py-1 rounded-md bg-zinc-500/10 border border-zinc-500/20 text-zinc-500 text-[8px] font-black uppercase tracking-widest">Realizado</span>' : ''}</div>
 </div>
 <div class="space-y-3 flex-grow flex flex-col">
-<div>
-<span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">Apresentadores</span>
-<p class="text-xs font-bold dark:text-white text-zinc-900 leading-snug">${s.apresentadores}</p>
-</div>
+${avaliacao ? '' : `<div><span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">Apresentadores</span><p class="text-xs font-bold dark:text-white text-zinc-900 leading-snug">${s.apresentadores}</p></div>`}
 <div class="mt-auto pt-2">
-<span class="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest block mb-1.5">Temas Abordados</span>
-<p class="text-[11px] text-zinc-600 dark:text-zinc-300 whitespace-pre-line leading-relaxed font-medium bg-black/5 dark:bg-black/20 p-2.5 rounded-lg border border-black/5 dark:border-white/5">${s.tema}</p>
+<span class="text-[9px] font-bold ${avaliacao ? 'text-amber-600 dark:text-amber-400' : 'text-zinc-400 dark:text-zinc-500'} uppercase tracking-widest block mb-1.5">${avaliacao ? 'Avaliação Somativa' : 'Temas Abordados'}</span>
+<p class="text-[11px] whitespace-pre-line leading-relaxed ${avaliacao ? 'font-black text-amber-700 dark:text-amber-200 bg-amber-500/15 border-amber-500/30' : 'font-medium text-zinc-600 dark:text-zinc-300 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5'} p-2.5 rounded-lg border">${s.tema}</p>
 </div>
 </div>
 </div>
