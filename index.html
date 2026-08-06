@@ -3674,9 +3674,9 @@ if(dataObj > dataFimRodizio && dataObj <= dataFimCalendarioTeorico) {
 const dataBr = `${String(dataObj.getDate()).padStart(2, '0')}/${String(dataObj.getMonth() + 1).padStart(2, '0')}`;
 const programacaoSegunda = dataObj.getDay() === 1 ? obterProgramacaoSegunda(dataBr) : null;
 return [
-{ periodo: "Manhã", local: "—" },
-{ periodo: "Tarde", horario: programacaoSegunda?.horario || "13h-18h", local: programacaoSegunda?.local || "—" },
-{ periodo: "Noite", local: "—" }
+{ periodo: "Manhã", horario: "07h-13h", local: ESCALA_NAO_ENVIADA },
+{ periodo: "Tarde", horario: programacaoSegunda?.horario || "13h-18h", local: programacaoSegunda?.local || ESCALA_NAO_ENVIADA },
+{ periodo: "Noite", horario: "18h-22h", local: ESCALA_NAO_ENVIADA }
 ];
 }
 if(dataObj < dataInicioRodizio || dataObj > dataFimRodizio) {
