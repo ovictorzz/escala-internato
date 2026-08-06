@@ -2320,19 +2320,40 @@ alternarModo('individual');
 setTimeout(irParaTurnoVigente, 80);
 }
 
+function formatarDataNotificacao(dataBr, referencia = new Date()) {
+const data = dataEscalaParaDate(dataBr);
+if (!data) return dataBr || '';
+const diferenca = Math.round((inicioDoDiaPainel(data) - inicioDoDiaPainel(referencia)) / 86400000);
+if (diferenca === 0) return 'Hoje';
+if (diferenca === 1) return 'Amanhã';
+return `${data.getDate()} de ${data.toLocaleDateString('pt-BR', { month: 'long' })}`;
+}
+
+function formatarHorarioNotificacao(horario = '') {
+return String(horario)
+.replace(/\n+/g, ' • ')
+.replace(/\s+e\s+/gi, ' • ')
+.replace(/(\d{1,2}h(?:\d{2})?)[–—-](\d{1,2}h(?:\d{2})?)/g, '$1 às $2')
+.replace(/h00\b/g, 'h');
+}
+
 function montarNotificacoes() {
 const idTrio = document.getElementById('grupo-select')?.value || alunoTrioMap[sessionStorage.getItem('alunoLogado')] || '1';
 const agora = new Date();
 const itens = [];
 const proxima = encontrarProximaAtividadeObrigatoria(idTrio, agora);
 if (proxima) {
-const horas = (proxima.inicio - agora) / 3600000;
-itens.push({ cor: 'blue', titulo: horas <= 24 ? 'Próxima atividade em até 24h' : 'Próxima atividade do trio', texto: `${proxima.infoDia.nome}, ${proxima.infoDia.data} • ${proxima.turno.periodo} — ${proxima.turno.local}` });
+const dataNatural = formatarDataNotificacao(proxima.infoDia.data, agora);
+const tituloAtividade = dataNatural === 'Hoje' ? 'Atividade de hoje' : (dataNatural === 'Amanhã' ? 'Atividade de amanhã' : 'Próxima atividade');
+const detalhesAtividade = dataNatural === 'Hoje' || dataNatural === 'Amanhã'
+? `${proxima.turno.local} • ${proxima.turno.periodo}`
+: `${dataNatural} • ${proxima.turno.local} • ${proxima.turno.periodo}`;
+itens.push({ cor: 'blue', titulo: tituloAtividade, texto: detalhesAtividade });
 }
 const hoje = localizarDiaDoTrioPorData(idTrio, dataHojePainel(agora));
 if (hoje?.infoDia.turnos.some(turno => turno.local === ESCALA_NAO_ENVIADA)) itens.push({ cor: 'amber', titulo: 'Escala pendente hoje', texto: 'Há pelo menos um turno aguardando envio da escala.' });
 const proximoSeminario = (typeof dadosSeminariosList !== 'undefined' ? dadosSeminariosList : []).map(item => ({ ...item, dataObj: dataEscalaParaDate(item.data) })).filter(item => item.dataObj && item.dataObj >= inicioDoDiaPainel(agora)).sort((a,b) => a.dataObj - b.dataObj)[0];
-if (proximoSeminario) itens.push({ cor: 'violet', titulo: proximoSeminario.tema.includes('SOMATIVA') ? 'Avaliação somativa' : `Próximo seminário${proximoSeminario.numero ? ` ${proximoSeminario.numero}` : ''}`, texto: `${proximoSeminario.data} • ${proximoSeminario.hora.replace('\n', ' e ')}` });
+if (proximoSeminario) itens.push({ cor: 'violet', titulo: proximoSeminario.tema.includes('SOMATIVA') ? 'Avaliação somativa' : `Seminário${proximoSeminario.numero ? ` ${proximoSeminario.numero}` : ''}`, texto: `${formatarDataNotificacao(proximoSeminario.data, agora)} • ${formatarHorarioNotificacao(proximoSeminario.hora)}` });
 recadosListaGlobal.slice(0, 2).forEach(recado => itens.push({ cor: 'emerald', titulo: `Recado de ${recado.autor || 'Turma T7A'}`, texto: recado.texto }));
 return itens;
 }
