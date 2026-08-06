@@ -1576,6 +1576,7 @@ Próxima: Carregando...
 Internato de Ginecologia & Obstetrícia
 </h2>
 <p id="contador-dias" class="text-[11px] text-blue-600 dark:text-blue-400 font-bold mt-1">Calculando prazo...</p>
+<p class="text-[9px] sm:text-[10px] text-zinc-500 dark:text-zinc-400 font-semibold mt-0.5">Criado por <span class="text-zinc-700 dark:text-zinc-200 font-extrabold">André Victor</span></p>
 </div>
 <div class="flex items-center gap-2 sm:gap-2.5">
 <div class="relative">
@@ -2079,8 +2080,10 @@ const restante = total % 60;
 return restante ? `${horas}h${String(restante).padStart(2, '0')}` : `${horas}h`;
 }
 
-function atividadeTeoricaFixa(diaKey, periodo) {
-return (diaKey === 'seg' && periodo === 'Tarde') || (diaKey === 'ter' && periodo === 'Noite');
+function atividadeTeoricaFixa(diaKey, periodo, data = '') {
+return (diaKey === 'seg' && periodo === 'Tarde')
+|| (diaKey === 'ter' && periodo === 'Noite')
+|| (data === '23/09' && periodo === 'Noite');
 }
 
 function calcularCargaHorariaTrio(trioId, semanaFiltro = null) {
@@ -2095,7 +2098,7 @@ if (!atividadeConfirmada(turno.local)) return;
 const minutos = calcularMinutosTurno(turno.horario, turno.periodo);
 resumoSemana.total += minutos;
 resumoSemana.turnos++;
-if (atividadeTeoricaFixa(diaKey, turno.periodo)) resumoSemana.teorica += minutos;
+if (atividadeTeoricaFixa(diaKey, turno.periodo, dia.data)) resumoSemana.teorica += minutos;
 else resumoSemana.pratica += minutos;
 });
 });
