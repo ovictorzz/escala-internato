@@ -2738,7 +2738,7 @@ btnHeaderAdmin.className = "w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-in
 btnSeminarios.className = classAtivo;
 colunaMembros.style.display = 'none';
 colunaTurnos.className = "lg:col-span-12 flex flex-col h-full";
-tituloSecao.innerHTML = `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg><span>Cronograma de Seminários e Avaliação (Sala 2)</span>`;
+tituloSecao.innerHTML = `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg><span>Cronograma de Seminários e Avaliação (Sala 2, Bloco D, UNIEURO)</span>`;
 containerAbas.style.display = 'none';
 bannerHero.style.display = 'none';
 wrapperSemanas.style.display = 'none';
@@ -3489,7 +3489,7 @@ alert('Não foi possível desfazer a alteração.');
 const dadosSeminariosList = [
 { data: "28/07", hora: "08h30–11h00", mediador: "TODOS", apresentadores: "TODOS", tema: "APRESENTAÇÃO DO INTERNATO EM SAÚDE DA MULHER – GINECOLOGIA & OBSTETRÍCIA" },
 { data: "04/08", numero: 1, hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Marta", apresentadores: "André Victor, Davi Carvalho, Letícia Barbosa", tema: "• Fisiologia do Ciclo Menstrual\n• Pré-Natal de Risco Habitual" },
-{ data: "11/08", numero: 2, hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Nadya Jarosczynski, Louise Bonfim, Isabella de Lima", tema: "• Trabalho de Parto (Condutas, Indução e Condução)\n• Cardiotocografia: Avaliação da Vitalidade Fetal: Sofrimento Fetal" },
+{ data: "11/08", numero: 2, hora: "18h30–19h45\n20h00–21h30", mediador: "Dr. Vinícius Cunha", apresentadores: "Nadya Jarosczynski, Louise Bonfim, Isabella de Lima", tema: "• Trabalho de Parto (Condutas, Indução e Condução)\n• Cardiotocografia: Avaliação da Vitalidade Fetal: Sofrimento Fetal" },
 { data: "18/08", numero: 3, hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Hiago Kaian, Isabela Frota, Maria Eduarda Aquino, José Henrique", tema: "• Sangramento Uterino Anormal (PALM-COEIN): Miomatose, Adenomiose e Endometriose\n• Hemorragias da 1ª Metade e da 2ª Metade da Gravidez: Hemorragia Pós-Parto" },
 { data: "25/08", numero: 4, hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Marta | Dra. Lucimara", apresentadores: "Heitor Stoduto, João Victor Tajra, Bruno Azevedo, Andressa Maboni", tema: "• Alterações Funcionais Benignas da Mama (AFBM): Patologias Benignas / Inflamatórias / Infecciosas da Mama\n• Câncer de Mama: Classificação BI-RADS" },
 { data: "01/09", numero: 5, hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Maria Luiza, Maria Eduarda Santiago, Luiza de Santes", tema: "• Métodos Contraceptivos (Indicações, Contraindicações, Complicações)\n• Trabalho de Parto Prematuro: Infecção do Trato Urinário em Obstetrícia" },
@@ -3501,7 +3501,8 @@ const dadosSeminariosList = [
 ];
 function formatarSeminarioParaEscala(item) {
 const temas = String(item?.tema || '').replace(/^•\s*/gm, '').replace(/\n+/g, ' • ');
-return `Seminário ${item.numero} de G.O. — UNIEURO • Temas: ${temas} • Apresentadores: ${item.apresentadores}`;
+const rotuloOrientador = String(item?.mediador || '').includes('|') ? 'Orientadores' : 'Orientador';
+return `Seminário ${item.numero} de G.O. • Temas: ${temas} • Apresentadores: ${item.apresentadores} • ${rotuloOrientador}: ${item.mediador} • Local: Sala 2, Bloco D, UNIEURO`;
 }
 function obterFimEventoSeminario(item) {
 const data = dataEscalaParaDate(item?.data);
@@ -3535,7 +3536,9 @@ const dataClass = avaliacao
 : (passado ? 'bg-zinc-500/10 border-zinc-500/20 text-zinc-500' : 'bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400');
 const cabecalhoDireito = avaliacao
 ? '<span class="px-2.5 py-1 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-300 text-[9px] font-black uppercase tracking-widest">Avaliação</span>'
-: `<div class="flex items-center space-x-1.5 text-[10px] bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-md border border-black/5 dark:border-white/5"><span class="text-zinc-500 dark:text-zinc-400">Mediador:</span><span class="dark:text-white text-zinc-900 font-bold font-outfit">${s.mediador}</span></div>`;
+: (s.numero
+? `<div class="flex items-center space-x-1.5 text-[10px] bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20"><span class="text-emerald-600 dark:text-emerald-400">${String(s.mediador || '').includes('|') ? 'Orientadores:' : 'Orientador:'}</span><span class="dark:text-white text-zinc-900 font-bold font-outfit">${s.mediador}</span></div>`
+: `<div class="flex items-center space-x-1.5 text-[10px] bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-md border border-black/5 dark:border-white/5"><span class="text-zinc-500 dark:text-zinc-400">Mediador:</span><span class="dark:text-white text-zinc-900 font-bold font-outfit">${s.mediador}</span></div>`);
 html += `
 <div class="glass-panel rounded-2xl p-4 transition-all shadow-md group border flex flex-col h-full relative overflow-hidden ${cardClass}">
 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${barraClass}"></div>
@@ -4224,6 +4227,8 @@ turnoNoite.local = formatarSeminarioParaEscala(seminario);
 turnoNoite.atividade = `Seminário ${seminario.numero} de G.O.`;
 turnoNoite.temas = seminario.tema;
 turnoNoite.apresentadores = seminario.apresentadores;
+turnoNoite.orientador = seminario.mediador;
+turnoNoite.localSeminario = "Sala 2, Bloco D, UNIEURO";
 });
 }
 }
@@ -4439,8 +4444,8 @@ else if(t.periodo === 'Tarde') iconeTurno = '<svg class="w-7 h-7 text-orange-500
 else iconeTurno = '<svg class="w-7 h-7 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
 const hasPlantao = atividadeConfirmada(t.local);
 const turnoLivre = t.local === "—";
-const ehSeminarioDetalhado = Boolean(t.atividade?.startsWith('Seminário') && t.temas && t.apresentadores);
-const tituloLocal = turnoLivre ? 'Turno livre' : (ehSeminarioDetalhado ? `${t.atividade} — UNIEURO` : t.local);
+const ehSeminarioDetalhado = Boolean(t.atividade?.startsWith('Seminário') && t.temas && t.apresentadores && t.orientador && t.localSeminario);
+const tituloLocal = turnoLivre ? 'Turno livre' : (ehSeminarioDetalhado ? t.atividade : t.local);
 const cardBorder = hasPlantao ? 'border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-900/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]' : 'glass-panel opacity-70';
 const turnoClass = t.periodo === 'Manhã' ? 'turno-manha' : (t.periodo === 'Tarde' ? 'turno-tarde' : 'turno-noite');
 const estadoTemporal = obterEstadoTemporalTurno(infoDia.data, t.periodo, t.horario);
@@ -4457,7 +4462,7 @@ ${iconeTurno}
 </div>
 <span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">${t.periodo}</span>
 <h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight ${turnoLivre ? 'mb-2' : 'mb-5'}">${escaparHTML(tituloLocal)}</h4>
-${ehSeminarioDetalhado ? `<div class="w-full text-left space-y-3 mb-5"><div class="rounded-xl bg-blue-500/[.07] border border-blue-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-blue-500 mb-1">Temas</span><p class="text-[10px] sm:text-[11px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed whitespace-pre-line">${escaparHTML(t.temas)}</p></div><div class="rounded-xl bg-indigo-500/[.07] border border-indigo-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-indigo-500 mb-1">Apresentadores</span><p class="text-[10px] sm:text-[11px] text-zinc-700 dark:text-zinc-200 font-bold leading-relaxed">${escaparHTML(t.apresentadores)}</p></div></div>` : ''}
+${ehSeminarioDetalhado ? `<div class="w-full text-left space-y-3 mb-5"><div class="rounded-xl bg-blue-500/[.07] border border-blue-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-blue-500 mb-1">Temas</span><p class="text-[10px] sm:text-[11px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed whitespace-pre-line">${escaparHTML(t.temas)}</p></div><div class="rounded-xl bg-indigo-500/[.07] border border-indigo-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-indigo-500 mb-1">Apresentadores</span><p class="text-[10px] sm:text-[11px] text-zinc-700 dark:text-zinc-200 font-bold leading-relaxed">${escaparHTML(t.apresentadores)}</p></div><div class="rounded-xl bg-emerald-500/[.08] border border-emerald-500/20 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-emerald-500 mb-1">${String(t.orientador || '').includes('|') ? 'Orientadores' : 'Orientador'}</span><p class="text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-300 font-black leading-relaxed">${escaparHTML(t.orientador)}</p></div><div class="rounded-xl bg-violet-500/[.08] border border-violet-500/20 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-violet-500 mb-1">Local</span><p class="text-[10px] sm:text-[11px] text-violet-700 dark:text-violet-300 font-black leading-relaxed">${escaparHTML(t.localSeminario)}</p></div></div>` : ''}
 ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4 max-w-[230px]">${mensagemTurnoLivre(t.periodo)}</p>` : ''}
 <div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10">
 <div class="flex justify-between items-center gap-2">
