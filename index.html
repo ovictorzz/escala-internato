@@ -4019,14 +4019,14 @@ const escalaTrio02 = {
 "11/08": { manha: "PS FICHA", noite: "Seminário de G.O. — UNIEURO" },
 "12/08": { manha: "Caio (PNAR) (HRC)" },
 "13/08": { tarde: "Lucimara (HRC)", noite: "CO (HRC)" },
-"14/08": { manha: "CC" },
+"14/08": { manha: "CC (HRC)" },
 "16/08": { tarde: "HRSM" },
 "18/08": { tarde: "HRSM", noite: "Seminário de G.O. — UNIEURO" },
 "19/08": { tarde: "HRSM" },
 "20/08": { tarde: "HRSM" },
 "21/08": { tarde: "HRSM" },
-"22/08": { manha: "PS BOX" },
-"23/08": { manha: "PS BOX" },
+"22/08": { manha: "PS BOX (HRC)" },
+"23/08": { manha: "PS BOX (HRC)" },
 "28/09": { manha: "Amb Mírian (HRAN)", noite: "—" },
 "29/09": { manha: "—", tarde: "—" },
 "30/09": { manha: "—", tarde: "CO (HRAN)", noite: "—" },
@@ -4059,7 +4059,7 @@ const escalaTrio03 = {
 "09/08": { noite: "CO (HRC)" },
 "10/08": { manha: "Marta (HRC)" },
 "11/08": { manha: "CC (HRC)", tarde: "CO (HRC)", noite: "Seminário de G.O. — UNIEURO" },
-"12/08": { manha: "Amb EURO (HRC)" },
+"12/08": { manha: "Amb EURO" },
 "13/08": { tarde: "Gilmária (HRC)", noite: "PS FICHA (HRC)" },
 "14/08": { manha: "Nádia (EUD) (HRC)", tarde: "Rocha (HRC)" },
 "18/08": { tarde: "Marta (HRC)", noite: "Seminário de G.O. — UNIEURO" },
@@ -4118,11 +4118,11 @@ const escalaTrio05 = {
 "09/08": { manha: "ALCON (HRC)" },
 "10/08": { manha: "CC (HRC)" },
 "11/08": { manha: "Adnir (ECO) (HRC)", tarde: "PS FICHA (HRC)", noite: "Seminário de G.O. — UNIEURO" },
-"12/08": { manha: "Lorena (ECO)" },
+"12/08": { manha: "Lorena (ECO) (HRC)" },
 "13/08": { manha: "CC (HRC)", tarde: "Caio (PNAR) (HRC)" },
 "14/08": { manha: "CO (HRC)" },
 "16/08": { manha: "CO (HRC)" },
-"17/08": { manha: "Nádia (HRC)" },
+"17/08": { manha: "Nádia (EUD) (HRC)" },
 "18/08": { manha: "BL (HRC)", noite: "Seminário de G.O. — UNIEURO" },
 "19/08": { tarde: "PS FICHA" },
 "20/08": { manha: "BL (HRC)" },
@@ -4155,8 +4155,8 @@ const escalaTrio06 = {
 "16/08": { manha: "ALCON (HRC)" },
 "17/08": { manha: "CC (HRC)" },
 "18/08": { manha: "Adnir (ECO) (HRC)", tarde: "PS FICHA (HRC)", noite: "Seminário de G.O. — UNIEURO" },
-"19/08": { manha: "Lorena (ECO)" },
-"20/08": { manha: "CC (HRC)", tarde: "Caio (PNAR)" },
+"19/08": { manha: "Lorena (ECO) (HRC)" },
+"20/08": { manha: "CC (HRC)", tarde: "Caio (PNAR) (HRC)" },
 "21/08": { manha: "CO (HRC)" },
 "25/08": { noite: "Seminário de G.O. — UNIEURO" },
 "31/08": { manha: "Amb Mírian (HRAN)" },
@@ -4179,7 +4179,7 @@ const escalaTrio07 = {
 "06/08": { manha: "PS BOX (HRC)", tarde: "Sádia (HRC)" },
 "07/08": { manha: "PS BOX (HRC)", tarde: "CO (HRC)" },
 "09/08": { tarde: "CO (HRC)" },
-"10/08": { manha: "Nádia (HRC)" },
+"10/08": { manha: "Nádia (EUD) (HRC)" },
 "11/08": { manha: "BL (HRC)", noite: "Seminário de G.O. — UNIEURO" },
 "13/08": { manha: "BL (HRC)" },
 "14/08": { tarde: "Flávia (HRC)", noite: "CO (HRC)" },
@@ -4346,6 +4346,11 @@ const locaisPadronizados = {
 "Lucimara": "Lucimara (HRC)",
 "Marta": "Marta (HRC)",
 "PS FICHA": "PS FICHA (HRC)",
+"PS BOX": "PS BOX (HRC)",
+"CC": "CC (HRC)",
+"Caio (PNAR)": "Caio (PNAR) (HRC)",
+"Lorena (ECO)": "Lorena (ECO) (HRC)",
+"Nádia (HRC)": "Nádia (EUD) (HRC)",
 "Gilmária": "Gilmária (HRC)"
 };
 for (let i = 1; i <= 10; i++) {
@@ -4367,7 +4372,7 @@ for (let idTrio = 1; idTrio <= 10; idTrio++) {
 for (let semana = 1; semana <= 9; semana++) {
 Object.values(dadosEscala[idTrio].semanas[semana]).forEach(infoDia => {
 infoDia.turnos.forEach(turno => {
-if (atividadeConfirmada(turno.local)) atividades.add(turno.local);
+if (atividadeConfirmada(turno.local) && !String(turno.local).toLocaleLowerCase('pt-BR').includes('seminário')) atividades.add(turno.local);
 });
 });
 }
@@ -4402,7 +4407,7 @@ if (limpar) limpar.classList.toggle('hidden', !select.value);
 
 function obterOcorrenciasAtividade(atividade) {
 const ocorrencias = [];
-if (!atividade) return ocorrencias;
+if (!atividade || String(atividade).toLocaleLowerCase('pt-BR').includes('seminário')) return ocorrencias;
 const ordemTurnos = { 'Manhã': 0, 'Tarde': 1, 'Noite': 2 };
 for (let idTrio = 1; idTrio <= 10; idTrio++) {
 for (let semana = 1; semana <= 9; semana++) {
