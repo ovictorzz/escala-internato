@@ -1659,6 +1659,18 @@ A1
 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
 </div>
 </div>
+<div class="relative w-full pt-3 border-t border-black/5 dark:border-white/10">
+<div class="flex items-center justify-between gap-3 mb-1.5 px-0.5">
+<span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500 dark:text-zinc-400">Filtrar por atividade</span>
+<button id="limpar-filtro-atividade" type="button" onclick="filtrarPorAtividade('')" class="hidden text-[9px] font-bold text-blue-500 hover:text-blue-400 transition-colors">Limpar</button>
+</div>
+<select id="atividade-select" onchange="filtrarPorAtividade(this.value)" class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-100 text-zinc-800 font-bold text-sm rounded-xl px-4 py-3 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer shadow-inner">
+<option value="">Todas as atividades</option>
+</select>
+<div class="absolute right-0 bottom-0 flex items-center px-4 h-[46px] pointer-events-none text-zinc-400">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+</div>
+</div>
 </div>
 <div class="lg:col-span-7 grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
 <div class="stat-card stat-periodo glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center">
@@ -2730,6 +2742,14 @@ console.error(error);
 }
 }
 window.alternarModo = function(modo) {
+const modoAnterior = window.modoVisualizacao;
+if (modo !== 'atividade' && modoAnterior === 'atividade') {
+window.atividadeSelecionadaGlobal = '';
+const selectAtividade = document.getElementById('atividade-select');
+if (selectAtividade) selectAtividade.value = '';
+const limparAtividade = document.getElementById('limpar-filtro-atividade');
+if (limparAtividade) limparAtividade.classList.add('hidden');
+}
 window.modoVisualizacao = modo;
 if (window.innerWidth < 1024) {
 document.getElementById('mobile-nav-menu').classList.add('hidden');
@@ -2787,6 +2807,16 @@ containerAbas.style.display = 'grid';
 bannerHero.style.display = 'flex';
 wrapperSemanas.style.display = 'block';
 mudarGrupo();
+} else if (modo === 'atividade') {
+btnHeaderAdmin.className = "w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-sm font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm";
+colunaMembros.style.display = 'none';
+colunaTurnos.className = "lg:col-span-12 flex flex-col h-full";
+const atividadeAtual = window.atividadeSelecionadaGlobal || document.getElementById('atividade-select')?.value || 'Atividade';
+tituloSecao.innerHTML = `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h10"/></svg><span>Filtro por atividade • ${escaparHTML(atividadeAtual)}</span>`;
+containerAbas.style.display = 'none';
+bannerHero.style.display = 'none';
+wrapperSemanas.style.display = 'none';
+renderizarFiltroAtividadeView();
 } else if (modo === 'seminarios') {
 btnHeaderAdmin.className = "w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-sm font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm";
 btnSeminarios.className = classAtivo;
@@ -4328,6 +4358,162 @@ if (locaisPadronizados[turno.local]) turno.local = locaisPadronizados[turno.loca
 }
 }
 
+window.atividadeSelecionadaGlobal = '';
+window.modoAntesFiltroAtividade = 'individual';
+
+function obterAtividadesDisponiveis() {
+const atividades = new Set();
+for (let idTrio = 1; idTrio <= 10; idTrio++) {
+for (let semana = 1; semana <= 9; semana++) {
+Object.values(dadosEscala[idTrio].semanas[semana]).forEach(infoDia => {
+infoDia.turnos.forEach(turno => {
+if (atividadeConfirmada(turno.local)) atividades.add(turno.local);
+});
+});
+}
+}
+return [...atividades].sort((a, b) => a.localeCompare(b, 'pt-BR', { sensitivity: 'base' }));
+}
+
+window.popularFiltroAtividades = function() {
+const select = document.getElementById('atividade-select');
+if (!select) return;
+const selecionada = window.atividadeSelecionadaGlobal || select.value || '';
+select.innerHTML = '';
+const opcaoTodas = document.createElement('option');
+opcaoTodas.value = '';
+opcaoTodas.textContent = 'Todas as atividades';
+select.appendChild(opcaoTodas);
+obterAtividadesDisponiveis().forEach(atividade => {
+const option = document.createElement('option');
+option.value = atividade;
+option.textContent = atividade;
+select.appendChild(option);
+});
+if (selecionada && [...select.options].some(option => option.value === selecionada)) {
+select.value = selecionada;
+} else {
+window.atividadeSelecionadaGlobal = '';
+select.value = '';
+}
+const limpar = document.getElementById('limpar-filtro-atividade');
+if (limpar) limpar.classList.toggle('hidden', !select.value);
+}
+
+function obterOcorrenciasAtividade(atividade) {
+const ocorrencias = [];
+if (!atividade) return ocorrencias;
+const ordemTurnos = { 'Manhã': 0, 'Tarde': 1, 'Noite': 2 };
+for (let idTrio = 1; idTrio <= 10; idTrio++) {
+for (let semana = 1; semana <= 9; semana++) {
+Object.entries(dadosEscala[idTrio].semanas[semana]).forEach(([diaKey, infoDia]) => {
+infoDia.turnos.forEach(turno => {
+if (turno.local !== atividade) return;
+ocorrencias.push({
+idTrio: String(idTrio),
+semana,
+diaKey,
+diaNome: infoDia.nome,
+data: infoDia.data,
+periodo: turno.periodo,
+horario: turno.horario,
+atividade,
+nomeGrupo: dadosEscala[idTrio].nomeGrupo,
+membros: dadosEscala[idTrio].membros
+});
+});
+});
+}
+}
+return ocorrencias.sort((a, b) => {
+const dataA = dataEscalaParaDate(a.data)?.getTime() || 0;
+const dataB = dataEscalaParaDate(b.data)?.getTime() || 0;
+if (dataA !== dataB) return dataA - dataB;
+if ((ordemTurnos[a.periodo] ?? 9) !== (ordemTurnos[b.periodo] ?? 9)) return (ordemTurnos[a.periodo] ?? 9) - (ordemTurnos[b.periodo] ?? 9);
+return Number(a.idTrio) - Number(b.idTrio);
+});
+}
+
+window.renderizarFiltroAtividadeView = function() {
+const container = document.getElementById('lista-turnos');
+if (!container) return;
+const atividade = window.atividadeSelecionadaGlobal || document.getElementById('atividade-select')?.value || '';
+if (!atividade) {
+container.innerHTML = '<div class="glass-panel rounded-2xl p-6 text-center text-sm text-zinc-500">Escolha uma atividade no filtro acima para ver onde ela aparece na escala.</div>';
+return;
+}
+const ocorrencias = obterOcorrenciasAtividade(atividade);
+const totalTrios = new Set(ocorrencias.map(item => item.idTrio)).size;
+const agora = new Date();
+let cards = '';
+ocorrencias.forEach(item => {
+const dataObj = dataEscalaParaDate(item.data);
+const passou = dataObj ? dataObj < inicioDoDiaPainel(agora) : false;
+const nomes = item.nomeGrupo.includes(':') ? item.nomeGrupo.split(':').slice(1).join(':').trim() : item.nomeGrupo;
+cards += `
+<article class="glass-panel rounded-2xl p-4 sm:p-5 border ${passou ? 'border-black/5 dark:border-white/5 opacity-55' : 'border-blue-500/20'} shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="min-w-0 flex items-start gap-3.5">
+<div class="shrink-0 w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex flex-col items-center justify-center leading-none">
+<strong class="font-outfit text-sm text-blue-600 dark:text-blue-400">${escaparHTML(item.data.slice(0, 2))}</strong>
+<span class="text-[8px] font-black uppercase tracking-wider text-zinc-500 mt-1">${escaparHTML(dataObj ? dataObj.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '') : '')}</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="text-[9px] font-black uppercase tracking-[.14em] text-blue-500">Trio A${item.idTrio}</span>
+<span class="text-[9px] text-zinc-400">${escaparHTML(item.diaNome)} • ${escaparHTML(item.periodo)}</span>
+${passou ? '<span class="text-[8px] font-black uppercase tracking-wider text-zinc-400">Realizado</span>' : ''}
+</div>
+<h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-1.5">${escaparHTML(item.atividade)}</h4>
+<p class="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 mt-1 truncate">${escaparHTML(nomes)}</p>
+</div>
+</div>
+<div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pl-[62px] sm:pl-0">
+<span class="text-[10px] font-bold text-zinc-600 dark:text-zinc-300 bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 px-2.5 py-1.5 rounded-lg">${escaparHTML(item.horario)}</span>
+<button type="button" onclick="abrirOcorrenciaAtividade('${item.idTrio}', ${item.semana}, '${item.diaKey}')" class="text-[10px] font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 px-3 py-2 rounded-lg shadow-sm transition-all">Abrir na escala</button>
+</div>
+</div>
+</article>`;
+});
+container.innerHTML = `
+<div class="h-full overflow-y-auto pr-1 pb-4 space-y-4">
+<section class="glass-panel rounded-2xl p-5 sm:p-6 border border-blue-500/20 bg-gradient-to-r from-blue-500/[.06] to-indigo-500/[.04]">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+<div><span class="text-[9px] font-black uppercase tracking-[.18em] text-blue-500">Filtro ativo</span><h3 class="font-outfit font-black text-xl sm:text-2xl text-zinc-900 dark:text-white mt-1">${escaparHTML(atividade)}</h3><p class="text-[11px] text-zinc-500 mt-1">Todas as aparições dessa atividade na escala da T7A.</p></div>
+<div class="flex items-center gap-2"><span class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-600 dark:text-blue-400">${ocorrencias.length} ${ocorrencias.length === 1 ? 'ocorrência' : 'ocorrências'}</span><span class="px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 text-[10px] font-bold text-zinc-500">${totalTrios} ${totalTrios === 1 ? 'trio' : 'trios'}</span></div>
+</div>
+</section>
+${ocorrencias.length ? `<div class="grid grid-cols-1 xl:grid-cols-2 gap-3">${cards}</div>` : '<div class="glass-panel rounded-2xl p-6 text-center text-sm text-zinc-500">Nenhuma ocorrência encontrada para esta atividade.</div>'}
+</div>`;
+}
+
+window.filtrarPorAtividade = function(atividade) {
+const valor = atividade || '';
+const select = document.getElementById('atividade-select');
+const limpar = document.getElementById('limpar-filtro-atividade');
+window.atividadeSelecionadaGlobal = valor;
+if (select) select.value = valor;
+if (limpar) limpar.classList.toggle('hidden', !valor);
+if (!valor) {
+if (window.modoVisualizacao === 'atividade') {
+const destino = window.modoAntesFiltroAtividade && window.modoAntesFiltroAtividade !== 'atividade' ? window.modoAntesFiltroAtividade : 'individual';
+alternarModo(destino);
+}
+return;
+}
+if (window.modoVisualizacao !== 'atividade') window.modoAntesFiltroAtividade = window.modoVisualizacao || 'individual';
+alternarModo('atividade');
+}
+
+window.abrirOcorrenciaAtividade = function(trioId, semana, diaKey) {
+window.atividadeSelecionadaGlobal = '';
+const select = document.getElementById('atividade-select');
+if (select) select.value = '';
+const limpar = document.getElementById('limpar-filtro-atividade');
+if (limpar) limpar.classList.add('hidden');
+abrirDiaDaEscala(trioId, semana, diaKey);
+}
+
 // Mantém uma cópia imutável da escala original para permitir desfazer alterações administrativas.
 const dadosEscalaBaseSnapshot = JSON.parse(JSON.stringify(dadosEscala));
 
@@ -4343,7 +4529,9 @@ if (!turno) return;
 turno.local = item.local;
 turno.horario = item.horario;
 });
+if (typeof window.popularFiltroAtividades === 'function') window.popularFiltroAtividades();
 if ((window.modoVisualizacao === 'individual' || window.modoVisualizacao === 'geral' || window.modoVisualizacao === 'hoje') && typeof window.mudarGrupo === 'function') window.mudarGrupo();
+if (window.modoVisualizacao === 'atividade' && typeof window.renderizarFiltroAtividadeView === 'function') window.renderizarFiltroAtividadeView();
 if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'escalas') renderizarAdminEscalas();
 if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
 }
@@ -4438,6 +4626,10 @@ window.mudarGrupo = function() {
 if (window.modoVisualizacao === 'hoje') {
 renderizarHojeView();
 atualizarNotificacoes();
+return;
+}
+if (window.modoVisualizacao === 'atividade') {
+renderizarFiltroAtividadeView();
 return;
 }
 if (window.modoVisualizacao === 'seminarios' || window.modoVisualizacao === 'calendario' || window.modoVisualizacao === 'recados' || window.modoVisualizacao === 'admin') {
@@ -4599,6 +4791,7 @@ atualizarSeletorCorPainel();
 detectarDiaESemanaAtual();
 window.renderizarSemanas();
 window.renderizarAbasDias();
+window.popularFiltroAtividades();
 window.alternarModo('hoje');
 iniciarContadores();
 atualizarRelogioDashboard();
