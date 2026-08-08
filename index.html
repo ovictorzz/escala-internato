@@ -266,6 +266,8 @@ scroll-behavior: auto !important;
 /* Camada premium — identidade, bento e turnos */
 .dashboard-topbar {
 min-height: 58px;
+position: relative;
+z-index: 40;
 }
 
 .dashboard-status {
@@ -1350,9 +1352,27 @@ html:not(.dark) .notification-item-title { color: #18181b; }
 .notification-item-text { margin-top: 3px; color: #71717a; font-size: 9.5px; line-height: 1.45; font-weight: 500; }
 .notification-empty { padding: 22px 16px; text-align: center; color: #71717a; font-size: 10px; }
 .tema-rosa .notification-status-blue { color: #f472b6; background: rgba(236,72,153,.1); }
-@media (max-width: 480px) {
-.notification-popover { position: fixed; top: 72px; left: 12px; right: 12px; width: auto; }
+@media (max-width: 639px) {
+#notification-panel.notification-popover {
+position: absolute !important;
+top: calc(100% + 10px) !important;
+right: 0 !important;
+left: auto !important;
+width: min(360px, calc(100vw - 24px));
+max-width: calc(100vw - 24px);
+max-height: calc(100vh - 24px);
+max-height: calc(100dvh - 24px);
+z-index: 9999 !important;
+}
+.notification-list {
+max-height: min(55vh, 380px);
+max-height: min(55dvh, 380px);
+overflow-y: auto;
+overscroll-behavior: contain;
+-webkit-overflow-scrolling: touch;
+}
 .notification-item { padding: 10px 12px; }
+.notification-item-text { -webkit-line-clamp: unset !important; display: block !important; }
 }
 
 .view-enter { animation: view-enter .38s cubic-bezier(.2,.8,.2,1) both; }
@@ -1560,10 +1580,6 @@ Próxima: Carregando...
 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
 <span>Todos os Trios</span>
 </button>
-<button onclick="alternarModo('atividade')" id="btn-modo-atividade" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm">
-<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h18M6 12h12m-9 7h6"/></svg>
-<span>Atividades</span>
-</button>
 <button onclick="alternarModo('seminarios')" id="btn-modo-seminarios" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm">
 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
 <span>Seminários</span>
@@ -1615,11 +1631,11 @@ Internato de Ginecologia & Obstetrícia
 </div>
 <div class="flex items-center gap-2 sm:gap-2.5">
 <div class="relative">
-<button onclick="toggleNotificacoes()" class="premium-action" title="Central de notificações" aria-label="Abrir notificações">
+<button id="notification-toggle" onclick="toggleNotificacoes()" class="premium-action" title="Central de notificações" aria-label="Abrir notificações" aria-controls="notification-panel" aria-expanded="false">
 <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 00-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 01-6 0"/></svg>
 <span id="notification-count" class="notification-count hidden">0</span>
 </button>
-<div id="notification-panel" class="hidden absolute right-0 top-12 z-[60] notification-popover">
+<div id="notification-panel" class="hidden absolute right-0 top-12 z-[60] notification-popover" role="dialog" aria-label="Central de notificações">
 <div class="notification-header"><div><p class="notification-header-title">Notificações</p><p id="notification-summary" class="notification-header-meta">Atualizações importantes</p></div><button onclick="toggleNotificacoes(false)" class="notification-close" aria-label="Fechar">×</button></div>
 <div id="notification-list" class="notification-list"></div>
 </div>
@@ -1660,6 +1676,18 @@ A1
 <option value="10">Trio A10: José, João Victor & Ana Luiza</option>
 </select>
 <div class="absolute inset-y-0 right-0 top-3.5 flex items-center px-4 pointer-events-none text-zinc-400">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+</div>
+</div>
+<div class="relative w-full pt-3 border-t border-black/5 dark:border-white/10">
+<div class="flex items-center justify-between gap-3 mb-1.5 px-0.5">
+<span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500 dark:text-zinc-400">Filtrar por atividade</span>
+<button id="limpar-filtro-atividade" type="button" onclick="filtrarPorAtividade('')" class="hidden text-[9px] font-bold text-blue-500 hover:text-blue-400 transition-colors">Limpar</button>
+</div>
+<select id="atividade-select" onchange="filtrarPorAtividade(this.value)" class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-100 text-zinc-800 font-bold text-sm rounded-xl px-4 py-3 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer shadow-inner">
+<option value="">Todas as atividades</option>
+</select>
+<div class="absolute right-0 bottom-0 flex items-center px-4 h-[46px] pointer-events-none text-zinc-400">
 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
 </div>
 </div>
@@ -2378,9 +2406,17 @@ lista.innerHTML = itens.map(item => `<div class="notification-item"><span class=
 
 window.toggleNotificacoes = function(forcar) {
 const painel = document.getElementById('notification-panel');
+const botao = document.getElementById('notification-toggle');
 if (!painel) return;
-if (forcar === false) painel.classList.add('hidden');
-else { atualizarNotificacoes(); painel.classList.toggle('hidden'); }
+const estaAberto = !painel.classList.contains('hidden');
+const deveAbrir = forcar === true ? true : (forcar === false ? false : !estaAberto);
+if (deveAbrir) atualizarNotificacoes();
+painel.classList.toggle('hidden', !deveAbrir);
+if (botao) {
+botao.setAttribute('aria-expanded', String(deveAbrir));
+botao.setAttribute('aria-label', deveAbrir ? 'Fechar notificações' : 'Abrir notificações');
+}
+if (deveAbrir) painel.querySelector('.notification-list')?.scrollTo(0, 0);
 }
 
 function inicializarExperienciaPremium() {
@@ -2390,7 +2426,7 @@ if (evento.key === 'Escape') toggleNotificacoes(false);
 });
 document.addEventListener('click', evento => {
 const painel = document.getElementById('notification-panel');
-if (painel && !painel.classList.contains('hidden') && !painel.parentElement.contains(evento.target)) painel.classList.add('hidden');
+if (painel && !painel.classList.contains('hidden') && !painel.parentElement.contains(evento.target)) toggleNotificacoes(false);
 });
 atualizarNotificacoes();
 }
@@ -2750,7 +2786,6 @@ document.getElementById('mobile-footer-menu').classList.add('hidden');
 const btnInd = document.getElementById('btn-modo-ind');
 const btnHoje = document.getElementById('btn-modo-hoje');
 const btnGeral = document.getElementById('btn-modo-geral');
-const btnAtividade = document.getElementById('btn-modo-atividade');
 const btnSeminarios = document.getElementById('btn-modo-seminarios');
 const btnCalendario = document.getElementById('btn-modo-calendario');
 const btnRecados = document.getElementById('btn-modo-recados');
@@ -2766,7 +2801,6 @@ const classInativo = "w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2
 btnHoje.className = classInativo;
 btnInd.className = classInativo;
 btnGeral.className = classInativo;
-btnAtividade.className = classInativo;
 btnSeminarios.className = classInativo;
 btnCalendario.className = classInativo;
 btnRecados.className = classInativo;
@@ -2803,10 +2837,10 @@ wrapperSemanas.style.display = 'block';
 mudarGrupo();
 } else if (modo === 'atividade') {
 btnHeaderAdmin.className = "w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-sm font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm";
-btnAtividade.className = classAtivo;
 colunaMembros.style.display = 'none';
 colunaTurnos.className = "lg:col-span-12 flex flex-col h-full";
-tituloSecao.innerHTML = `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h18M6 12h12m-9 7h6"/></svg><span>Atividades • Consulte toda a escala</span>`;
+const atividadeAtual = window.atividadeSelecionadaGlobal || document.getElementById('atividade-select')?.value || 'Atividade';
+tituloSecao.innerHTML = `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h10"/></svg><span>Filtro por atividade • ${escaparHTML(atividadeAtual)}</span>`;
 containerAbas.style.display = 'none';
 bannerHero.style.display = 'none';
 wrapperSemanas.style.display = 'none';
@@ -4013,14 +4047,14 @@ const escalaTrio02 = {
 "11/08": { manha: "PS FICHA", noite: "Seminário de G.O. — UNIEURO" },
 "12/08": { manha: "Caio (PNAR) (HRC)" },
 "13/08": { tarde: "Lucimara (HRC)", noite: "CO (HRC)" },
-"14/08": { manha: "CC (HRC)" },
+"14/08": { manha: "CC" },
 "16/08": { tarde: "HRSM" },
 "18/08": { tarde: "HRSM", noite: "Seminário de G.O. — UNIEURO" },
 "19/08": { tarde: "HRSM" },
 "20/08": { tarde: "HRSM" },
 "21/08": { tarde: "HRSM" },
-"22/08": { manha: "PS BOX (HRC)" },
-"23/08": { manha: "PS BOX (HRC)" },
+"22/08": { manha: "PS BOX" },
+"23/08": { manha: "PS BOX" },
 "28/09": { manha: "Amb Mírian (HRAN)", noite: "—" },
 "29/09": { manha: "—", tarde: "—" },
 "30/09": { manha: "—", tarde: "CO (HRAN)", noite: "—" },
@@ -4053,7 +4087,7 @@ const escalaTrio03 = {
 "09/08": { noite: "CO (HRC)" },
 "10/08": { manha: "Marta (HRC)" },
 "11/08": { manha: "CC (HRC)", tarde: "CO (HRC)", noite: "Seminário de G.O. — UNIEURO" },
-"12/08": { manha: "Amb UNIEURO" },
+"12/08": { manha: "Amb EURO (HRC)" },
 "13/08": { tarde: "Gilmária (HRC)", noite: "PS FICHA (HRC)" },
 "14/08": { manha: "Nádia (EUD) (HRC)", tarde: "Rocha (HRC)" },
 "18/08": { tarde: "Marta (HRC)", noite: "Seminário de G.O. — UNIEURO" },
@@ -4112,11 +4146,11 @@ const escalaTrio05 = {
 "09/08": { manha: "ALCON (HRC)" },
 "10/08": { manha: "CC (HRC)" },
 "11/08": { manha: "Adnir (ECO) (HRC)", tarde: "PS FICHA (HRC)", noite: "Seminário de G.O. — UNIEURO" },
-"12/08": { manha: "Lorena (ECO) (HRC)" },
+"12/08": { manha: "Lorena (ECO)" },
 "13/08": { manha: "CC (HRC)", tarde: "Caio (PNAR) (HRC)" },
 "14/08": { manha: "CO (HRC)" },
 "16/08": { manha: "CO (HRC)" },
-"17/08": { manha: "Nádia (EUD) (HRC)" },
+"17/08": { manha: "Nádia (HRC)" },
 "18/08": { manha: "BL (HRC)", noite: "Seminário de G.O. — UNIEURO" },
 "19/08": { tarde: "PS FICHA" },
 "20/08": { manha: "BL (HRC)" },
@@ -4149,8 +4183,8 @@ const escalaTrio06 = {
 "16/08": { manha: "ALCON (HRC)" },
 "17/08": { manha: "CC (HRC)" },
 "18/08": { manha: "Adnir (ECO) (HRC)", tarde: "PS FICHA (HRC)", noite: "Seminário de G.O. — UNIEURO" },
-"19/08": { manha: "Lorena (ECO) (HRC)" },
-"20/08": { manha: "CC (HRC)", tarde: "Caio (PNAR) (HRC)" },
+"19/08": { manha: "Lorena (ECO)" },
+"20/08": { manha: "CC (HRC)", tarde: "Caio (PNAR)" },
 "21/08": { manha: "CO (HRC)" },
 "25/08": { noite: "Seminário de G.O. — UNIEURO" },
 "31/08": { manha: "Amb Mírian (HRAN)" },
@@ -4173,7 +4207,7 @@ const escalaTrio07 = {
 "06/08": { manha: "PS BOX (HRC)", tarde: "Sádia (HRC)" },
 "07/08": { manha: "PS BOX (HRC)", tarde: "CO (HRC)" },
 "09/08": { tarde: "CO (HRC)" },
-"10/08": { manha: "Nádia (EUD) (HRC)" },
+"10/08": { manha: "Nádia (HRC)" },
 "11/08": { manha: "BL (HRC)", noite: "Seminário de G.O. — UNIEURO" },
 "13/08": { manha: "BL (HRC)" },
 "14/08": { tarde: "Flávia (HRC)", noite: "CO (HRC)" },
@@ -4340,12 +4374,6 @@ const locaisPadronizados = {
 "Lucimara": "Lucimara (HRC)",
 "Marta": "Marta (HRC)",
 "PS FICHA": "PS FICHA (HRC)",
-"PS BOX": "PS BOX (HRC)",
-"CC": "CC (HRC)",
-"Caio (PNAR)": "Caio (PNAR) (HRC)",
-"Lorena (ECO)": "Lorena (ECO) (HRC)",
-"Nádia (HRC)": "Nádia (EUD) (HRC)",
-"Amb EURO": "Amb UNIEURO",
 "Gilmária": "Gilmária (HRC)"
 };
 for (let i = 1; i <= 10; i++) {
@@ -4367,7 +4395,7 @@ for (let idTrio = 1; idTrio <= 10; idTrio++) {
 for (let semana = 1; semana <= 9; semana++) {
 Object.values(dadosEscala[idTrio].semanas[semana]).forEach(infoDia => {
 infoDia.turnos.forEach(turno => {
-if (atividadeConfirmada(turno.local) && !String(turno.local).toLocaleLowerCase('pt-BR').includes('seminário')) atividades.add(turno.local);
+if (atividadeConfirmada(turno.local)) atividades.add(turno.local);
 });
 });
 }
@@ -4382,7 +4410,7 @@ const selecionada = window.atividadeSelecionadaGlobal || select.value || '';
 select.innerHTML = '';
 const opcaoTodas = document.createElement('option');
 opcaoTodas.value = '';
-opcaoTodas.textContent = 'Selecione uma atividade';
+opcaoTodas.textContent = 'Todas as atividades';
 select.appendChild(opcaoTodas);
 obterAtividadesDisponiveis().forEach(atividade => {
 const option = document.createElement('option');
@@ -4402,7 +4430,7 @@ if (limpar) limpar.classList.toggle('hidden', !select.value);
 
 function obterOcorrenciasAtividade(atividade) {
 const ocorrencias = [];
-if (!atividade || String(atividade).toLocaleLowerCase('pt-BR').includes('seminário')) return ocorrencias;
+if (!atividade) return ocorrencias;
 const ordemTurnos = { 'Manhã': 0, 'Tarde': 1, 'Noite': 2 };
 for (let idTrio = 1; idTrio <= 10; idTrio++) {
 for (let semana = 1; semana <= 9; semana++) {
@@ -4437,7 +4465,11 @@ return Number(a.idTrio) - Number(b.idTrio);
 window.renderizarFiltroAtividadeView = function() {
 const container = document.getElementById('lista-turnos');
 if (!container) return;
-const atividade = window.atividadeSelecionadaGlobal || '';
+const atividade = window.atividadeSelecionadaGlobal || document.getElementById('atividade-select')?.value || '';
+if (!atividade) {
+container.innerHTML = '<div class="glass-panel rounded-2xl p-6 text-center text-sm text-zinc-500">Escolha uma atividade no filtro acima para ver onde ela aparece na escala.</div>';
+return;
+}
 const ocorrencias = obterOcorrenciasAtividade(atividade);
 const totalTrios = new Set(ocorrencias.map(item => item.idTrio)).size;
 const agora = new Date();
@@ -4474,25 +4506,13 @@ ${passou ? '<span class="text-[8px] font-black uppercase tracking-wider text-zin
 container.innerHTML = `
 <div class="h-full overflow-y-auto pr-1 pb-4 space-y-4">
 <section class="glass-panel rounded-2xl p-5 sm:p-6 border border-blue-500/20 bg-gradient-to-r from-blue-500/[.06] to-indigo-500/[.04]">
-<div class="max-w-3xl">
-<span class="text-[9px] font-black uppercase tracking-[.18em] text-blue-500">Consulta da escala</span>
-<h3 class="font-outfit font-black text-xl sm:text-2xl text-zinc-900 dark:text-white mt-1">Filtrar por atividade</h3>
-<p class="text-[11px] text-zinc-500 mt-1">Selecione uma atividade para ver em quais datas, turnos e trios ela aparece.</p>
-<div class="flex flex-col sm:flex-row gap-2 mt-4">
-<div class="relative flex-1">
-<select id="atividade-select" onchange="filtrarPorAtividade(this.value)" class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-100 text-zinc-800 font-bold text-sm rounded-xl px-4 py-3 pr-11 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer shadow-inner">
-<option value="">Selecione uma atividade</option>
-</select>
-<div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-zinc-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+<div><span class="text-[9px] font-black uppercase tracking-[.18em] text-blue-500">Filtro ativo</span><h3 class="font-outfit font-black text-xl sm:text-2xl text-zinc-900 dark:text-white mt-1">${escaparHTML(atividade)}</h3><p class="text-[11px] text-zinc-500 mt-1">Todas as aparições dessa atividade na escala da T7A.</p></div>
+<div class="flex items-center gap-2"><span class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-600 dark:text-blue-400">${ocorrencias.length} ${ocorrencias.length === 1 ? 'ocorrência' : 'ocorrências'}</span><span class="px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 text-[10px] font-bold text-zinc-500">${totalTrios} ${totalTrios === 1 ? 'trio' : 'trios'}</span></div>
 </div>
-<button id="limpar-filtro-atividade" type="button" onclick="filtrarPorAtividade('')" class="${atividade ? '' : 'hidden'} px-4 py-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-[10px] font-bold text-zinc-500 hover:text-blue-500 transition-colors">Limpar filtro</button>
-</div>
-</div>
-${atividade ? `<div class="mt-5 pt-4 border-t border-black/5 dark:border-white/10 flex flex-col sm:flex-row sm:items-end justify-between gap-3"><div><span class="text-[8px] font-black uppercase tracking-[.16em] text-zinc-400">Resultado para</span><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-1">${escaparHTML(atividade)}</h4></div><div class="flex items-center gap-2"><span class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-600 dark:text-blue-400">${ocorrencias.length} ${ocorrencias.length === 1 ? 'ocorrência' : 'ocorrências'}</span><span class="px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 text-[10px] font-bold text-zinc-500">${totalTrios} ${totalTrios === 1 ? 'trio' : 'trios'}</span></div></div>` : ''}
 </section>
-${atividade ? (ocorrencias.length ? `<div class="grid grid-cols-1 xl:grid-cols-2 gap-3">${cards}</div>` : '<div class="glass-panel rounded-2xl p-6 text-center text-sm text-zinc-500">Nenhuma ocorrência encontrada para esta atividade.</div>') : '<div class="glass-panel rounded-2xl p-6 text-center text-sm text-zinc-500">Escolha uma atividade acima para consultar a escala.</div>'}
+${ocorrencias.length ? `<div class="grid grid-cols-1 xl:grid-cols-2 gap-3">${cards}</div>` : '<div class="glass-panel rounded-2xl p-6 text-center text-sm text-zinc-500">Nenhuma ocorrência encontrada para esta atividade.</div>'}
 </div>`;
-window.popularFiltroAtividades();
 }
 
 window.filtrarPorAtividade = function(atividade) {
@@ -4502,12 +4522,14 @@ const limpar = document.getElementById('limpar-filtro-atividade');
 window.atividadeSelecionadaGlobal = valor;
 if (select) select.value = valor;
 if (limpar) limpar.classList.toggle('hidden', !valor);
+if (!valor) {
 if (window.modoVisualizacao === 'atividade') {
-renderizarFiltroAtividadeView();
+const destino = window.modoAntesFiltroAtividade && window.modoAntesFiltroAtividade !== 'atividade' ? window.modoAntesFiltroAtividade : 'individual';
+alternarModo(destino);
+}
 return;
 }
-if (!valor) return;
-window.modoAntesFiltroAtividade = window.modoVisualizacao || 'individual';
+if (window.modoVisualizacao !== 'atividade') window.modoAntesFiltroAtividade = window.modoVisualizacao || 'individual';
 alternarModo('atividade');
 }
 
@@ -4797,6 +4819,7 @@ atualizarSeletorCorPainel();
 detectarDiaESemanaAtual();
 window.renderizarSemanas();
 window.renderizarAbasDias();
+window.popularFiltroAtividades();
 window.alternarModo('hoje');
 iniciarContadores();
 atualizarRelogioDashboard();
