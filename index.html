@@ -1807,6 +1807,8 @@ let escalaOverridesGlobal = [];
 let adminSecaoAtiva = 'dashboard';
 let currentLoginSessionId = null;
 let cancelarHistoricoSenhasAdmin = null;
+const CHAVE_DISPOSITIVO_AUTENTICADO = 't7aDispositivoAutenticado';
+const CHAVE_DISPOSITIVO_ALUNO = 't7aAlunoLogado';
 const alunoTrioMap = {
 "André Victor": "1", "Davi Carvalho": "1", "Letícia Barbosa": "1",
 "Nadya Jarosczynski": "2", "Louise Mirindiba": "2", "Isabella Teixeira": "2",
@@ -1819,6 +1821,44 @@ const alunoTrioMap = {
 "Annelise Paiva": "9", "Camila Souza": "9", "Gabriella Reis": "9",
 "José Henrique": "10", "João Victor Tajra": "10", "Ana Luiza Daros": "10"
 };
+
+function salvarUsuarioNesteDispositivo(nome) {
+try {
+localStorage.setItem(CHAVE_DISPOSITIVO_AUTENTICADO, 'true');
+localStorage.setItem(CHAVE_DISPOSITIVO_ALUNO, nome);
+} catch (erro) {
+console.warn('Não foi possível salvar o usuário neste dispositivo:', erro);
+}
+sessionStorage.setItem('autenticado', 'true');
+sessionStorage.setItem('alunoLogado', nome);
+}
+
+function obterAlunoLogado() {
+try {
+const alunoPersistido = localStorage.getItem(CHAVE_DISPOSITIVO_ALUNO);
+if (alunoPersistido) return alunoPersistido;
+} catch (erro) {}
+return sessionStorage.getItem('alunoLogado');
+}
+
+function dispositivoAutenticado() {
+const aluno = obterAlunoLogado();
+if (!aluno || !alunoTrioMap[aluno]) return false;
+try {
+if (localStorage.getItem(CHAVE_DISPOSITIVO_AUTENTICADO) === 'true') return true;
+} catch (erro) {}
+return sessionStorage.getItem('autenticado') === 'true';
+}
+
+function esquecerUsuarioNesteDispositivo() {
+try {
+localStorage.removeItem(CHAVE_DISPOSITIVO_AUTENTICADO);
+localStorage.removeItem(CHAVE_DISPOSITIVO_ALUNO);
+} catch (erro) {}
+sessionStorage.removeItem('autenticado');
+sessionStorage.removeItem('alunoLogado');
+}
+
 window.toggleMobileMenu = function() {
 const nav = document.getElementById('mobile-nav-menu');
 const footer = document.getElementById('mobile-footer-menu');
@@ -1974,8 +2014,7 @@ return;
 }
 if (digitada === senhaEsperada) {
 document.getElementById('login-overlay').style.display = 'none';
-sessionStorage.setItem('autenticado', 'true');
-sessionStorage.setItem('alunoLogado', alunoSelect);
+salvarUsuarioNesteDispositivo(alunoSelect);
 if (alunoSelect === 'André Victor') {
 isAdminAutenticado = true;
 sessionStorage.setItem('adminAutenticado', 'true');
@@ -2016,7 +2055,7 @@ alternarModo('hoje');
 }
 async function registrarSaidaSistema() {
 const sessionId = sessionStorage.getItem('loginSessionId') || currentLoginSessionId;
-if (sessionId && sessionStorage.getItem('autenticado') === 'true') {
+if (sessionId && dispositivoAutenticado()) {
 try {
 const saidaHora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
 await updateDoc(doc(db, "historico_logins", sessionId), { saida: saidaHora });
@@ -2032,8 +2071,7 @@ cancelarHistoricoSenhasAdmin();
 cancelarHistoricoSenhasAdmin = null;
 historicoSenhasGlobal = [];
 }
-sessionStorage.removeItem('autenticado');
-sessionStorage.removeItem('alunoLogado');
+esquecerUsuarioNesteDispositivo();
 sessionStorage.removeItem('loginSessionId');
 sessionStorage.removeItem('adminAutenticado');
 currentLoginSessionId = null;
@@ -2049,7 +2087,7 @@ document.getElementById('login-overlay').style.display = 'flex';
 }
 window.addEventListener('beforeunload', () => {
 const sessionId = sessionStorage.getItem('loginSessionId') || currentLoginSessionId;
-if (sessionId && sessionStorage.getItem('autenticado') === 'true') {
+if (sessionId && dispositivoAutenticado()) {
 const saidaHora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
 try {
 updateDoc(doc(db, "historico_logins", sessionId), { saida: saidaHora });
@@ -2057,7 +2095,7 @@ updateDoc(doc(db, "historico_logins", sessionId), { saida: saidaHora });
 }
 });
 function atualizarIdentificacaoAluno() {
-const aluno = sessionStorage.getItem('alunoLogado');
+const aluno = obterAlunoLogado();
 const badge = document.getElementById('aluno-logado-badge');
 const saudacao = document.getElementById('saudacao-aluno');
 const profile = document.getElementById('profile-initials');
@@ -2370,7 +2408,7 @@ return String(horario)
 }
 
 function montarNotificacoes() {
-const idTrio = document.getElementById('grupo-select')?.value || alunoTrioMap[sessionStorage.getItem('alunoLogado')] || '1';
+const idTrio = document.getElementById('grupo-select')?.value || alunoTrioMap[obterAlunoLogado()] || '1';
 const agora = new Date();
 const itens = [];
 const proxima = encontrarProximaAtividadeObrigatoria(idTrio, agora);
@@ -2457,7 +2495,7 @@ const restante = inicio - Date.now();
 contador.textContent = formatarContagemRegressiva(restante);
 if (restante <= 0 && contador.dataset.expirado !== '1') {
 contador.dataset.expirado = '1';
-const alunoLogado = sessionStorage.getItem('alunoLogado');
+const alunoLogado = obterAlunoLogado();
 if (alunoLogado) setTimeout(() => atualizarProximaAtividadeDinamica(alunoLogado), 250);
 }
 }
@@ -2579,19 +2617,88 @@ painelNovo.innerHTML = `<span class="text-zinc-400">Nenhuma atividade obrigatór
 }
 setInterval(atualizarContadorProximaAtividade, 1000);
 const contadorRef = doc(db, "geral", "contador");
-onSnapshot(contadorRef, (docSnap) => {
-if (docSnap.exists()) {
-capotesCount = docSnap.data().capotes || 0;
+const contadorBackupRef = doc(db, "geral", "contador_backup");
+let recuperandoContadorCapotes = false;
+
+async function garantirPersistenciaContadorCapotes() {
+if (recuperandoContadorCapotes) return;
+recuperandoContadorCapotes = true;
+try {
+await runTransaction(db, async (transaction) => {
+const contadorSnap = await transaction.get(contadorRef);
+const backupSnap = await transaction.get(contadorBackupRef);
+const dadosContador = contadorSnap.exists() ? contadorSnap.data() : {};
+const dadosBackup = backupSnap.exists() ? backupSnap.data() : {};
+const contadorTemValor = contadorSnap.exists() && Number.isFinite(Number(dadosContador.capotes));
+const contadorTemRevisao = contadorTemValor && Number.isFinite(Number(dadosContador.revisao)) && Number(dadosContador.revisao) > 0;
+const backupTemValor = backupSnap.exists() && Number.isFinite(Number(dadosBackup.capotes));
+const backupTemRevisao = backupTemValor && Number.isFinite(Number(dadosBackup.revisao)) && Number(dadosBackup.revisao) > 0;
+
+let valorSeguro = 0;
+let revisaoSegura = 1;
+
+// Se o contador principal perder os metadados depois de já existir um backup,
+// considera o backup como a última versão íntegra e evita um reset silencioso para zero.
+if (backupTemRevisao && (!contadorTemRevisao || Number(dadosBackup.revisao) > Number(dadosContador.revisao))) {
+valorSeguro = Math.max(0, Math.trunc(Number(dadosBackup.capotes)));
+revisaoSegura = Math.trunc(Number(dadosBackup.revisao));
+} else if (contadorTemValor) {
+valorSeguro = Math.max(0, Math.trunc(Number(dadosContador.capotes)));
+revisaoSegura = contadorTemRevisao ? Math.trunc(Number(dadosContador.revisao)) : 1;
+} else if (backupTemValor) {
+valorSeguro = Math.max(0, Math.trunc(Number(dadosBackup.capotes)));
+revisaoSegura = backupTemRevisao ? Math.trunc(Number(dadosBackup.revisao)) : 1;
+}
+
+const contadorJaIntegro = contadorTemRevisao && Math.trunc(Number(dadosContador.revisao)) === revisaoSegura && Math.max(0, Math.trunc(Number(dadosContador.capotes))) === valorSeguro;
+const backupJaIntegro = backupTemRevisao && Math.trunc(Number(dadosBackup.revisao)) === revisaoSegura && Math.max(0, Math.trunc(Number(dadosBackup.capotes))) === valorSeguro;
+if (contadorJaIntegro && backupJaIntegro) return;
+
+const estadoSeguro = {
+capotes: valorSeguro,
+revisao: revisaoSegura,
+atualizadoEm: serverTimestamp()
+};
+transaction.set(contadorRef, estadoSeguro, { merge: true });
+transaction.set(contadorBackupRef, estadoSeguro, { merge: true });
+});
+} catch (erro) {
+console.error('Erro ao proteger o contador de capotes:', erro);
+} finally {
+recuperandoContadorCapotes = false;
+}
+}
+
+function aplicarValorContadorCapotes(valor) {
+if (!Number.isFinite(Number(valor))) return;
+capotesCount = Math.max(0, Math.trunc(Number(valor)));
 const el = document.getElementById('contador-capotes-val');
 if (el) el.innerText = capotesCount;
 const adminKpiCapotes = document.getElementById('admin-kpi-capotes');
 if (adminKpiCapotes) adminKpiCapotes.innerText = capotesCount;
 if (window.modoVisualizacao === 'hoje') renderizarHojeView();
 if (window.modoVisualizacao === 'admin' && isAdminAutenticado) atualizarAnalyticsAdminSeAtivo();
-} else {
-setDoc(contadorRef, { capotes: 0 }).catch(err => console.error(err));
 }
-});
+
+async function iniciarContadorCapotesPersistente() {
+await garantirPersistenciaContadorCapotes();
+onSnapshot(contadorRef, (docSnap) => {
+if (!docSnap.exists()) {
+garantirPersistenciaContadorCapotes();
+return;
+}
+const dados = docSnap.data();
+const valorValido = Number.isFinite(Number(dados.capotes));
+const revisaoValida = Number.isFinite(Number(dados.revisao)) && Number(dados.revisao) > 0;
+if (!valorValido || !revisaoValida) {
+garantirPersistenciaContadorCapotes();
+return;
+}
+aplicarValorContadorCapotes(dados.capotes);
+}, erro => console.error('Erro ao sincronizar contador de capotes:', erro));
+}
+
+iniciarContadorCapotesPersistente();
 const recadosQuery = query(collection(db, "recados"), orderBy("timestamp", "desc"));
 onSnapshot(recadosQuery, (snapshot) => {
 recadosListaGlobal = [];
@@ -2682,7 +2789,7 @@ console.error("Erro ao registrar histórico:", e);
 }
 window.adicionarRecado = async function(event) {
 event.preventDefault();
-const alunoLogado = sessionStorage.getItem('alunoLogado') || 'Aluno T7A';
+const alunoLogado = obterAlunoLogado() || 'Aluno T7A';
 const textoInput = document.getElementById('recado-texto').value.trim();
 if (!alunoLogado || !textoInput) return;
 try {
@@ -2749,19 +2856,43 @@ erro.classList.remove('hidden');
 }
 window.alterarCapotes = async function(delta) {
 const ajuste = Number(delta) > 0 ? 1 : -1;
-const autor = sessionStorage.getItem('alunoLogado') || 'Usuário não identificado';
+const autor = obterAlunoLogado() || 'Usuário não identificado';
 try {
 await runTransaction(db, async (transaction) => {
 const contadorSnap = await transaction.get(contadorRef);
-const valorAnterior = contadorSnap.exists() ? Number(contadorSnap.data().capotes || 0) : 0;
+const backupSnap = await transaction.get(contadorBackupRef);
+const dadosContador = contadorSnap.exists() ? contadorSnap.data() : {};
+const dadosBackup = backupSnap.exists() ? backupSnap.data() : {};
+const contadorValido = contadorSnap.exists() && Number.isFinite(Number(dadosContador.capotes));
+const backupValido = backupSnap.exists() && Number.isFinite(Number(dadosBackup.capotes));
+const valorAnterior = contadorValido
+? Math.max(0, Math.trunc(Number(dadosContador.capotes)))
+: (backupValido ? Math.max(0, Math.trunc(Number(dadosBackup.capotes))) : 0);
 const valorNovo = Math.max(0, valorAnterior + ajuste);
+const revisaoAtual = Math.max(
+Number.isFinite(Number(dadosContador.revisao)) ? Number(dadosContador.revisao) : 0,
+Number.isFinite(Number(dadosBackup.revisao)) ? Number(dadosBackup.revisao) : 0
+);
+const revisaoNova = Math.trunc(revisaoAtual) + 1;
 const historicoRef = doc(collection(db, "historico_capotes"));
-transaction.set(contadorRef, { capotes: valorNovo }, { merge: true });
+transaction.set(contadorRef, {
+capotes: valorNovo,
+revisao: revisaoNova,
+atualizadoPor: autor,
+atualizadoEm: serverTimestamp()
+}, { merge: true });
+transaction.set(contadorBackupRef, {
+capotes: valorNovo,
+revisao: revisaoNova,
+atualizadoPor: autor,
+atualizadoEm: serverTimestamp()
+}, { merge: true });
 transaction.set(historicoRef, {
 autor,
 alteracao: ajuste > 0 ? '+1' : '-1',
 valorAnterior,
 valorNovo,
+revisao: revisaoNova,
 timestamp: serverTimestamp()
 });
 });
@@ -3677,7 +3808,7 @@ containerTurnos.innerHTML = html;
 }
 window.renderizarRecadosView = function() {
 const containerTurnos = document.getElementById('lista-turnos');
-const alunoLogado = sessionStorage.getItem('alunoLogado') || 'Aluno T7A';
+const alunoLogado = obterAlunoLogado() || 'Aluno T7A';
 let html = `
 <div class="flex flex-col lg:flex-row gap-5 h-full overflow-hidden">
 <div class="w-full lg:w-1/3 shrink-0">
@@ -3941,7 +4072,7 @@ if (semanaCalculada > 9) semanaCalculada = 9;
 const statSemana = document.getElementById('stat-semana');
 if (statSemana) statSemana.innerText = `Semana ${semanaCalculada} de 9`;
 // Atualiza periodicamente o status da próxima atividade
-const alunoLogado = sessionStorage.getItem('alunoLogado');
+const alunoLogado = obterAlunoLogado();
 if (alunoLogado) {
 atualizarProximaAtividadeDinamica(alunoLogado);
 }
@@ -4825,10 +4956,10 @@ iniciarContadores();
 atualizarRelogioDashboard();
 setInterval(atualizarRelogioDashboard, 30000);
 inicializarExperienciaPremium();
-if (sessionStorage.getItem('autenticado') === 'true') {
+if (dispositivoAutenticado()) {
 document.getElementById('login-overlay').style.display = 'none';
 atualizarIdentificacaoAluno();
-const alunoLogado = sessionStorage.getItem('alunoLogado');
+const alunoLogado = obterAlunoLogado();
 if (alunoLogado === 'André Victor' || sessionStorage.getItem('adminAutenticado') === 'true') {
 isAdminAutenticado = true;
 sessionStorage.setItem('adminAutenticado', 'true');
