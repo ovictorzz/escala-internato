@@ -11,9 +11,7 @@
 <meta property="og:title" content="GO T7A • Painel do Internato">
 <meta property="og:description" content="Escalas, seminários e avisos da Turma T7A em um só lugar.">
 <meta property="og:locale" content="pt_BR">
-<!-- Ícone da guia: estetoscópio T7A, sem fallback por inicial do site -->
-<link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='8' y1='6' x2='56' y2='58' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%233b82f6'/%3E%3Cstop offset='1' stop-color='%234f46e5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cg fill='none' stroke='white' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 16v12a12 12 0 0 0 24 0V16'/%3E%3Cpath d='M18 16h6M36 16h6M30 40v3a9 9 0 0 0 9 9h3'/%3E%3Ccircle cx='48' cy='52' r='5' fill='white' stroke='white'/%3E%3Ccircle cx='48' cy='52' r='2' fill='%234f46e5' stroke='none'/%3E%3C/g%3E%3C/svg%3E">
-<link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%233b82f6'/%3E%3Cg fill='none' stroke='white' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 16v12a12 12 0 0 0 24 0V16'/%3E%3Cpath d='M18 16h6M36 16h6M30 40v3a9 9 0 0 0 9 9h3'/%3E%3Ccircle cx='48' cy='52' r='5' fill='white'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%233b82f6'/%3E%3Cstop offset='1' stop-color='%236366f1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ctext x='32' y='27' text-anchor='middle' font-family='Arial,sans-serif' font-size='19' font-weight='800' fill='white'%3ET7A%3C/text%3E%3Cg fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 34v5a10 10 0 0 0 20 0v-5'/%3E%3Cpath d='M20 34v-3M40 34v-3M40 39c0 7 3 10 8 10'/%3E%3Ccircle cx='50' cy='49' r='4'/%3E%3C/g%3E%3C/svg%3E">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -1562,10 +1560,6 @@ Próxima: Carregando...
 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
 <span>Todos os Trios</span>
 </button>
-<button onclick="alternarModo('atividade')" id="btn-modo-atividade" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm">
-<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h18M6 12h12m-9 7h6"/></svg>
-<span>Atividades</span>
-</button>
 <button onclick="alternarModo('seminarios')" id="btn-modo-seminarios" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm">
 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
 <span>Seminários</span>
@@ -2736,14 +2730,6 @@ console.error(error);
 }
 }
 window.alternarModo = function(modo) {
-const modoAnterior = window.modoVisualizacao;
-if (modo !== 'atividade' && modoAnterior === 'atividade') {
-window.atividadeSelecionadaGlobal = '';
-const selectAtividade = document.getElementById('atividade-select');
-if (selectAtividade) selectAtividade.value = '';
-const limparAtividade = document.getElementById('limpar-filtro-atividade');
-if (limparAtividade) limparAtividade.classList.add('hidden');
-}
 window.modoVisualizacao = modo;
 if (window.innerWidth < 1024) {
 document.getElementById('mobile-nav-menu').classList.add('hidden');
@@ -2752,7 +2738,6 @@ document.getElementById('mobile-footer-menu').classList.add('hidden');
 const btnInd = document.getElementById('btn-modo-ind');
 const btnHoje = document.getElementById('btn-modo-hoje');
 const btnGeral = document.getElementById('btn-modo-geral');
-const btnAtividade = document.getElementById('btn-modo-atividade');
 const btnSeminarios = document.getElementById('btn-modo-seminarios');
 const btnCalendario = document.getElementById('btn-modo-calendario');
 const btnRecados = document.getElementById('btn-modo-recados');
@@ -2768,7 +2753,6 @@ const classInativo = "w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2
 btnHoje.className = classInativo;
 btnInd.className = classInativo;
 btnGeral.className = classInativo;
-btnAtividade.className = classInativo;
 btnSeminarios.className = classInativo;
 btnCalendario.className = classInativo;
 btnRecados.className = classInativo;
@@ -2803,16 +2787,6 @@ containerAbas.style.display = 'grid';
 bannerHero.style.display = 'flex';
 wrapperSemanas.style.display = 'block';
 mudarGrupo();
-} else if (modo === 'atividade') {
-btnHeaderAdmin.className = "w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-sm font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm";
-btnAtividade.className = classAtivo;
-colunaMembros.style.display = 'none';
-colunaTurnos.className = "lg:col-span-12 flex flex-col h-full";
-tituloSecao.innerHTML = `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h18M6 12h12m-9 7h6"/></svg><span>Atividades • Consulte toda a escala</span>`;
-containerAbas.style.display = 'none';
-bannerHero.style.display = 'none';
-wrapperSemanas.style.display = 'none';
-renderizarFiltroAtividadeView();
 } else if (modo === 'seminarios') {
 btnHeaderAdmin.className = "w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-sm font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm";
 btnSeminarios.className = classAtivo;
@@ -4015,14 +3989,14 @@ const escalaTrio02 = {
 "11/08": { manha: "PS FICHA", noite: "Seminário de G.O. — UNIEURO" },
 "12/08": { manha: "Caio (PNAR) (HRC)" },
 "13/08": { tarde: "Lucimara (HRC)", noite: "CO (HRC)" },
-"14/08": { manha: "CC (HRC)" },
+"14/08": { manha: "CC" },
 "16/08": { tarde: "HRSM" },
 "18/08": { tarde: "HRSM", noite: "Seminário de G.O. — UNIEURO" },
 "19/08": { tarde: "HRSM" },
 "20/08": { tarde: "HRSM" },
 "21/08": { tarde: "HRSM" },
-"22/08": { manha: "PS BOX (HRC)" },
-"23/08": { manha: "PS BOX (HRC)" },
+"22/08": { manha: "PS BOX" },
+"23/08": { manha: "PS BOX" },
 "28/09": { manha: "Amb Mírian (HRAN)", noite: "—" },
 "29/09": { manha: "—", tarde: "—" },
 "30/09": { manha: "—", tarde: "CO (HRAN)", noite: "—" },
@@ -4055,7 +4029,7 @@ const escalaTrio03 = {
 "09/08": { noite: "CO (HRC)" },
 "10/08": { manha: "Marta (HRC)" },
 "11/08": { manha: "CC (HRC)", tarde: "CO (HRC)", noite: "Seminário de G.O. — UNIEURO" },
-"12/08": { manha: "Amb UNIEURO" },
+"12/08": { manha: "Amb EURO (HRC)" },
 "13/08": { tarde: "Gilmária (HRC)", noite: "PS FICHA (HRC)" },
 "14/08": { manha: "Nádia (EUD) (HRC)", tarde: "Rocha (HRC)" },
 "18/08": { tarde: "Marta (HRC)", noite: "Seminário de G.O. — UNIEURO" },
@@ -4114,11 +4088,11 @@ const escalaTrio05 = {
 "09/08": { manha: "ALCON (HRC)" },
 "10/08": { manha: "CC (HRC)" },
 "11/08": { manha: "Adnir (ECO) (HRC)", tarde: "PS FICHA (HRC)", noite: "Seminário de G.O. — UNIEURO" },
-"12/08": { manha: "Lorena (ECO) (HRC)" },
+"12/08": { manha: "Lorena (ECO)" },
 "13/08": { manha: "CC (HRC)", tarde: "Caio (PNAR) (HRC)" },
 "14/08": { manha: "CO (HRC)" },
 "16/08": { manha: "CO (HRC)" },
-"17/08": { manha: "Nádia (EUD) (HRC)" },
+"17/08": { manha: "Nádia (HRC)" },
 "18/08": { manha: "BL (HRC)", noite: "Seminário de G.O. — UNIEURO" },
 "19/08": { tarde: "PS FICHA" },
 "20/08": { manha: "BL (HRC)" },
@@ -4151,8 +4125,8 @@ const escalaTrio06 = {
 "16/08": { manha: "ALCON (HRC)" },
 "17/08": { manha: "CC (HRC)" },
 "18/08": { manha: "Adnir (ECO) (HRC)", tarde: "PS FICHA (HRC)", noite: "Seminário de G.O. — UNIEURO" },
-"19/08": { manha: "Lorena (ECO) (HRC)" },
-"20/08": { manha: "CC (HRC)", tarde: "Caio (PNAR) (HRC)" },
+"19/08": { manha: "Lorena (ECO)" },
+"20/08": { manha: "CC (HRC)", tarde: "Caio (PNAR)" },
 "21/08": { manha: "CO (HRC)" },
 "25/08": { noite: "Seminário de G.O. — UNIEURO" },
 "31/08": { manha: "Amb Mírian (HRAN)" },
@@ -4175,7 +4149,7 @@ const escalaTrio07 = {
 "06/08": { manha: "PS BOX (HRC)", tarde: "Sádia (HRC)" },
 "07/08": { manha: "PS BOX (HRC)", tarde: "CO (HRC)" },
 "09/08": { tarde: "CO (HRC)" },
-"10/08": { manha: "Nádia (EUD) (HRC)" },
+"10/08": { manha: "Nádia (HRC)" },
 "11/08": { manha: "BL (HRC)", noite: "Seminário de G.O. — UNIEURO" },
 "13/08": { manha: "BL (HRC)" },
 "14/08": { tarde: "Flávia (HRC)", noite: "CO (HRC)" },
@@ -4342,12 +4316,6 @@ const locaisPadronizados = {
 "Lucimara": "Lucimara (HRC)",
 "Marta": "Marta (HRC)",
 "PS FICHA": "PS FICHA (HRC)",
-"PS BOX": "PS BOX (HRC)",
-"CC": "CC (HRC)",
-"Caio (PNAR)": "Caio (PNAR) (HRC)",
-"Lorena (ECO)": "Lorena (ECO) (HRC)",
-"Nádia (HRC)": "Nádia (EUD) (HRC)",
-"Amb EURO": "Amb UNIEURO",
 "Gilmária": "Gilmária (HRC)"
 };
 for (let i = 1; i <= 10; i++) {
@@ -4358,168 +4326,6 @@ if (locaisPadronizados[turno.local]) turno.local = locaisPadronizados[turno.loca
 });
 });
 }
-}
-
-window.atividadeSelecionadaGlobal = '';
-window.modoAntesFiltroAtividade = 'individual';
-
-function obterAtividadesDisponiveis() {
-const atividades = new Set();
-for (let idTrio = 1; idTrio <= 10; idTrio++) {
-for (let semana = 1; semana <= 9; semana++) {
-Object.values(dadosEscala[idTrio].semanas[semana]).forEach(infoDia => {
-infoDia.turnos.forEach(turno => {
-if (atividadeConfirmada(turno.local) && !String(turno.local).toLocaleLowerCase('pt-BR').includes('seminário')) atividades.add(turno.local);
-});
-});
-}
-}
-return [...atividades].sort((a, b) => a.localeCompare(b, 'pt-BR', { sensitivity: 'base' }));
-}
-
-window.popularFiltroAtividades = function() {
-const select = document.getElementById('atividade-select');
-if (!select) return;
-const selecionada = window.atividadeSelecionadaGlobal || select.value || '';
-select.innerHTML = '';
-const opcaoTodas = document.createElement('option');
-opcaoTodas.value = '';
-opcaoTodas.textContent = 'Selecione uma atividade';
-select.appendChild(opcaoTodas);
-obterAtividadesDisponiveis().forEach(atividade => {
-const option = document.createElement('option');
-option.value = atividade;
-option.textContent = atividade;
-select.appendChild(option);
-});
-if (selecionada && [...select.options].some(option => option.value === selecionada)) {
-select.value = selecionada;
-} else {
-window.atividadeSelecionadaGlobal = '';
-select.value = '';
-}
-const limpar = document.getElementById('limpar-filtro-atividade');
-if (limpar) limpar.classList.toggle('hidden', !select.value);
-}
-
-function obterOcorrenciasAtividade(atividade) {
-const ocorrencias = [];
-if (!atividade || String(atividade).toLocaleLowerCase('pt-BR').includes('seminário')) return ocorrencias;
-const ordemTurnos = { 'Manhã': 0, 'Tarde': 1, 'Noite': 2 };
-for (let idTrio = 1; idTrio <= 10; idTrio++) {
-for (let semana = 1; semana <= 9; semana++) {
-Object.entries(dadosEscala[idTrio].semanas[semana]).forEach(([diaKey, infoDia]) => {
-infoDia.turnos.forEach(turno => {
-if (turno.local !== atividade) return;
-ocorrencias.push({
-idTrio: String(idTrio),
-semana,
-diaKey,
-diaNome: infoDia.nome,
-data: infoDia.data,
-periodo: turno.periodo,
-horario: turno.horario,
-atividade,
-nomeGrupo: dadosEscala[idTrio].nomeGrupo,
-membros: dadosEscala[idTrio].membros
-});
-});
-});
-}
-}
-return ocorrencias.sort((a, b) => {
-const dataA = dataEscalaParaDate(a.data)?.getTime() || 0;
-const dataB = dataEscalaParaDate(b.data)?.getTime() || 0;
-if (dataA !== dataB) return dataA - dataB;
-if ((ordemTurnos[a.periodo] ?? 9) !== (ordemTurnos[b.periodo] ?? 9)) return (ordemTurnos[a.periodo] ?? 9) - (ordemTurnos[b.periodo] ?? 9);
-return Number(a.idTrio) - Number(b.idTrio);
-});
-}
-
-window.renderizarFiltroAtividadeView = function() {
-const container = document.getElementById('lista-turnos');
-if (!container) return;
-const atividade = window.atividadeSelecionadaGlobal || '';
-const ocorrencias = obterOcorrenciasAtividade(atividade);
-const totalTrios = new Set(ocorrencias.map(item => item.idTrio)).size;
-const agora = new Date();
-let cards = '';
-ocorrencias.forEach(item => {
-const dataObj = dataEscalaParaDate(item.data);
-const passou = dataObj ? dataObj < inicioDoDiaPainel(agora) : false;
-const nomes = item.nomeGrupo.includes(':') ? item.nomeGrupo.split(':').slice(1).join(':').trim() : item.nomeGrupo;
-cards += `
-<article class="glass-panel rounded-2xl p-4 sm:p-5 border ${passou ? 'border-black/5 dark:border-white/5 opacity-55' : 'border-blue-500/20'} shadow-sm">
-<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-<div class="min-w-0 flex items-start gap-3.5">
-<div class="shrink-0 w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex flex-col items-center justify-center leading-none">
-<strong class="font-outfit text-sm text-blue-600 dark:text-blue-400">${escaparHTML(item.data.slice(0, 2))}</strong>
-<span class="text-[8px] font-black uppercase tracking-wider text-zinc-500 mt-1">${escaparHTML(dataObj ? dataObj.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '') : '')}</span>
-</div>
-<div class="min-w-0">
-<div class="flex items-center gap-2 flex-wrap">
-<span class="text-[9px] font-black uppercase tracking-[.14em] text-blue-500">Trio A${item.idTrio}</span>
-<span class="text-[9px] text-zinc-400">${escaparHTML(item.diaNome)} • ${escaparHTML(item.periodo)}</span>
-${passou ? '<span class="text-[8px] font-black uppercase tracking-wider text-zinc-400">Realizado</span>' : ''}
-</div>
-<h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-1.5">${escaparHTML(item.atividade)}</h4>
-<p class="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 mt-1 truncate">${escaparHTML(nomes)}</p>
-</div>
-</div>
-<div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pl-[62px] sm:pl-0">
-<span class="text-[10px] font-bold text-zinc-600 dark:text-zinc-300 bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 px-2.5 py-1.5 rounded-lg">${escaparHTML(item.horario)}</span>
-<button type="button" onclick="abrirOcorrenciaAtividade('${item.idTrio}', ${item.semana}, '${item.diaKey}')" class="text-[10px] font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 px-3 py-2 rounded-lg shadow-sm transition-all">Abrir na escala</button>
-</div>
-</div>
-</article>`;
-});
-container.innerHTML = `
-<div class="h-full overflow-y-auto pr-1 pb-4 space-y-4">
-<section class="glass-panel rounded-2xl p-5 sm:p-6 border border-blue-500/20 bg-gradient-to-r from-blue-500/[.06] to-indigo-500/[.04]">
-<div class="max-w-3xl">
-<span class="text-[9px] font-black uppercase tracking-[.18em] text-blue-500">Consulta da escala</span>
-<h3 class="font-outfit font-black text-xl sm:text-2xl text-zinc-900 dark:text-white mt-1">Filtrar por atividade</h3>
-<p class="text-[11px] text-zinc-500 mt-1">Selecione uma atividade para ver em quais datas, turnos e trios ela aparece.</p>
-<div class="flex flex-col sm:flex-row gap-2 mt-4">
-<div class="relative flex-1">
-<select id="atividade-select" onchange="filtrarPorAtividade(this.value)" class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-100 text-zinc-800 font-bold text-sm rounded-xl px-4 py-3 pr-11 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer shadow-inner">
-<option value="">Selecione uma atividade</option>
-</select>
-<div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-zinc-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
-</div>
-<button id="limpar-filtro-atividade" type="button" onclick="filtrarPorAtividade('')" class="${atividade ? '' : 'hidden'} px-4 py-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-[10px] font-bold text-zinc-500 hover:text-blue-500 transition-colors">Limpar filtro</button>
-</div>
-</div>
-${atividade ? `<div class="mt-5 pt-4 border-t border-black/5 dark:border-white/10 flex flex-col sm:flex-row sm:items-end justify-between gap-3"><div><span class="text-[8px] font-black uppercase tracking-[.16em] text-zinc-400">Resultado para</span><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-1">${escaparHTML(atividade)}</h4></div><div class="flex items-center gap-2"><span class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-600 dark:text-blue-400">${ocorrencias.length} ${ocorrencias.length === 1 ? 'ocorrência' : 'ocorrências'}</span><span class="px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 text-[10px] font-bold text-zinc-500">${totalTrios} ${totalTrios === 1 ? 'trio' : 'trios'}</span></div></div>` : ''}
-</section>
-${atividade ? (ocorrencias.length ? `<div class="grid grid-cols-1 xl:grid-cols-2 gap-3">${cards}</div>` : '<div class="glass-panel rounded-2xl p-6 text-center text-sm text-zinc-500">Nenhuma ocorrência encontrada para esta atividade.</div>') : '<div class="glass-panel rounded-2xl p-6 text-center text-sm text-zinc-500">Escolha uma atividade acima para consultar a escala.</div>'}
-</div>`;
-window.popularFiltroAtividades();
-}
-
-window.filtrarPorAtividade = function(atividade) {
-const valor = atividade || '';
-const select = document.getElementById('atividade-select');
-const limpar = document.getElementById('limpar-filtro-atividade');
-window.atividadeSelecionadaGlobal = valor;
-if (select) select.value = valor;
-if (limpar) limpar.classList.toggle('hidden', !valor);
-if (window.modoVisualizacao === 'atividade') {
-renderizarFiltroAtividadeView();
-return;
-}
-if (!valor) return;
-window.modoAntesFiltroAtividade = window.modoVisualizacao || 'individual';
-alternarModo('atividade');
-}
-
-window.abrirOcorrenciaAtividade = function(trioId, semana, diaKey) {
-window.atividadeSelecionadaGlobal = '';
-const select = document.getElementById('atividade-select');
-if (select) select.value = '';
-const limpar = document.getElementById('limpar-filtro-atividade');
-if (limpar) limpar.classList.add('hidden');
-abrirDiaDaEscala(trioId, semana, diaKey);
 }
 
 // Mantém uma cópia imutável da escala original para permitir desfazer alterações administrativas.
@@ -4537,9 +4343,7 @@ if (!turno) return;
 turno.local = item.local;
 turno.horario = item.horario;
 });
-if (typeof window.popularFiltroAtividades === 'function') window.popularFiltroAtividades();
 if ((window.modoVisualizacao === 'individual' || window.modoVisualizacao === 'geral' || window.modoVisualizacao === 'hoje') && typeof window.mudarGrupo === 'function') window.mudarGrupo();
-if (window.modoVisualizacao === 'atividade' && typeof window.renderizarFiltroAtividadeView === 'function') window.renderizarFiltroAtividadeView();
 if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'escalas') renderizarAdminEscalas();
 if (window.modoVisualizacao === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
 }
@@ -4634,10 +4438,6 @@ window.mudarGrupo = function() {
 if (window.modoVisualizacao === 'hoje') {
 renderizarHojeView();
 atualizarNotificacoes();
-return;
-}
-if (window.modoVisualizacao === 'atividade') {
-renderizarFiltroAtividadeView();
 return;
 }
 if (window.modoVisualizacao === 'seminarios' || window.modoVisualizacao === 'calendario' || window.modoVisualizacao === 'recados' || window.modoVisualizacao === 'admin') {
