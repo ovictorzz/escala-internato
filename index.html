@@ -1323,31 +1323,41 @@ transition: opacity .45s ease, visibility .45s ease;
 .tema-rosa .premium-action:hover { color: #f472b6; border-color: rgba(244,114,182,.42); background: rgba(236,72,153,.1); }
 .profile-initials { width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 13px; color: #fff; font: 800 11px 'Outfit', sans-serif; background: linear-gradient(135deg, var(--brand-blue), var(--brand-indigo)); box-shadow: 0 12px 28px -16px rgba(59,130,246,.85); }
 .notification-count { position: absolute; top: -4px; right: -4px; min-width: 17px; height: 17px; padding: 0 4px; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: #f43f5e; color: #fff; font: 800 9px 'Outfit', sans-serif; border: 2px solid #090b12; }
-.notification-popover { width: min(86vw, 332px); padding: 0; overflow: hidden; border-radius: 18px; background: rgba(10,12,20,.985); border: 1px solid rgba(255,255,255,.09); box-shadow: 0 24px 64px -24px rgba(0,0,0,.95), 0 8px 24px -16px rgba(0,0,0,.72); }
+.notification-popover { width: min(90vw, 410px); padding: 0; overflow: hidden; border-radius: 18px; background: rgba(10,12,20,.985); border: 1px solid rgba(255,255,255,.09); box-shadow: 0 24px 64px -24px rgba(0,0,0,.95), 0 8px 24px -16px rgba(0,0,0,.72); }
 html:not(.dark) .notification-popover { background: rgba(255,255,255,.99); border-color: rgba(24,24,27,.1); box-shadow: 0 24px 64px -28px rgba(24,24,27,.3), 0 8px 24px -18px rgba(24,24,27,.18); }
-.notification-header { min-height: 52px; padding: 13px 14px 11px 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.notification-header-title { font: 800 13px/1.15 'Outfit', sans-serif; letter-spacing: -.015em; color: #f4f4f5; }
+.notification-header { min-height: 58px; padding: 14px 15px 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.notification-header-title { font: 800 14px/1.15 'Outfit', sans-serif; letter-spacing: -.015em; color: #f4f4f5; }
 html:not(.dark) .notification-header-title { color: #18181b; }
-.notification-header-meta { margin-top: 3px; font-size: 9px; line-height: 1.2; font-weight: 600; color: #71717a; }
+.notification-header-meta { margin-top: 4px; font-size: 9.5px; line-height: 1.3; font-weight: 600; color: #71717a; }
 .notification-close { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 9px; color: #71717a; font-size: 18px; line-height: 1; transition: color .18s ease, background .18s ease; }
 .notification-close:hover { color: #e4e4e7; background: rgba(255,255,255,.055); }
 html:not(.dark) .notification-close:hover { color: #18181b; background: rgba(24,24,27,.055); }
-.notification-list { max-height: min(330px, 55vh); overflow-y: auto; border-top: 1px solid rgba(255,255,255,.06); }
+.notification-list { max-height: min(440px, 65vh); overflow-y: auto; border-top: 1px solid rgba(255,255,255,.06); }
 html:not(.dark) .notification-list { border-top-color: rgba(24,24,27,.07); }
-.notification-item { display: grid; grid-template-columns: 30px minmax(0,1fr); gap: 10px; align-items: start; padding: 11px 14px; border-top: 1px solid rgba(255,255,255,.045); transition: background .18s ease; }
+.notification-item { display: grid; grid-template-columns: 32px minmax(0,1fr); gap: 11px; align-items: start; padding: 14px 15px; border-top: 1px solid rgba(255,255,255,.045); transition: background .18s ease; }
 .notification-item:first-child { border-top: 0; }
 .notification-item:hover { background: rgba(255,255,255,.028); }
 html:not(.dark) .notification-item { border-top-color: rgba(24,24,27,.055); }
 html:not(.dark) .notification-item:hover { background: rgba(24,24,27,.025); }
-.notification-status { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 10px; margin-top: 1px; }
+.notification-status { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 10px; margin-top: 1px; }
 .notification-status::after { content: ''; width: 7px; height: 7px; border-radius: 999px; background: currentColor; box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 12%, transparent); }
 .notification-status-blue { color: #60a5fa; background: rgba(59,130,246,.1); }
 .notification-status-amber { color: #fbbf24; background: rgba(245,158,11,.1); }
 .notification-status-violet { color: #a78bfa; background: rgba(139,92,246,.1); }
 .notification-status-emerald { color: #34d399; background: rgba(16,185,129,.1); }
-.notification-item-title { display: block; margin-top: 1px; font: 750 11px/1.3 'Outfit', sans-serif; color: #f4f4f5; }
+.notification-item-category { display: block; margin-bottom: 3px; color: #60a5fa; font-size: 8px; line-height: 1.2; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+.tema-rosa .notification-item-category { color: #f472b6; }
+.notification-item-title { display: block; margin-top: 1px; font: 780 12.5px/1.3 'Outfit', sans-serif; color: #f4f4f5; }
 html:not(.dark) .notification-item-title { color: #18181b; }
-.notification-item-text { margin-top: 3px; color: #71717a; font-size: 9.5px; line-height: 1.45; font-weight: 500; }
+.notification-item-meta { margin-top: 4px; color: #a1a1aa; font-size: 9px; line-height: 1.45; font-weight: 700; }
+html:not(.dark) .notification-item-meta { color: #52525b; }
+.notification-item-text { margin-top: 7px; color: #a1a1aa; font-size: 10px; line-height: 1.5; font-weight: 500; white-space: pre-line; }
+html:not(.dark) .notification-item-text { color: #52525b; }
+.notification-details { margin-top: 9px; display: grid; gap: 6px; }
+.notification-detail { padding: 7px 8px; border-radius: 9px; background: rgba(255,255,255,.035); border: 1px solid rgba(255,255,255,.055); color: #a1a1aa; font-size: 9px; line-height: 1.45; }
+html:not(.dark) .notification-detail { background: rgba(24,24,27,.028); border-color: rgba(24,24,27,.055); color: #52525b; }
+.notification-detail-label { color: #d4d4d8; font-weight: 800; }
+html:not(.dark) .notification-detail-label { color: #27272a; }
 .notification-empty { padding: 22px 16px; text-align: center; color: #71717a; font-size: 10px; }
 .tema-rosa .notification-status-blue { color: #f472b6; background: rgba(236,72,153,.1); }
 .notification-backdrop { display: none; }
@@ -1373,9 +1383,11 @@ max-height: calc(100dvh - max(160px, calc(env(safe-area-inset-top) + 148px)) - e
 overscroll-behavior: contain;
 -webkit-overflow-scrolling: touch;
 }
-.notification-item { padding: 12px 13px; }
-.notification-item-title { font-size: 12px; }
-.notification-item-text { font-size: 10.5px; line-height: 1.5; }
+.notification-item { padding: 14px 13px; }
+.notification-item-title { font-size: 13px; }
+.notification-item-meta { font-size: 9.5px; }
+.notification-item-text { font-size: 10.5px; line-height: 1.55; }
+.notification-detail { font-size: 9.5px; }
 .notification-backdrop {
 display: block;
 position: fixed;
@@ -1655,7 +1667,7 @@ Internato de Ginecologia & Obstetrícia
 <span id="notification-count" class="notification-count hidden">0</span>
 </button>
 <div id="notification-panel" class="hidden absolute right-0 top-12 z-[60] notification-popover" role="dialog" aria-label="Central de notificações">
-<div class="notification-header"><div><p class="notification-header-title">Notificações</p><p id="notification-summary" class="notification-header-meta">Atualizações importantes</p></div><button onclick="toggleNotificacoes(false)" class="notification-close" aria-label="Fechar">×</button></div>
+<div class="notification-header"><div><p class="notification-header-title">Notificações</p><p id="notification-summary" class="notification-header-meta">Sua escala, aulas e avisos em um só lugar</p></div><button onclick="toggleNotificacoes(false)" class="notification-close" aria-label="Fechar">×</button></div>
 <div id="notification-list" class="notification-list"></div>
 </div>
 </div>
@@ -2415,24 +2427,103 @@ return String(horario)
 .replace(/h00\b/g, 'h');
 }
 
+function formatarDataCompletaNotificacao(dataBr, referencia = new Date()) {
+const data = dataEscalaParaDate(dataBr);
+if (!data) return dataBr || '';
+const relativa = formatarDataNotificacao(dataBr, referencia);
+const diaSemanaBruto = data.toLocaleDateString('pt-BR', { weekday: 'long' });
+const diaSemana = diaSemanaBruto.charAt(0).toUpperCase() + diaSemanaBruto.slice(1);
+if (relativa === 'Hoje' || relativa === 'Amanhã') return `${relativa}, ${diaSemana.toLowerCase()} • ${dataBr}`;
+return `${diaSemana}, ${relativa}`;
+}
+
+function formatarPeriodosNotificacao(periodos = []) {
+const lista = periodos.filter(Boolean).map(periodo => String(periodo).toLowerCase());
+if (lista.length <= 1) return lista[0] || '';
+if (lista.length === 2) return `${lista[0]} e ${lista[1]}`;
+return `${lista.slice(0, -1).join(', ')} e ${lista[lista.length - 1]}`;
+}
+
+function limparTextoSeminarioNotificacao(texto = '') {
+return String(texto).replace(/^•\s*/gm, '').replace(/\n+/g, ' • ').trim();
+}
+
+function formatarMomentoRecadoNotificacao(timestamp) {
+try {
+const data = typeof timestamp?.toDate === 'function'
+? timestamp.toDate()
+: (timestamp?.seconds ? new Date(timestamp.seconds * 1000) : null);
+if (!data || Number.isNaN(data.getTime())) return '';
+const agora = new Date();
+const mesmaData = data.getFullYear() === agora.getFullYear() && data.getMonth() === agora.getMonth() && data.getDate() === agora.getDate();
+const horario = data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+return mesmaData ? `Hoje • ${horario}` : `${data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} • ${horario}`;
+} catch (erro) {
+return '';
+}
+}
+
 function montarNotificacoes() {
 const idTrio = document.getElementById('grupo-select')?.value || alunoTrioMap[sessionStorage.getItem('alunoLogado')] || '1';
 const agora = new Date();
 const itens = [];
 const proxima = encontrarProximaAtividadeObrigatoria(idTrio, agora);
 if (proxima) {
-const dataNatural = formatarDataNotificacao(proxima.infoDia.data, agora);
-const tituloAtividade = dataNatural === 'Hoje' ? 'Atividade de hoje' : (dataNatural === 'Amanhã' ? 'Atividade de amanhã' : 'Próxima atividade');
-const detalhesAtividade = dataNatural === 'Hoje' || dataNatural === 'Amanhã'
-? `${proxima.turno.local} • ${proxima.turno.periodo}`
-: `${dataNatural} • ${proxima.turno.local} • ${proxima.turno.periodo}`;
-itens.push({ cor: 'blue', titulo: tituloAtividade, texto: detalhesAtividade });
+const atividadeEspecifica = proxima.turno.atividade && proxima.turno.atividade !== 'Atividade Obrigatória' ? proxima.turno.atividade : '';
+const tituloAtividade = atividadeEspecifica || proxima.turno.local || 'Atividade obrigatória';
+const detalhes = [];
+if (proxima.turno.temas) detalhes.push({ rotulo: 'Temas', valor: limparTextoSeminarioNotificacao(proxima.turno.temas) });
+if (proxima.turno.apresentadores) detalhes.push({ rotulo: 'Apresentadores', valor: proxima.turno.apresentadores });
+if (proxima.turno.orientador) detalhes.push({ rotulo: String(proxima.turno.orientador).includes('|') ? 'Orientadores' : 'Orientador', valor: proxima.turno.orientador });
+if (proxima.turno.localSeminario) detalhes.push({ rotulo: 'Local', valor: proxima.turno.localSeminario });
+itens.push({
+cor: 'blue',
+categoria: `Próxima atividade • Trio A${idTrio}`,
+titulo: tituloAtividade,
+meta: `${formatarDataCompletaNotificacao(proxima.infoDia.data, agora)} • ${proxima.turno.periodo} • ${formatarHorarioNotificacao(proxima.turno.horario)}`,
+texto: detalhes.length ? 'Confira abaixo os detalhes desta atividade.' : 'Próximo compromisso obrigatório previsto na sua escala.',
+detalhes
+});
 }
 const hoje = localizarDiaDoTrioPorData(idTrio, dataHojePainel(agora));
-if (hoje?.infoDia.turnos.some(turno => turno.local === ESCALA_NAO_ENVIADA)) itens.push({ cor: 'amber', titulo: 'Escala pendente hoje', texto: 'Há pelo menos um turno aguardando envio da escala.' });
+const turnosPendentes = hoje?.infoDia.turnos.filter(turno => turno.local === ESCALA_NAO_ENVIADA) || [];
+if (turnosPendentes.length) {
+const periodosPendentes = formatarPeriodosNotificacao(turnosPendentes.map(turno => turno.periodo));
+itens.push({
+cor: 'amber',
+categoria: `Escala • Trio A${idTrio}`,
+titulo: 'Escala de hoje ainda incompleta',
+meta: `${formatarDataCompletaNotificacao(hoje.infoDia.data, agora)} • ${periodosPendentes}`,
+texto: `Aguardando o envio da escala para ${periodosPendentes}. Assim que houver informação, o painel será atualizado.`
+});
+}
 const proximoSeminario = (typeof dadosSeminariosList !== 'undefined' ? dadosSeminariosList : []).map(item => ({ ...item, dataObj: dataEscalaParaDate(item.data) })).filter(item => item.dataObj && item.dataObj >= inicioDoDiaPainel(agora)).sort((a,b) => a.dataObj - b.dataObj)[0];
-if (proximoSeminario) itens.push({ cor: 'violet', titulo: proximoSeminario.tema.includes('SOMATIVA') ? 'Avaliação somativa' : `Seminário${proximoSeminario.numero ? ` ${proximoSeminario.numero}` : ''}`, texto: `${formatarDataNotificacao(proximoSeminario.data, agora)} • ${formatarHorarioNotificacao(proximoSeminario.hora)}` });
-recadosListaGlobal.slice(0, 2).forEach(recado => itens.push({ cor: 'emerald', titulo: `Recado de ${recado.autor || 'Turma T7A'}`, texto: recado.texto }));
+const proximaJaEhEsteSeminario = Boolean(proxima && proximoSeminario && proxima.infoDia.data === proximoSeminario.data && /seminário|somativa/i.test(`${proxima.turno.atividade || ''} ${proxima.turno.local || ''}`));
+if (proximoSeminario && !proximaJaEhEsteSeminario) {
+const avaliacao = proximoSeminario.tipo === 'avaliacao' || String(proximoSeminario.tema || '').includes('SOMATIVA');
+const detalhesSeminario = avaliacao
+? [{ rotulo: 'Participação', valor: 'Todos os alunos' }]
+: [
+{ rotulo: 'Temas', valor: limparTextoSeminarioNotificacao(proximoSeminario.tema) },
+{ rotulo: 'Apresentadores', valor: proximoSeminario.apresentadores },
+{ rotulo: String(proximoSeminario.mediador || '').includes('|') ? 'Orientadores' : 'Orientador', valor: proximoSeminario.mediador }
+].filter(item => item.valor);
+itens.push({
+cor: 'violet',
+categoria: avaliacao ? 'Avaliação teórica' : 'Próximo seminário de G.O.',
+titulo: avaliacao ? 'Avaliação Somativa — 50 questões' : `Seminário ${proximoSeminario.numero} de G.O.`,
+meta: `${formatarDataCompletaNotificacao(proximoSeminario.data, agora)} • ${formatarHorarioNotificacao(proximoSeminario.hora)}`,
+texto: avaliacao ? 'UNIEURO • Avaliação teórica de Ginecologia e Obstetrícia.' : 'Sala 2, Bloco D, UNIEURO',
+detalhes: detalhesSeminario
+});
+}
+recadosListaGlobal.slice(0, 2).forEach(recado => itens.push({
+cor: 'emerald',
+categoria: 'Recados e avisos',
+titulo: `Recado de ${recado.autor || 'Turma T7A'}`,
+meta: formatarMomentoRecadoNotificacao(recado.timestamp),
+texto: recado.texto
+}));
 return itens;
 }
 
@@ -2444,10 +2535,15 @@ if (!lista || !contador || typeof dadosEscala === 'undefined') return;
 const itens = montarNotificacoes();
 contador.textContent = String(Math.min(itens.length, 9));
 contador.classList.toggle('hidden', itens.length === 0);
-if (resumo) resumo.textContent = itens.length ? `${itens.length} ${itens.length === 1 ? 'item importante' : 'itens importantes'}` : 'Tudo em dia';
-if (!itens.length) { lista.innerHTML = '<div class="notification-empty">Tudo em dia por aqui.</div>'; return; }
+if (resumo) resumo.textContent = itens.length ? `${itens.length} ${itens.length === 1 ? 'atualização para você' : 'atualizações para você'}` : 'Nenhuma atualização pendente';
+if (!itens.length) { lista.innerHTML = '<div class="notification-empty">Tudo em dia. Sua escala e os próximos compromissos estão atualizados.</div>'; return; }
 const tons = { blue: 'notification-status-blue', amber: 'notification-status-amber', violet: 'notification-status-violet', emerald: 'notification-status-emerald' };
-lista.innerHTML = itens.map(item => `<div class="notification-item"><span class="notification-status ${tons[item.cor] || 'notification-status-blue'}" aria-hidden="true"></span><div class="min-w-0"><strong class="notification-item-title">${escaparHTML(item.titulo)}</strong><p class="notification-item-text line-clamp-2">${escaparHTML(item.texto)}</p></div></div>`).join('');
+lista.innerHTML = itens.map(item => {
+const detalhesHtml = Array.isArray(item.detalhes) && item.detalhes.length
+? `<div class="notification-details">${item.detalhes.map(detalhe => `<p class="notification-detail"><span class="notification-detail-label">${escaparHTML(detalhe.rotulo)}:</span> ${escaparHTML(detalhe.valor)}</p>`).join('')}</div>`
+: '';
+return `<div class="notification-item"><span class="notification-status ${tons[item.cor] || 'notification-status-blue'}" aria-hidden="true"></span><div class="min-w-0">${item.categoria ? `<span class="notification-item-category">${escaparHTML(item.categoria)}</span>` : ''}<strong class="notification-item-title">${escaparHTML(item.titulo)}</strong>${item.meta ? `<p class="notification-item-meta">${escaparHTML(item.meta)}</p>` : ''}${item.texto ? `<p class="notification-item-text">${escaparHTML(item.texto)}</p>` : ''}${detalhesHtml}</div></div>`;
+}).join('');
 }
 
 window.toggleNotificacoes = function(forcar) {
