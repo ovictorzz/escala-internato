@@ -1837,15 +1837,53 @@ nav.classList.add('hidden');
 footer.classList.add('hidden');
 }
 }
+
+const PREFIXO_PREFERENCIA_VISUAL = 't7a_preferencia_visual_v1';
+function chavePreferenciaVisual(nome, tipo) {
+return `${PREFIXO_PREFERENCIA_VISUAL}:${encodeURIComponent(String(nome || '').trim())}:${tipo}`;
+}
+function salvarPreferenciaVisual(tipo, valor) {
+try {
+const chaveGlobal = tipo === 'tema' ? 'tema' : 'corPainel';
+localStorage.setItem(chaveGlobal, valor);
+const aluno = sessionStorage.getItem('alunoLogado');
+if (aluno) localStorage.setItem(chavePreferenciaVisual(aluno, tipo), valor);
+} catch (erro) {
+console.warn('Não foi possível salvar a preferência visual neste dispositivo.', erro);
+}
+}
+function atualizarCorDoNavegador() {
+const escuro = document.documentElement.classList.contains('dark');
+const rosa = document.documentElement.classList.contains('tema-rosa');
+const cor = escuro ? (rosa ? '#160713' : '#050816') : (rosa ? '#fff7fb' : '#f8fafc');
+document.querySelector('meta[name="theme-color"]')?.setAttribute('content', cor);
+}
+function aplicarPreferenciasVisuaisUsuario(nome) {
+if (!nome) return;
+try {
+const tema = localStorage.getItem(chavePreferenciaVisual(nome, 'tema')) || localStorage.getItem('tema') || 'escuro';
+const cor = localStorage.getItem(chavePreferenciaVisual(nome, 'cor')) || localStorage.getItem('corPainel') || 'azul';
+document.documentElement.classList.toggle('dark', tema !== 'claro');
+document.documentElement.classList.toggle('tema-rosa', cor === 'rosa');
+localStorage.setItem(chavePreferenciaVisual(nome, 'tema'), tema !== 'claro' ? 'escuro' : 'claro');
+localStorage.setItem(chavePreferenciaVisual(nome, 'cor'), cor === 'rosa' ? 'rosa' : 'azul');
+atualizarCorDoNavegador();
+atualizarSeletorCorPainel();
+if (window.modoVisualizacao === 'hoje' && typeof window.renderizarHojeView === 'function') renderizarHojeView();
+} catch (erro) {
+console.warn('Não foi possível carregar a preferência visual deste usuário.', erro);
+}
+}
 window.alternarTema = function() {
 const htmlEl = document.documentElement;
 if (htmlEl.classList.contains('dark')) {
 htmlEl.classList.remove('dark');
-localStorage.setItem('tema', 'claro');
+salvarPreferenciaVisual('tema', 'claro');
 } else {
 htmlEl.classList.add('dark');
-localStorage.setItem('tema', 'escuro');
+salvarPreferenciaVisual('tema', 'escuro');
 }
+atualizarCorDoNavegador();
 };
 function atualizarSeletorCorPainel() {
 const rosaAtivo = document.documentElement.classList.contains('tema-rosa');
@@ -1863,8 +1901,8 @@ botaoRosa.setAttribute('aria-pressed', String(rosaAtivo));
 window.alterarCorPainel = function(cor) {
 const usarRosa = cor === 'rosa';
 document.documentElement.classList.toggle('tema-rosa', usarRosa);
-localStorage.setItem('corPainel', usarRosa ? 'rosa' : 'azul');
-document.querySelector('meta[name="theme-color"]')?.setAttribute('content', usarRosa ? '#160713' : '#050816');
+salvarPreferenciaVisual('cor', usarRosa ? 'rosa' : 'azul');
+atualizarCorDoNavegador();
 atualizarSeletorCorPainel();
 if (window.modoVisualizacao === 'hoje' && typeof window.renderizarHojeView === 'function') renderizarHojeView();
 };
@@ -1983,6 +2021,7 @@ if (digitada === senhaEsperada) {
 document.getElementById('login-overlay').style.display = 'none';
 sessionStorage.setItem('autenticado', 'true');
 sessionStorage.setItem('alunoLogado', alunoSelect);
+aplicarPreferenciasVisuaisUsuario(alunoSelect);
 if (alunoSelect === 'André Victor') {
 isAdminAutenticado = true;
 sessionStorage.setItem('adminAutenticado', 'true');
@@ -2589,18 +2628,103 @@ painelNovo.innerHTML = `<span class="text-zinc-400">Nenhuma atividade obrigatór
 }
 setInterval(atualizarContadorProximaAtividade, 1000);
 const contadorRef = doc(db, "geral", "contador");
-onSnapshot(contadorRef, (docSnap) => {
-if (docSnap.exists()) {
-capotesCount = docSnap.data().capotes || 0;
+
+const CHAVE_BACKUP_CAPOTES = 't7a_capotes_backup_v1';
+function obterBackupCapotes() {
+try {
+const bruto = localStorage.getItem(CHAVE_BACKUP_CAPOTES);
+if (!bruto) return null;
+const backup = JSON.parse(bruto);
+const valor = Number(backup?.valor);
+if (!Number.isFinite(valor) || valor < 0) return null;
+return { valor: Math.floor(valor), atualizadoEm: backup?.atualizadoEm || null };
+} catch (erro) {
+return null;
+}
+}
+function salvarBackupCapotes(valor) {
+const numero = Number(valor);
+if (!Number.isFinite(numero) || numero < 0) return;
+try {
+localStorage.setItem(CHAVE_BACKUP_CAPOTES, JSON.stringify({
+valor: Math.floor(numero),
+atualizadoEm: new Date().toISOString()
+}));
+} catch (erro) {
+console.warn('Não foi possível salvar o backup local do contador.', erro);
+}
+}
+function atualizarExibicaoCapotes(valor) {
+const numero = Number(valor);
+if (!Number.isFinite(numero) || numero < 0) return;
+capotesCount = Math.floor(numero);
 const el = document.getElementById('contador-capotes-val');
 if (el) el.innerText = capotesCount;
 const adminKpiCapotes = document.getElementById('admin-kpi-capotes');
 if (adminKpiCapotes) adminKpiCapotes.innerText = capotesCount;
 if (window.modoVisualizacao === 'hoje') renderizarHojeView();
 if (window.modoVisualizacao === 'admin' && isAdminAutenticado) atualizarAnalyticsAdminSeAtivo();
-} else {
-setDoc(contadorRef, { capotes: 0 }).catch(err => console.error(err));
 }
+async function restaurarContadorAusenteDoBackup(backup) {
+if (!backup) return;
+try {
+await runTransaction(db, async transaction => {
+const snapshot = await transaction.get(contadorRef);
+if (snapshot.exists()) return;
+transaction.set(contadorRef, {
+capotes: backup.valor,
+recuperadoDeBackupLocal: true,
+atualizadoEm: serverTimestamp()
+});
+});
+} catch (erro) {
+console.error('Não foi possível restaurar o contador a partir do backup local.', erro);
+}
+}
+async function reconciliarCapotesZeradosComHistorico() {
+const ultimoRegistro = historicoCapotesGlobal[0];
+const valorHistorico = Number(ultimoRegistro?.valorNovo);
+if (capotesCount !== 0 || !Number.isFinite(valorHistorico) || valorHistorico <= 0) return;
+try {
+await runTransaction(db, async transaction => {
+const snapshot = await transaction.get(contadorRef);
+const valorAtual = Number(snapshot.data()?.capotes);
+if (!snapshot.exists() || !Number.isFinite(valorAtual) || valorAtual !== 0) return;
+transaction.set(contadorRef, {
+capotes: Math.floor(valorHistorico),
+recuperadoDoHistorico: true,
+atualizadoEm: serverTimestamp()
+}, { merge: true });
+});
+} catch (erro) {
+console.error('Não foi possível reconciliar o contador com o histórico.', erro);
+}
+}
+onSnapshot(contadorRef, (docSnap) => {
+if (docSnap.exists()) {
+const valorServidor = Number(docSnap.data()?.capotes);
+if (Number.isFinite(valorServidor) && valorServidor >= 0) {
+atualizarExibicaoCapotes(valorServidor);
+salvarBackupCapotes(valorServidor);
+} else {
+const backup = obterBackupCapotes();
+if (backup) atualizarExibicaoCapotes(backup.valor);
+console.warn('O contador remoto está sem um valor válido; nenhum zero foi gravado automaticamente.');
+}
+} else {
+const backup = obterBackupCapotes();
+if (backup) {
+atualizarExibicaoCapotes(backup.valor);
+restaurarContadorAusenteDoBackup(backup);
+} else {
+atualizarExibicaoCapotes(capotesCount);
+console.warn('Contador remoto ausente e sem backup local; nenhum zero foi gravado automaticamente.');
+}
+}
+}, (erro) => {
+const backup = obterBackupCapotes();
+if (backup) atualizarExibicaoCapotes(backup.valor);
+console.error('Falha ao sincronizar o contador de capotes. Mantendo o último valor local conhecido.', erro);
 });
 const recadosQuery = query(collection(db, "recados"), orderBy("timestamp", "desc"));
 onSnapshot(recadosQuery, (snapshot) => {
@@ -2662,6 +2786,7 @@ historicoCapotesGlobal.push({ id: docSnap.id, ...docSnap.data() });
 });
 const adminKpiHistorico = document.getElementById('admin-kpi-capotes-movimentos');
 if (adminKpiHistorico) adminKpiHistorico.innerText = historicoCapotesGlobal.length;
+reconciliarCapotesZeradosComHistorico();
 if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
 if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
 else if (adminSecaoAtiva === 'historico_capotes') abrirAdminSecao('historico_capotes');
@@ -2761,12 +2886,20 @@ window.alterarCapotes = async function(delta) {
 const ajuste = Number(delta) > 0 ? 1 : -1;
 const autor = sessionStorage.getItem('alunoLogado') || 'Usuário não identificado';
 try {
-await runTransaction(db, async (transaction) => {
+const valorFinal = await runTransaction(db, async (transaction) => {
 const contadorSnap = await transaction.get(contadorRef);
-const valorAnterior = contadorSnap.exists() ? Number(contadorSnap.data().capotes || 0) : 0;
+const valorServidor = Number(contadorSnap.data()?.capotes);
+const backup = obterBackupCapotes();
+const valorAnterior = contadorSnap.exists() && Number.isFinite(valorServidor) && valorServidor >= 0
+? Math.floor(valorServidor)
+: (backup?.valor ?? Math.max(0, Number(capotesCount) || 0));
 const valorNovo = Math.max(0, valorAnterior + ajuste);
 const historicoRef = doc(collection(db, "historico_capotes"));
-transaction.set(contadorRef, { capotes: valorNovo }, { merge: true });
+transaction.set(contadorRef, {
+capotes: valorNovo,
+atualizadoPor: autor,
+atualizadoEm: serverTimestamp()
+}, { merge: true });
 transaction.set(historicoRef, {
 autor,
 alteracao: ajuste > 0 ? '+1' : '-1',
@@ -2774,7 +2907,10 @@ valorAnterior,
 valorNovo,
 timestamp: serverTimestamp()
 });
+return valorNovo;
 });
+salvarBackupCapotes(valorFinal);
+atualizarExibicaoCapotes(valorFinal);
 } catch (error) {
 console.error(error);
 }
@@ -4852,6 +4988,7 @@ if (sessionStorage.getItem('autenticado') === 'true') {
 document.getElementById('login-overlay').style.display = 'none';
 atualizarIdentificacaoAluno();
 const alunoLogado = sessionStorage.getItem('alunoLogado');
+if (alunoLogado) aplicarPreferenciasVisuaisUsuario(alunoLogado);
 if (alunoLogado === 'André Victor' || sessionStorage.getItem('adminAutenticado') === 'true') {
 isAdminAutenticado = true;
 sessionStorage.setItem('adminAutenticado', 'true');
