@@ -230,6 +230,19 @@ outline-offset: 3px;
 box-shadow: 0 35px 90px -30px rgba(37, 99, 235, .55), inset 0 1px 0 rgba(255,255,255,.08);
 }
 
+/* O login sempre precisa ficar acima do dashboard e de seus popovers. */
+#login-overlay { z-index: 200 !important; }
+#app-splash { z-index: 220 !important; }
+
+/* Segurança estrutural do login: o dashboard só aparece depois da autenticação. */
+body:not(.app-authenticated) > aside,
+body:not(.app-authenticated) > main,
+body:not(.app-authenticated) > #mobile-bottom-nav,
+body:not(.app-authenticated) > #notification-backdrop,
+body:not(.app-authenticated) > a[href^="https://wa.me/"] {
+display: none !important;
+}
+
 #login-overlay > .glass-panel::before {
 content: "";
 position: absolute;
@@ -1362,7 +1375,7 @@ html:not(.dark) .notification-detail-label { color: #27272a; }
 .tema-rosa .notification-status-blue { color: #f472b6; background: rgba(236,72,153,.1); }
 .notification-backdrop { display: none; }
 @media (max-width: 767px) {
-.dashboard-topbar { position: relative; z-index: 72; align-items: flex-start; }
+.dashboard-topbar { position: relative; z-index: auto; align-items: flex-start; }
 .dashboard-topbar > div:first-child { flex: 1 1 auto; min-width: 0; }
 .dashboard-topbar-actions { flex: 0 0 auto; }
 .dashboard-topbar h2 { font-size: .86rem; line-height: 1.2; }
@@ -2030,9 +2043,10 @@ erroMsg.classList.remove('hidden');
 return;
 }
 if (digitada === senhaEsperada) {
-document.getElementById('login-overlay').style.display = 'none';
 sessionStorage.setItem('autenticado', 'true');
 sessionStorage.setItem('alunoLogado', alunoSelect);
+document.body.classList.add('app-authenticated');
+document.getElementById('login-overlay').style.display = 'none';
 aplicarPreferenciasVisuaisUsuario(alunoSelect);
 if (alunoSelect === 'André Victor') {
 isAdminAutenticado = true;
@@ -2085,6 +2099,8 @@ console.error("Erro ao registrar saída:", e);
 }
 window.sairSistema = async function() {
 await registrarSaidaSistema();
+if (typeof window.toggleNotificacoes === 'function') window.toggleNotificacoes(false);
+document.body.classList.remove('app-authenticated');
 if (cancelarHistoricoSenhasAdmin) {
 cancelarHistoricoSenhasAdmin();
 cancelarHistoricoSenhasAdmin = null;
@@ -5081,6 +5097,7 @@ atualizarRelogioDashboard();
 setInterval(atualizarRelogioDashboard, 30000);
 inicializarExperienciaPremium();
 if (sessionStorage.getItem('autenticado') === 'true') {
+document.body.classList.add('app-authenticated');
 document.getElementById('login-overlay').style.display = 'none';
 atualizarIdentificacaoAluno();
 const alunoLogado = sessionStorage.getItem('alunoLogado');
