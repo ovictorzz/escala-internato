@@ -1,0 +1,95 @@
+name: Compactar calendário em produção
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/compact-calendar-main.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Compactar calendário
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          marker = '/* Calendário compacto — facilita localizar datas sem rolagem excessiva. */'
+          if marker not in text:
+              css = r'''
+/* Calendário compacto — facilita localizar datas sem rolagem excessiva. */
+.calendar-view-switch { gap: .18rem; padding: .18rem; border-radius: .68rem; }
+.calendar-view-btn { min-height: 28px; padding: .28rem .5rem; border-radius: .5rem; font-size: 9px; gap: .25rem; }
+
+.calendar-months.calendar-mobile-list { gap: .8rem !important; }
+.calendar-months.calendar-mobile-list .calendar-month-card { padding: .75rem !important; }
+.calendar-months.calendar-mobile-list .calendar-month-grid { gap: .35rem !important; }
+.calendar-months.calendar-mobile-list .calendar-day-card {
+  padding: .48rem .58rem !important;
+  gap: .32rem !important;
+  border-radius: .72rem !important;
+}
+.calendar-months.calendar-mobile-list .calendar-day-number { font-size: 12px !important; }
+.calendar-months.calendar-mobile-list .calendar-day-name-mobile { font-size: 9px !important; }
+.calendar-months.calendar-mobile-list .calendar-shift {
+  grid-template-columns: 4.2rem minmax(0, 1fr) !important;
+  gap: .42rem !important;
+  padding: .34rem .48rem !important;
+  border-radius: .48rem !important;
+  font-size: 10px !important;
+  line-height: 1.22 !important;
+}
+.calendar-months.calendar-mobile-list .calendar-shift-period { font-size: 9px !important; }
+.calendar-months.calendar-mobile-list .calendar-shift-text { font-size: 10px !important; line-height: 1.22 !important; }
+
+.calendar-months.calendar-mobile-grid .calendar-month-card { padding: .65rem !important; }
+.calendar-months.calendar-mobile-grid .calendar-day-card { min-height: 112px !important; }
+
+@media (max-width: 767px) {
+  .calendar-months.calendar-mobile-grid .calendar-empty { min-height: 76px !important; }
+  .calendar-months.calendar-mobile-grid .calendar-day-card {
+    min-height: 76px !important;
+    height: 76px !important;
+    padding: .22rem !important;
+  }
+  .calendar-months.calendar-mobile-grid .calendar-shift { padding: .12rem .18rem !important; font-size: 6.5px !important; }
+  .calendar-months.calendar-mobile-grid .calendar-shift-period,
+  .calendar-months.calendar-mobile-grid .calendar-shift-text { font-size: 6.5px !important; }
+}
+'''
+              anchor = '@keyframes temporal-pulse {'
+              if anchor not in text:
+                  raise SystemExit('Âncora CSS não encontrada')
+              text = text.replace(anchor, css + '\n' + anchor, 1)
+
+          old_toolbar = 'class="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-3 px-2 py-2 bg-zinc-100/90 dark:bg-[#080a11]/90 backdrop-blur-xl rounded-xl border border-black/5 dark:border-white/5"'
+          new_toolbar = 'class="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-2 px-2 py-1.5 bg-zinc-100/90 dark:bg-[#080a11]/90 backdrop-blur-xl rounded-xl border border-black/5 dark:border-white/5"'
+          if old_toolbar in text:
+              text = text.replace(old_toolbar, new_toolbar, 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+          rm -f .github/workflows/compact-calendar-main.yml
+
+      - name: Validar e publicar
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html .github/workflows/compact-calendar-main.yml
+          git diff --cached --check
+          git commit -m "Compacta calendário para localizar datas mais rápido"
+          git push origin HEAD:main
