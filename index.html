@@ -7,10 +7,15 @@
 <meta name="description" content="Painel oficial da Turma T7A para acompanhar escalas, seminários, avisos e atividades do internato de Ginecologia e Obstetrícia.">
 <meta name="theme-color" content="#050816">
 <meta name="color-scheme" content="dark light">
+<meta name="apple-mobile-web-app-title" content="T7A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta property="og:type" content="website">
 <meta property="og:title" content="GO T7A • Painel do Internato">
 <meta property="og:description" content="Escalas, seminários e avisos da Turma T7A em um só lugar.">
 <meta property="og:locale" content="pt_BR">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%233b82f6'/%3E%3Cstop offset='1' stop-color='%236366f1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ctext x='32' y='27' text-anchor='middle' font-family='Arial,sans-serif' font-size='19' font-weight='800' fill='white'%3ET7A%3C/text%3E%3Cg fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 34v5a10 10 0 0 0 20 0v-5'/%3E%3Cpath d='M20 34v-3M40 34v-3M40 39c0 7 3 10 8 10'/%3E%3Ccircle cx='50' cy='49' r='4'/%3E%3C/g%3E%3C/svg%3E">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -1435,6 +1440,21 @@ html:not(.dark) .notification-detail { background: rgba(24,24,27,.028); border-c
 .notification-detail-label { color: #d4d4d8; font-weight: 800; }
 html:not(.dark) .notification-detail-label { color: #27272a; }
 .notification-empty { padding: 22px 16px; text-align: center; color: #71717a; font-size: 10px; }
+.push-activation { margin: 0 12px 12px; padding: 12px; display: grid; grid-template-columns: 34px minmax(0,1fr) auto; align-items: center; gap: 10px; border-radius: 13px; background: linear-gradient(135deg, rgba(37,99,235,.11), rgba(79,70,229,.055)); border: 1px solid rgba(96,165,250,.16); }
+.push-activation-icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; color: #60a5fa; background: rgba(59,130,246,.11); }
+.push-activation-title { display: block; color: #e4e4e7; font: 760 10.5px/1.25 'Outfit', sans-serif; }
+.push-activation-status { display: block; margin-top: 3px; color: #71717a; font-size: 8.5px; line-height: 1.35; font-weight: 600; }
+.push-activation-button { min-width: 72px; min-height: 32px; padding: 7px 10px; border-radius: 10px; color: #dbeafe; background: rgba(37,99,235,.18); border: 1px solid rgba(96,165,250,.22); font-size: 8.5px; line-height: 1.15; font-weight: 900; transition: background .18s ease, color .18s ease, opacity .18s ease; }
+.push-activation-button:hover { color: #fff; background: rgba(37,99,235,.3); }
+.push-activation-button:disabled { cursor: wait; opacity: .55; }
+.push-activation[data-state="active"] { background: linear-gradient(135deg, rgba(16,185,129,.11), rgba(5,150,105,.055)); border-color: rgba(52,211,153,.18); }
+.push-activation[data-state="active"] .push-activation-icon { color: #34d399; background: rgba(16,185,129,.11); }
+.push-activation[data-state="active"] .push-activation-button { color: #a7f3d0; background: rgba(16,185,129,.12); border-color: rgba(52,211,153,.2); }
+.push-activation[data-state="error"] { border-color: rgba(251,113,133,.18); background: rgba(244,63,94,.055); }
+.push-activation[data-state="error"] .push-activation-icon { color: #fb7185; background: rgba(244,63,94,.1); }
+html:not(.dark) .push-activation { background: linear-gradient(135deg, rgba(37,99,235,.07), rgba(79,70,229,.025)); border-color: rgba(37,99,235,.14); }
+html:not(.dark) .push-activation-title { color: #18181b; }
+html:not(.dark) .push-activation-status { color: #71717a; }
 .tema-rosa .notification-status-blue { color: #f472b6; background: rgba(236,72,153,.1); }
 .notification-backdrop { display: none; }
 @media (max-width: 767px) {
@@ -1632,6 +1652,10 @@ main { padding-bottom: 26px !important; }
 <input type="password" id="senha-input" placeholder="Digite a senha" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-medium focus:outline-none focus:border-blue-500 text-center transition-all placeholder:text-zinc-500 shadow-inner">
 </div>
 <button onclick="verificarSenha()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-outfit font-bold tracking-wide py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] active:scale-95 cursor-pointer text-sm">ACESSAR SISTEMA</button>
+<button type="button" id="faceid-login-button" onclick="entrarComFaceID()" class="hidden w-full items-center justify-center gap-2.5 py-3.5 rounded-xl border border-sky-400/25 bg-sky-400/[.08] text-sky-300 hover:bg-sky-400/[.14] font-outfit font-black tracking-wide text-sm transition-all active:scale-95">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 3H6a3 3 0 00-3 3v2m13-5h2a3 3 0 013 3v2M8 21H6a3 3 0 01-3-3v-2m13 5h2a3 3 0 003-3v-2M9 10h.01M15 10h.01M9 15c1.7 1.35 4.3 1.35 6 0"/></svg>
+ENTRAR COM FACE ID
+</button>
 <p id="erro-msg" class="text-xs text-rose-400 font-semibold hidden text-center animate-pulse">Selecione o nome e digite a senha correta.</p>
 <div class="pt-1 border-t border-white/10">
 <button type="button" onclick="toggleTrocaSenhaLogin()" id="btn-trocar-senha-login" class="w-full py-2 text-[11px] font-bold text-blue-400 hover:text-blue-300 transition-colors">Trocar minha senha</button>
@@ -1667,6 +1691,22 @@ main { padding-bottom: 26px !important; }
 <div id="aluno-picker-list" class="login-student-picker-list"></div>
 </section>
 </div>
+</div>
+<div id="faceid-setup-modal" class="hidden fixed inset-0 z-[75] items-center justify-center p-4 bg-black/75 backdrop-blur-lg" role="dialog" aria-modal="true" aria-labelledby="faceid-setup-title">
+<section class="w-full max-w-sm rounded-3xl border border-sky-400/20 bg-[#090b12] p-6 text-center shadow-[0_28px_90px_rgba(0,0,0,.65)]">
+<div class="mx-auto w-16 h-16 rounded-2xl border border-sky-400/25 bg-gradient-to-br from-sky-400/15 to-indigo-500/10 text-sky-300 flex items-center justify-center">
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M8 3H6a3 3 0 00-3 3v2m13-5h2a3 3 0 013 3v2M8 21H6a3 3 0 01-3-3v-2m13 5h2a3 3 0 003-3v-2M9 10h.01M15 10h.01M9 15c1.7 1.35 4.3 1.35 6 0"/></svg>
+</div>
+<h3 id="faceid-setup-title" class="mt-4 text-lg font-outfit font-black text-white">Ativar Face ID</h3>
+<p class="mt-2 text-[11px] leading-relaxed text-zinc-400">Confirme sua senha uma última vez. O iPhone criará uma passkey protegida pelo Face ID.</p>
+<input type="password" id="faceid-setup-password" autocomplete="current-password" placeholder="Digite sua senha atual" class="mt-5 w-full rounded-xl border border-white/10 bg-black/45 px-4 py-3 text-center text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-sky-400/60">
+<p id="faceid-setup-message" class="hidden mt-3 text-[10px] font-bold leading-relaxed"></p>
+<div class="grid grid-cols-2 gap-3 mt-5">
+<button type="button" onclick="fecharConfiguracaoFaceID()" class="rounded-xl border border-white/10 bg-white/[.04] py-3 text-xs font-bold text-zinc-400">Cancelar</button>
+<button type="button" id="faceid-setup-confirm" onclick="ativarFaceIDNesteDispositivo()" class="rounded-xl border border-sky-400/25 bg-sky-500/15 py-3 text-xs font-black text-sky-300">ATIVAR</button>
+</div>
+<p class="mt-4 text-[9px] leading-relaxed text-zinc-600">Seus dados biométricos permanecem somente no dispositivo.</p>
+</section>
 </div>
 <aside class="w-full lg:w-80 glass-panel border-b lg:border-b-0 lg:border-r border-black/10 dark:border-white/5 flex flex-col justify-between p-5 lg:p-6 shrink-0 z-30 shadow-2xl">
 <div class="space-y-6">
@@ -1748,6 +1788,10 @@ Próxima: Carregando...
 </button>
 </div>
 </div>
+<button type="button" id="faceid-setup-button" onclick="abrirConfiguracaoFaceID()" class="hidden w-full items-center justify-center gap-2 py-2.5 rounded-xl bg-sky-500/10 text-sky-500 border border-sky-500/20 text-[11px] font-black hover:bg-sky-500/15 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 3H6a3 3 0 00-3 3v2m13-5h2a3 3 0 013 3v2M8 21H6a3 3 0 01-3-3v-2m13 5h2a3 3 0 003-3v-2M9 10h.01M15 10h.01M9 15c1.7 1.35 4.3 1.35 6 0"/></svg>
+<span>Ativar Face ID neste aparelho</span>
+</button>
 <button onclick="alternarModo('admin')" id="btn-header-admin" class="w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-sm font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm">
 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
 <span>Painel Admin</span>
@@ -1772,6 +1816,11 @@ Internato de Ginecologia & Obstetrícia
 </button>
 <div id="notification-panel" class="hidden absolute right-0 top-12 z-[60] notification-popover" role="dialog" aria-label="Central de notificações">
 <div class="notification-header"><div><p class="notification-header-title">Notificações</p><p id="notification-summary" class="notification-header-meta">Sua escala, aulas e avisos em um só lugar</p></div><button onclick="toggleNotificacoes(false)" class="notification-close" aria-label="Fechar">×</button></div>
+<div id="push-activation" class="push-activation" data-state="idle">
+<span class="push-activation-icon" aria-hidden="true"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 00-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 01-6 0"/></svg></span>
+<span class="min-w-0"><strong class="push-activation-title">Notificações no celular</strong><small id="push-activation-status" class="push-activation-status">Verificando este dispositivo…</small></span>
+<button type="button" id="push-activation-button" class="push-activation-button" onclick="alternarPushNoDispositivo()">Ativar</button>
+</div>
 <div id="notification-list" class="notification-list"></div>
 </div>
 </div>
@@ -1900,9 +1949,10 @@ Escala Diária por Turnos
 <button onclick="toggleMobileMenu()" class="mobile-bottom-item flex flex-col items-center gap-1 pb-1.5"><span class="mobile-bottom-icon w-9 h-8 rounded-xl flex items-center justify-center"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/></svg></span><span class="text-[9px] font-bold">Mais</span></button>
 </nav>
 
+<script src="/webauthn-browser.min.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, runTransaction, writeBatch } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp, runTransaction, writeBatch } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 const firebaseConfig = {
 apiKey: "AIzaSyBOwnygs2V5ADR1C5xPRATXbU2M18VaKm4",
 authDomain: "painel-go-t7a.firebaseapp.com",
@@ -1914,6 +1964,8 @@ measurementId: "G-EHQSXVSYVS"
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const PUSH_FUNCTIONS_BASE = "/api/push";
+const AUTH_FUNCTIONS_BASE = "/api/auth";
 const SENHA_ACESSO = "unieurot7a";
 const SENHA_ANDRE = "3009";
 const SENHA_ADMIN = "@admin980";
@@ -1930,6 +1982,335 @@ let escalaOverridesGlobal = [];
 let adminSecaoAtiva = 'dashboard';
 let currentLoginSessionId = null;
 let cancelarHistoricoSenhasAdmin = null;
+let historicosAdminIniciados = false;
+let canceladoresHistoricosAdmin = [];
+
+function dispositivoEhIOS() {
+return /iPad|iPhone|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function executandoComoAppInstalado() {
+return window.matchMedia?.('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function atualizarInterfacePush(estado, mensagem, rotuloBotao = 'Ativar', carregando = false) {
+const card = document.getElementById('push-activation');
+const status = document.getElementById('push-activation-status');
+const botao = document.getElementById('push-activation-button');
+if (card) card.dataset.state = estado;
+if (status) status.textContent = mensagem;
+if (botao) {
+botao.textContent = rotuloBotao;
+botao.disabled = carregando;
+}
+}
+
+function chavePushParaUint8Array(chaveBase64) {
+const preenchimento = '='.repeat((4 - chaveBase64.length % 4) % 4);
+const base64 = (chaveBase64 + preenchimento).replace(/-/g, '+').replace(/_/g, '/');
+const dados = atob(base64);
+return Uint8Array.from([...dados].map(caractere => caractere.charCodeAt(0)));
+}
+
+async function registrarServiceWorkerPush() {
+if (!('serviceWorker' in navigator)) throw new Error('Este navegador não oferece suporte ao Service Worker.');
+return navigator.serviceWorker.register('/service-worker.js', { scope: '/' });
+}
+
+async function chamarFuncaoPush(nome, opcoes = {}) {
+const resposta = await fetch(`${PUSH_FUNCTIONS_BASE}/${nome}`, {
+...opcoes,
+headers: { 'Content-Type': 'application/json', ...(opcoes.headers || {}) }
+});
+const dados = await resposta.json().catch(() => ({}));
+if (!resposta.ok) throw new Error(dados.error || 'O servidor de notificações não respondeu corretamente.');
+return dados;
+}
+
+async function chamarFuncaoAuth(nome, body = {}) {
+const resposta = await fetch(`${AUTH_FUNCTIONS_BASE}/${nome}`, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify(body),
+cache: 'no-store'
+});
+const dados = await resposta.json().catch(() => ({}));
+if (!resposta.ok) throw new Error(dados.error || 'O servidor de autenticação não respondeu corretamente.');
+return dados;
+}
+
+function faceIDDisponivel() {
+return Boolean(window.PublicKeyCredential && window.SimpleWebAuthnBrowser?.browserSupportsWebAuthn?.());
+}
+
+function atualizarDisponibilidadeFaceID() {
+const disponivel = faceIDDisponivel();
+const login = document.getElementById('faceid-login-button');
+const configurar = document.getElementById('faceid-setup-button');
+if (login) {
+login.classList.toggle('hidden', !disponivel);
+login.classList.toggle('flex', disponivel);
+}
+const autenticado = sessionStorage.getItem('autenticado') === 'true';
+if (configurar) {
+configurar.classList.toggle('hidden', !disponivel || !autenticado);
+configurar.classList.toggle('flex', disponivel && autenticado);
+const rotulo = configurar.querySelector('span');
+if (rotulo) rotulo.textContent = localStorage.getItem('t7a_faceid_configurado_v1') === 'true'
+? 'Face ID configurado neste aparelho'
+: 'Ativar Face ID neste aparelho';
+}
+}
+
+function textoErroFaceID(erro) {
+if (erro?.name === 'NotAllowedError') return 'Operação cancelada ou tempo esgotado. Tente novamente.';
+if (erro?.name === 'InvalidStateError') return 'O Face ID já está configurado neste aparelho.';
+return erro?.message || 'Não foi possível usar o Face ID agora.';
+}
+
+window.entrarComFaceID = async function() {
+const botao = document.getElementById('faceid-login-button');
+const erroMsg = document.getElementById('erro-msg');
+if (!faceIDDisponivel()) {
+erroMsg.innerText = 'Este aparelho não oferece suporte ao login com passkey.';
+erroMsg.classList.remove('hidden');
+return;
+}
+const conteudoOriginal = botao?.innerHTML;
+if (botao) {
+botao.disabled = true;
+botao.textContent = 'AGUARDANDO O FACE ID…';
+}
+erroMsg?.classList.add('hidden');
+try {
+const inicio = await chamarFuncaoAuth('passkeyLoginOptions');
+const response = await window.SimpleWebAuthnBrowser.startAuthentication({ optionsJSON: inicio.options });
+const resultado = await chamarFuncaoAuth('passkeyLoginVerify', {
+challengeID: inicio.challengeID,
+response
+});
+if (!resultado.verified || !resultado.aluno) throw new Error('O Face ID não pôde ser confirmado.');
+await concluirLogin(resultado.aluno, 'Face ID');
+} catch (erro) {
+console.error('Falha no login com Face ID:', erro);
+if (erroMsg) {
+erroMsg.innerText = textoErroFaceID(erro);
+erroMsg.classList.remove('hidden');
+}
+} finally {
+if (botao) {
+botao.disabled = false;
+botao.innerHTML = conteudoOriginal;
+}
+}
+};
+
+window.abrirConfiguracaoFaceID = function() {
+if (!faceIDDisponivel()) return alert('Este aparelho não oferece suporte a passkeys.');
+const modal = document.getElementById('faceid-setup-modal');
+const senha = document.getElementById('faceid-setup-password');
+const mensagem = document.getElementById('faceid-setup-message');
+if (senha) senha.value = '';
+if (mensagem) mensagem.classList.add('hidden');
+if (modal) {
+modal.classList.remove('hidden');
+modal.classList.add('flex');
+}
+setTimeout(() => senha?.focus(), 100);
+};
+
+window.fecharConfiguracaoFaceID = function() {
+const modal = document.getElementById('faceid-setup-modal');
+if (modal) {
+modal.classList.add('hidden');
+modal.classList.remove('flex');
+}
+};
+
+window.ativarFaceIDNesteDispositivo = async function() {
+const aluno = sessionStorage.getItem('alunoLogado');
+const senha = document.getElementById('faceid-setup-password')?.value || '';
+const botao = document.getElementById('faceid-setup-confirm');
+const mensagem = document.getElementById('faceid-setup-message');
+if (!aluno) return;
+if (!senha) {
+mensagem.textContent = 'Digite sua senha atual para continuar.';
+mensagem.className = 'mt-3 text-[10px] font-bold leading-relaxed text-rose-400';
+return;
+}
+if (botao) {
+botao.disabled = true;
+botao.textContent = 'AGUARDE…';
+}
+if (mensagem) mensagem.classList.add('hidden');
+try {
+const inicio = await chamarFuncaoAuth('passkeyRegisterOptions', { aluno, senha });
+const response = await window.SimpleWebAuthnBrowser.startRegistration({ optionsJSON: inicio.options });
+const resultado = await chamarFuncaoAuth('passkeyRegisterVerify', {
+challengeID: inicio.challengeID,
+response,
+userAgent: navigator.userAgent
+});
+if (!resultado.verified) throw new Error('O cadastro não pôde ser confirmado.');
+localStorage.setItem('t7a_faceid_configurado_v1', 'true');
+atualizarDisponibilidadeFaceID();
+if (mensagem) {
+mensagem.textContent = 'Face ID ativado! Na próxima entrada, use o botão “Entrar com Face ID”.';
+mensagem.className = 'mt-3 text-[10px] font-bold leading-relaxed text-emerald-400';
+}
+setTimeout(() => window.fecharConfiguracaoFaceID(), 1600);
+} catch (erro) {
+console.error('Falha ao ativar Face ID:', erro);
+if (mensagem) {
+mensagem.textContent = textoErroFaceID(erro);
+mensagem.className = 'mt-3 text-[10px] font-bold leading-relaxed text-rose-400';
+}
+} finally {
+if (botao) {
+botao.disabled = false;
+botao.textContent = 'ATIVAR';
+}
+}
+};
+
+async function obterAssinaturaPushAtual() {
+if (!('serviceWorker' in navigator)) return null;
+const registro = await registrarServiceWorkerPush();
+return registro.pushManager.getSubscription();
+}
+
+window.sincronizarEstadoPush = async function() {
+if (dispositivoEhIOS() && !executandoComoAppInstalado()) {
+atualizarInterfacePush('idle', 'Adicione o site à Tela de Início e abra pelo ícone.', 'Como ativar');
+return;
+}
+if (!('Notification' in window) || !('PushManager' in window) || !('serviceWorker' in navigator)) {
+atualizarInterfacePush('error', 'Notificações push não são compatíveis com este navegador.', 'Indisponível');
+return;
+}
+if (Notification.permission === 'denied') {
+atualizarInterfacePush('error', 'Permissão bloqueada. Libere o T7A nos Ajustes do celular.', 'Ajustes');
+return;
+}
+try {
+const assinatura = Notification.permission === 'granted' ? await obterAssinaturaPushAtual() : null;
+if (assinatura) atualizarInterfacePush('active', 'Ativas neste dispositivo.', 'Desativar');
+else atualizarInterfacePush('idle', 'Receba novos recados mesmo com o painel fechado.', 'Ativar');
+} catch (erro) {
+console.warn('Não foi possível consultar o estado das notificações.', erro);
+atualizarInterfacePush('error', 'Não foi possível verificar as notificações agora.', 'Tentar');
+}
+};
+
+async function ativarPushNoDispositivo() {
+if (dispositivoEhIOS() && !executandoComoAppInstalado()) {
+atualizarInterfacePush('idle', 'No Safari, toque em Compartilhar e em Adicionar à Tela de Início.', 'Como ativar');
+return;
+}
+if (!('Notification' in window) || !('PushManager' in window) || !('serviceWorker' in navigator)) {
+atualizarInterfacePush('error', 'Este navegador não oferece suporte a notificações push.', 'Indisponível');
+return;
+}
+
+atualizarInterfacePush('idle', 'Aguardando a autorização do dispositivo…', 'Ativando…', true);
+const permissao = Notification.permission === 'granted' ? 'granted' : await Notification.requestPermission();
+if (permissao !== 'granted') {
+atualizarInterfacePush('error', 'A permissão não foi concedida. Você pode liberá-la nos Ajustes.', 'Tentar');
+return;
+}
+
+const registro = await registrarServiceWorkerPush();
+let assinatura = await registro.pushManager.getSubscription();
+if (!assinatura) {
+const configuracao = await chamarFuncaoPush('pushConfig', { method: 'GET', headers: {} });
+if (!configuracao.publicKey) throw new Error('A chave pública de notificações ainda não foi configurada.');
+assinatura = await registro.pushManager.subscribe({
+userVisibleOnly: true,
+applicationServerKey: chavePushParaUint8Array(configuracao.publicKey)
+});
+}
+
+const aluno = sessionStorage.getItem('alunoLogado') || 'Aluno T7A';
+await chamarFuncaoPush('subscribePush', {
+method: 'POST',
+body: JSON.stringify({
+subscription: assinatura.toJSON(),
+aluno,
+trio: alunoTrioMap[aluno] || null,
+userAgent: navigator.userAgent
+})
+});
+localStorage.setItem('t7a_push_ativo', 'true');
+atualizarInterfacePush('active', 'Ativas neste dispositivo.', 'Desativar');
+await registro.showNotification('Notificações ativadas • T7A', {
+body: 'Você receberá os novos recados do painel neste dispositivo.',
+icon: '/icon-192.png',
+badge: '/icon-192.png',
+tag: 't7a-push-ativado',
+data: { url: '/?abrir=recados' }
+}).catch(() => {});
+}
+
+async function desativarPushNoDispositivo() {
+atualizarInterfacePush('active', 'Desativando neste dispositivo…', 'Aguarde…', true);
+const assinatura = await obterAssinaturaPushAtual();
+if (assinatura) {
+await chamarFuncaoPush('unsubscribePush', {
+method: 'POST',
+body: JSON.stringify({ subscription: assinatura.toJSON() })
+}).catch(erro => console.warn('O servidor não confirmou a remoção da assinatura.', erro));
+await assinatura.unsubscribe();
+}
+localStorage.removeItem('t7a_push_ativo');
+atualizarInterfacePush('idle', 'Notificações desativadas neste dispositivo.', 'Ativar');
+}
+
+window.alternarPushNoDispositivo = async function() {
+const botao = document.getElementById('push-activation-button');
+if (botao?.disabled) return;
+if (dispositivoEhIOS() && !executandoComoAppInstalado()) {
+atualizarInterfacePush('idle', 'No Safari: Compartilhar → Adicionar à Tela de Início.', 'Como ativar');
+return;
+}
+try {
+const assinatura = ('Notification' in window && Notification.permission === 'granted') ? await obterAssinaturaPushAtual() : null;
+if (assinatura) await desativarPushNoDispositivo();
+else await ativarPushNoDispositivo();
+} catch (erro) {
+console.error('Erro ao alterar notificações push:', erro);
+atualizarInterfacePush('error', erro.message || 'Não foi possível ativar agora.', 'Tentar');
+}
+};
+
+async function sincronizarAssinaturaPushComUsuario() {
+if (!('Notification' in window) || Notification.permission !== 'granted') return;
+try {
+const assinatura = await obterAssinaturaPushAtual();
+if (!assinatura) return;
+const aluno = sessionStorage.getItem('alunoLogado') || 'Aluno T7A';
+await chamarFuncaoPush('subscribePush', {
+method: 'POST',
+body: JSON.stringify({
+subscription: assinatura.toJSON(),
+aluno,
+trio: alunoTrioMap[aluno] || null,
+userAgent: navigator.userAgent
+})
+});
+} catch (erro) {
+console.warn('Não foi possível atualizar o vínculo das notificações com o usuário atual.', erro);
+}
+}
+
+function abrirDestinoPushPendente() {
+const parametros = new URLSearchParams(window.location.search);
+const destino = parametros.get('abrir');
+if (destino !== 'recados' && destino !== 'hoje') return;
+setTimeout(() => window.alternarModo?.(destino), 0);
+parametros.delete('abrir');
+const consulta = parametros.toString();
+history.replaceState({}, '', `${window.location.pathname}${consulta ? `?${consulta}` : ''}${window.location.hash}`);
+}
 const alunoTrioMap = {
 "André Victor": "1", "Davi Carvalho": "1", "Letícia Barbosa": "1",
 "Nadya Jarosczynski": "2", "Louise Mirindiba": "2", "Isabella Teixeira": "2",
@@ -2241,24 +2622,7 @@ if (botao) { botao.disabled = false; botao.innerText = 'SALVAR NOVA SENHA'; }
 }
 };
 
-window.verificarSenha = async function() {
-const alunoSelect = document.getElementById('aluno-select').value;
-const digitada = document.getElementById('senha-input').value;
-const erroMsg = document.getElementById('erro-msg');
-if (!alunoSelect) {
-erroMsg.innerText = "Por favor, selecione o seu nome na lista.";
-erroMsg.classList.remove('hidden');
-return;
-}
-let senhaEsperada;
-try {
-senhaEsperada = await obterSenhaAtualUsuario(alunoSelect);
-} catch (erro) {
-erroMsg.innerText = "Não foi possível validar a senha agora. Verifique a conexão e tente novamente.";
-erroMsg.classList.remove('hidden');
-return;
-}
-if (digitada === senhaEsperada) {
+async function concluirLogin(alunoSelect, metodo = 'Senha') {
 sessionStorage.setItem('autenticado', 'true');
 sessionStorage.setItem('alunoLogado', alunoSelect);
 document.body.classList.add('app-authenticated');
@@ -2278,6 +2642,7 @@ nome: alunoSelect,
 data: agora.toLocaleDateString('pt-BR'),
 entrada: agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'}),
 saida: "Online",
+metodo,
 timestamp: serverTimestamp()
 });
 currentLoginSessionId = docRef.id;
@@ -2286,12 +2651,36 @@ sessionStorage.setItem('loginSessionId', currentLoginSessionId);
 console.error("Erro ao registrar login:", e);
 }
 atualizarIdentificacaoAluno();
+sincronizarAssinaturaPushComUsuario();
 direcionarParaTrioDoAluno(alunoSelect);
+abrirDestinoPushPendente();
+atualizarDisponibilidadeFaceID();
+}
+
+window.verificarSenha = async function() {
+const alunoSelect = document.getElementById('aluno-select').value;
+const digitada = document.getElementById('senha-input').value;
+const erroMsg = document.getElementById('erro-msg');
+if (!alunoSelect) {
+erroMsg.innerText = "Por favor, selecione o seu nome na lista.";
+erroMsg.classList.remove('hidden');
+return;
+}
+let senhaEsperada;
+try {
+senhaEsperada = await obterSenhaAtualUsuario(alunoSelect);
+} catch (erro) {
+erroMsg.innerText = "Não foi possível validar a senha agora. Verifique a conexão e tente novamente.";
+erroMsg.classList.remove('hidden');
+return;
+}
+if (digitada === senhaEsperada) {
+await concluirLogin(alunoSelect, 'Senha');
 } else {
 erroMsg.innerText = "Senha incorreta. Tente novamente.";
 erroMsg.classList.remove('hidden');
 }
-}
+};
 function direcionarParaTrioDoAluno(nomeAluno) {
 const trioId = alunoTrioMap[nomeAluno];
 if (trioId) {
@@ -2317,11 +2706,7 @@ window.sairSistema = async function() {
 await registrarSaidaSistema();
 if (typeof window.toggleNotificacoes === 'function') window.toggleNotificacoes(false);
 document.body.classList.remove('app-authenticated');
-if (cancelarHistoricoSenhasAdmin) {
-cancelarHistoricoSenhasAdmin();
-cancelarHistoricoSenhasAdmin = null;
-historicoSenhasGlobal = [];
-}
+pararHistoricosAdmin();
 sessionStorage.removeItem('autenticado');
 sessionStorage.removeItem('alunoLogado');
 sessionStorage.removeItem('loginSessionId');
@@ -2336,6 +2721,7 @@ if (campo) campo.value = '';
 });
 window.toggleTrocaSenhaLogin(false);
 document.getElementById('login-overlay').style.display = 'flex';
+atualizarDisponibilidadeFaceID();
 }
 window.addEventListener('beforeunload', () => {
 const sessionId = sessionStorage.getItem('loginSessionId') || currentLoginSessionId;
@@ -2785,7 +3171,10 @@ const botao = document.getElementById('notification-trigger');
 if (!painel) return;
 const estaAberto = !painel.classList.contains('hidden');
 const deveAbrir = forcar === true ? true : (forcar === false ? false : !estaAberto);
-if (deveAbrir) atualizarNotificacoes();
+if (deveAbrir) {
+atualizarNotificacoes();
+window.sincronizarEstadoPush?.();
+}
 painel.classList.toggle('hidden', !deveAbrir);
 backdrop?.classList.toggle('hidden', !deveAbrir);
 botao?.setAttribute('aria-expanded', deveAbrir ? 'true' : 'false');
@@ -2794,6 +3183,7 @@ document.body.classList.toggle('notifications-open', deveAbrir && window.innerWi
 
 function inicializarExperienciaPremium() {
 setTimeout(() => document.getElementById('app-splash')?.classList.add('splash-hidden'), 850);
+registrarServiceWorkerPush().catch(erro => console.warn('Service Worker de notificações indisponível.', erro));
 document.addEventListener('keydown', evento => {
 if (evento.key === 'Escape') toggleNotificacoes(false);
 });
@@ -2806,6 +3196,7 @@ const painel = document.getElementById('notification-panel');
 if (!painel?.classList.contains('hidden')) document.body.classList.toggle('notifications-open', window.innerWidth <= 767);
 });
 atualizarNotificacoes();
+window.sincronizarEstadoPush?.();
 }
 
 function obterSaudacaoTemporal(agora = new Date()) {
@@ -3054,7 +3445,7 @@ const backup = obterBackupCapotes();
 if (backup) atualizarExibicaoCapotes(backup.valor);
 console.error('Falha ao sincronizar o contador de capotes. Mantendo o último valor local conhecido.', erro);
 });
-const recadosQuery = query(collection(db, "recados"), orderBy("timestamp", "desc"));
+const recadosQuery = query(collection(db, "recados"), orderBy("timestamp", "desc"), limit(25));
 onSnapshot(recadosQuery, (snapshot) => {
 recadosListaGlobal = [];
 snapshot.forEach((docSnap) => {
@@ -3070,31 +3461,10 @@ else if (adminSecaoAtiva === 'recados') renderizarAdminRecados();
 }
 atualizarNotificacoes();
 });
-const historicoRecadosQuery = query(collection(db, "historico_recados"), orderBy("timestamp", "desc"));
-onSnapshot(historicoRecadosQuery, (snapshot) => {
-historicoRecadosGlobal = [];
-snapshot.forEach((docSnap) => {
-historicoRecadosGlobal.push({ id: docSnap.id, ...docSnap.data() });
-});
-if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
-if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
-else if (adminSecaoAtiva === 'historico_recados' && document.getElementById('sub-sec-historico-recados')) abrirAdminSecao('historico_recados');
-}
-});
-const historicoLoginsQuery = query(collection(db, "historico_logins"), orderBy("timestamp", "desc"));
-onSnapshot(historicoLoginsQuery, (snapshot) => {
-historicoLoginsGlobal = [];
-snapshot.forEach((docSnap) => {
-historicoLoginsGlobal.push({ id: docSnap.id, ...docSnap.data() });
-});
-if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
-if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
-else if (adminSecaoAtiva === 'historico_logins') abrirAdminSecao('historico_logins');
-}
-});
+
 function iniciarHistoricoSenhasAdmin() {
 if (!isAdminAutenticado || cancelarHistoricoSenhasAdmin) return;
-const historicoSenhasQuery = query(collection(db, "historico_senhas"), orderBy("timestamp", "desc"));
+const historicoSenhasQuery = query(collection(db, "historico_senhas"), orderBy("timestamp", "desc"), limit(100));
 cancelarHistoricoSenhasAdmin = onSnapshot(historicoSenhasQuery, (snapshot) => {
 historicoSenhasGlobal = [];
 snapshot.forEach((docSnap) => {
@@ -3106,12 +3476,37 @@ else if (adminSecaoAtiva === 'historico_logins') abrirAdminSecao('historico_logi
 }
 }, erro => console.error('Erro ao carregar histórico de senhas:', erro));
 }
-const historicoCapotesQuery = query(collection(db, "historico_capotes"), orderBy("timestamp", "desc"));
-onSnapshot(historicoCapotesQuery, (snapshot) => {
-historicoCapotesGlobal = [];
-snapshot.forEach((docSnap) => {
-historicoCapotesGlobal.push({ id: docSnap.id, ...docSnap.data() });
+
+function iniciarHistoricosAdmin() {
+if (!isAdminAutenticado || historicosAdminIniciados) return;
+historicosAdminIniciados = true;
+iniciarHistoricoSenhasAdmin();
+
+const observarHistorico = (colecaoNome, destino, aoAtualizar) => {
+const consulta = query(collection(db, colecaoNome), orderBy("timestamp", "desc"), limit(100));
+const cancelar = onSnapshot(consulta, (snapshot) => {
+const itens = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+destino(itens);
+aoAtualizar?.();
+}, erro => console.error(`Erro ao carregar ${colecaoNome}:`, erro));
+canceladoresHistoricosAdmin.push(cancelar);
+};
+
+observarHistorico('historico_recados', itens => { historicoRecadosGlobal = itens; }, () => {
+if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
+if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
+else if (adminSecaoAtiva === 'historico_recados' && document.getElementById('sub-sec-historico-recados')) abrirAdminSecao('historico_recados');
+}
 });
+
+observarHistorico('historico_logins', itens => { historicoLoginsGlobal = itens; }, () => {
+if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
+if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
+else if (adminSecaoAtiva === 'historico_logins') abrirAdminSecao('historico_logins');
+}
+});
+
+observarHistorico('historico_capotes', itens => { historicoCapotesGlobal = itens; }, () => {
 const adminKpiHistorico = document.getElementById('admin-kpi-capotes-movimentos');
 if (adminKpiHistorico) adminKpiHistorico.innerText = historicoCapotesGlobal.length;
 reconciliarCapotesZeradosComHistorico();
@@ -3120,17 +3515,29 @@ if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
 else if (adminSecaoAtiva === 'historico_capotes') abrirAdminSecao('historico_capotes');
 }
 });
-const historicoEscalasQuery = query(collection(db, "historico_escalas"), orderBy("timestamp", "desc"));
-onSnapshot(historicoEscalasQuery, (snapshot) => {
-historicoEscalasGlobal = [];
-snapshot.forEach((docSnap) => {
-historicoEscalasGlobal.push({ id: docSnap.id, ...docSnap.data() });
-});
+
+observarHistorico('historico_escalas', itens => { historicoEscalasGlobal = itens; }, () => {
 if (window.modoVisualizacao === 'admin' && isAdminAutenticado) {
 if (adminSecaoAtiva === 'dashboard') renderizarAdminDashboard();
 else if (adminSecaoAtiva === 'historico_escalas') abrirAdminSecao('historico_escalas');
 }
 });
+}
+
+function pararHistoricosAdmin() {
+canceladoresHistoricosAdmin.forEach(cancelar => cancelar());
+canceladoresHistoricosAdmin = [];
+historicosAdminIniciados = false;
+if (cancelarHistoricoSenhasAdmin) {
+cancelarHistoricoSenhasAdmin();
+cancelarHistoricoSenhasAdmin = null;
+}
+historicoRecadosGlobal = [];
+historicoLoginsGlobal = [];
+historicoSenhasGlobal = [];
+historicoCapotesGlobal = [];
+historicoEscalasGlobal = [];
+}
 async function registrarHistorico(acao, autor, texto) {
 try {
 await addDoc(collection(db, "historico_recados"), {
@@ -3149,12 +3556,16 @@ const alunoLogado = sessionStorage.getItem('alunoLogado') || 'Aluno T7A';
 const textoInput = document.getElementById('recado-texto').value.trim();
 if (!alunoLogado || !textoInput) return;
 try {
-await addDoc(collection(db, "recados"), {
+const novoRecado = await addDoc(collection(db, "recados"), {
 autor: alunoLogado,
 texto: textoInput,
 timestamp: serverTimestamp()
 });
 await registrarHistorico("Enviado", alunoLogado, textoInput);
+await chamarFuncaoPush('sendPush', {
+method: 'POST',
+body: JSON.stringify({ recadoId: novoRecado.id })
+}).catch(erro => console.warn('O recado foi publicado, mas a notificação não pôde ser enviada agora.', erro));
 document.getElementById('recado-texto').value = '';
 } catch (e) {
 console.error(e);
@@ -3672,7 +4083,7 @@ atualizarKpisAdmin();
 }
 
 window.renderizarAdminPainelPrincipal = function() {
-iniciarHistoricoSenhasAdmin();
+iniciarHistoricosAdmin();
 const container = document.getElementById('lista-turnos');
 container.innerHTML = `
 <div class="space-y-4 h-full flex flex-col">
@@ -3765,6 +4176,7 @@ html += `
 <div class="text-right">
 <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">Entrada: ${l.entrada}</span>
 <span class="text-[10px] font-mono text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-md border border-rose-500/20 ml-2">Saída: ${l.saida}</span>
+${l.metodo ? `<span class="text-[9px] font-black text-sky-400 bg-sky-500/10 px-2 py-1 rounded-md border border-sky-500/20 ml-2">${escaparHtmlAdmin(l.metodo)}</span>` : ''}
 </div>
 <button onclick="excluirRegistroHistoricoAdmin('logins','${l.id}')" class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500/20" title="Apagar somente este acesso" aria-label="Apagar este acesso">×</button>
 </div>
@@ -4077,14 +4489,14 @@ alert('Não foi possível desfazer a alteração.');
 const dadosSeminariosList = [
 { data: "28/07", hora: "08h30–11h00", mediador: "TODOS", apresentadores: "TODOS", tema: "APRESENTAÇÃO DO INTERNATO EM SAÚDE DA MULHER – GINECOLOGIA & OBSTETRÍCIA" },
 { data: "04/08", numero: 1, hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Marta", apresentadores: "André Victor, Davi Carvalho, Letícia Barbosa", tema: "• Fisiologia do Ciclo Menstrual\n• Pré-Natal de Risco Habitual" },
-{ data: "11/08", numero: 2, hora: "18h30–19h45\n20h00–21h30", mediador: "Dr. Vinícius Cunha", apresentadores: "Nadya Jarosczynski, Louise Bonfim, Isabella de Lima", tema: "• Trabalho de Parto (Condutas, Indução e Condução)\n• Cardiotocografia: Avaliação da Vitalidade Fetal: Sofrimento Fetal" },
-{ data: "18/08", numero: 3, hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Hiago Kaian, Isabela Frota, Maria Eduarda Aquino, José Henrique", tema: "• Sangramento Uterino Anormal (PALM-COEIN): Miomatose, Adenomiose e Endometriose\n• Hemorragias da 1ª Metade e da 2ª Metade da Gravidez: Hemorragia Pós-Parto" },
+{ data: "18/08", numero: 3, hora: "18h30–19h45\n20h00–21h30", mediador: "Dr. Vinícius | Dr. Fernando", apresentadores: "Hiago Kaian, Isabela Frota, Maria Eduarda Aquino, José Henrique", tema: "• Sangramento Uterino Anormal (PALM-COEIN): Miomatose, Adenomiose e Endometriose\n• Hemorragias da 1ª Metade e da 2ª Metade da Gravidez: Hemorragia Pós-Parto" },
+{ data: "19/08", numero: 2, hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Bruna Anifantys", apresentadores: "Nadya Jarosczynski, Louise Bonfim, Isabella de Lima", tema: "• Trabalho de Parto (Condutas, Indução e Condução)\n• Cardiotocografia: Avaliação da Vitalidade Fetal: Sofrimento Fetal" },
 { data: "25/08", numero: 4, hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Marta | Dra. Lucimara", apresentadores: "Heitor Stoduto, João Victor Tajra, Bruno Azevedo, Andressa Maboni", tema: "• Alterações Funcionais Benignas da Mama (AFBM): Patologias Benignas / Inflamatórias / Infecciosas da Mama\n• Câncer de Mama: Classificação BI-RADS" },
-{ data: "01/09", numero: 5, hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Maria Luiza, Maria Eduarda Santiago, Luiza de Santes", tema: "• Métodos Contraceptivos (Indicações, Contraindicações, Complicações)\n• Trabalho de Parto Prematuro: Infecção do Trato Urinário em Obstetrícia" },
-{ data: "08/09", numero: 6, hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Leticia Teixeira, Júlia Matos, Luiza Sales", tema: "• Anatomia Genital Feminina Aplicada à Uroginecologia: Incontinência Urinária Feminina\n• HPV e Câncer de Colo de Útero" },
-{ data: "15/09", numero: 7, hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Ana Clara, Carolina Banholi, Kamilly Lima", tema: "• Prolapsos Genitais: Classificação de Bump (POP-Q)\n• Tumores Benignos e Malignos do Ovário" },
-{ data: "22/09", numero: 8, hora: "18h30–19h45\n20h00–21h30", mediador: "Aguardando confirmação", apresentadores: "Giovanna Muniz, Rayane Maria, Sofia Dias", tema: "• Síndromes Hipertensivas e Gestação (Pré-Eclâmpsia/Eclâmpsia/Síndrome HELLP)\n• Diabetes Gestacional" },
-{ data: "23/09", numero: 9, hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Lucimara", apresentadores: "Annelise Paiva, Camila Guidão, Gabriella Reis, Ana Luiza Daros", tema: "• Restrição de Crescimento Intrauterino: Oligoâmnio/Polidrâmnio\n• Leucorreias: Infecções Sexualmente Transmissíveis (IST) em GO e Doenças Inflamatórias Pélvica (DIP)" },
+{ data: "01/09", numero: 5, hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Raquel", apresentadores: "Maria Luiza, Maria Eduarda Santiago, Luiza de Santes", tema: "• Métodos Contraceptivos (Indicações, Contraindicações, Complicações)\n• Trabalho de Parto Prematuro: Infecção do Trato Urinário em Obstetrícia" },
+{ data: "08/09", numero: 6, hora: "18h30–19h45\n20h00–21h30", mediador: "Dr. Caio", apresentadores: "Leticia Teixeira, Júlia Matos, Luiza Sales", tema: "• Anatomia Genital Feminina Aplicada à Uroginecologia: Incontinência Urinária Feminina\n• HPV e Câncer de Colo de Útero" },
+{ data: "15/09", numero: 7, hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Gilmária | Dra. Sádia", apresentadores: "Ana Clara, Carolina Banholi, Kamilly Lima", tema: "• Prolapsos Genitais: Classificação de Bump (POP-Q)\n• Tumores Benignos e Malignos do Ovário" },
+{ data: "22/09", numero: 8, hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Gilmária | Dra. Sádia", apresentadores: "Giovanna Muniz, Rayane Maria, Sofia Dias", tema: "• Síndromes Hipertensivas e Gestação (Pré-Eclâmpsia/Eclâmpsia/Síndrome HELLP)\n• Diabetes Gestacional" },
+{ data: "23/09", numero: 9, hora: "18h30–19h45\n20h00–21h30", mediador: "Dra. Mariana | Dra. Lucimara", apresentadores: "Annelise Paiva, Camila Guidão, Gabriella Reis, Ana Luiza Daros", tema: "• Restrição de Crescimento Intrauterino: Oligoâmnio/Polidrâmnio\n• Leucorreias: Infecções Sexualmente Transmissíveis (IST) em GO e Doenças Inflamatórias Pélvica (DIP)" },
 { data: "29/09", hora: "18h30–19h45\n20h00–21h30", mediador: "TODOS", apresentadores: "", tema: "AVALIAÇÃO SOMATIVA — 50 QUESTÕES", tipo: "avaliacao" }
 ];
 function formatarSeminarioParaEscala(item) {
@@ -4237,7 +4649,7 @@ const meses = [
 { nome: "Agosto de 2026", ano: 2026, mes: 7, diasNoMes: 31 },
 { nome: "Setembro de 2026", ano: 2026, mes: 8, diasNoMes: 30 },
 { nome: "Outubro de 2026", ano: 2026, mes: 9, diasNoMes: 31 },
-{ nome: "Novembro de 2026", ano: 2026, mes: 10, diasNoMes: 9 }
+{ nome: "Novembro de 2026", ano: 2026, mes: 10, diasNoMes: 30 }
 ];
 const classeVisualizacaoMobile = visualizacaoMobile === 'grade' ? 'calendar-mobile-grid' : 'calendar-mobile-list';
 let html = `<div class="calendar-months ${classeVisualizacaoMobile} grid grid-cols-1 gap-5 pb-4 h-full overflow-y-auto pr-1">
@@ -4333,7 +4745,7 @@ containerTurnos.innerHTML = html;
 function obterDetalhesTurnosDia(idTrio, dataObj) {
 const dataInicioRodizio = new Date(2026, 7, 3);
 const dataFimRodizio = new Date(2026, 9, 4, 23, 59, 59);
-const dataFimCalendarioTeorico = new Date(2026, 10, 9, 23, 59, 59);
+const dataFimCalendarioTeorico = new Date(2026, 10, 30, 23, 59, 59);
 if(dataObj > dataFimRodizio && dataObj <= dataFimCalendarioTeorico) {
 const dataBr = `${String(dataObj.getDate()).padStart(2, '0')}/${String(dataObj.getMonth() + 1).padStart(2, '0')}`;
 const programacaoSegunda = dataObj.getDay() === 1 ? obterProgramacaoSegunda(dataBr) : null;
@@ -4431,11 +4843,25 @@ const SIMULADOS_SEGUNDA = {
 "31/08": "Simulado III — UNIEURO",
 "09/11": "Simulado IV — UNIEURO"
 };
-const SEGUNDAS_SEM_SCI = new Set(["07/09", "14/09", "12/10", "02/11"]);
+const PROGRAMACAO_SCI = {
+"17/08": "Sessões Clínicas Integradas (Aula Teórica) — Clínica Médica — Dr. André — UNIEURO",
+"24/08": "Sessões Clínicas Integradas (Aula Teórica) — Clínica Cirúrgica — Dra. Kátia — UNIEURO",
+"14/09": "Sessões Clínicas Integradas (Aula Teórica) — Auxílio aos acadêmicos para entrar com recursos ENAMED — UNIEURO",
+"21/09": "Sessões Clínicas Integradas (Aula Teórica) — Clínica Cirúrgica — Dra. Kátia — UNIEURO",
+"28/09": "Sessões Clínicas Integradas (Aula Teórica) — Clínica Médica — Dr. André + MFC — Dra. Érika — UNIEURO",
+"05/10": "Sessões Clínicas Integradas (Aula Teórica) — Clínica Cirúrgica — Dra. Kátia + MFC — Dra. Érika — UNIEURO",
+"19/10": "Sessões Clínicas Integradas (Aula Teórica) — Clínica Médica — Dr. André — UNIEURO",
+"26/10": "Sessões Clínicas Integradas (Aula Teórica) — Clínica Cirúrgica — Dra. Kátia — UNIEURO",
+"16/11": "Sessões Clínicas Integradas (Aula Teórica) — Clínica Médica — Dr. André — UNIEURO",
+"23/11": "Sessões Clínicas Integradas (Aula Teórica) — Clínica Cirúrgica — Dra. Kátia + MFC — Dra. Érika — UNIEURO",
+"30/11": "Sessões Clínicas Integradas (Aula Teórica) — Clínica Médica + MFC — Dra. Érika — UNIEURO"
+};
+const SEGUNDAS_SEM_SCI = new Set(["07/09", "12/10", "02/11"]);
 function obterProgramacaoSegunda(dataBr) {
-if (SIMULADOS_SEGUNDA[dataBr]) return { horario: "14h-17h", local: SIMULADOS_SEGUNDA[dataBr] };
+if (SIMULADOS_SEGUNDA[dataBr]) return { horario: "13h-16h", local: SIMULADOS_SEGUNDA[dataBr] };
+if (PROGRAMACAO_SCI[dataBr]) return { horario: "14h-17h", local: PROGRAMACAO_SCI[dataBr] };
 if (SEGUNDAS_SEM_SCI.has(dataBr)) return { horario: "14h-17h", local: "—" };
-return { horario: "14h-17h", local: "Sessões Clínicas Integradas (Aula Teórica) — UNIEURO" };
+return { horario: "14h-17h", local: "—" };
 }
 function gerarDiasSemana(semanaNum, datasArray) {
 const programacaoSegunda = obterProgramacaoSegunda(datasArray[0]);
@@ -4804,6 +5230,27 @@ local: "Avaliação Somativa — UNIEURO (50 questões)"
 const seminariosNumeradosPorData = new Map(
 dadosSeminariosList.filter(item => item.numero).map(item => [item.data, item])
 );
+
+// Exceção de 11/08: o Seminário 2 foi remarcado para 19/08.
+// Remove o seminário genérico que a escala-base colocava automaticamente nas terças-feiras.
+for (let i = 1; i <= 10; i++) {
+for (let s = 1; s <= 9; s++) {
+Object.values(dadosEscala[i].semanas[s]).forEach(infoDia => {
+if (infoDia.data !== "11/08") return;
+const turnoNoite = infoDia.turnos.find(turno => turno.periodo === "Noite");
+if (!turnoNoite) return;
+if (String(turnoNoite.local || '').includes("Seminário de G.O.")) {
+turnoNoite.local = "—";
+delete turnoNoite.atividade;
+delete turnoNoite.temas;
+delete turnoNoite.apresentadores;
+delete turnoNoite.orientador;
+delete turnoNoite.localSeminario;
+}
+});
+}
+}
+
 for (let i = 1; i <= 10; i++) {
 for (let s = 1; s <= 9; s++) {
 Object.values(dadosEscala[i].semanas[s]).forEach(infoDia => {
@@ -4812,6 +5259,7 @@ if (!seminario) return;
 const turnoNoite = infoDia.turnos.find(turno => turno.periodo === "Noite");
 if (!turnoNoite) return;
 turnoNoite.local = formatarSeminarioParaEscala(seminario);
+turnoNoite.horario = "18h30-21h30";
 turnoNoite.atividade = `Seminário ${seminario.numero} de G.O.`;
 turnoNoite.temas = seminario.tema;
 turnoNoite.apresentadores = seminario.apresentadores;
@@ -4871,13 +5319,26 @@ if (locaisPadronizados[turno.local]) turno.local = locaisPadronizados[turno.loca
 window.atividadeSelecionadaGlobal = '';
 window.modoAntesFiltroAtividade = 'individual';
 
+// O filtro Atividades é voltado às atividades assistenciais da escala.
+// SCI, simulados e seminários continuam na programação/calendário, mas não aparecem aqui.
+function atividadeVisivelNoFiltro(local) {
+const nome = String(local || '').trim();
+if (!atividadeConfirmada(nome)) return false;
+const normalizado = nome.toLocaleLowerCase('pt-BR');
+if (normalizado.includes('seminário')) return false;
+if (normalizado.startsWith('sessões clínicas integradas')) return false;
+if (normalizado === 'sci' || normalizado.startsWith('sci —') || normalizado.startsWith('sci -')) return false;
+if (normalizado.startsWith('simulado ')) return false;
+return true;
+}
+
 function obterAtividadesDisponiveis() {
 const atividades = new Set();
 for (let idTrio = 1; idTrio <= 10; idTrio++) {
 for (let semana = 1; semana <= 9; semana++) {
 Object.values(dadosEscala[idTrio].semanas[semana]).forEach(infoDia => {
 infoDia.turnos.forEach(turno => {
-if (atividadeConfirmada(turno.local) && !String(turno.local).toLocaleLowerCase('pt-BR').includes('seminário')) atividades.add(turno.local);
+if (atividadeVisivelNoFiltro(turno.local)) atividades.add(turno.local);
 });
 });
 }
@@ -4912,7 +5373,7 @@ if (limpar) limpar.classList.toggle('hidden', !select.value);
 
 function obterOcorrenciasAtividade(atividade) {
 const ocorrencias = [];
-if (!atividade || String(atividade).toLocaleLowerCase('pt-BR').includes('seminário')) return ocorrencias;
+if (!atividadeVisivelNoFiltro(atividade)) return ocorrencias;
 const ordemTurnos = { 'Manhã': 0, 'Tarde': 1, 'Noite': 2 };
 for (let idTrio = 1; idTrio <= 10; idTrio++) {
 for (let semana = 1; semana <= 9; semana++) {
@@ -5312,6 +5773,7 @@ iniciarContadores();
 atualizarRelogioDashboard();
 setInterval(atualizarRelogioDashboard, 30000);
 inicializarExperienciaPremium();
+atualizarDisponibilidadeFaceID();
 if (sessionStorage.getItem('autenticado') === 'true') {
 document.body.classList.add('app-authenticated');
 document.getElementById('login-overlay').style.display = 'none';
@@ -5324,6 +5786,8 @@ sessionStorage.setItem('adminAutenticado', 'true');
 }
 if (alunoLogado) {
 direcionarParaTrioDoAluno(alunoLogado);
+sincronizarAssinaturaPushComUsuario();
+abrirDestinoPushPendente();
 }
 }
 };
