@@ -1,0 +1,90 @@
+name: Aplicar orientadores dos seminários
+
+on:
+  push:
+    branches:
+      - agent/update-seminar-orientadores
+    paths:
+      - .github/workflows/apply-orientadores.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: agent/update-seminar-orientadores
+
+      - name: Usar a versão atualmente publicada como base
+        run: curl -fLsS --retry 3 https://t7a-escala.vercel.app/ -o index.html
+
+      - name: Atualizar somente os orientadores
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          if 'const dadosSeminariosList' not in text:
+              raise SystemExit('Bloco de seminários não encontrado na versão publicada.')
+
+          desired = {
+              '18/08': 'Dr. Vinícius | Dr. Fernando',
+              '01/09': 'Dra. Raquel',
+              '08/09': 'Dr. Caio',
+              '15/09': 'Dra. Gilmária | Dra. Sádia',
+              '22/09': 'Dra. Gilmária | Dra. Sádia',
+              '23/09': 'Dra. Mariana | Dra. Lucimara',
+          }
+
+          for date, mediator in desired.items():
+              pattern = re.compile(
+                  r'(\{\s*data:\s*"' + re.escape(date) + r'".*?\bmediador:\s*")[^"]*(")',
+                  re.S,
+              )
+              text, count = pattern.subn(
+                  lambda match, value=mediator: match.group(1) + value + match.group(2),
+                  text,
+                  count=1,
+              )
+              if count != 1:
+                  raise SystemExit(f'Não foi possível atualizar o orientador de {date}.')
+
+          # As linhas abaixo já estavam corretas e devem permanecer intactas.
+          expected_unchanged = {
+              '04/08': 'Dra. Marta',
+              '19/08': 'Dra. Bruna Anifantys',
+              '25/08': 'Dra. Marta | Dra. Lucimara',
+          }
+
+          for date, mediator in {**desired, **expected_unchanged}.items():
+              pattern = re.compile(
+                  r'\{\s*data:\s*"' + re.escape(date) + r'".*?\bmediador:\s*"' + re.escape(mediator) + r'"',
+                  re.S,
+              )
+              if not pattern.search(text):
+                  raise SystemExit(f'Validação falhou para {date}: {mediator}')
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Validar e enviar a alteração para a branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo "Nenhuma alteração necessária."
+            exit 0
+          fi
+          git commit -m "Atualiza orientadores dos seminários"
+          git push origin HEAD:agent/update-seminar-orientadores
