@@ -701,7 +701,7 @@ width: 100%;
 }
 
 .calendar-view-switch {
-display: none;
+display: flex;
 align-items: center;
 gap: .25rem;
 padding: .25rem;
@@ -784,6 +784,48 @@ word-break: normal;
 .calendar-day-card { min-height: 166px; }
 .calendar-shift { font-size: 11px; padding: .42rem .5rem; }
 .calendar-shift-period { font-size: 10px; }
+}
+
+/* Lista e grade ficam disponíveis em qualquer tamanho de tela. */
+.calendar-months.calendar-mobile-list .calendar-month-grid {
+display: flex !important;
+flex-direction: column;
+gap: .65rem;
+}
+
+.calendar-months.calendar-mobile-list .calendar-weekday,
+.calendar-months.calendar-mobile-list .calendar-empty {
+display: none !important;
+}
+
+.calendar-months.calendar-mobile-list .calendar-day-card {
+min-height: 0;
+height: auto !important;
+padding: .8rem;
+gap: .6rem;
+transform: none !important;
+}
+
+.calendar-months.calendar-mobile-list .calendar-day-name-mobile {
+display: inline !important;
+}
+
+.calendar-months.calendar-mobile-list .calendar-shift {
+grid-template-columns: 5rem minmax(0, 1fr);
+gap: .65rem;
+font-size: 12px;
+line-height: 1.35;
+padding: .55rem .65rem;
+border-radius: .65rem;
+}
+
+.calendar-months.calendar-mobile-list .calendar-shift-period {
+font-size: 10px;
+padding-top: .08rem;
+}
+
+.calendar-months.calendar-mobile-list .calendar-shift-text {
+font-size: 12px;
 }
 
 @media (max-width: 767px) {
@@ -4636,7 +4678,10 @@ containerTurnos.innerHTML = html;
 }
 window.definirVisualizacaoCalendarioMobile = function(modo) {
 const visualizacao = modo === 'grade' ? 'grade' : 'lista';
-try { localStorage.setItem('calendarioMobileView', visualizacao); } catch (e) {}
+try {
+localStorage.setItem('calendarioView', visualizacao);
+localStorage.setItem('calendarioMobileView', visualizacao);
+} catch (e) {}
 renderizarCalendarioMensal();
 }
 window.renderizarCalendarioMensal = function() {
@@ -4644,7 +4689,10 @@ const idTrio = document.getElementById('grupo-select').value;
 const dadosTrio = dadosEscala[idTrio];
 const containerTurnos = document.getElementById('lista-turnos');
 let visualizacaoMobile = 'lista';
-try { visualizacaoMobile = localStorage.getItem('calendarioMobileView') === 'grade' ? 'grade' : 'lista'; } catch (e) {}
+try {
+const preferenciaCalendario = localStorage.getItem('calendarioView') || localStorage.getItem('calendarioMobileView');
+visualizacaoMobile = preferenciaCalendario === 'grade' ? 'grade' : 'lista';
+} catch (e) {}
 const meses = [
 { nome: "Agosto de 2026", ano: 2026, mes: 7, diasNoMes: 31 },
 { nome: "Setembro de 2026", ano: 2026, mes: 8, diasNoMes: 30 },
@@ -4653,7 +4701,7 @@ const meses = [
 ];
 const classeVisualizacaoMobile = visualizacaoMobile === 'grade' ? 'calendar-mobile-grid' : 'calendar-mobile-list';
 let html = `<div class="calendar-months ${classeVisualizacaoMobile} grid grid-cols-1 gap-5 pb-4 h-full overflow-y-auto pr-1">
-<div class="md:hidden sticky top-0 z-20 flex items-center justify-between gap-3 px-1 py-1.5 bg-zinc-100/90 dark:bg-[#080a11]/90 backdrop-blur-xl rounded-xl">
+<div class="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-3 px-2 py-2 bg-zinc-100/90 dark:bg-[#080a11]/90 backdrop-blur-xl rounded-xl border border-black/5 dark:border-white/5">
 <div>
 <span class="block text-[9px] font-black uppercase tracking-[.14em] text-zinc-500">Visualização</span>
 <span class="block text-[10px] font-semibold text-zinc-400 mt-0.5">Escolha como ver o mês</span>
