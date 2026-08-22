@@ -12,7 +12,7 @@ html,body{margin:0;min-height:100%;background:#05070a;color:#e5e7eb;font-family:
 <div id="boot"><div class="boot-card"><div class="spinner"></div><div>Carregando Painel T7A…</div></div></div>
 <script>
 (async()=>{
-  const baseUrl='/base-index.html?v=20260822-horarios1';
+  const baseUrl='/base-index.html?v=20260822-horarios2';
   try{
     let html=await (await fetch(baseUrl,{cache:'no-store'})).text();
 
@@ -150,6 +150,7 @@ Object.entries(datasComEscalaEnviadaPorTrio).forEach(([idTrio, datas]) => {`;
     const anchorHorarios='// Mantém uma cópia imutável da escala original para permitir desfazer alterações administrativas.\nconst dadosEscalaBaseSnapshot = JSON.parse(JSON.stringify(dadosEscala));';
     const horariosEspeciais=`// Horários específicos por atividade.
 // PS FICHA: manhã 08h, tarde 14h, noite 18h.
+// PS BOX: manhã 08h, tarde 14h.
 // Amb UNIEURO: 08h-12h.
 function aplicarHorariosEspeciaisAtividades() {
   const normalizarTextoHorario = (valor) => String(valor || "")
@@ -168,6 +169,11 @@ function aplicarHorariosEspeciaisAtividades() {
             if (periodoNormalizado.includes("MANHA")) turno.horario = "08h-13h";
             else if (periodoNormalizado.includes("TARDE")) turno.horario = "14h-18h";
             else if (periodoNormalizado.includes("NOITE")) turno.horario = "18h-22h";
+          }
+
+          if (localNormalizado.includes("PS BOX")) {
+            if (periodoNormalizado.includes("MANHA")) turno.horario = "08h-13h";
+            else if (periodoNormalizado.includes("TARDE")) turno.horario = "14h-18h";
           }
 
           if (localNormalizado.includes("AMB UNIEURO")) {
