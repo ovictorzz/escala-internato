@@ -12,7 +12,7 @@ html,body{margin:0;min-height:100%;background:#05070a;color:#e5e7eb;font-family:
 <div id="boot"><div class="boot-card"><div class="spinner"></div><div>Carregando Painel T7A…</div></div></div>
 <script>
 (async()=>{
-  const baseUrl='/base-index.html?v=20260822-2431b';
+  const baseUrl='/base-index.html?v=20260822-horarios1';
   try{
     let html=await (await fetch(baseUrl,{cache:'no-store'})).text();
 
@@ -146,6 +146,51 @@ Object.entries(datasComEscalaEnviadaPorTrio).forEach(([idTrio, datas]) => {`;
 
     if(!html.includes(anchorDatas)) throw new Error('Ponto de confirmação das datas não encontrado');
     html=html.replace(anchorDatas,novasDatas);
+
+    const anchorHorarios='// Mantém uma cópia imutável da escala original para permitir desfazer alterações administrativas.\nconst dadosEscalaBaseSnapshot = JSON.parse(JSON.stringify(dadosEscala));';
+    const horariosEspeciais=`// Horários específicos por atividade.
+// PS FICHA: manhã 08h, tarde 14h, noite 18h.
+// Amb UNIEURO: 08h-12h.
+function aplicarHorariosEspeciaisAtividades() {
+  const normalizarTextoHorario = (valor) => String(valor || "")
+    .normalize("NFD")
+    .replace(/[\\u0300-\\u036f]/g, "")
+    .toUpperCase();
+
+  for (let idTrio = 1; idTrio <= 10; idTrio++) {
+    Object.values(dadosEscala[idTrio]?.semanas || {}).forEach((semana) => {
+      Object.values(semana || {}).forEach((infoDia) => {
+        (infoDia.turnos || []).forEach((turno) => {
+          const localNormalizado = normalizarTextoHorario(turno.local);
+          const periodoNormalizado = normalizarTextoHorario(turno.periodo);
+
+          if (localNormalizado.includes("PS FICHA")) {
+            if (periodoNormalizado.includes("MANHA")) turno.horario = "08h-13h";
+            else if (periodoNormalizado.includes("TARDE")) turno.horario = "14h-18h";
+            else if (periodoNormalizado.includes("NOITE")) turno.horario = "18h-22h";
+          }
+
+          if (localNormalizado.includes("AMB UNIEURO")) {
+            turno.horario = "08h-12h";
+          }
+        });
+      });
+    });
+  }
+}
+
+aplicarHorariosEspeciaisAtividades();
+
+// Mantém uma cópia imutável da escala original para permitir desfazer alterações administrativas.
+const dadosEscalaBaseSnapshot = JSON.parse(JSON.stringify(dadosEscala));`;
+
+    if(!html.includes(anchorHorarios)) throw new Error('Ponto de configuração dos horários especiais não encontrado');
+    html=html.replace(anchorHorarios,horariosEspeciais);
+
+    const anchorOverrides='turno.local = item.local;\nturno.horario = item.horario;\n});\nif (typeof window.popularFiltroAtividades === \'function\') window.popularFiltroAtividades();';
+    const overridesComHorarios='turno.local = item.local;\nturno.horario = item.horario;\n});\naplicarHorariosEspeciaisAtividades();\nif (typeof window.popularFiltroAtividades === \'function\') window.popularFiltroAtividades();';
+    if(!html.includes(anchorOverrides)) throw new Error('Ponto de sincronização dos horários especiais não encontrado');
+    html=html.replace(anchorOverrides,overridesComHorarios);
 
     document.open();
     document.write(html);
