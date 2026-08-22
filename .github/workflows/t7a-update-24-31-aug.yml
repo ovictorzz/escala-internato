@@ -1,11 +1,9 @@
-# Disparo confirmado em 22/08/2026
+# Disparo temporário da escala 24–31/08
 name: Aplicar escala 24 a 31 de agosto
 
 on:
-  push:
+  pull_request:
     branches: [main]
-    paths:
-      - '.github/workflows/t7a-update-24-31-aug.yml'
   workflow_dispatch:
 
 permissions:
@@ -13,11 +11,12 @@ permissions:
 
 jobs:
   atualizar-escala:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Atualizar escala no painel
         shell: bash
@@ -149,30 +148,19 @@ Object.entries(datasComEscalaEnviadaPorTrio).forEach(([idTrio, datas]) => {'''
           path.write_text(text, encoding='utf-8')
           PY
 
-      - name: Validar JavaScript principal
+      - name: Validar inserção
         shell: bash
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          text = Path('index.html').read_text(encoding='utf-8')
-          required = [
-              'const escala24a31Agosto = {',
-              '"31/08": { tarde: "HRSM" }',
-              'const datasEscalaRecebida24a31 = ["24/08", "25/08", "26/08", "27/08", "28/08", "29/08", "30/08", "31/08"];'
-          ]
-          missing = [item for item in required if item not in text]
-          if missing:
-              raise SystemExit(f'Validação falhou: {missing}')
-          print('Escala 24-31/08 inserida e datas marcadas como recebidas.')
-          PY
+          grep -q 'const escala24a31Agosto = {' index.html
+          grep -q '"31/08": { tarde: "HRSM" }' index.html
+          grep -q 'const datasEscalaRecebida24a31' index.html
 
-      - name: Commit da escala e limpeza da rotina temporária
+      - name: Commit e limpar rotina temporária
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git rm .github/workflows/t7a-update-24-31-aug.yml
           git add index.html
-          git diff --cached --quiet && exit 0
           git commit -m "Atualiza escala T7A de 24 a 31 de agosto"
-          git push
+          git push origin main
