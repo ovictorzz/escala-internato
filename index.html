@@ -12,7 +12,7 @@ html,body{margin:0;min-height:100%;background:#05070a;color:#e5e7eb;font-family:
 <div id="boot"><div class="boot-card"><div class="spinner"></div><div>Carregando Painel T7A…</div></div></div>
 <script>
 (async()=>{
-  const baseUrl='/base-index.html?v=20260822-2431';
+  const baseUrl='/base-index.html?v=20260822-2431b';
   try{
     let html=await (await fetch(baseUrl,{cache:'no-store'})).text();
 
@@ -20,7 +20,25 @@ html,body{margin:0;min-height:100%;background:#05070a;color:#e5e7eb;font-family:
     const novaEscala=`aplicarEscalaEspecifica("10", escalaTrio10);
 
 // Escala recebida em 22/08/2026 — período de 24/08 a 31/08.
-// Turnos não informados nessas datas são livres, preservadas as atividades acadêmicas gerais.
+// Limpa eventuais atividades assistenciais antigas nesses turnos antes de reaplicar a escala atual.
+// Mantém os compromissos acadêmicos gerais já cadastrados: SCI (24/08 à tarde),
+// Seminário (25/08 à noite) e Simulado III (31/08 à tarde).
+const datasAssistenciais24a31 = ["24/08", "25/08", "26/08", "27/08", "28/08", "29/08", "30/08", "31/08"];
+for (let i = 1; i <= 10; i++) {
+  const idTrio = String(i);
+  datasAssistenciais24a31.forEach((data) => {
+    ["manha", "tarde", "noite"].forEach((periodo) => {
+      const compromissoAcademico =
+        (data === "24/08" && periodo === "tarde") ||
+        (data === "25/08" && periodo === "noite") ||
+        (data === "31/08" && periodo === "tarde");
+      if (!compromissoAcademico && dadosEscala[idTrio]?.[data]) {
+        dadosEscala[idTrio][data][periodo] = "—";
+      }
+    });
+  });
+}
+
 const escala24a31Agosto = {
 "1": {
 "25/08": { manha: "ALCON (HRC)", tarde: "PS BOX (HRC)" },
