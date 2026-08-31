@@ -236,7 +236,11 @@ box-shadow: 0 35px 90px -30px rgba(37, 99, 235, .55), inset 0 1px 0 rgba(255,255
 }
 
 /* O login sempre precisa ficar acima do dashboard e de seus popovers. */
-#login-overlay { z-index: 200 !important; }
+#login-overlay { z-index: 200 !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+#login-overlay > .glass-panel {
+backdrop-filter: blur(8px) saturate(112%); -webkit-backdrop-filter: blur(8px) saturate(112%);
+background: linear-gradient(145deg, rgba(18,20,31,.94), rgba(8,10,17,.9));
+}
 #app-splash { z-index: 220 !important; }
 
 /* Segurança estrutural do login: o dashboard só aparece depois da autenticação. */
@@ -265,7 +269,9 @@ padding: 10px 12px; border-radius: 14px; color: #f4f4f5; text-align: left;
 background: linear-gradient(145deg, rgba(4,6,12,.82), rgba(11,13,22,.9));
 border: 1px solid rgba(255,255,255,.1); box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
 transition: border-color .2s ease, background .2s ease, box-shadow .2s ease, transform .15s ease;
+touch-action: manipulation; -webkit-user-select: none; user-select: none; cursor: pointer; position: relative; z-index: 1;
 }
+.login-student-trigger > * { pointer-events: none; }
 .login-student-trigger:hover, .login-student-trigger:focus-visible { border-color: rgba(96,165,250,.55); background: rgba(15,23,42,.94); box-shadow: 0 0 0 3px rgba(59,130,246,.08); }
 .login-student-trigger:active { transform: scale(.99); }
 .login-student-trigger-icon { width: 36px; height: 36px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 11px; color: #93c5fd; background: rgba(59,130,246,.12); border: 1px solid rgba(96,165,250,.18); }
@@ -1718,10 +1724,32 @@ main { padding-bottom: 26px !important; }
 <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-[.24em] mt-1">Painel do Internato</p>
 <div class="splash-progress mt-6 w-36 h-1.5 rounded-full bg-white/10 overflow-hidden" aria-hidden="true"></div>
 </div>
+<script>
+/* Resposta imediata do seletor enquanto o módulo principal termina de carregar no Safari/iOS. */
+window.abrirSeletorAluno = window.abrirSeletorAluno || function() {
+const modal = document.getElementById('aluno-picker-modal');
+const lista = document.getElementById('aluno-picker-list');
+if (!modal) return;
+modal.style.display = 'flex';
+modal.setAttribute('aria-hidden', 'false');
+document.body.style.overflow = 'hidden';
+if (lista && !lista.childElementCount) {
+lista.innerHTML = '<div class="login-student-empty">Carregando nomes…</div>';
+}
+};
+window.fecharSeletorAluno = window.fecharSeletorAluno || function() {
+const modal = document.getElementById('aluno-picker-modal');
+if (!modal) return;
+modal.style.display = 'none';
+modal.setAttribute('aria-hidden', 'true');
+document.body.style.overflow = '';
+};
+window.filtrarSeletorAluno = window.filtrarSeletorAluno || function() {};
+</script>
 <a href="https://wa.me/5561994559190?text=Olá%20André,%20estou%20a%20acessar%20o%20Painel%20de%20G.O." target="_blank" class="hidden lg:flex fixed bottom-4 right-4 z-50 w-12 h-12 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full items-center justify-center shadow-[0_4px_15px_rgba(16,185,129,0.4)] transition-all transform hover:scale-110 active:scale-95 group" title="Falar com André Victor no WhatsApp">
 <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
 </a>
-<div id="login-overlay" class="fixed inset-0 z-50 backdrop-blur-xl flex items-center justify-center p-4 overflow-y-auto" style="background-image: linear-gradient(to bottom, rgba(2, 2, 3, 0.85), rgba(2, 2, 3, 0.98)), url('fundo.jpg'); background-size: cover; background-position: bottom center;">
+<div id="login-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" style="background-image: linear-gradient(to bottom, rgba(2, 2, 3, 0.85), rgba(2, 2, 3, 0.98)), url('fundo.jpg'); background-size: cover; background-position: bottom center;">
 <div class="glass-panel rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4 text-center relative overflow-hidden transition-all duration-300 border border-blue-500/20">
 <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl mx-auto flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.4)] shrink-0">
 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
@@ -2644,6 +2672,8 @@ if (!select || !lista) return;
 const termo = normalizarBuscaAluno(filtro);
 const selecionado = select.value;
 lista.dataset.filtro = termo;
+lista.dataset.pronta = 'true';
+delete lista.dataset.carregando;
 lista.replaceChildren();
 let quantidade = 0;
 
@@ -2709,11 +2739,27 @@ const busca = document.getElementById('aluno-picker-search');
 const lista = document.getElementById('aluno-picker-list');
 if (!modal) return;
 if (busca) busca.value = '';
-if (!lista?.childElementCount || lista.dataset.filtro) renderizarListaSeletorAluno('');
 modal.style.display = 'flex';
 modal.setAttribute('aria-hidden', 'false');
 document.body.style.overflow = 'hidden';
+if (lista && (lista.dataset.pronta !== 'true' || lista.dataset.filtro) && lista.dataset.carregando !== 'true') {
+lista.dataset.carregando = 'true';
+setTimeout(() => renderizarListaSeletorAluno(''), 0);
+}
 };
+
+function prepararListaSeletorAluno() {
+const lista = document.getElementById('aluno-picker-list');
+if (!lista || lista.dataset.pronta === 'true' || lista.dataset.carregando === 'true') return;
+lista.dataset.carregando = 'true';
+renderizarListaSeletorAluno('');
+}
+
+if ('requestIdleCallback' in window) {
+window.requestIdleCallback(prepararListaSeletorAluno, { timeout: 1200 });
+} else {
+setTimeout(prepararListaSeletorAluno, 200);
+}
 
 window.fecharSeletorAluno = function() {
 const modal = document.getElementById('aluno-picker-modal');
