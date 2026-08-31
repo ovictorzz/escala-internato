@@ -6,13 +6,11 @@
 <title>Painel T7A</title>
 <style>
 html,body{margin:0;min-height:100%;background:#05070a;color:#e5e7eb;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-#boot{min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center}.boot-card{max-width:520px}
-.spinner{width:30px;height:30px;border:3px solid rgba(255,255,255,.14);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
-@keyframes spin{to{transform:rotate(360deg)}}.err{color:#fca5a5;line-height:1.5}
+#boot{display:none}.boot-card{max-width:520px}.boot-error{min-height:100vh!important;display:grid!important;place-items:center;padding:24px;text-align:center}.err{color:#fca5a5;line-height:1.5}
 </style>
 </head>
 <body>
-<div id="boot"><div class="boot-card"><div class="spinner"></div><div>Carregando Painel T7A…</div></div></div>
+<div id="boot" aria-hidden="true"></div>
 <script>
 (async()=>{
   const baseUrl='/base-index.html?v=20260822-carga3';
@@ -221,7 +219,10 @@ return texto.includes('seminario')
     document.close();
   }catch(err){
     console.error(err);
-    document.getElementById('boot').innerHTML='<div class="boot-card err"><strong>Não foi possível carregar o Painel T7A.</strong><br>Atualize a página. Se o erro persistir, avise o administrador.</div>';
+    const boot=document.getElementById('boot');
+    boot.classList.add('boot-error');
+    boot.removeAttribute('aria-hidden');
+    boot.innerHTML='<div class="boot-card err"><strong>Não foi possível carregar o Painel T7A.</strong><br>Atualize a página. Se o erro persistir, avise o administrador.</div>';
   }
 })();
 </script>
