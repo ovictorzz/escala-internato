@@ -6,11 +6,11 @@
 <title>Painel T7A</title>
 <style>
 html,body{margin:0;min-height:100%;background:#05070a;color:#e5e7eb;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-#boot{display:none}.boot-card{max-width:520px}.boot-error{min-height:100vh!important;display:grid!important;place-items:center;padding:24px;text-align:center}.err{color:#fca5a5;line-height:1.5}
+#boot{min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center}.boot-card{max-width:520px}.spinner{width:30px;height:30px;border:3px solid rgba(255,255,255,.14);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}@keyframes spin{to{transform:rotate(360deg)}}.err{color:#fca5a5;line-height:1.5}
 </style>
 </head>
 <body>
-<div id="boot" aria-hidden="true"></div>
+<div id="boot"><div class="boot-card"><div class="spinner"></div><div>Carregando Painel T7A…</div></div></div>
 <script>
 (async()=>{
   const baseUrl='/base-index.html?v=20260822-carga3';
@@ -123,7 +123,7 @@ const escala24a31Agosto = {
 "30/08":{manha:"ALCON (HRC)"}
 },
 "10":{
-"24/08":{manha:"Marta (HRC)"},
+"24/08":{manha:"Marta (HRC)",tarde:"CO (HRC)"},
 "25/08":{manha:"CC (HRC)",tarde:"CO (HRC)"},
 "27/08":{noite:"PS FICHA (HRC)"},
 "28/08":{tarde:"Rocha (HRC)"},
@@ -214,14 +214,65 @@ return texto.includes('seminario')
     if(!html.includes(anchorOverrides)) throw new Error('Ponto de sincronização dos horários especiais não encontrado');
     html=html.replace(anchorOverrides,overridesComHorarios);
 
+    const splashOculto='<div id="app-splash" class="splash-hidden fixed inset-0 z-[80] flex flex-col items-center justify-center text-white" aria-hidden="true">';
+    const splashVisivel='<div id="app-splash" class="fixed inset-0 z-[80] flex flex-col items-center justify-center text-white" aria-hidden="false">';
+    if(html.includes(splashOculto)) html=html.replace(splashOculto,splashVisivel);
+
+    const seletorIdle=`if ('requestIdleCallback' in window) {
+window.requestIdleCallback(prepararListaSeletorAluno, { timeout: 1200 });
+} else {
+setTimeout(prepararListaSeletorAluno, 200);
+}`;
+    if(html.includes(seletorIdle)) html=html.replace(seletorIdle,'prepararListaSeletorAluno();');
+
+    const initSplashAntigo=`function inicializarExperienciaPremium() {
+document.getElementById('app-splash')?.classList.add('splash-hidden');`;
+    const initSplashNovo=`function inicializarExperienciaPremium() {
+const splash = document.getElementById('app-splash');
+const inicioSplash = performance.now();
+try { prepararListaSeletorAluno(); } catch (erro) { console.warn('Seletor ainda não pôde ser preparado.', erro); }
+const esconderSplashQuandoEstavel = () => {
+  const aguardarConteudo = () => {
+    const lista = document.getElementById('aluno-picker-list');
+    const gatilho = document.getElementById('aluno-select-trigger');
+    const seletorPronto = lista?.dataset.pronta === 'true' && gatilho && typeof window.abrirSeletorAluno === 'function';
+    if (!seletorPronto && performance.now() - inicioSplash < 5000) {
+      setTimeout(aguardarConteudo, 60);
+      return;
+    }
+    setTimeout(() => {
+      let framesEstaveis = 0;
+      let ultimoFrame = performance.now();
+      const quadro = agora => {
+        const intervalo = agora - ultimoFrame;
+        ultimoFrame = agora;
+        framesEstaveis = intervalo < 90 ? framesEstaveis + 1 : 0;
+        const tempoMinimo = performance.now() - inicioSplash >= 1800;
+        if (tempoMinimo && framesEstaveis >= 4) {
+          splash?.classList.add('splash-hidden');
+          splash?.setAttribute('aria-hidden', 'true');
+          return;
+        }
+        requestAnimationFrame(quadro);
+      };
+      requestAnimationFrame(quadro);
+    }, 150);
+  };
+  aguardarConteudo();
+};
+Promise.race([
+  document.fonts?.ready || Promise.resolve(),
+  new Promise(resolve => setTimeout(resolve, 900))
+]).then(esconderSplashQuandoEstavel, esconderSplashQuandoEstavel);`;
+    if(!html.includes(initSplashAntigo)) throw new Error('Ponto de controle da tela de carregamento não encontrado');
+    html=html.replace(initSplashAntigo,initSplashNovo);
+
     document.open();
     document.write(html);
     document.close();
   }catch(err){
     console.error(err);
     const boot=document.getElementById('boot');
-    boot.classList.add('boot-error');
-    boot.removeAttribute('aria-hidden');
     boot.innerHTML='<div class="boot-card err"><strong>Não foi possível carregar o Painel T7A.</strong><br>Atualize a página. Se o erro persistir, avise o administrador.</div>';
   }
 })();
