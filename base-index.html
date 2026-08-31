@@ -279,7 +279,7 @@ transition: border-color .2s ease, background .2s ease, box-shadow .2s ease, tra
 .tema-rosa .login-student-trigger.has-value .login-student-trigger-icon { background: linear-gradient(135deg, #db2777, #c026d3); }
 
 .login-student-modal { position: fixed; inset: 0; z-index: 30; align-items: center; justify-content: center; padding: 16px; }
-.login-student-picker-backdrop { position: absolute; inset: 0; border: 0; background: rgba(1,2,7,.76); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.login-student-picker-backdrop { position: absolute; inset: 0; border: 0; background: rgba(1,2,7,.9); }
 .login-student-picker {
 position: relative; z-index: 1; width: min(100%, 430px); max-height: min(78dvh, 660px); display: flex; flex-direction: column; overflow: hidden;
 border-radius: 24px; color: #e4e4e7; background: linear-gradient(155deg, rgba(16,18,29,.995), rgba(5,7,13,.995));
@@ -1803,7 +1803,7 @@ main { padding-bottom: 26px !important; }
 <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1.5">Senha de Acesso</label>
 <input type="password" id="senha-input" placeholder="Digite a senha" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white text-sm font-medium focus:outline-none focus:border-blue-500 text-center transition-all placeholder:text-zinc-500 shadow-inner">
 </div>
-<button onclick="verificarSenha()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-outfit font-bold tracking-wide py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] active:scale-95 cursor-pointer text-sm">ACESSAR SISTEMA</button>
+<button type="button" id="login-submit-button" onclick="verificarSenha()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-65 disabled:cursor-wait text-white font-outfit font-bold tracking-wide py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] active:scale-95 cursor-pointer text-sm">ACESSAR SISTEMA</button>
 <button type="button" id="faceid-login-button" onclick="entrarComFaceID()" class="hidden w-full items-center justify-center gap-2.5 py-3.5 rounded-xl border border-sky-400/25 bg-sky-400/[.08] text-sky-300 hover:bg-sky-400/[.14] font-outfit font-black tracking-wide text-sm transition-all active:scale-95">
 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 3H6a3 3 0 00-3 3v2m13-5h2a3 3 0 013 3v2M8 21H6a3 3 0 01-3-3v-2m13 5h2a3 3 0 003-3v-2M9 10h.01M15 10h.01M9 15c1.7 1.35 4.3 1.35 6 0"/></svg>
 ENTRAR COM FACE ID
@@ -2578,7 +2578,7 @@ const rosa = document.documentElement.classList.contains('tema-rosa');
 const cor = escuro ? (rosa ? '#160713' : '#050816') : (rosa ? '#fff7fb' : '#f8fafc');
 document.querySelector('meta[name="theme-color"]')?.setAttribute('content', cor);
 }
-function aplicarPreferenciasVisuaisUsuario(nome) {
+function aplicarPreferenciasVisuaisUsuario(nome, renderizar = true) {
 if (!nome) return;
 try {
 const tema = localStorage.getItem(chavePreferenciaVisual(nome, 'tema')) || localStorage.getItem('tema') || 'escuro';
@@ -2589,7 +2589,7 @@ localStorage.setItem(chavePreferenciaVisual(nome, 'tema'), tema !== 'claro' ? 'e
 localStorage.setItem(chavePreferenciaVisual(nome, 'cor'), cor === 'rosa' ? 'rosa' : 'azul');
 atualizarCorDoNavegador();
 atualizarSeletorCorPainel();
-if (window.modoVisualizacao === 'hoje' && typeof window.renderizarHojeView === 'function') renderizarHojeView();
+if (renderizar && window.modoVisualizacao === 'hoje' && typeof window.renderizarHojeView === 'function') renderizarHojeView();
 } catch (erro) {
 console.warn('Não foi possível carregar a preferência visual deste usuário.', erro);
 }
@@ -2643,6 +2643,7 @@ if (!select || !lista) return;
 
 const termo = normalizarBuscaAluno(filtro);
 const selecionado = select.value;
+lista.dataset.filtro = termo;
 lista.replaceChildren();
 let quantidade = 0;
 
@@ -2666,6 +2667,7 @@ const botao = document.createElement('button');
 botao.type = 'button';
 botao.className = `login-student-member${opcao.value === selecionado ? ' is-selected' : ''}`;
 botao.setAttribute('aria-pressed', String(opcao.value === selecionado));
+botao.dataset.aluno = opcao.value;
 botao.addEventListener('click', () => window.selecionarAlunoLogin(opcao.value));
 
 const avatar = document.createElement('span');
@@ -2704,9 +2706,10 @@ lista.appendChild(vazio);
 window.abrirSeletorAluno = function() {
 const modal = document.getElementById('aluno-picker-modal');
 const busca = document.getElementById('aluno-picker-search');
+const lista = document.getElementById('aluno-picker-list');
 if (!modal) return;
 if (busca) busca.value = '';
-renderizarListaSeletorAluno('');
+if (!lista?.childElementCount || lista.dataset.filtro) renderizarListaSeletorAluno('');
 modal.style.display = 'flex';
 modal.setAttribute('aria-hidden', 'false');
 document.body.style.overflow = 'hidden';
@@ -2739,7 +2742,13 @@ if (rotulo) rotulo.textContent = nome;
 if (subtitulo) subtitulo.textContent = trio;
 gatilho?.classList.add('has-value');
 document.getElementById('erro-msg')?.classList.add('hidden');
+document.querySelectorAll('.login-student-member').forEach(botao => {
+const selecionado = botao.dataset.aluno === nome;
+botao.classList.toggle('is-selected', selecionado);
+botao.setAttribute('aria-pressed', String(selecionado));
+});
 window.fecharSeletorAluno();
+requestAnimationFrame(() => precarregarSenhaUsuario(nome));
 };
 
 function resetarSeletorAlunoLogin() {
@@ -2760,17 +2769,32 @@ function idDocumentoSenhaUsuario(nome) {
 return encodeURIComponent(String(nome || '').trim());
 }
 
+const senhaUsuarioCache = new Map();
+const senhaUsuarioEmCarregamento = new Map();
+
 async function obterSenhaAtualUsuario(nome) {
-try {
-const snapshot = await getDoc(doc(db, 'senhas_usuarios', idDocumentoSenhaUsuario(nome)));
-if (snapshot.exists() && snapshot.data()?.senhaAtual) {
-return snapshot.data().senhaAtual;
-}
-return senhaPadraoUsuario(nome);
-} catch (erro) {
+if (senhaUsuarioCache.has(nome)) return senhaUsuarioCache.get(nome);
+if (senhaUsuarioEmCarregamento.has(nome)) return senhaUsuarioEmCarregamento.get(nome);
+const carregamento = getDoc(doc(db, 'senhas_usuarios', idDocumentoSenhaUsuario(nome)))
+.then(snapshot => {
+const senha = snapshot.exists() && snapshot.data()?.senhaAtual
+? snapshot.data().senhaAtual
+: senhaPadraoUsuario(nome);
+senhaUsuarioCache.set(nome, senha);
+return senha;
+})
+.catch(erro => {
 console.error('Erro ao consultar senha do usuário:', erro);
 throw erro;
+})
+.finally(() => senhaUsuarioEmCarregamento.delete(nome));
+senhaUsuarioEmCarregamento.set(nome, carregamento);
+return carregamento;
 }
+
+function precarregarSenhaUsuario(nome) {
+if (!nome || senhaUsuarioCache.has(nome) || senhaUsuarioEmCarregamento.has(nome)) return;
+obterSenhaAtualUsuario(nome).catch(() => {});
 }
 
 window.toggleTrocaSenhaLogin = function(forcarAberto = null) {
@@ -2830,6 +2854,7 @@ hora: agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', se
 timestamp: serverTimestamp()
 });
 });
+senhaUsuarioCache.set(nome, novaSenha);
 document.getElementById('troca-senha-atual').value = '';
 document.getElementById('troca-senha-nova').value = '';
 document.getElementById('troca-senha-confirmar').value = '';
@@ -2845,19 +2870,7 @@ if (botao) { botao.disabled = false; botao.innerText = 'SALVAR NOVA SENHA'; }
 }
 };
 
-async function concluirLogin(alunoSelect, metodo = 'Senha') {
-sessionStorage.setItem('autenticado', 'true');
-sessionStorage.setItem('alunoLogado', alunoSelect);
-document.body.classList.add('app-authenticated');
-document.getElementById('login-overlay').style.display = 'none';
-aplicarPreferenciasVisuaisUsuario(alunoSelect);
-if (alunoSelect === 'André Victor') {
-isAdminAutenticado = true;
-sessionStorage.setItem('adminAutenticado', 'true');
-} else {
-isAdminAutenticado = false;
-sessionStorage.removeItem('adminAutenticado');
-}
+async function registrarHistoricoLoginEmSegundoPlano(alunoSelect, metodo) {
 try {
 const agora = new Date();
 const docRef = await addDoc(collection(db, "historico_logins"), {
@@ -2873,35 +2886,60 @@ sessionStorage.setItem('loginSessionId', currentLoginSessionId);
 } catch(e) {
 console.error("Erro ao registrar login:", e);
 }
+}
+
+async function concluirLogin(alunoSelect, metodo = 'Senha') {
+sessionStorage.setItem('autenticado', 'true');
+sessionStorage.setItem('alunoLogado', alunoSelect);
+document.body.classList.add('app-authenticated');
+document.getElementById('login-overlay').style.display = 'none';
+aplicarPreferenciasVisuaisUsuario(alunoSelect, false);
+if (alunoSelect === 'André Victor') {
+isAdminAutenticado = true;
+sessionStorage.setItem('adminAutenticado', 'true');
+} else {
+isAdminAutenticado = false;
+sessionStorage.removeItem('adminAutenticado');
+}
 atualizarIdentificacaoAluno();
-sincronizarAssinaturaPushComUsuario();
 direcionarParaTrioDoAluno(alunoSelect);
 abrirDestinoPushPendente();
 atualizarDisponibilidadeFaceID();
+registrarHistoricoLoginEmSegundoPlano(alunoSelect, metodo);
+sincronizarAssinaturaPushComUsuario();
 }
 
 window.verificarSenha = async function() {
 const alunoSelect = document.getElementById('aluno-select').value;
 const digitada = document.getElementById('senha-input').value;
 const erroMsg = document.getElementById('erro-msg');
+const botao = document.getElementById('login-submit-button');
 if (!alunoSelect) {
 erroMsg.innerText = "Por favor, selecione o seu nome na lista.";
 erroMsg.classList.remove('hidden');
 return;
 }
-let senhaEsperada;
-try {
-senhaEsperada = await obterSenhaAtualUsuario(alunoSelect);
-} catch (erro) {
-erroMsg.innerText = "Não foi possível validar a senha agora. Verifique a conexão e tente novamente.";
-erroMsg.classList.remove('hidden');
-return;
+if (botao) {
+botao.disabled = true;
+botao.innerText = 'ENTRANDO…';
 }
+erroMsg.classList.add('hidden');
+try {
+const senhaEsperada = await obterSenhaAtualUsuario(alunoSelect);
 if (digitada === senhaEsperada) {
 await concluirLogin(alunoSelect, 'Senha');
 } else {
 erroMsg.innerText = "Senha incorreta. Tente novamente.";
 erroMsg.classList.remove('hidden');
+}
+} catch (erro) {
+erroMsg.innerText = "Não foi possível validar a senha agora. Verifique a conexão e tente novamente.";
+erroMsg.classList.remove('hidden');
+} finally {
+if (botao) {
+botao.disabled = false;
+botao.innerText = 'ACESSAR SISTEMA';
+}
 }
 };
 function direcionarParaTrioDoAluno(nomeAluno) {
@@ -6014,7 +6052,7 @@ document.body.classList.add('app-authenticated');
 document.getElementById('login-overlay').style.display = 'none';
 atualizarIdentificacaoAluno();
 const alunoLogado = sessionStorage.getItem('alunoLogado');
-if (alunoLogado) aplicarPreferenciasVisuaisUsuario(alunoLogado);
+if (alunoLogado) aplicarPreferenciasVisuaisUsuario(alunoLogado, false);
 if (alunoLogado === 'André Victor' || sessionStorage.getItem('adminAutenticado') === 'true') {
 isAdminAutenticado = true;
 sessionStorage.setItem('adminAutenticado', 'true');
