@@ -136,9 +136,100 @@ return texto.includes('seminario')
     html=html.replace('Teóricas fixas: segunda à tarde + terça à noite','Teóricas: SCI, simulados, seminários e avaliação');
 
     const anchorOverrides='turno.local = item.local;\nturno.horario = item.horario;\n});\nif (typeof window.popularFiltroAtividades === \'function\') window.popularFiltroAtividades();';
-    const overridesComHorarios='turno.local = item.local;\nturno.horario = item.horario;\n});\naplicarHorariosEspeciaisAtividades();\nif (typeof window.popularFiltroAtividades === \'function\') window.popularFiltroAtividades();';
+    const overridesComHorarios='turno.local = item.local;\nturno.horario = item.horario;\n});\naplicarHorariosEspeciaisAtividades();\nif (sessionStorage.getItem(\'autenticado\') !== \'true\') return;\nif (typeof window.popularFiltroAtividades === \'function\') window.popularFiltroAtividades();';
     if(!html.includes(anchorOverrides)) throw new Error('Ponto de sincronização dos horários especiais não encontrado');
     html=html.replace(anchorOverrides,overridesComHorarios);
+
+    const anchorConcluirLogin=`document.body.classList.add('app-authenticated');
+document.getElementById('login-overlay').style.display = 'none';
+aplicarPreferenciasVisuaisUsuario(alunoSelect, false);`;
+    const concluirLoginOtimizado=`document.body.classList.add('app-authenticated');
+document.getElementById('login-overlay').style.display = 'none';
+if (typeof inicializarDashboardAutenticado === 'function') inicializarDashboardAutenticado();
+aplicarPreferenciasVisuaisUsuario(alunoSelect, false);`;
+    if(!html.includes(anchorConcluirLogin)) throw new Error('Ponto de inicialização pós-login não encontrado');
+    html=html.replace(anchorConcluirLogin,concluirLoginOtimizado);
+
+    const anchorOnload=`window.onload = () => {
+if (localStorage.getItem('tema') === 'claro') {
+document.documentElement.classList.remove('dark');
+} else {
+document.documentElement.classList.add('dark');
+}
+if (localStorage.getItem('corPainel') === 'rosa') {
+document.documentElement.classList.add('tema-rosa');
+} else {
+document.documentElement.classList.remove('tema-rosa');
+}
+atualizarSeletorCorPainel();
+detectarDiaESemanaAtual();
+window.renderizarSemanas();
+window.renderizarAbasDias();
+window.alternarModo('hoje');
+iniciarContadores();
+atualizarRelogioDashboard();
+setInterval(atualizarRelogioDashboard, 30000);
+inicializarExperienciaPremium();
+atualizarDisponibilidadeFaceID();
+if (sessionStorage.getItem('autenticado') === 'true') {
+document.body.classList.add('app-authenticated');
+document.getElementById('login-overlay').style.display = 'none';
+atualizarIdentificacaoAluno();
+const alunoLogado = sessionStorage.getItem('alunoLogado');
+if (alunoLogado) aplicarPreferenciasVisuaisUsuario(alunoLogado, false);
+if (alunoLogado === 'André Victor' || sessionStorage.getItem('adminAutenticado') === 'true') {
+isAdminAutenticado = true;
+sessionStorage.setItem('adminAutenticado', 'true');
+}
+if (alunoLogado) {
+direcionarParaTrioDoAluno(alunoLogado);
+sincronizarAssinaturaPushComUsuario();
+abrirDestinoPushPendente();
+}
+}
+};`;
+    const onloadOtimizado=`function inicializarDashboardAutenticado() {
+if (window.__dashboardInicializado) return;
+window.__dashboardInicializado = true;
+detectarDiaESemanaAtual();
+window.renderizarSemanas();
+window.renderizarAbasDias();
+window.alternarModo('hoje');
+iniciarContadores();
+atualizarRelogioDashboard();
+if (!window.__relogioDashboardIntervalo) window.__relogioDashboardIntervalo = setInterval(atualizarRelogioDashboard, 30000);
+if (typeof window.popularFiltroAtividades === 'function') window.popularFiltroAtividades();
+}
+
+window.onload = () => {
+if (localStorage.getItem('tema') === 'claro') document.documentElement.classList.remove('dark');
+else document.documentElement.classList.add('dark');
+if (localStorage.getItem('corPainel') === 'rosa') document.documentElement.classList.add('tema-rosa');
+else document.documentElement.classList.remove('tema-rosa');
+atualizarSeletorCorPainel();
+inicializarExperienciaPremium();
+atualizarDisponibilidadeFaceID();
+
+if (sessionStorage.getItem('autenticado') === 'true') {
+inicializarDashboardAutenticado();
+document.body.classList.add('app-authenticated');
+document.getElementById('login-overlay').style.display = 'none';
+atualizarIdentificacaoAluno();
+const alunoLogado = sessionStorage.getItem('alunoLogado');
+if (alunoLogado) aplicarPreferenciasVisuaisUsuario(alunoLogado, false);
+if (alunoLogado === 'André Victor' || sessionStorage.getItem('adminAutenticado') === 'true') {
+isAdminAutenticado = true;
+sessionStorage.setItem('adminAutenticado', 'true');
+}
+if (alunoLogado) {
+direcionarParaTrioDoAluno(alunoLogado);
+sincronizarAssinaturaPushComUsuario();
+abrirDestinoPushPendente();
+}
+}
+};`;
+    if(!html.includes(anchorOnload)) throw new Error('Ponto de inicialização principal não encontrado');
+    html=html.replace(anchorOnload,onloadOtimizado);
 
     const splashOculto='<div id="app-splash" class="splash-hidden fixed inset-0 z-[80] flex flex-col items-center justify-center text-white" aria-hidden="true">';
     const splashVisivel='<div id="app-splash" class="fixed inset-0 z-[80] flex flex-col items-center justify-center text-white" aria-hidden="false">';
@@ -158,53 +249,42 @@ const splash = document.getElementById('app-splash');
 const inicioSplash = performance.now();
 try { prepararListaSeletorAluno(); } catch (erro) { console.warn('Seletor ainda não pôde ser preparado.', erro); }
 
+let ultimaMudancaEstilo = performance.now();
+let ultimoPulso = performance.now();
+let pulsosEstaveis = 0;
+const observadorEstilos = new MutationObserver(() => { ultimaMudancaEstilo = performance.now(); });
+if (document.head) observadorEstilos.observe(document.head, { childList: true, subtree: true, characterData: true });
+
 const esconderSplash = () => {
   if (!splash || splash.dataset.finalizado === 'true') return;
   splash.dataset.finalizado = 'true';
+  observadorEstilos.disconnect();
   splash.style.pointerEvents = 'none';
   splash.classList.add('splash-hidden');
   splash.setAttribute('aria-hidden', 'true');
   requestAnimationFrame(() => { splash.style.display = 'none'; });
 };
 
-const aguardarLoginRealmentePronto = () => {
+const verificarProntidao = () => {
+  const agora = performance.now();
+  const atraso = agora - ultimoPulso - 100;
+  ultimoPulso = agora;
+  pulsosEstaveis = atraso < 45 ? pulsosEstaveis + 1 : 0;
   const lista = document.getElementById('aluno-picker-list');
   const gatilho = document.getElementById('aluno-select-trigger');
   const seletorPronto = lista?.dataset.pronta === 'true' && gatilho && typeof window.abrirSeletorAluno === 'function';
-  if (!seletorPronto && performance.now() - inicioSplash < 13000) {
-    setTimeout(aguardarLoginRealmentePronto, 80);
+  const estilosQuietos = agora - ultimaMudancaEstilo >= 550;
+  const tempoMinimo = agora - inicioSplash >= 1400;
+  const tempoMaximo = agora - inicioSplash >= 7000;
+  const paginaPronta = document.readyState === 'complete';
+
+  if ((paginaPronta && seletorPronto && estilosQuietos && tempoMinimo && pulsosEstaveis >= 5) || tempoMaximo) {
+    requestAnimationFrame(() => requestAnimationFrame(esconderSplash));
     return;
   }
-  let ultimoPulso = performance.now();
-  let estavelDesde = 0;
-  const tempoMinimo = 9000;
-  const janelaEstavel = 1500;
-  const limiteMaximo = 13000;
-  const pulso = () => {
-    const agora = performance.now();
-    const atraso = agora - ultimoPulso - 90;
-    ultimoPulso = agora;
-    if (atraso > 70) estavelDesde = 0;
-    else if (!estavelDesde) estavelDesde = agora;
-    const passouMinimo = agora - inicioSplash >= tempoMinimo;
-    const ficouEstavel = estavelDesde && agora - estavelDesde >= janelaEstavel;
-    const atingiuLimite = agora - inicioSplash >= limiteMaximo;
-    if ((passouMinimo && ficouEstavel) || atingiuLimite) {
-      requestAnimationFrame(() => requestAnimationFrame(esconderSplash));
-      return;
-    }
-    setTimeout(pulso, 90);
-  };
-  setTimeout(pulso, 90);
+  setTimeout(verificarProntidao, 100);
 };
-
-const iniciarVerificacaoFinal = () => Promise.race([
-  document.fonts?.ready || Promise.resolve(),
-  new Promise(resolve => setTimeout(resolve, 1500))
-]).then(aguardarLoginRealmentePronto, aguardarLoginRealmentePronto);
-
-if (document.readyState === 'complete') iniciarVerificacaoFinal();
-else window.addEventListener('load', iniciarVerificacaoFinal, { once: true });`;
+setTimeout(verificarProntidao, 100);`;
     if(!html.includes(initSplashAntigo)) throw new Error('Ponto de controle da tela de carregamento não encontrado');
     html=html.replace(initSplashAntigo,initSplashNovo);
 
