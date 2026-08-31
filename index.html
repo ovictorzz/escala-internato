@@ -231,39 +231,56 @@ document.getElementById('app-splash')?.classList.add('splash-hidden');`;
 const splash = document.getElementById('app-splash');
 const inicioSplash = performance.now();
 try { prepararListaSeletorAluno(); } catch (erro) { console.warn('Seletor ainda não pôde ser preparado.', erro); }
-const esconderSplashQuandoEstavel = () => {
-  const aguardarConteudo = () => {
-    const lista = document.getElementById('aluno-picker-list');
-    const gatilho = document.getElementById('aluno-select-trigger');
-    const seletorPronto = lista?.dataset.pronta === 'true' && gatilho && typeof window.abrirSeletorAluno === 'function';
-    if (!seletorPronto && performance.now() - inicioSplash < 5000) {
-      setTimeout(aguardarConteudo, 60);
+
+const esconderSplash = () => {
+  if (!splash || splash.dataset.finalizado === 'true') return;
+  splash.dataset.finalizado = 'true';
+  splash.style.pointerEvents = 'none';
+  splash.classList.add('splash-hidden');
+  splash.setAttribute('aria-hidden', 'true');
+  requestAnimationFrame(() => { splash.style.display = 'none'; });
+};
+
+const aguardarLoginRealmentePronto = () => {
+  const lista = document.getElementById('aluno-picker-list');
+  const gatilho = document.getElementById('aluno-select-trigger');
+  const seletorPronto = lista?.dataset.pronta === 'true' && gatilho && typeof window.abrirSeletorAluno === 'function';
+  if (!seletorPronto && performance.now() - inicioSplash < 8000) {
+    setTimeout(aguardarLoginRealmentePronto, 80);
+    return;
+  }
+
+  let ultimoPulso = performance.now();
+  let estavelDesde = 0;
+  const tempoMinimo = 3800;
+  const janelaEstavel = 1100;
+  const limiteMaximo = 8000;
+
+  const pulso = () => {
+    const agora = performance.now();
+    const atraso = agora - ultimoPulso - 90;
+    ultimoPulso = agora;
+
+    if (atraso > 70) estavelDesde = 0;
+    else if (!estavelDesde) estavelDesde = agora;
+
+    const passouMinimo = agora - inicioSplash >= tempoMinimo;
+    const ficouEstavel = estavelDesde && agora - estavelDesde >= janelaEstavel;
+    const atingiuLimite = agora - inicioSplash >= limiteMaximo;
+
+    if ((passouMinimo && ficouEstavel) || atingiuLimite) {
+      requestAnimationFrame(() => requestAnimationFrame(esconderSplash));
       return;
     }
-    setTimeout(() => {
-      let framesEstaveis = 0;
-      let ultimoFrame = performance.now();
-      const quadro = agora => {
-        const intervalo = agora - ultimoFrame;
-        ultimoFrame = agora;
-        framesEstaveis = intervalo < 90 ? framesEstaveis + 1 : 0;
-        const tempoMinimo = performance.now() - inicioSplash >= 1800;
-        if (tempoMinimo && framesEstaveis >= 4) {
-          splash?.classList.add('splash-hidden');
-          splash?.setAttribute('aria-hidden', 'true');
-          return;
-        }
-        requestAnimationFrame(quadro);
-      };
-      requestAnimationFrame(quadro);
-    }, 150);
+    setTimeout(pulso, 90);
   };
-  aguardarConteudo();
+  setTimeout(pulso, 90);
 };
+
 Promise.race([
   document.fonts?.ready || Promise.resolve(),
-  new Promise(resolve => setTimeout(resolve, 900))
-]).then(esconderSplashQuandoEstavel, esconderSplashQuandoEstavel);`;
+  new Promise(resolve => setTimeout(resolve, 1200))
+]).then(aguardarLoginRealmentePronto, aguardarLoginRealmentePronto);`;
     if(!html.includes(initSplashAntigo)) throw new Error('Ponto de controle da tela de carregamento não encontrado');
     html=html.replace(initSplashAntigo,initSplashNovo);
 
