@@ -82,8 +82,7 @@ const escala24a31Agosto = {
 "27/08":{noite:"CO (HRC)"},
 "28/08":{tarde:"HRSM"},
 "29/08":{tarde:"HRSM"},
-"30/08":{tarde:"HRSM"},
-"31/08":{tarde:"HRSM"}
+"30/08":{tarde:"HRSM"}
 },
 "5":{
 "25/08":{tarde:"Marta (HRC)"},
@@ -136,12 +135,6 @@ const escala24a31Agosto = {
 };
 Object.entries(escala24a31Agosto).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
 
-// Em 31/08 o HRSM do Trio 04 substitui o Simulado III no turno da tarde.
-// Como aplicarEscalaEspecifica altera apenas o local, restaura o horário assistencial padrão do turno.
-const trio4Dia3108=localizarInfoDiaPatch("4","31/08");
-const trio4Tarde3108=trio4Dia3108?.turnos?.find(turno=>turno.periodo==="Tarde");
-if(trio4Tarde3108 && String(trio4Tarde3108.local).includes("HRSM")) trio4Tarde3108.horario="13h-18h";
-
 // Atividades noturnas gerais adicionais, aplicadas após todas as escalas individuais.`;
 
     if(!html.includes(anchorEscala)) throw new Error('Ponto de inserção da escala não encontrado');
@@ -183,7 +176,6 @@ function aplicarHorariosEspeciaisAtividades() {
             else if(periodo.includes("TARDE")) turno.horario="14h-18h";
           }
           if(local.includes("AMB UNIEURO")) turno.horario="08h-12h";
-          if(String(idTrio)==="4" && infoDia.data==="31/08" && local.includes("HRSM") && periodo.includes("TARDE")) turno.horario="13h-18h";
         });
       });
     });
