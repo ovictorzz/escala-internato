@@ -944,6 +944,116 @@ text-align: right;
 }
 }
 
+/* Grade compacta: mantém as sete colunas e reduz cada mês para consulta rápida. */
+.calendar-months.calendar-compact-grid {
+gap: .8rem !important;
+}
+
+.calendar-months.calendar-compact-grid .calendar-month-card {
+padding: .65rem !important;
+}
+
+.calendar-months.calendar-compact-grid .calendar-month-card > :not([hidden]) ~ :not([hidden]) {
+margin-top: .45rem !important;
+}
+
+.calendar-months.calendar-compact-grid .calendar-month-grid {
+display: grid !important;
+grid-template-columns: repeat(7, minmax(0, 1fr));
+gap: .28rem !important;
+}
+
+.calendar-months.calendar-compact-grid .calendar-weekday,
+.calendar-months.calendar-compact-grid .calendar-empty {
+display: block !important;
+}
+
+.calendar-months.calendar-compact-grid .calendar-weekday {
+font-size: 8px !important;
+padding-block: .15rem !important;
+}
+
+.calendar-months.calendar-compact-grid .calendar-empty,
+.calendar-months.calendar-compact-grid .calendar-day-card {
+min-height: 74px !important;
+height: 74px !important;
+}
+
+.calendar-months.calendar-compact-grid .calendar-day-card {
+padding: .22rem !important;
+gap: .12rem !important;
+border-radius: .48rem !important;
+transform: none !important;
+}
+
+.calendar-months.calendar-compact-grid .calendar-day-card > div:first-child {
+min-height: 10px;
+}
+
+.calendar-months.calendar-compact-grid .calendar-day-card > div:last-child {
+display: flex;
+flex-direction: column;
+gap: .12rem !important;
+min-width: 0;
+}
+
+.calendar-months.calendar-compact-grid .calendar-day-number {
+font-size: 9px !important;
+line-height: 1;
+}
+
+.calendar-months.calendar-compact-grid .calendar-day-name-mobile {
+display: none !important;
+}
+
+.calendar-months.calendar-compact-grid .calendar-shift {
+display: flex !important;
+align-items: center;
+justify-content: space-between;
+gap: .12rem !important;
+min-width: 0;
+padding: .12rem .2rem !important;
+border-radius: .28rem !important;
+font-size: 7px !important;
+line-height: 1.05 !important;
+overflow: hidden;
+}
+
+.calendar-months.calendar-compact-grid .calendar-shift-period {
+font-size: 7px !important;
+line-height: 1 !important;
+padding: 0 !important;
+flex: 0 0 auto;
+}
+
+.calendar-months.calendar-compact-grid .calendar-shift-period-full { display: none !important; }
+.calendar-months.calendar-compact-grid .calendar-shift-period-short { display: inline !important; }
+
+.calendar-months.calendar-compact-grid .calendar-shift-text {
+min-width: 0;
+font-size: 7px !important;
+line-height: 1.05 !important;
+white-space: nowrap !important;
+overflow: hidden !important;
+text-overflow: ellipsis !important;
+overflow-wrap: normal !important;
+text-align: right;
+}
+
+@media (max-width: 767px) {
+.calendar-months.calendar-compact-grid .calendar-month-card { padding: .5rem !important; }
+.calendar-months.calendar-compact-grid .calendar-month-grid { gap: .2rem !important; }
+.calendar-months.calendar-compact-grid .calendar-empty,
+.calendar-months.calendar-compact-grid .calendar-day-card {
+min-height: 68px !important;
+height: 68px !important;
+}
+.calendar-months.calendar-compact-grid .calendar-day-card { padding: .16rem !important; }
+.calendar-months.calendar-compact-grid .calendar-shift { padding: .1rem .14rem !important; }
+.calendar-months.calendar-compact-grid .calendar-shift-period,
+.calendar-months.calendar-compact-grid .calendar-shift-text { font-size: 6px !important; }
+}
+
 @keyframes temporal-pulse {
 0%, 100% { opacity: 1; transform: scale(1); }
 50% { opacity: .48; transform: scale(.72); }
@@ -2081,8 +2191,38 @@ if (!resposta.ok) throw new Error(dados.error || 'O servidor de autenticação n
 return dados;
 }
 
+const FACE_ID_CREDENTIAL_KEY = 't7a_faceid_credencial_v2';
+
+function bytesParaBase64Url(valor) {
+const bytes = valor instanceof Uint8Array ? valor : new Uint8Array(valor);
+let binario = '';
+bytes.forEach(byte => { binario += String.fromCharCode(byte); });
+return btoa(binario).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+}
+
+function base64UrlParaBytes(valor) {
+const base64 = String(valor || '').replace(/-/g, '+').replace(/_/g, '/');
+const preenchimento = '='.repeat((4 - base64.length % 4) % 4);
+const binario = atob(base64 + preenchimento);
+return Uint8Array.from(binario, caractere => caractere.charCodeAt(0));
+}
+
+function novoDesafioFaceID() {
+return crypto.getRandomValues(new Uint8Array(32));
+}
+
+function lerCredencialFaceIDLocal() {
+try {
+const cadastro = JSON.parse(localStorage.getItem(FACE_ID_CREDENTIAL_KEY) || 'null');
+if (!cadastro?.credentialId || !cadastro?.aluno) return null;
+return cadastro;
+} catch (erro) {
+return null;
+}
+}
+
 function faceIDDisponivel() {
-return Boolean(window.PublicKeyCredential && window.SimpleWebAuthnBrowser?.browserSupportsWebAuthn?.());
+return Boolean(window.isSecureContext && window.PublicKeyCredential && navigator.credentials);
 }
 
 function atualizarDisponibilidadeFaceID() {
@@ -2098,7 +2238,7 @@ if (configurar) {
 configurar.classList.toggle('hidden', !disponivel || !autenticado);
 configurar.classList.toggle('flex', disponivel && autenticado);
 const rotulo = configurar.querySelector('span');
-if (rotulo) rotulo.textContent = localStorage.getItem('t7a_faceid_configurado_v1') === 'true'
+if (rotulo) rotulo.textContent = lerCredencialFaceIDLocal()
 ? 'Face ID configurado neste aparelho'
 : 'Ativar Face ID neste aparelho';
 }
@@ -2107,6 +2247,8 @@ if (rotulo) rotulo.textContent = localStorage.getItem('t7a_faceid_configurado_v1
 function textoErroFaceID(erro) {
 if (erro?.name === 'NotAllowedError') return 'Operação cancelada ou tempo esgotado. Tente novamente.';
 if (erro?.name === 'InvalidStateError') return 'O Face ID já está configurado neste aparelho.';
+if (erro?.name === 'SecurityError') return 'Abra o site pelo endereço oficial para usar o Face ID.';
+if (erro?.name === 'NotSupportedError') return 'Este aparelho não oferece suporte ao Face ID pelo navegador.';
 return erro?.message || 'Não foi possível usar o Face ID agora.';
 }
 
@@ -2118,6 +2260,12 @@ erroMsg.innerText = 'Este aparelho não oferece suporte ao login com passkey.';
 erroMsg.classList.remove('hidden');
 return;
 }
+const cadastro = lerCredencialFaceIDLocal();
+if (!cadastro) {
+erroMsg.innerText = 'Entre com a senha uma vez e ative o Face ID no menu Aparência e acesso.';
+erroMsg.classList.remove('hidden');
+return;
+}
 const conteudoOriginal = botao?.innerHTML;
 if (botao) {
 botao.disabled = true;
@@ -2125,14 +2273,23 @@ botao.textContent = 'AGUARDANDO O FACE ID…';
 }
 erroMsg?.classList.add('hidden');
 try {
-const inicio = await chamarFuncaoAuth('passkeyLoginOptions');
-const response = await window.SimpleWebAuthnBrowser.startAuthentication({ optionsJSON: inicio.options });
-const resultado = await chamarFuncaoAuth('passkeyLoginVerify', {
-challengeID: inicio.challengeID,
-response
+const credencial = await navigator.credentials.get({
+publicKey: {
+challenge: novoDesafioFaceID(),
+rpId: window.location.hostname,
+allowCredentials: [{
+id: base64UrlParaBytes(cadastro.credentialId),
+type: 'public-key',
+transports: ['internal']
+}],
+timeout: 60000,
+userVerification: 'required'
+}
 });
-if (!resultado.verified || !resultado.aluno) throw new Error('O Face ID não pôde ser confirmado.');
-await concluirLogin(resultado.aluno, 'Face ID');
+if (!credencial || bytesParaBase64Url(credencial.rawId) !== cadastro.credentialId) {
+throw new Error('O Face ID não pôde ser confirmado.');
+}
+await concluirLogin(cadastro.aluno, 'Face ID');
 } catch (erro) {
 console.error('Falha no login com Face ID:', erro);
 if (erroMsg) {
@@ -2186,14 +2343,38 @@ botao.textContent = 'AGUARDE…';
 }
 if (mensagem) mensagem.classList.add('hidden');
 try {
-const inicio = await chamarFuncaoAuth('passkeyRegisterOptions', { aluno, senha });
-const response = await window.SimpleWebAuthnBrowser.startRegistration({ optionsJSON: inicio.options });
-const resultado = await chamarFuncaoAuth('passkeyRegisterVerify', {
-challengeID: inicio.challengeID,
-response,
-userAgent: navigator.userAgent
+const senhaEsperada = await obterSenhaAtualUsuario(aluno);
+if (senha !== senhaEsperada) throw new Error('Senha incorreta. Confira e tente novamente.');
+const usuarioId = crypto.getRandomValues(new Uint8Array(32));
+const credencial = await navigator.credentials.create({
+publicKey: {
+challenge: novoDesafioFaceID(),
+rp: { name: 'GO T7A', id: window.location.hostname },
+user: {
+id: usuarioId,
+name: aluno,
+displayName: aluno
+},
+pubKeyCredParams: [
+{ type: 'public-key', alg: -7 },
+{ type: 'public-key', alg: -257 }
+],
+authenticatorSelection: {
+authenticatorAttachment: 'platform',
+residentKey: 'preferred',
+userVerification: 'required'
+},
+timeout: 60000,
+attestation: 'none'
+}
 });
-if (!resultado.verified) throw new Error('O cadastro não pôde ser confirmado.');
+if (!credencial) throw new Error('O cadastro não pôde ser confirmado.');
+localStorage.setItem(FACE_ID_CREDENTIAL_KEY, JSON.stringify({
+credentialId: bytesParaBase64Url(credencial.rawId),
+usuarioId: bytesParaBase64Url(usuarioId),
+aluno,
+criadoEm: new Date().toISOString()
+}));
 localStorage.setItem('t7a_faceid_configurado_v1', 'true');
 atualizarDisponibilidadeFaceID();
 if (mensagem) {
@@ -4677,7 +4858,7 @@ html += `</div></div></div>`;
 containerTurnos.innerHTML = html;
 }
 window.definirVisualizacaoCalendarioMobile = function(modo) {
-const visualizacao = modo === 'grade' ? 'grade' : 'lista';
+const visualizacao = ['grade', 'compacta', 'lista'].includes(modo) ? modo : 'lista';
 try {
 localStorage.setItem('calendarioView', visualizacao);
 localStorage.setItem('calendarioMobileView', visualizacao);
@@ -4691,7 +4872,7 @@ const containerTurnos = document.getElementById('lista-turnos');
 let visualizacaoMobile = 'lista';
 try {
 const preferenciaCalendario = localStorage.getItem('calendarioView') || localStorage.getItem('calendarioMobileView');
-visualizacaoMobile = preferenciaCalendario === 'grade' ? 'grade' : 'lista';
+visualizacaoMobile = ['grade', 'compacta', 'lista'].includes(preferenciaCalendario) ? preferenciaCalendario : 'lista';
 } catch (e) {}
 const meses = [
 { nome: "Agosto de 2026", ano: 2026, mes: 7, diasNoMes: 31 },
@@ -4699,7 +4880,12 @@ const meses = [
 { nome: "Outubro de 2026", ano: 2026, mes: 9, diasNoMes: 31 },
 { nome: "Novembro de 2026", ano: 2026, mes: 10, diasNoMes: 30 }
 ];
-const classeVisualizacaoMobile = visualizacaoMobile === 'grade' ? 'calendar-mobile-grid' : 'calendar-mobile-list';
+const classesVisualizacaoCalendario = {
+grade: 'calendar-mobile-grid',
+compacta: 'calendar-compact-grid',
+lista: 'calendar-mobile-list'
+};
+const classeVisualizacaoMobile = classesVisualizacaoCalendario[visualizacaoMobile];
 let html = `<div class="calendar-months ${classeVisualizacaoMobile} grid grid-cols-1 gap-5 pb-4 h-full overflow-y-auto pr-1">
 <div class="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-3 px-2 py-2 bg-zinc-100/90 dark:bg-[#080a11]/90 backdrop-blur-xl rounded-xl border border-black/5 dark:border-white/5">
 <div>
@@ -4708,6 +4894,7 @@ let html = `<div class="calendar-months ${classeVisualizacaoMobile} grid grid-co
 </div>
 <div class="calendar-view-switch" role="group" aria-label="Visualização do calendário">
 <button type="button" onclick="definirVisualizacaoCalendarioMobile('grade')" aria-pressed="${visualizacaoMobile === 'grade'}" class="calendar-view-btn ${visualizacaoMobile === 'grade' ? 'is-active' : ''}">▦ Grade</button>
+<button type="button" onclick="definirVisualizacaoCalendarioMobile('compacta')" aria-pressed="${visualizacaoMobile === 'compacta'}" class="calendar-view-btn ${visualizacaoMobile === 'compacta' ? 'is-active' : ''}" title="Grade compacta">▥ Compacta</button>
 <button type="button" onclick="definirVisualizacaoCalendarioMobile('lista')" aria-pressed="${visualizacaoMobile === 'lista'}" class="calendar-view-btn ${visualizacaoMobile === 'lista' ? 'is-active' : ''}">☰ Lista</button>
 </div>
 </div>`;
