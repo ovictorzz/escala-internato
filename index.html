@@ -21,8 +21,6 @@ html,body{margin:0;min-height:100%;background:#05070a;color:#e5e7eb;font-family:
     const novaEscala=`aplicarEscalaEspecifica("10", escalaTrio10);
 
 // Escala recebida em 22/08/2026 — período de 24/08 a 31/08.
-// Limpa atividades assistenciais antigas nesses turnos antes de reaplicar a escala atual,
-// preservando SCI (24/08 tarde), Seminário (25/08 noite) e Simulado III (31/08 tarde).
 const datasAssistenciais24a31 = ["24/08","25/08","26/08","27/08","28/08","29/08","30/08","31/08"];
 function localizarInfoDiaPatch(idTrio, dataBr) {
   for (let semana = 1; semana <= 9; semana++) {
@@ -49,87 +47,16 @@ for (let i=1;i<=10;i++) {
 }
 
 const escala24a31Agosto = {
-"1":{
-"25/08":{manha:"ALCON (HRC)",tarde:"PS BOX (HRC)"},
-"27/08":{manha:"ALCON (HRC)",tarde:"PS FICHA (HRC)"},
-"28/08":{manha:"Nádia (EUD) (HRC)",tarde:"Flávia (HRC)"},
-"30/08":{manha:"ALCON (HRC)"},
-"31/08":{manha:"Marta (HRC)"}
-},
-"2":{
-"24/08":{manha:"F. Mota (HRC)"},
-"25/08":{manha:"CO (HRC)"},
-"26/08":{manha:"Amb UNIEURO"},
-"27/08":{tarde:"CO (HRC)"},
-"28/08":{manha:"F. Mota (HRC)",tarde:"PS FICHA (HRC)"},
-"29/08":{noite:"CO (HRC)"},
-"31/08":{manha:"Nádia (EUD) (HRC)"}
-},
-"3":{
-"25/08":{tarde:"HRSM"},
-"26/08":{tarde:"HRSM"},
-"27/08":{tarde:"HRSM"},
-"28/08":{noite:"CO (HRC)"},
-"29/08":{manha:"PS BOX (HRC)"},
-"30/08":{manha:"PS BOX (HRC)"},
-"31/08":{manha:"PS FICHA (HRC)"}
-},
-"4":{
-"24/08":{manha:"Nádia (EUD) (HRC)"},
-"25/08":{tarde:"Sádia (HRC)"},
-"27/08":{noite:"CO (HRC)"},
-"28/08":{tarde:"HRSM"},
-"29/08":{tarde:"HRSM"},
-"30/08":{tarde:"HRSM"}
-},
-"5":{
-"25/08":{tarde:"Marta (HRC)"},
-"26/08":{manha:"PS FICHA (HRC)"},
-"27/08":{manha:"PS BOX (HRC)",tarde:"Hellen (ECO) (HRC)"},
-"28/08":{manha:"PS BOX (HRC)",tarde:"CO (HRC)"},
-"30/08":{tarde:"CO (HRC)"},
-"31/08":{manha:"Hellen (ECO) (HRC)"}
-},
-"6":{
-"24/08":{manha:"PS FICHA (HRC)"},
-"25/08":{manha:"BL (HRC)"},
-"26/08":{manha:"Caio (PNAR) (HRC)"},
-"27/08":{manha:"BL (HRC)",tarde:"Lucimara (HRC)"},
-"28/08":{manha:"CC (HRC)"},
-"30/08":{noite:"CO (HRC)"},
-"31/08":{manha:"Amb Mírian (HRAN)"}
-},
-"7":{
-"24/08":{manha:"Amb Mírian (HRAN)"},
-"26/08":{tarde:"CO (HRAN)"},
-"27/08":{tarde:"CO (HRAN)"},
-"28/08":{tarde:"CO (HRAN)"},
-"29/08":{noite:"CO (HRAN)"},
-"31/08":{manha:"F. Mota (HRC)"}
-},
-"8":{
-"24/08":{manha:"CC (HRC)"},
-"25/08":{manha:"Adnir (ECO) (HRC)"},
-"26/08":{noite:"PS FICHA (HRC)"},
-"27/08":{manha:"CC (HRC)",tarde:"Caio (PNAR) (HRC)"},
-"28/08":{manha:"CO (HRC)",tarde:"PS BOX (HRC)"}
-},
-"9":{
-"24/08":{manha:"Hellen (ECO) (HRC)"},
-"25/08":{manha:"ALCON (HRC)"},
-"26/08":{manha:"Amb UNIEURO"},
-"27/08":{manha:"ALCON (HRC)",tarde:"Sádia (HRC)"},
-"28/08":{manha:"Caio (PNAR) (HRC)"},
-"30/08":{manha:"ALCON (HRC)"}
-},
-"10":{
-"24/08":{manha:"Marta (HRC)"},
-"25/08":{manha:"CC (HRC)",tarde:"CO (HRC)"},
-"27/08":{noite:"PS FICHA (HRC)"},
-"28/08":{tarde:"Rocha (HRC)"},
-"30/08":{manha:"CO (HRC)"},
-"31/08":{manha:"CC (HRC)"}
-}
+"1":{"25/08":{manha:"ALCON (HRC)",tarde:"PS BOX (HRC)"},"27/08":{manha:"ALCON (HRC)",tarde:"PS FICHA (HRC)"},"28/08":{manha:"Nádia (EUD) (HRC)",tarde:"Flávia (HRC)"},"30/08":{manha:"ALCON (HRC)"},"31/08":{manha:"Marta (HRC)"}},
+"2":{"24/08":{manha:"F. Mota (HRC)"},"25/08":{manha:"CO (HRC)"},"26/08":{manha:"Amb UNIEURO"},"27/08":{tarde:"CO (HRC)"},"28/08":{manha:"F. Mota (HRC)",tarde:"PS FICHA (HRC)"},"29/08":{noite:"CO (HRC)"},"31/08":{manha:"Nádia (EUD) (HRC)"}},
+"3":{"25/08":{tarde:"HRSM"},"26/08":{tarde:"HRSM"},"27/08":{tarde:"HRSM"},"28/08":{noite:"CO (HRC)"},"29/08":{manha:"PS BOX (HRC)"},"30/08":{manha:"PS BOX (HRC)"},"31/08":{manha:"PS FICHA (HRC)"}},
+"4":{"24/08":{manha:"Nádia (EUD) (HRC)"},"25/08":{tarde:"Sádia (HRC)"},"27/08":{noite:"CO (HRC)"},"28/08":{tarde:"HRSM"},"29/08":{tarde:"HRSM"},"30/08":{tarde:"HRSM"}},
+"5":{"25/08":{tarde:"Marta (HRC)"},"26/08":{manha:"PS FICHA (HRC)"},"27/08":{manha:"PS BOX (HRC)",tarde:"Hellen (ECO) (HRC)"},"28/08":{manha:"PS BOX (HRC)",tarde:"CO (HRC)"},"30/08":{tarde:"CO (HRC)"},"31/08":{manha:"Hellen (ECO) (HRC)"}},
+"6":{"24/08":{manha:"PS FICHA (HRC)"},"25/08":{manha:"BL (HRC)"},"26/08":{manha:"Caio (PNAR) (HRC)"},"27/08":{manha:"BL (HRC)",tarde:"Lucimara (HRC)"},"28/08":{manha:"CC (HRC)"},"30/08":{noite:"CO (HRC)"},"31/08":{manha:"Amb Mírian (HRAN)"}},
+"7":{"24/08":{manha:"Amb Mírian (HRAN)"},"26/08":{tarde:"CO (HRAN)"},"27/08":{tarde:"CO (HRAN)"},"28/08":{tarde:"CO (HRAN)"},"29/08":{noite:"CO (HRAN)"},"31/08":{manha:"F. Mota (HRC)"}},
+"8":{"24/08":{manha:"CC (HRC)"},"25/08":{manha:"Adnir (ECO) (HRC)"},"26/08":{noite:"PS FICHA (HRC)"},"27/08":{manha:"CC (HRC)",tarde:"Caio (PNAR) (HRC)"},"28/08":{manha:"CO (HRC)",tarde:"PS BOX (HRC)"}},
+"9":{"24/08":{manha:"Hellen (ECO) (HRC)"},"25/08":{manha:"ALCON (HRC)"},"26/08":{manha:"Amb UNIEURO"},"27/08":{manha:"ALCON (HRC)",tarde:"Sádia (HRC)"},"28/08":{manha:"Caio (PNAR) (HRC)"},"30/08":{manha:"ALCON (HRC)"}},
+"10":{"24/08":{manha:"Marta (HRC)"},"25/08":{manha:"CC (HRC)",tarde:"CO (HRC)"},"27/08":{noite:"PS FICHA (HRC)"},"28/08":{tarde:"Rocha (HRC)"},"30/08":{manha:"CO (HRC)"},"31/08":{manha:"CC (HRC)"}}
 };
 Object.entries(escala24a31Agosto).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
 
@@ -206,7 +133,6 @@ return texto.includes('seminario')
     const chamadaTeoriaNova="if (atividadeTeoricaFixa(diaKey, turno.periodo, dia.data, turno.local)) resumoSemana.teorica += minutos;";
     if(!html.includes(chamadaTeoria)) throw new Error('Chamada da classificação teórica não encontrada');
     html=html.replace(chamadaTeoria,chamadaTeoriaNova);
-
     html=html.replace('Teóricas fixas: segunda à tarde + terça à noite','Teóricas: SCI, simulados, seminários e avaliação');
 
     const anchorOverrides='turno.local = item.local;\nturno.horario = item.horario;\n});\nif (typeof window.popularFiltroAtividades === \'function\') window.popularFiltroAtividades();';
@@ -245,29 +171,24 @@ const aguardarLoginRealmentePronto = () => {
   const lista = document.getElementById('aluno-picker-list');
   const gatilho = document.getElementById('aluno-select-trigger');
   const seletorPronto = lista?.dataset.pronta === 'true' && gatilho && typeof window.abrirSeletorAluno === 'function';
-  if (!seletorPronto && performance.now() - inicioSplash < 8000) {
+  if (!seletorPronto && performance.now() - inicioSplash < 13000) {
     setTimeout(aguardarLoginRealmentePronto, 80);
     return;
   }
-
   let ultimoPulso = performance.now();
   let estavelDesde = 0;
-  const tempoMinimo = 3800;
-  const janelaEstavel = 1100;
-  const limiteMaximo = 8000;
-
+  const tempoMinimo = 9000;
+  const janelaEstavel = 1500;
+  const limiteMaximo = 13000;
   const pulso = () => {
     const agora = performance.now();
     const atraso = agora - ultimoPulso - 90;
     ultimoPulso = agora;
-
     if (atraso > 70) estavelDesde = 0;
     else if (!estavelDesde) estavelDesde = agora;
-
     const passouMinimo = agora - inicioSplash >= tempoMinimo;
     const ficouEstavel = estavelDesde && agora - estavelDesde >= janelaEstavel;
     const atingiuLimite = agora - inicioSplash >= limiteMaximo;
-
     if ((passouMinimo && ficouEstavel) || atingiuLimite) {
       requestAnimationFrame(() => requestAnimationFrame(esconderSplash));
       return;
@@ -277,10 +198,13 @@ const aguardarLoginRealmentePronto = () => {
   setTimeout(pulso, 90);
 };
 
-Promise.race([
+const iniciarVerificacaoFinal = () => Promise.race([
   document.fonts?.ready || Promise.resolve(),
-  new Promise(resolve => setTimeout(resolve, 1200))
-]).then(aguardarLoginRealmentePronto, aguardarLoginRealmentePronto);`;
+  new Promise(resolve => setTimeout(resolve, 1500))
+]).then(aguardarLoginRealmentePronto, aguardarLoginRealmentePronto);
+
+if (document.readyState === 'complete') iniciarVerificacaoFinal();
+else window.addEventListener('load', iniciarVerificacaoFinal, { once: true });`;
     if(!html.includes(initSplashAntigo)) throw new Error('Ponto de controle da tela de carregamento não encontrado');
     html=html.replace(initSplashAntigo,initSplashNovo);
 
@@ -289,8 +213,7 @@ Promise.race([
     document.close();
   }catch(err){
     console.error(err);
-    const boot=document.getElementById('boot');
-    boot.innerHTML='<div class="boot-card err"><strong>Não foi possível carregar o Painel T7A.</strong><br>Atualize a página. Se o erro persistir, avise o administrador.</div>';
+    document.getElementById('boot').innerHTML='<div class="boot-card err"><strong>Não foi possível carregar o Painel T7A.</strong><br>Atualize a página. Se o erro persistir, avise o administrador.</div>';
   }
 })();
 </script>
