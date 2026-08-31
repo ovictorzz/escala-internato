@@ -1,4 +1,4 @@
-const CACHE_VERSION = 't7a-push-v7';
+const CACHE_VERSION = 't7a-push-v8';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', event => event.waitUntil(self.clients.claim()));
@@ -42,25 +42,28 @@ self.addEventListener('fetch', event => {
 
     let html = await response.text();
 
-    const css = `<style id="mobile-account-controls-v7">
+    const css = `<style id="mobile-account-controls-v8">
 @media(max-width:1023px){
 #mobile-menu-stable .mms-sheet{max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 100px)!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
-#mobile-menu-stable .mms-account-v7{display:block!important;visibility:visible!important;opacity:1!important;margin-top:8px;padding:11px 2px 2px;border-top:1px solid rgba(148,163,184,.13)}
-#mobile-menu-stable .mms-account-v7-title{padding:0 7px 9px;font:800 9px/1 'Outfit',sans-serif;letter-spacing:.15em;text-transform:uppercase;color:#71717a}
-#mobile-menu-stable .mms-account-v7-grid{display:grid!important;grid-template-columns:1fr 1fr;gap:7px}
-#mobile-menu-stable .mms-account-v7 button{display:flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;min-height:47px;border-radius:13px;border:1px solid rgba(148,163,184,.13);background:rgba(255,255,255,.04);color:#e4e4e7;font:750 12px/1.1 'Outfit',sans-serif;padding:8px}
-#mobile-menu-stable .mms-account-v7 .full{grid-column:1/-1}
-#mobile-menu-stable .mms-account-v7 .admin{color:#a5b4fc;background:rgba(79,70,229,.12);border-color:rgba(99,102,241,.24)}
-#mobile-menu-stable .mms-account-v7 .logout{color:#fb7185;background:rgba(244,63,94,.08);border-color:rgba(244,63,94,.18)}
+#mobile-menu-stable .mms-account-v8{display:block!important;visibility:visible!important;opacity:1!important;margin-top:8px;padding:11px 2px 2px;border-top:1px solid rgba(148,163,184,.13)}
+#mobile-menu-stable .mms-account-v8-title{padding:0 7px 9px;font:800 9px/1 'Outfit',sans-serif;letter-spacing:.15em;text-transform:uppercase;color:#71717a}
+#mobile-menu-stable .mms-account-v8-grid{display:grid!important;grid-template-columns:1fr 1fr;gap:7px}
+#mobile-menu-stable .mms-account-v8 button{display:flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;min-height:47px;border-radius:13px;border:1px solid rgba(148,163,184,.13);background:rgba(255,255,255,.04);color:#e4e4e7;font:750 12px/1.1 'Outfit',sans-serif;padding:8px}
+#mobile-menu-stable .mms-account-v8 .full{grid-column:1/-1}
+#mobile-menu-stable .mms-account-v8 .faceid{color:#7dd3fc;background:rgba(14,165,233,.10);border-color:rgba(56,189,248,.22)}
+#mobile-menu-stable .mms-account-v8 .admin{color:#a5b4fc;background:rgba(79,70,229,.12);border-color:rgba(99,102,241,.24)}
+#mobile-menu-stable .mms-account-v8 .logout{color:#fb7185;background:rgba(244,63,94,.08);border-color:rgba(244,63,94,.18)}
 #mobile-menu-stable .mms-swatch{width:20px;height:20px;border-radius:999px;display:inline-block;flex:0 0 20px;border:2px solid rgba(255,255,255,.72);box-shadow:0 0 0 1px rgba(255,255,255,.08),0 3px 10px rgba(0,0,0,.28)}
 #mobile-menu-stable .mms-swatch.blue{background:#3b82f6}
 #mobile-menu-stable .mms-swatch.pink{background:#ec4899}
-html:not(.dark) #mobile-menu-stable .mms-account-v7 button{color:#334155;background:rgba(15,23,42,.035)}
+#mobile-menu-stable .mms-faceid-icon{width:19px;height:19px;display:inline-block}
+html:not(.dark) #mobile-menu-stable .mms-account-v8 button{color:#334155;background:rgba(15,23,42,.035)}
+html:not(.dark) #mobile-menu-stable .mms-account-v8 .faceid{color:#0369a1;background:rgba(14,165,233,.08);border-color:rgba(2,132,199,.18)}
 html:not(.dark) #mobile-menu-stable .mms-swatch{border-color:rgba(255,255,255,.95);box-shadow:0 0 0 1px rgba(15,23,42,.12),0 3px 10px rgba(15,23,42,.12)}
 }
 </style>`;
 
-    const js = `<script id="mobile-account-controls-v7-script">
+    const js = `<script id="mobile-account-controls-v8-script">
 (()=>{
  const irParaLogin=()=>{
   try {
@@ -89,12 +92,12 @@ html:not(.dark) #mobile-menu-stable .mms-swatch{border-color:rgba(255,255,255,.9
   const list=root?.querySelector('.mms-list');
   if(!root||!list) return;
 
-  root.querySelectorAll('.mms-account-v4,.mms-account-v5,.mms-account-v6,.mms-account-v7').forEach(node=>{ if(!node.classList.contains('mms-account-v7')) node.remove(); });
-  let el=root.querySelector('.mms-account-v7');
+  root.querySelectorAll('.mms-account-v4,.mms-account-v5,.mms-account-v6,.mms-account-v7,.mms-account-v8').forEach(node=>{ if(!node.classList.contains('mms-account-v8')) node.remove(); });
+  let el=root.querySelector('.mms-account-v8');
   if(!el){
    el=document.createElement('div');
-   el.className='mms-account-v7';
-   el.innerHTML='<div class="mms-account-v7-title">Conta e aparência</div><div class="mms-account-v7-grid"><button data-x="blue"><span class="mms-swatch blue"></span><span>Azul</span></button><button data-x="pink"><span class="mms-swatch pink"></span><span>Rosa</span></button><button data-x="theme">☀︎ / ☾&nbsp; Tema</button><button data-x="logout" class="logout">Sair</button><button data-x="admin" class="admin full">Painel Admin</button></div>';
+   el.className='mms-account-v8';
+   el.innerHTML='<div class="mms-account-v8-title">Conta e aparência</div><div class="mms-account-v8-grid"><button data-x="blue"><span class="mms-swatch blue"></span><span>Azul</span></button><button data-x="pink"><span class="mms-swatch pink"></span><span>Rosa</span></button><button data-x="theme">☀︎ / ☾&nbsp; Tema</button><button data-x="logout" class="logout">Sair</button><button data-x="faceid" class="faceid full"><svg class="mms-faceid-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 3H6a3 3 0 00-3 3v2m13-5h2a3 3 0 013 3v2M8 21H6a3 3 0 01-3-3v-2m13 5h2a3 3 0 003-3v-2M9 10h.01M15 10h.01M9 15c1.7 1.35 4.3 1.35 6 0"/></svg><span>Cadastrar Face ID neste aparelho</span></button><button data-x="admin" class="admin full">Painel Admin</button></div>';
    list.appendChild(el);
    el.addEventListener('click',e=>{
     const b=e.target.closest('button[data-x]'); if(!b) return;
@@ -103,6 +106,12 @@ html:not(.dark) #mobile-menu-stable .mms-swatch{border-color:rgba(255,255,255,.9
     else if(x==='pink') window.alterarCorPainel?.('rosa');
     else if(x==='theme') window.alternarTema?.();
     else if(x==='logout') irParaLogin();
+    else if(x==='faceid'){
+     root.classList.remove('is-open');
+     document.documentElement.style.overflow='';
+     if(typeof window.abrirConfiguracaoFaceID==='function') window.abrirConfiguracaoFaceID();
+     else document.getElementById('faceid-setup-button')?.click();
+    }
     else if(x==='admin'){
      root.classList.remove('is-open');
      document.documentElement.style.overflow='';
