@@ -60,6 +60,18 @@ const escala24a31Agosto = {
 };
 Object.entries(escala24a31Agosto).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
 
+// Correções específicas: Dra. Nádia (HRC), distinta de Dra. Nádia (EUD) (HRC).
+function corrigirLocalTurnoPatch(idTrio, dataBr, periodo, local) {
+  const infoDia = localizarInfoDiaPatch(String(idTrio), dataBr);
+  if (!infoDia) return;
+  const turno = (infoDia.turnos || []).find(item => item.periodo === periodo);
+  if (turno) turno.local = local;
+}
+corrigirLocalTurnoPatch(7, "10/08", "Manhã", "Dra. Nádia (HRC)");
+corrigirLocalTurnoPatch(5, "17/08", "Manhã", "Dra. Nádia (HRC)");
+corrigirLocalTurnoPatch(4, "24/08", "Manhã", "Dra. Nádia (HRC)");
+corrigirLocalTurnoPatch(2, "31/08", "Manhã", "Dra. Nádia (HRC)");
+
 // Escala recebida em 31/08/2026 — período de 01/09 a 06/09.
 // Mantém compromissos acadêmicos fixos e os dias explicitamente marcados como mantém/continua.
 const datasAssistenciais01a06Setembro = ["01/09","02/09","03/09","04/09","05/09","06/09"];
