@@ -62,16 +62,16 @@ for (let i=1;i<=10;i++) {
 }
 
 const escala01a06Setembro = {
-"1":{"01/09":{manha:"BL (HRC)",tarde:"CO (HRC)"},"02/09":{manha:"Caio (PNAR) (HRC)"},"03/09":{manha:"BL (HRC)",tarde:"Lucimara (HRC)"},"04/09":{manha:"CC (HRC)"},"06/09":{noite:"CO (HRC)"}},
-"2":{"01/09":{manha:"PS FICHA (HRC)",tarde:"Marta (HRC)"},"03/09":{tarde:"CO (HRC)"},"04/09":{manha:"Metódio (HRC)"},"06/09":{tarde:"CO (HRC)"}},
+"1":{"01/09":{manha:"BL (HRC)",tarde:"CO (HRC)"},"02/09":{manha:"Dr. Caio (PNAR) (HRC)"},"03/09":{manha:"BL (HRC)",tarde:"Lucimara (HRC)"},"04/09":{manha:"CC (HRC)"},"06/09":{noite:"CO (HRC)"}},
+"2":{"01/09":{manha:"PS FICHA (HRC)",tarde:"Marta (HRC)"},"03/09":{tarde:"CO (HRC)"},"04/09":{manha:"Dr. Metódio (HRC)"},"06/09":{tarde:"CO (HRC)"}},
 "3":{"01/09":{tarde:"PS FICHA (HRC)"},"03/09":{manha:"PS BOX (HRC)",tarde:"Hellen (ECO) (HRC)"},"04/09":{manha:"PS BOX (HRC)",tarde:"CO (HRC)"},"06/09":{tarde:"CO (HRC)"}},
-"4":{"03/09":{manha:"Poli (Dra. Mirna) (HRC)",tarde:"CC (HRC)"},"04/09":{tarde:"Flávia (HRC)",noite:"CO (HRC)"}},
+"4":{"03/09":{manha:"Poli (Dra. Mirna) (HRC)",tarde:"CC (HRC)"},"04/09":{tarde:"Dra. Flávia (HRC)",noite:"CO (HRC)"}},
 "5":{"02/09":{manha:"Poli (Dra. Mirna) (HRC)"}},
 "6":{},
 "7":{"01/09":{manha:"CO (HRC)"},"02/09":{manha:"Amb UNIEURO"},"03/09":{noite:"CO (HRC)"},"04/09":{manha:"F. Mota (HRC)",tarde:"PS FICHA (HRC)"}},
 "8":{"01/09":{manha:"ALCON (HRC)",tarde:"PS BOX (HRC)"},"03/09":{manha:"ALCON (HRC)",tarde:"PS FICHA (HRC)"},"04/09":{manha:"Nádia (EUD) (HRC)"},"05/09":{manha:"PS BOX (HRC)"},"06/09":{manha:"ALCON (HRC)"}},
-"9":{"01/09":{manha:"CC (HRC)",tarde:"Sádia (HRC)"},"03/09":{tarde:"Caio (PNAR) (HRC)",noite:"PS FICHA (HRC)"},"04/09":{manha:"CO (HRC)",tarde:"Poli (Dra. Mirna) (HRC)"},"06/09":{manha:"PS BOX (HRC)"}},
-"10":{"01/09":{manha:"ALCON (HRC)"},"02/09":{manha:"Amb UNIEURO"},"03/09":{manha:"ALCON (HRC)",tarde:"Sádia (HRC)"},"04/09":{manha:"Caio (PNAR) (HRC)"},"06/09":{manha:"ALCON (HRC)"}}
+"9":{"01/09":{manha:"CC (HRC)",tarde:"Sádia (HRC)"},"03/09":{tarde:"Dr. Caio (PNAR) (HRC)",noite:"PS FICHA (HRC)"},"04/09":{manha:"CO (HRC)",tarde:"Poli (Dra. Mirna) (HRC)"},"06/09":{manha:"PS BOX (HRC)"}},
+"10":{"01/09":{manha:"ALCON (HRC)"},"02/09":{manha:"Amb UNIEURO"},"03/09":{manha:"ALCON (HRC)",tarde:"Sádia (HRC)"},"04/09":{manha:"Dr. Caio (PNAR) (HRC)"},"06/09":{manha:"ALCON (HRC)"}}
 };
 Object.entries(escala01a06Setembro).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
 
@@ -119,6 +119,15 @@ if old_dates in s:
 elif new_dates not in s:
     raise SystemExit('Dates confirmation anchor not found')
 
+# Padroniza títulos médicos nas escalas já injetadas. As aspas deixam a substituição idempotente.
+name_fixes = {
+    '"Caio (PNAR) (HRC)"': '"Dr. Caio (PNAR) (HRC)"',
+    '"Metódio (HRC)"': '"Dr. Metódio (HRC)"',
+    '"Flávia (HRC)"': '"Dra. Flávia (HRC)"',
+}
+for old_name, new_name in name_fixes.items():
+    s = s.replace(old_name, new_name)
+
 # Validação estrutural antes de salvar: impede reintroduzir a tela preta.
 if s.count('const directFaceIdMenuFix =') != 1:
     raise SystemExit('Loader validation failed: duplicate directFaceIdMenuFix')
@@ -126,5 +135,8 @@ if 'const directFaceIdMenuFixV2 =' not in s:
     raise SystemExit('Loader validation failed: V2 declaration missing')
 if marker not in s:
     raise SystemExit('September schedule marker missing')
+for required_name in ['Dr. Caio (PNAR) (HRC)', 'Dr. Metódio (HRC)', 'Dra. Flávia (HRC)']:
+    if required_name not in s:
+        raise SystemExit(f'Doctor title correction missing: {required_name}')
 
 p.write_text(s, encoding='utf-8')
