@@ -6,11 +6,11 @@
 <title>Painel T7A</title>
 <style>
 html,body{margin:0;min-height:100%;background:#05070a;color:#e5e7eb;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-#boot{display:grid;min-height:100vh;min-height:100dvh;place-items:center;padding:24px;text-align:center}.boot-card{max-width:520px}.err{color:#fca5a5;line-height:1.5}
+#boot{display:none;min-height:100vh;min-height:100dvh;place-items:center;padding:24px;text-align:center}.boot-card{max-width:520px}.err{color:#fca5a5;line-height:1.5}
 </style>
 </head>
 <body>
-<div id="boot"><div class="boot-card">Carregando Painel T7A…</div></div>
+<div id="boot" aria-hidden="true"></div>
 <script>
 (async()=>{
   const baseUrl='/base-index.html?v=20260822-carga3';
@@ -614,6 +614,13 @@ body { max-width: 100vw; overflow-x: hidden; }
     ];
     for (const [semTitulo, comTitulo] of rotulosMedicosPadronizados) {
       html = html.split(semTitulo).join(comTitulo);
+    }
+
+    const activityHelpersAnchor='window.renderizarFiltroAtividadeView = function() {';
+    if (html.includes(activityHelpersAnchor) && !html.includes('window.__obterAtividadesDisponiveis = obterAtividadesDisponiveis;')) {
+      html=html.replace(activityHelpersAnchor,`window.__obterAtividadesDisponiveis = obterAtividadesDisponiveis;
+window.__obterOcorrenciasAtividade = obterOcorrenciasAtividade;
+${activityHelpersAnchor}`);
     }
 
     document.open();
