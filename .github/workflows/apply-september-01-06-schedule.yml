@@ -16,6 +16,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
+      - name: Sync latest main
+        shell: bash
+        run: git pull --ff-only origin main
       - name: Patch index wrapper
         shell: python
         run: |
@@ -54,7 +58,6 @@ const compromissoAcademicoFixoSetembro = (turno) => {
 };
 const horarioBasePorPeriodoSetembro = {"Manhã":"07h-13h","Tarde":"13h-18h","Noite":"18h-22h"};
 
-// Limpa apenas atividades assistenciais nos dias efetivamente informados; teoria fixa permanece.
 for (let i=1;i<=10;i++) {
   const idTrio=String(i);
   datasAssistenciais01a06Setembro.forEach(data=>{
@@ -83,7 +86,6 @@ const escala01a06Setembro = {
 };
 Object.entries(escala01a06Setembro).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
 
-// Reaplica horário-base às atividades assistenciais recém-definidas; horários especiais são ajustados depois.
 for (let i=1;i<=10;i++) {
   const idTrio=String(i);
   datasAssistenciais01a06Setembro.forEach(data=>{
@@ -99,8 +101,6 @@ for (let i=1;i<=10;i++) {
   });
 }
 
-// Não há escala assistencial publicada após 06/09: deixa os turnos clínicos futuros livres,
-// preservando apenas compromissos acadêmicos já fixados no calendário.
 for (let i=1;i<=10;i++) {
   const idTrio=String(i);
   for (let semana=1;semana<=9;semana++) {
@@ -138,4 +138,11 @@ for (let i=1;i<=10;i++) {
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
           git commit -m "Apply September 01-06 schedule data"
-          git push origin main
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main || true
+            if git push origin main; then
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
