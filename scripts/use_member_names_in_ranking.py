@@ -29,32 +29,35 @@ if 'const memberNamesRanking=' not in tail:
 """
     tail = tail.replace(anchor, mapping + anchor, 1)
 
-old_podium = '<div class=\\"atr-trio\\">Trio ${String(item.id).padStart(2,\'0\')}</div>'
-new_podium = '<div class=\\"atr-trio\\">${esc(memberLabelRanking(item.id))}</div>'
-old_row = '<div class=\\"atr-rank-trio\\">Trio ${String(item.id).padStart(2,\'0\')}</div>'
-new_row = '<div class=\\"atr-rank-trio\\">${esc(memberLabelRanking(item.id))}</div>'
+# Ranking v2: troca o número do trio pelos nomes dos integrantes.
+tail = tail.replace(
+    '<div class=\\"atr2-trio\\">Trio ${String(item.id).padStart(2,\'0\')}</div>',
+    '<div class=\\"atr2-trio\\">${esc(memberLabelRanking(item.id))}</div>'
+)
+tail = tail.replace(
+    '<div class=\\"atr2-row-trio\\">Trio ${String(item.id).padStart(2,\'0\')}</div>',
+    '<div class=\\"atr2-row-trio\\">${esc(memberLabelRanking(item.id))}</div>'
+)
 
-tail = tail.replace(old_podium, new_podium)
-tail = tail.replace(old_row, new_row)
-
+# Ajusta o texto para os nomes caberem bem no pódio e na lista, inclusive no mobile.
 tail = tail.replace(
-    ".atr-trio{margin-top:3px;color:#fff;font-family:'Outfit',sans-serif;font-size:15px;font-weight:850;white-space:nowrap}",
-    ".atr-trio{margin-top:5px;color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:850;line-height:1.18;text-align:center;white-space:normal;overflow-wrap:anywhere;max-width:100%}",
+    ".atr2-trio{margin-top:3px;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;font-weight:850;white-space:nowrap}",
+    ".atr2-trio{margin-top:5px;color:#fff;font-family:'Outfit',sans-serif;font-size:12px;font-weight:850;line-height:1.17;text-align:center;white-space:normal;overflow-wrap:anywhere;max-width:100%}",
     1,
 )
 tail = tail.replace(
-    ".atr-rank-trio{color:#e4e4e7;font-family:'Outfit',sans-serif;font-size:13px;font-weight:800}",
-    ".atr-rank-trio{color:#e4e4e7;font-family:'Outfit',sans-serif;font-size:12px;font-weight:800;line-height:1.25;min-width:0}",
+    ".atr2-row-trio{color:#e4e4e7;font-family:'Outfit',sans-serif;font-size:12px;font-weight:800}",
+    ".atr2-row-trio{color:#e4e4e7;font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:800;line-height:1.24;min-width:0}",
     1,
 )
 tail = tail.replace(
-    ".atr-medal{font-size:24px}.atr-trio{font-size:12px}.atr-count{font-size:10px}.atr-place{font-size:7px}",
-    ".atr-medal{font-size:24px}.atr-trio{font-size:10.5px;line-height:1.15}.atr-count{font-size:10px}.atr-place{font-size:7px}",
+    ".atr2-medal{font-size:23px}.atr2-trio{font-size:11.5px}.atr2-count{font-size:9.5px}.atr2-place{font-size:6.5px}",
+    ".atr2-medal{font-size:23px}.atr2-trio{font-size:9.5px;line-height:1.14}.atr2-count{font-size:9.5px}.atr2-place{font-size:6.5px}",
     1,
 )
 tail = tail.replace(
-    ".atr-rank-row{grid-template-columns:36px minmax(0,1fr) auto;min-height:50px;padding:0 10px}.atr-rank-trio{font-size:12px}.atr-rank-count{font-size:9px}",
-    ".atr-rank-row{grid-template-columns:36px minmax(0,1fr) auto;min-height:54px;padding:7px 10px}.atr-rank-trio{font-size:10.5px}.atr-rank-count{font-size:9px}",
+    ".atr2-row{grid-template-columns:33px minmax(0,1fr) auto;min-height:46px;padding:0 10px}.atr2-row-trio{font-size:11px}.atr2-row-count{font-size:8.5px}",
+    ".atr2-row{grid-template-columns:33px minmax(0,1fr) auto;min-height:52px;padding:6px 10px}.atr2-row-trio{font-size:10px;line-height:1.2}.atr2-row-count{font-size:8.5px}",
     1,
 )
 
