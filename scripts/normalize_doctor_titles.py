@@ -16,7 +16,7 @@ caio_marker = '// Unifica Caio e Dr. Caio no filtro, consulta e ranking de ativi
 if caio_marker not in s:
     anchor = '    document.open();\n'
     if anchor not in s:
-        raise SystemExit('Document write anchor not found for Caio normalization')
+        raise SystemExit('Document write anchor not found for activity normalization')
 
     caio_block = r'''    // Unifica Caio e Dr. Caio no filtro, consulta e ranking de atividades.
     // Exibe sempre Dr. Caio (PNAR) (HRC) e soma as ocorrências dos dois rótulos.
@@ -24,6 +24,7 @@ if caio_marker not in s:
       const texto = String(valor || '').replace(/\\s+/g, ' ').trim();
       const chave = texto.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();
       if (/^(?:dr\\.?\\s*)?caio\\s*\\(pnar\\)\\s*\\(hrc\\)$/.test(chave)) return 'Dr. Caio (PNAR) (HRC)';
+      if (/^(?:dra\\.?\\s*)?flavia\\s*\\(hrc\\)$/.test(chave)) return 'Dra. Flávia (HRC)';
       return texto;
     }\n\n`;
     if (html.includes('function obterAtividadesDisponiveis() {') && !html.includes('function normalizarAtividadeCanonical(')) {
@@ -36,5 +37,11 @@ if caio_marker not in s:
 
 '''
     s = s.replace(anchor, caio_block + anchor, 1)
+
+# Atualiza instalações existentes da função canônica para também unificar Flávia/Dra. Flávia.
+old_rule = r"      if (/^(?:dr\\.?\\s*)?caio\\s*\\(pnar\\)\\s*\\(hrc\\)$/.test(chave)) return 'Dr. Caio (PNAR) (HRC)';\n      return texto;"
+new_rule = r"      if (/^(?:dr\\.?\\s*)?caio\\s*\\(pnar\\)\\s*\\(hrc\\)$/.test(chave)) return 'Dr. Caio (PNAR) (HRC)';\n      if (/^(?:dra\\.?\\s*)?flavia\\s*\\(hrc\\)$/.test(chave)) return 'Dra. Flávia (HRC)';\n      return texto;"
+if old_rule in s:
+    s = s.replace(old_rule, new_rule)
 
 p.write_text(s, encoding='utf-8')
