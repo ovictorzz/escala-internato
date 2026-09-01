@@ -13,10 +13,11 @@ jobs:
       - uses: actions/checkout@v4
       - run: python scripts/fix_black_screen.py
       - run: python scripts/normalize_doctor_titles.py
+      - run: python scripts/add_activity_ranking.py
       - run: |
           if git diff --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html
+          git add index.html webauthn-browser.min.js
           git commit -m "Repair black screen loader"
           git push
