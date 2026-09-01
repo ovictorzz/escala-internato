@@ -628,7 +628,7 @@ ${activityHelpersAnchor}`);
     const helperAtividadeCanonica = `function normalizarAtividadeCanonical(valor = '') {
       const texto = String(valor || '').replace(/\\s+/g, ' ').trim();
       const chave = texto.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();
-      if (/^(?:dr\\.?\\s*)?caio\\s*\\(pnar\\)\\s*\\(hrc\\)$/.test(chave)) return 'Dr. Caio (PNAR) (HRC)';
+      if (/^(?:dr\\.?\\s*)?caio\\s*\\(pnar\\)\\s*\\(hrc\\)$/.test(chave)) return 'Dr. Caio (PNAR) (HRC)';\n      if (/^(?:dra\\.?\\s*)?flavia\\s*\\(hrc\\)$/.test(chave)) return 'Dra. Flávia (HRC)';
       return texto;
     }\n\n`;
     if (html.includes('function obterAtividadesDisponiveis() {') && !html.includes('function normalizarAtividadeCanonical(')) {
