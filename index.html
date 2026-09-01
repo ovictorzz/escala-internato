@@ -595,6 +595,27 @@ body { max-width: 100vw; overflow-x: hidden; }
 <\/script>`;
     html=html.replace('</body>',directFaceIdMenuFixV2+'</body>');
 
+    // Padronização global de títulos médicos no conteúdo carregado.
+    // Isso evita duplicidades no filtro quando a mesma pessoa aparece com e sem Dr./Dra.
+    const rotulosMedicosPadronizados = [
+      ['"Adnir (ECO) (HRC)"', '"Dra. Adnir (ECO) (HRC)"'],
+      ['"Caio (PNAR) (HRC)"', '"Dr. Caio (PNAR) (HRC)"'],
+      ['"Metódio (HRC)"', '"Dr. Metódio (HRC)"'],
+      ['"Flávia (HRC)"', '"Dra. Flávia (HRC)"'],
+      ['"F. Mota (HRC)"', '"Dr. F. Mota (HRC)"'],
+      ['"Gilmária (HRC)"', '"Dra. Gilmária (HRC)"'],
+      ['"Hellen (ECO) (HRC)"', '"Dra. Hellen (ECO) (HRC)"'],
+      ['"Lorena (ECO) (HRC)"', '"Dra. Lorena (ECO) (HRC)"'],
+      ['"Lucimara (HRC)"', '"Dra. Lucimara (HRC)"'],
+      ['"Marta (HRC)"', '"Dra. Marta (HRC)"'],
+      ['"Nádia (EUD) (HRC)"', '"Dra. Nádia (EUD) (HRC)"'],
+      ['"Rocha (HRC)"', '"Dr. Rocha (HRC)"'],
+      ['"Sádia (HRC)"', '"Dra. Sádia (HRC)"']
+    ];
+    for (const [semTitulo, comTitulo] of rotulosMedicosPadronizados) {
+      html = html.split(semTitulo).join(comTitulo);
+    }
+
     document.open();
     document.write(html);
     document.close();
