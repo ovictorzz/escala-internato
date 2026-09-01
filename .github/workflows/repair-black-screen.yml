@@ -16,6 +16,7 @@ jobs:
       - run: python scripts/add_activity_ranking.py
       - run: python scripts/fix_loader_and_activity_helpers.py
       - run: python scripts/fix_activity_ranking_v2.py
+      - run: python scripts/use_member_names_in_ranking.py
       - run: |
           if git diff --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
