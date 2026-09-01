@@ -13,6 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: python scripts/fix_black_screen.py
       - run: python scripts/normalize_doctor_titles.py
+      - run: python scripts/unify_flavia_activity.py
       - run: python scripts/add_activity_ranking.py
       - run: python scripts/fix_loader_and_activity_helpers.py
       - run: python scripts/fix_activity_ranking_v2.py
