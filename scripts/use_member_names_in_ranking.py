@@ -31,12 +31,8 @@ if 'const memberNamesRanking=' not in tail:
 
 # Ranking v2: troca o número do trio pelos nomes dos integrantes.
 tail = tail.replace(
-    '<div class=\\"atr2-trio\\">Trio ${String(item.id).padStart(2,\'0\')}</div>',
-    '<div class=\\"atr2-trio\\">${esc(memberLabelRanking(item.id))}</div>'
-)
-tail = tail.replace(
-    '<div class=\\"atr2-row-trio\\">Trio ${String(item.id).padStart(2,\'0\')}</div>',
-    '<div class=\\"atr2-row-trio\\">${esc(memberLabelRanking(item.id))}</div>'
+    "Trio ${String(item.id).padStart(2,'0')}",
+    "${esc(memberLabelRanking(item.id))}"
 )
 
 # Ajusta o texto para os nomes caberem bem no pódio e na lista, inclusive no mobile.
