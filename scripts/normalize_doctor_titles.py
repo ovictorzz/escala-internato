@@ -44,4 +44,14 @@ new_rule = r"      if (/^(?:dr\\.?\\s*)?caio\\s*\\(pnar\\)\\s*\\(hrc\\)$/.test(c
 if old_rule in s:
     s = s.replace(old_rule, new_rule)
 
+# Dra. Nádia (HRC) é uma preceptora diferente de Dra. Nádia (EUD) (HRC).
+# Corrige somente as quatro ocorrências informadas, sem unificar os dois locais.
+nadia_marker = '// Correções específicas: Dra. Nádia (HRC), distinta de Dra. Nádia (EUD) (HRC).'
+if nadia_marker not in s:
+    anchor_nadia = 'Object.entries(escala24a31Agosto).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));\n\n'
+    if anchor_nadia not in s:
+        raise SystemExit('August schedule anchor not found for Nádia corrections')
+    nadia_block = '''// Correções específicas: Dra. Nádia (HRC), distinta de Dra. Nádia (EUD) (HRC).\nfunction corrigirLocalTurnoPatch(idTrio, dataBr, periodo, local) {\n  const infoDia = localizarInfoDiaPatch(String(idTrio), dataBr);\n  if (!infoDia) return;\n  const turno = (infoDia.turnos || []).find(item => item.periodo === periodo);\n  if (turno) turno.local = local;\n}\ncorrigirLocalTurnoPatch(7, "10/08", "Manhã", "Dra. Nádia (HRC)");\ncorrigirLocalTurnoPatch(5, "17/08", "Manhã", "Dra. Nádia (HRC)");\ncorrigirLocalTurnoPatch(4, "24/08", "Manhã", "Dra. Nádia (HRC)");\ncorrigirLocalTurnoPatch(2, "31/08", "Manhã", "Dra. Nádia (HRC)");\n\n'''
+    s = s.replace(anchor_nadia, anchor_nadia + nadia_block, 1)
+
 p.write_text(s, encoding='utf-8')
