@@ -13,91 +13,29 @@ html,body{margin:0;min-height:100%;background:#05070a;color:#e5e7eb;font-family:
 <div id="boot" aria-hidden="true"></div>
 <script>
 (async()=>{
-  const baseUrl='/base-index.html?v=20260822-carga3';
-  try{
-    let html=await (await fetch(baseUrl,{cache:'no-store'})).text();
+  try {
+    let src = await (await fetch('https://raw.githubusercontent.com/ovictorzz/escala-internato/2a680a55c1be1ec48e069207994d9eff21deef28/index.html', { cache: 'no-store' })).text();
 
-    const anchorEscala='aplicarEscalaEspecifica("10", escalaTrio10);\n\n// Atividades noturnas gerais adicionais, aplicadas após todas as escalas individuais.';
-    const novaEscala=`aplicarEscalaEspecifica("10", escalaTrio10);
+    const anchorEscalaSemana = `Object.entries(escala01a06Setembro).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
 
-// Escala recebida em 22/08/2026 — período de 24/08 a 31/08.
-const datasAssistenciais24a31 = ["24/08","25/08","26/08","27/08","28/08","29/08","30/08","31/08"];
-function localizarInfoDiaPatch(idTrio, dataBr) {
-  for (let semana = 1; semana <= 9; semana++) {
-    const dias = dadosEscala[idTrio]?.semanas?.[semana] || {};
-    for (const infoDia of Object.values(dias)) {
-      if (infoDia?.data === dataBr) return infoDia;
-    }
-  }
-  return null;
-}
+// Reaplica horários-base; PS FICHA, PS BOX e Amb UNIEURO recebem os horários especiais depois.`;
+
+    const escalaSemana07a13 = `Object.entries(escala01a06Setembro).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
+
+// Escala recebida em 07/09/2026 — período de 07/09 a 13/09.
+// Dias marcados como "mantém" preservam integralmente a escala que já estava publicada.
+const datasAssistenciais07a13Setembro = ["07/09","08/09","09/09","10/09","11/09","12/09","13/09"];
+const manterDias07a13Setembro = {
+  "4": new Set(["08/09","09/09","10/09","11/09","12/09"]),
+  "5": new Set(["08/09"]),
+  "6": new Set(["09/09","10/09","11/09","12/09","13/09"])
+};
+
+// Nos demais dias, turnos não informados ficam livres, preservando apenas atividades acadêmicas fixas.
 for (let i=1;i<=10;i++) {
   const idTrio=String(i);
-  datasAssistenciais24a31.forEach(data=>{
-    const infoDia=localizarInfoDiaPatch(idTrio,data);
-    if(!infoDia) return;
-    infoDia.turnos.forEach(turno=>{
-      const compromissoAcademico =
-        (data==="24/08" && turno.periodo==="Tarde") ||
-        (data==="25/08" && turno.periodo==="Noite") ||
-        (data==="31/08" && turno.periodo==="Tarde");
-      if(!compromissoAcademico) turno.local="—";
-    });
-  });
-}
-
-const escala24a31Agosto = {
-"1":{"25/08":{manha:"ALCON (HRC)",tarde:"PS BOX (HRC)"},"27/08":{manha:"ALCON (HRC)",tarde:"PS FICHA (HRC)"},"28/08":{manha:"Nádia (EUD) (HRC)",tarde:"Dra. Flávia (HRC)"},"30/08":{manha:"ALCON (HRC)"},"31/08":{manha:"Marta (HRC)"}},
-"2":{"24/08":{manha:"F. Mota (HRC)"},"25/08":{manha:"CO (HRC)"},"26/08":{manha:"Amb UNIEURO"},"27/08":{tarde:"CO (HRC)"},"28/08":{manha:"F. Mota (HRC)",tarde:"PS FICHA (HRC)"},"29/08":{noite:"CO (HRC)"},"31/08":{manha:"Nádia (EUD) (HRC)"}},
-"3":{"25/08":{tarde:"HRSM"},"26/08":{tarde:"HRSM"},"27/08":{tarde:"HRSM"},"28/08":{noite:"CO (HRC)"},"29/08":{manha:"PS BOX (HRC)"},"30/08":{manha:"PS BOX (HRC)"},"31/08":{manha:"PS FICHA (HRC)"}},
-"4":{"24/08":{manha:"Nádia (EUD) (HRC)"},"25/08":{tarde:"Sádia (HRC)"},"27/08":{noite:"CO (HRC)"},"28/08":{tarde:"HRSM"},"29/08":{tarde:"HRSM"},"30/08":{tarde:"HRSM"}},
-"5":{"25/08":{tarde:"Marta (HRC)"},"26/08":{manha:"PS FICHA (HRC)"},"27/08":{manha:"PS BOX (HRC)",tarde:"Hellen (ECO) (HRC)"},"28/08":{manha:"PS BOX (HRC)",tarde:"CO (HRC)"},"30/08":{tarde:"CO (HRC)"},"31/08":{manha:"Hellen (ECO) (HRC)"}},
-"6":{"24/08":{manha:"PS FICHA (HRC)"},"25/08":{manha:"BL (HRC)"},"26/08":{manha:"Dr. Caio (PNAR) (HRC)"},"27/08":{manha:"BL (HRC)",tarde:"Lucimara (HRC)"},"28/08":{manha:"CC (HRC)"},"30/08":{noite:"CO (HRC)"},"31/08":{manha:"Amb Mírian (HRAN)"}},
-"7":{"24/08":{manha:"Amb Mírian (HRAN)"},"26/08":{tarde:"CO (HRAN)"},"27/08":{tarde:"CO (HRAN)"},"28/08":{tarde:"CO (HRAN)"},"29/08":{noite:"CO (HRAN)"},"31/08":{manha:"F. Mota (HRC)"}},
-"8":{"24/08":{manha:"CC (HRC)"},"25/08":{manha:"Adnir (ECO) (HRC)"},"26/08":{noite:"PS FICHA (HRC)"},"27/08":{manha:"CC (HRC)",tarde:"Dr. Caio (PNAR) (HRC)"},"28/08":{manha:"CO (HRC)",tarde:"PS BOX (HRC)"}},
-"9":{"24/08":{manha:"Hellen (ECO) (HRC)"},"25/08":{manha:"ALCON (HRC)"},"26/08":{manha:"Amb UNIEURO"},"27/08":{manha:"ALCON (HRC)",tarde:"Sádia (HRC)"},"28/08":{manha:"Dr. Caio (PNAR) (HRC)"},"30/08":{manha:"ALCON (HRC)"}},
-"10":{"24/08":{manha:"Marta (HRC)"},"25/08":{manha:"CC (HRC)",tarde:"CO (HRC)"},"27/08":{noite:"PS FICHA (HRC)"},"28/08":{tarde:"Rocha (HRC)"},"30/08":{manha:"CO (HRC)"},"31/08":{manha:"CC (HRC)"}}
-};
-Object.entries(escala24a31Agosto).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
-
-// Correções específicas: Dra. Nádia (HRC), distinta de Dra. Nádia (EUD) (HRC).
-function corrigirLocalTurnoPatch(idTrio, dataBr, periodo, local) {
-  const infoDia = localizarInfoDiaPatch(String(idTrio), dataBr);
-  if (!infoDia) return;
-  const turno = (infoDia.turnos || []).find(item => item.periodo === periodo);
-  if (turno) turno.local = local;
-}
-corrigirLocalTurnoPatch(7, "10/08", "Manhã", "Dra. Nádia (HRC)");
-corrigirLocalTurnoPatch(5, "17/08", "Manhã", "Dra. Nádia (HRC)");
-corrigirLocalTurnoPatch(4, "24/08", "Manhã", "Dra. Nádia (HRC)");
-corrigirLocalTurnoPatch(2, "31/08", "Manhã", "Dra. Nádia (HRC)");
-
-// Escala recebida em 31/08/2026 — período de 01/09 a 06/09.
-// Mantém compromissos acadêmicos fixos e os dias explicitamente marcados como mantém/continua.
-const datasAssistenciais01a06Setembro = ["01/09","02/09","03/09","04/09","05/09","06/09"];
-const manterDiasSetembro = {
-  "4": new Set(["01/09","02/09"]),
-  "5": new Set(["03/09","04/09","05/09","06/09"]),
-  "6": new Set(["02/09","03/09","04/09","05/09"])
-};
-const normalizarPatchSetembro = (valor) => String(valor || "").normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
-const compromissoAcademicoFixoSetembro = (turno) => {
-  const texto = normalizarPatchSetembro(turno?.local);
-  return texto.includes("seminario")
-    || texto.includes("simulado")
-    || texto.includes("sessoes clinicas integradas")
-    || texto.includes("sci")
-    || texto.includes("aula teorica")
-    || texto.includes("avaliacao somativa")
-    || texto.includes("somativa");
-};
-const horarioBasePorPeriodoSetembro = {"Manhã":"07h-13h","Tarde":"13h-18h","Noite":"18h-22h"};
-
-// Nos dias informados, turnos não enviados ficam livres, exceto compromissos acadêmicos fixos.
-for (let i=1;i<=10;i++) {
-  const idTrio=String(i);
-  datasAssistenciais01a06Setembro.forEach(data=>{
-    if (manterDiasSetembro[idTrio]?.has(data)) return;
+  datasAssistenciais07a13Setembro.forEach(data=>{
+    if (manterDias07a13Setembro[idTrio]?.has(data)) return;
     const infoDia=localizarInfoDiaPatch(idTrio,data);
     if(!infoDia) return;
     (infoDia.turnos||[]).forEach(turno=>{
@@ -108,553 +46,42 @@ for (let i=1;i<=10;i++) {
   });
 }
 
-const escala01a06Setembro = {
-"1":{"01/09":{manha:"BL (HRC)",tarde:"CO (HRC)"},"02/09":{manha:"Dr. Caio (PNAR) (HRC)"},"03/09":{manha:"BL (HRC)",tarde:"Lucimara (HRC)"},"04/09":{manha:"CC (HRC)"},"06/09":{noite:"CO (HRC)"}},
-"2":{"01/09":{manha:"PS FICHA (HRC)",tarde:"Marta (HRC)"},"03/09":{tarde:"CO (HRC)"},"04/09":{manha:"Dr. Metódio (HRC)"},"06/09":{manha:"CO (HRC)"}},
-"3":{"01/09":{tarde:"PS FICHA (HRC)"},"03/09":{manha:"PS BOX (HRC)",tarde:"Hellen (ECO) (HRC)"},"04/09":{manha:"PS BOX (HRC)",tarde:"CO (HRC)"},"06/09":{tarde:"CO (HRC)"}},
-"4":{"03/09":{manha:"Poli (Dra. Mirna) (HRC)",tarde:"CC (HRC)"},"04/09":{tarde:"Dra. Flávia (HRC)",noite:"CO (HRC)"}},
-"5":{"02/09":{manha:"Poli (Dra. Mirna) (HRC)"}},
-"6":{},
-"7":{"01/09":{manha:"CO (HRC)"},"02/09":{manha:"Amb UNIEURO"},"03/09":{noite:"CO (HRC)"},"04/09":{manha:"F. Mota (HRC)",tarde:"PS FICHA (HRC)"}},
-"8":{"01/09":{manha:"ALCON (HRC)",tarde:"PS BOX (HRC)"},"03/09":{manha:"ALCON (HRC)",tarde:"PS FICHA (HRC)"},"04/09":{manha:"Nádia (EUD) (HRC)"},"05/09":{manha:"PS BOX (HRC)"},"06/09":{manha:"ALCON (HRC)"}},
-"9":{"01/09":{manha:"CC (HRC)",tarde:"Sádia (HRC)"},"03/09":{tarde:"Dr. Caio (PNAR) (HRC)",noite:"PS FICHA (HRC)"},"04/09":{manha:"CO (HRC)",tarde:"Poli (Dra. Mirna) (HRC)"},"06/09":{manha:"PS BOX (HRC)"}},
-"10":{"01/09":{manha:"ALCON (HRC)"},"02/09":{manha:"Amb UNIEURO"},"03/09":{manha:"ALCON (HRC)",tarde:"Sádia (HRC)"},"04/09":{manha:"Dr. Caio (PNAR) (HRC)"},"06/09":{manha:"ALCON (HRC)"}}
+const escala07a13Setembro = {
+"1":{"08/09":{manha:"CO (HRC)"},"09/09":{manha:"Dr. Caio (PNAR) (HRC)"},"10/09":{manha:"PS BOX (HRC)",tarde:"Dra. Sádia (HRC)"},"11/09":{manha:"PS BOX (HRC)",tarde:"PS FICHA (HRC)"}},
+"2":{"08/09":{manha:"BL (HRC)"},"09/09":{manha:"Poli (Dra. Mirna) (HRC)"},"10/09":{manha:"BL (HRC)",tarde:"Dr. Caio (PNAR) (HRC)"},"11/09":{manha:"CO (HRC)"},"13/09":{manha:"CO (HRC)"}},
+"3":{"08/09":{manha:"ALCON (HRC)"},"09/09":{manha:"Dra. Lorena (ECO) (HRC)"},"10/09":{manha:"ALCON (HRC)"},"11/09":{manha:"CC (HRC)"},"12/09":{noite:"CO (HRC)"},"13/09":{manha:"ALCON (HRC)"}},
+"4":{"13/09":{manha:"PS BOX (HRC)"}},
+"5":{"09/09":{manha:"Amb UNIEURO"},"10/09":{tarde:"Dra. Lucimara (HRC)",noite:"PS FICHA (HRC)"},"11/09":{manha:"Dr. Caio (PNAR) (HRC)",tarde:"CO (HRC)"}},
+"6":{"08/09":{tarde:"PS FICHA (HRC)"}},
+"7":{"08/09":{tarde:"Dra. Sádia (HRC)"},"10/09":{manha:"ALCON (HRC)",tarde:"CC (HRC)"},"11/09":{manha:"Dra. Gilmária (HRC)"},"12/09":{manha:"PS BOX (HRC)"},"13/09":{manha:"ALCON (HRC)",tarde:"CO (HRC)"}},
+"8":{"08/09":{manha:"PS FICHA (HRC)"},"09/09":{manha:"Amb UNIEURO"},"10/09":{manha:"Poli (Dra. Mirna) (HRC)",tarde:"Dra. Gilmária (HRC)"},"11/09":{manha:"Dr. F. Mota (HRC)"}},
+"9":{"08/09":{tarde:"CO (HRC)"},"09/09":{manha:"Amb UNIEURO"},"10/09":{tarde:"CO (HRC)"},"11/09":{tarde:"Poli (Dra. Mirna) (HRC)",noite:"CO (HRC)"}},
+"10":{"08/09":{manha:"ALCON (HRC)",tarde:"PS BOX (HRC)"},"10/09":{tarde:"PS FICHA (HRC)",noite:"CO (HRC)"},"11/09":{manha:"Dra. Nádia (EUD) (HRC)"},"13/09":{noite:"CO (HRC)"}}
 };
-Object.entries(escala01a06Setembro).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
+Object.entries(escala07a13Setembro).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
 
-// Reaplica horários-base; PS FICHA, PS BOX e Amb UNIEURO recebem os horários especiais depois.
-for (let i=1;i<=10;i++) {
-  const idTrio=String(i);
-  datasAssistenciais01a06Setembro.forEach(data=>{
-    if (manterDiasSetembro[idTrio]?.has(data)) return;
-    const infoDia=localizarInfoDiaPatch(idTrio,data);
-    if(!infoDia) return;
-    (infoDia.turnos||[]).forEach(turno=>{
-      if(compromissoAcademicoFixoSetembro(turno)) return;
-      if(turno.local && turno.local !== "—" && horarioBasePorPeriodoSetembro[turno.periodo]) {
-        turno.horario=horarioBasePorPeriodoSetembro[turno.periodo];
-      }
-    });
-  });
-}
+// Reaplica horários-base; PS FICHA, PS BOX e Amb UNIEURO recebem os horários especiais depois.`;
 
-// A escala assistencial publicada termina em 06/09. Depois disso, preserva apenas atividades acadêmicas fixas.
-for (let i=1;i<=10;i++) {
-  const idTrio=String(i);
-  for (let semana=1;semana<=9;semana++) {
-    const dias=dadosEscala[idTrio]?.semanas?.[semana]||{};
-    Object.values(dias).forEach(infoDia=>{
-      const [dd,mm]=String(infoDia?.data||"").split("/").map(Number);
-      const depoisDe06Set = (mm===9 && dd>6) || mm>9;
-      if(!depoisDe06Set) return;
-      (infoDia.turnos||[]).forEach(turno=>{
-        if(compromissoAcademicoFixoSetembro(turno)) return;
-        turno.local="—";
-        if(horarioBasePorPeriodoSetembro[turno.periodo]) turno.horario=horarioBasePorPeriodoSetembro[turno.periodo];
-      });
-    });
-  }
-}
+    if (!src.includes(anchorEscalaSemana)) throw new Error('Ponto da escala 07/09–13/09 não encontrado');
+    src = src.replace(anchorEscalaSemana, escalaSemana07a13);
 
-// Atividades noturnas gerais adicionais, aplicadas após todas as escalas individuais.`;
+    const limpezaAntiga = `const depoisDe06Set = (mm===9 && dd>6) || mm>9;
+      if(!depoisDe06Set) return;`;
+    const limpezaNova = `const depoisDe13Set = (mm===9 && dd>13) || mm>9;
+      if(!depoisDe13Set) return;`;
+    if (!src.includes(limpezaAntiga)) throw new Error('Ponto de limite da escala não encontrado');
+    src = src.replace(limpezaAntiga, limpezaNova);
+    src = src.replace('A escala assistencial publicada termina em 06/09.', 'A escala assistencial publicada termina em 13/09.');
 
-    if(!html.includes(anchorEscala)) throw new Error('Ponto de inserção da escala não encontrado');
-    html=html.replace(anchorEscala,novaEscala);
-
-    const anchorDatas='};\n\nObject.entries(datasComEscalaEnviadaPorTrio).forEach(([idTrio, datas]) => {';
-    const novasDatas=`};
-
-const datasEscalaRecebida24a31=["24/08","25/08","26/08","27/08","28/08","29/08","30/08","31/08","01/09","02/09","03/09","04/09","05/09","06/09"];
-for(let i=1;i<=10;i++){
-  const idTrio=String(i);
-  datasComEscalaEnviadaPorTrio[idTrio]=Array.from(new Set([
-    ...(datasComEscalaEnviadaPorTrio[idTrio]||[]),
-    ...datasEscalaRecebida24a31
-  ]));
-}
-
-Object.entries(datasComEscalaEnviadaPorTrio).forEach(([idTrio, datas]) => {`;
-    if(!html.includes(anchorDatas)) throw new Error('Ponto de confirmação das datas não encontrado');
-    html=html.replace(anchorDatas,novasDatas);
-
-    const anchorHorarios='// Mantém uma cópia imutável da escala original para permitir desfazer alterações administrativas.\nconst dadosEscalaBaseSnapshot = JSON.parse(JSON.stringify(dadosEscala));';
-    const horariosEspeciais=`// Horários específicos por atividade.
-function aplicarHorariosEspeciaisAtividades() {
-  const normalizar=(valor)=>String(valor||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toUpperCase();
-  for(let idTrio=1;idTrio<=10;idTrio++){
-    Object.values(dadosEscala[idTrio]?.semanas||{}).forEach(semana=>{
-      Object.values(semana||{}).forEach(infoDia=>{
-        (infoDia.turnos||[]).forEach(turno=>{
-          const local=normalizar(turno.local);
-          const periodo=normalizar(turno.periodo);
-          if(local.includes("PS FICHA")){
-            if(periodo.includes("MANHA")) turno.horario="08h-13h";
-            else if(periodo.includes("TARDE")) turno.horario="14h-18h";
-            else if(periodo.includes("NOITE")) turno.horario="18h-22h";
-          }
-          if(local.includes("PS BOX")){
-            if(periodo.includes("MANHA")) turno.horario="08h-13h";
-            else if(periodo.includes("TARDE")) turno.horario="14h-18h";
-          }
-          if(local.includes("AMB UNIEURO")) turno.horario="08h-12h";
-        });
-      });
-    });
-  }
-}
-aplicarHorariosEspeciaisAtividades();
-
-// Mantém uma cópia imutável da escala original para permitir desfazer alterações administrativas.
-const dadosEscalaBaseSnapshot = JSON.parse(JSON.stringify(dadosEscala));`;
-    if(!html.includes(anchorHorarios)) throw new Error('Ponto de configuração dos horários especiais não encontrado');
-    html=html.replace(anchorHorarios,horariosEspeciais);
-
-    const anchorTeoria=`function atividadeTeoricaFixa(diaKey, periodo, data = '') {
-return (diaKey === 'seg' && periodo === 'Tarde')
-|| (diaKey === 'ter' && periodo === 'Noite')
-|| (data === '23/09' && periodo === 'Noite');
-}`;
-    const teoriaCorrigida=`function atividadeTeoricaFixa(diaKey, periodo, data = '', local = '') {
-const texto = String(local || '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();
-return texto.includes('seminario')
-|| texto.includes('simulado')
-|| texto.includes('sessoes clinicas integradas')
-|| texto.includes('aula teorica')
-|| texto.includes('avaliacao somativa');
-}`;
-    if(!html.includes(anchorTeoria)) throw new Error('Ponto de classificação teórica não encontrado');
-    html=html.replace(anchorTeoria,teoriaCorrigida);
-
-    const chamadaTeoria="if (atividadeTeoricaFixa(diaKey, turno.periodo, dia.data)) resumoSemana.teorica += minutos;";
-    const chamadaTeoriaNova="if (atividadeTeoricaFixa(diaKey, turno.periodo, dia.data, turno.local)) resumoSemana.teorica += minutos;";
-    if(!html.includes(chamadaTeoria)) throw new Error('Chamada da classificação teórica não encontrada');
-    html=html.replace(chamadaTeoria,chamadaTeoriaNova);
-    html=html.replace('Teóricas fixas: segunda à tarde + terça à noite','Teóricas: SCI, simulados, seminários e avaliação');
-
-    const anchorOverrides='turno.local = item.local;\nturno.horario = item.horario;\n});\nif (typeof window.popularFiltroAtividades === \'function\') window.popularFiltroAtividades();';
-    const overridesComHorarios='turno.local = item.local;\nturno.horario = item.horario;\n});\naplicarHorariosEspeciaisAtividades();\nif (sessionStorage.getItem(\'autenticado\') !== \'true\') return;\nif (typeof window.popularFiltroAtividades === \'function\') window.popularFiltroAtividades();';
-    if(!html.includes(anchorOverrides)) throw new Error('Ponto de sincronização dos horários especiais não encontrado');
-    html=html.replace(anchorOverrides,overridesComHorarios);
-
-    const anchorConcluirLogin=`document.body.classList.add('app-authenticated');
-document.getElementById('login-overlay').style.display = 'none';
-aplicarPreferenciasVisuaisUsuario(alunoSelect, false);`;
-    const concluirLoginOtimizado=`document.body.classList.add('app-authenticated');
-document.getElementById('login-overlay').style.display = 'none';
-if (typeof inicializarDashboardAutenticado === 'function') inicializarDashboardAutenticado();
-aplicarPreferenciasVisuaisUsuario(alunoSelect, false);`;
-    if(!html.includes(anchorConcluirLogin)) throw new Error('Ponto de inicialização pós-login não encontrado');
-    html=html.replace(anchorConcluirLogin,concluirLoginOtimizado);
-
-    const anchorOnload=`window.onload = () => {
-if (localStorage.getItem('tema') === 'claro') {
-document.documentElement.classList.remove('dark');
-} else {
-document.documentElement.classList.add('dark');
-}
-if (localStorage.getItem('corPainel') === 'rosa') {
-document.documentElement.classList.add('tema-rosa');
-} else {
-document.documentElement.classList.remove('tema-rosa');
-}
-atualizarSeletorCorPainel();
-detectarDiaESemanaAtual();
-window.renderizarSemanas();
-window.renderizarAbasDias();
-window.alternarModo('hoje');
-iniciarContadores();
-atualizarRelogioDashboard();
-setInterval(atualizarRelogioDashboard, 30000);
-inicializarExperienciaPremium();
-atualizarDisponibilidadeFaceID();
-if (sessionStorage.getItem('autenticado') === 'true') {
-document.body.classList.add('app-authenticated');
-document.getElementById('login-overlay').style.display = 'none';
-atualizarIdentificacaoAluno();
-const alunoLogado = sessionStorage.getItem('alunoLogado');
-if (alunoLogado) aplicarPreferenciasVisuaisUsuario(alunoLogado, false);
-if (alunoLogado === 'André Victor' || sessionStorage.getItem('adminAutenticado') === 'true') {
-isAdminAutenticado = true;
-sessionStorage.setItem('adminAutenticado', 'true');
-}
-if (alunoLogado) {
-direcionarParaTrioDoAluno(alunoLogado);
-sincronizarAssinaturaPushComUsuario();
-abrirDestinoPushPendente();
-}
-}
-};`;
-    const onloadOtimizado=`function inicializarDashboardAutenticado() {
-if (window.__dashboardInicializado) return;
-window.__dashboardInicializado = true;
-detectarDiaESemanaAtual();
-window.renderizarSemanas();
-window.renderizarAbasDias();
-window.alternarModo('hoje');
-iniciarContadores();
-atualizarRelogioDashboard();
-if (!window.__relogioDashboardIntervalo) window.__relogioDashboardIntervalo = setInterval(atualizarRelogioDashboard, 30000);
-if (typeof window.popularFiltroAtividades === 'function') window.popularFiltroAtividades();
-}
-
-window.onload = () => {
-if (localStorage.getItem('tema') === 'claro') document.documentElement.classList.remove('dark');
-else document.documentElement.classList.add('dark');
-if (localStorage.getItem('corPainel') === 'rosa') document.documentElement.classList.add('tema-rosa');
-else document.documentElement.classList.remove('tema-rosa');
-atualizarSeletorCorPainel();
-inicializarExperienciaPremium();
-atualizarDisponibilidadeFaceID();
-
-if (sessionStorage.getItem('autenticado') === 'true') {
-inicializarDashboardAutenticado();
-document.body.classList.add('app-authenticated');
-document.getElementById('login-overlay').style.display = 'none';
-atualizarIdentificacaoAluno();
-const alunoLogado = sessionStorage.getItem('alunoLogado');
-if (alunoLogado) aplicarPreferenciasVisuaisUsuario(alunoLogado, false);
-if (alunoLogado === 'André Victor' || sessionStorage.getItem('adminAutenticado') === 'true') {
-isAdminAutenticado = true;
-sessionStorage.setItem('adminAutenticado', 'true');
-}
-if (alunoLogado) {
-direcionarParaTrioDoAluno(alunoLogado);
-sincronizarAssinaturaPushComUsuario();
-abrirDestinoPushPendente();
-}
-}
-};`;
-    if(!html.includes(anchorOnload)) throw new Error('Ponto de inicialização principal não encontrado');
-    html=html.replace(anchorOnload,onloadOtimizado);
-
-    const splashOculto='<div id="app-splash" class="splash-hidden fixed inset-0 z-[80] flex flex-col items-center justify-center text-white" aria-hidden="true">';
-    const splashVisivel='<div id="app-splash" class="fixed inset-0 z-[80] flex flex-col items-center justify-center text-white" aria-hidden="false">';
-    if(html.includes(splashOculto)) html=html.replace(splashOculto,splashVisivel);
-
-    const seletorIdle=`if ('requestIdleCallback' in window) {
-window.requestIdleCallback(prepararListaSeletorAluno, { timeout: 1200 });
-} else {
-setTimeout(prepararListaSeletorAluno, 200);
-}`;
-    if(html.includes(seletorIdle)) html=html.replace(seletorIdle,'prepararListaSeletorAluno();');
-
-    const initSplashAntigo=`function inicializarExperienciaPremium() {
-document.getElementById('app-splash')?.classList.add('splash-hidden');`;
-    const initSplashNovo=`function inicializarExperienciaPremium() {
-const splash = document.getElementById('app-splash');
-const inicioSplash = performance.now();
-try { prepararListaSeletorAluno(); } catch (erro) { console.warn('Seletor ainda não pôde ser preparado.', erro); }
-
-let ultimaMudancaEstilo = performance.now();
-let ultimoPulso = performance.now();
-let pulsosEstaveis = 0;
-const observadorEstilos = new MutationObserver(() => { ultimaMudancaEstilo = performance.now(); });
-if (document.head) observadorEstilos.observe(document.head, { childList: true, subtree: true, characterData: true });
-
-const esconderSplash = () => {
-  if (!splash || splash.dataset.finalizado === 'true') return;
-  splash.dataset.finalizado = 'true';
-  observadorEstilos.disconnect();
-  splash.style.pointerEvents = 'none';
-  splash.classList.add('splash-hidden');
-  splash.setAttribute('aria-hidden', 'true');
-  requestAnimationFrame(() => { splash.style.display = 'none'; });
-};
-
-const verificarProntidao = () => {
-  const agora = performance.now();
-  const atraso = agora - ultimoPulso - 100;
-  ultimoPulso = agora;
-  pulsosEstaveis = atraso < 45 ? pulsosEstaveis + 1 : 0;
-  const lista = document.getElementById('aluno-picker-list');
-  const gatilho = document.getElementById('aluno-select-trigger');
-  const seletorPronto = lista?.dataset.pronta === 'true' && gatilho && typeof window.abrirSeletorAluno === 'function';
-  const estilosQuietos = agora - ultimaMudancaEstilo >= 550;
-  const tempoMinimo = agora - inicioSplash >= 1400;
-  const tempoMaximo = agora - inicioSplash >= 7000;
-  const paginaPronta = document.readyState === 'complete';
-
-  if ((paginaPronta && seletorPronto && estilosQuietos && tempoMinimo && pulsosEstaveis >= 5) || tempoMaximo) {
-    requestAnimationFrame(() => requestAnimationFrame(esconderSplash));
-    return;
-  }
-  setTimeout(verificarProntidao, 100);
-};
-setTimeout(verificarProntidao, 100);`;
-    if(!html.includes(initSplashAntigo)) throw new Error('Ponto de controle da tela de carregamento não encontrado');
-    html=html.replace(initSplashAntigo,initSplashNovo);
-
-    // iPhone/PWA: não desenha conteúdo por baixo do relógio/status bar.
-    html=html.replace('<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">','<meta name="apple-mobile-web-app-status-bar-style" content="black">');
-
-    const mobileFixCss=`
-/* Mobile 2026-08-30 — safe areas, menu em camada e densidade de iPhone */
-html { overflow-x: hidden; }
-body { max-width: 100vw; overflow-x: hidden; }
-@media (max-width: 1023px) {
-  html, body { min-height: 100%; min-height: 100dvh; }
-  body {
-    display: block !important;
-    padding-bottom: calc(78px + env(safe-area-inset-bottom)) !important;
-    overscroll-behavior-y: none;
-  }
-  body > aside {
-    width: 100% !important;
-    position: relative !important;
-    inset: auto !important;
-    z-index: 50 !important;
-    padding: calc(env(safe-area-inset-top) + 14px) 16px 14px !important;
-    border-right: 0 !important;
-    border-bottom: 1px solid rgba(148,163,184,.12) !important;
-    box-shadow: 0 14px 34px -26px rgba(0,0,0,.9) !important;
-    overflow: visible !important;
-  }
-  body > aside::after { display:none !important; }
-  body > aside > div:first-child { gap: 12px !important; }
-  body > aside > div:first-child > div:first-child { min-height: 52px; }
-  body > aside > div:first-child > div:first-child > div:first-child { gap: 11px !important; }
-  body > aside > div:first-child > div:first-child > div:first-child > div:first-child {
-    width: 44px !important; height: 44px !important; border-radius: 14px !important;
-  }
-  #saudacao-aluno { font-size: 10px !important; letter-spacing: .12em !important; }
-  #aluno-logado-badge { font-size: 17px !important; line-height: 1.05 !important; }
-  #proxima-atividade-badge { max-width: min(230px, 58vw); font-size: 9px !important; }
-  body > aside button[onclick="toggleMobileMenu()"] {
-    width: 44px !important; height: 44px !important; padding: 0 !important;
-    display: inline-flex !important; align-items: center !important; justify-content: center !important;
-    border-radius: 14px !important; flex: 0 0 auto;
-  }
-  body > aside > div:first-child > .mt-3 {
-    margin-top: 0 !important;
-    padding: 11px 12px !important;
-    border-radius: 14px !important;
-  }
-  body > aside > div:first-child > .mt-3 > div:first-child span:last-child {
-    font-size: 9px !important; letter-spacing: .12em !important;
-  }
-  #proxima-atividade-conteudo { font-size: 11px !important; line-height: 1.45 !important; }
-
-  main {
-    width: 100% !important;
-    min-width: 0 !important;
-    height: auto !important;
-    overflow: visible !important;
-    padding: 14px 14px 22px !important;
-    gap: 14px !important;
-  }
-  .dashboard-topbar { align-items: center !important; padding-bottom: 12px !important; }
-  .dashboard-topbar h2 { font-size: 15px !important; line-height: 1.18 !important; max-width: 68vw; }
-  .dashboard-topbar > div:first-child p:last-child { display:none !important; }
-  .dashboard-topbar-actions { gap: 7px !important; }
-  .profile-initials { display:none !important; }
-  .premium-action { width: 38px !important; height: 38px !important; border-radius: 12px !important; }
-
-  #mobile-nav-menu:not(.hidden) {
-    position: fixed !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 7px !important;
-    top: calc(env(safe-area-inset-top) + 72px) !important;
-    left: 12px !important;
-    right: 12px !important;
-    bottom: calc(env(safe-area-inset-bottom) + 190px) !important;
-    z-index: 105 !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
-    padding: 12px !important;
-    border: 1px solid rgba(148,163,184,.16) !important;
-    border-radius: 22px 22px 14px 14px !important;
-    background: rgba(8,10,18,.985) !important;
-    box-shadow: 0 28px 80px -20px rgba(0,0,0,.96) !important;
-    backdrop-filter: blur(24px) saturate(135%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(135%) !important;
-  }
-  html:not(.dark) #mobile-nav-menu:not(.hidden) { background: rgba(255,255,255,.985) !important; }
-  #mobile-nav-menu:not(.hidden) button {
-    min-height: 52px !important;
-    padding: 0 14px !important;
-    border-radius: 15px !important;
-    font-size: 14px !important;
-    gap: 13px !important;
-    flex-shrink: 0 !important;
-  }
-  #mobile-nav-menu:not(.hidden) button svg { width: 21px !important; height: 21px !important; }
-
-  #mobile-footer-menu:not(.hidden) {
-    position: fixed !important;
-    display: block !important;
-    left: 12px !important;
-    right: 12px !important;
-    bottom: calc(env(safe-area-inset-bottom) + 82px) !important;
-    z-index: 105 !important;
-    padding: 10px 12px !important;
-    border: 1px solid rgba(148,163,184,.16) !important;
-    border-radius: 14px 14px 20px 20px !important;
-    background: rgba(8,10,18,.985) !important;
-    box-shadow: 0 20px 60px -22px rgba(0,0,0,.96) !important;
-    backdrop-filter: blur(24px) saturate(135%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(135%) !important;
-  }
-  html:not(.dark) #mobile-footer-menu:not(.hidden) { background: rgba(255,255,255,.985) !important; }
-  #mobile-footer-menu:not(.hidden) > div:first-child { min-height: 40px; }
-  #mobile-footer-menu:not(.hidden) #faceid-setup-button { min-height: 40px !important; margin-top: 8px !important; }
-  #mobile-footer-menu:not(.hidden) #btn-header-admin { min-height: 42px !important; margin-top: 8px !important; }
-
-  body:has(#mobile-nav-menu:not(.hidden))::after {
-    content:"";
-    position: fixed;
-    inset: 0;
-    z-index: 94;
-    background: rgba(2,3,8,.64);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-  }
-
-  #mobile-bottom-nav {
-    min-height: calc(68px + env(safe-area-inset-bottom)) !important;
-    padding: 7px 8px max(8px, env(safe-area-inset-bottom)) !important;
-    z-index: 120 !important;
-  }
-  .mobile-bottom-item { min-width: 0 !important; flex: 1 1 0 !important; gap: 3px !important; }
-  .mobile-bottom-item .mobile-bottom-icon { width: 36px !important; height: 32px !important; border-radius: 11px !important; }
-  .mobile-bottom-item span:last-child { font-size: 9px !important; line-height: 1.1 !important; }
-
-  .trio-spotlight { padding: 14px !important; border-radius: 18px !important; }
-  .stat-card { min-height: 96px !important; padding: 12px !important; border-radius: 16px !important; }
-  #wrapper-semanas-tabs, #wrapper-dias-tabs { margin-top: 0 !important; }
-  #semanas-tab-container, #container-abas-dias { scroll-padding-inline: 14px; }
-  #lista-turnos { padding-bottom: 8px; }
-  .turno-card { border-radius: 18px !important; }
-}
-@media (max-width: 380px) {
-  body > aside { padding-left: 12px !important; padding-right: 12px !important; }
-  main { padding-left: 12px !important; padding-right: 12px !important; }
-  #mobile-nav-menu:not(.hidden), #mobile-footer-menu:not(.hidden) { left: 8px !important; right: 8px !important; }
-  .dashboard-topbar h2 { font-size: 14px !important; max-width: 65vw; }
-  #proxima-atividade-badge { max-width: 52vw; }
-}
-`;
-    html=html.replace('</head>',`<style id="mobile-fix-20260830">${mobileFixCss}</style></head>`);
-
-    const directFaceIdMenuFix = `<script id="direct-account-menu-fix-v3">
-(()=>{
-  const closeMenu=(root)=>{root?.classList.remove('is-open');document.documentElement.style.overflow='';};
-  const logout=()=>{
-    try{sessionStorage.removeItem('autenticado');sessionStorage.removeItem('alunoLogado');sessionStorage.removeItem('adminAutenticado');}catch(_){}
-    document.body.classList.remove('app-authenticated');
-    const login=document.getElementById('login-overlay');
-    if(login){login.style.display='flex';login.classList.remove('hidden');login.style.visibility='visible';login.style.opacity='1';}
-    else location.replace('/');
-  };
-  const ensure=()=>{
-    if(innerWidth>=1024)return;
-    const root=document.getElementById('mobile-menu-stable');
-    const list=root?.querySelector('.mms-list');
-    if(!root||!list)return;
-    root.querySelectorAll('[class*="mms-account-v"],[data-account-section]').forEach(n=>n.remove());
-    const section=document.createElement('div');
-    section.dataset.accountSection='v3';
-    section.style.cssText='display:block!important;visibility:visible!important;opacity:1!important;margin-top:8px;padding:11px 2px 2px;border-top:1px solid rgba(148,163,184,.13)';
-    section.innerHTML='<div style="padding:0 7px 9px;font:800 9px/1 Outfit,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:#71717a">Conta e aparência</div><div data-account-grid="v3" style="display:grid;grid-template-columns:1fr 1fr;gap:7px"><button data-x="blue" style="min-height:47px;border-radius:13px;border:1px solid rgba(148,163,184,.13);background:rgba(255,255,255,.04);color:#e4e4e7;font:750 12px/1.1 Outfit,sans-serif;padding:8px;display:flex;align-items:center;justify-content:center;gap:9px"><span style="width:20px;height:20px;border-radius:50%;background:#3b82f6;border:2px solid rgba(255,255,255,.75)"></span>Azul</button><button data-x="pink" style="min-height:47px;border-radius:13px;border:1px solid rgba(148,163,184,.13);background:rgba(255,255,255,.04);color:#e4e4e7;font:750 12px/1.1 Outfit,sans-serif;padding:8px;display:flex;align-items:center;justify-content:center;gap:9px"><span style="width:20px;height:20px;border-radius:50%;background:#ec4899;border:2px solid rgba(255,255,255,.75)"></span>Rosa</button><button data-x="theme" style="min-height:47px;border-radius:13px;border:1px solid rgba(148,163,184,.13);background:rgba(255,255,255,.04);color:#e4e4e7;font:750 12px/1.1 Outfit,sans-serif;padding:8px">☀︎ / ☾ Tema</button><button data-x="logout" style="min-height:47px;border-radius:13px;border:1px solid rgba(244,63,94,.18);background:rgba(244,63,94,.08);color:#fb7185;font:750 12px/1.1 Outfit,sans-serif;padding:8px">Sair</button><button data-x="faceid" style="grid-column:1/-1;min-height:52px;border-radius:13px;border:1px solid rgba(56,189,248,.28);background:linear-gradient(135deg,rgba(14,165,233,.14),rgba(59,130,246,.09));color:#7dd3fc;font:750 12px/1.1 Outfit,sans-serif;padding:8px">Cadastrar Face ID neste aparelho</button><button data-x="admin" style="grid-column:1/-1;min-height:47px;border-radius:13px;border:1px solid rgba(99,102,241,.24);background:rgba(79,70,229,.12);color:#a5b4fc;font:750 12px/1.1 Outfit,sans-serif;padding:8px">Painel Admin</button></div>';
-    list.appendChild(section);
-    section.addEventListener('click',e=>{
-      const b=e.target.closest('button[data-x]');if(!b)return;const x=b.dataset.x;
-      if(x==='blue')window.alterarCorPainel?.('azul');
-      else if(x==='pink')window.alterarCorPainel?.('rosa');
-      else if(x==='theme')window.alternarTema?.();
-      else if(x==='logout'){closeMenu(root);logout();}
-      else if(x==='faceid'){closeMenu(root);if(typeof window.abrirConfiguracaoFaceID==='function')window.abrirConfiguracaoFaceID();else document.getElementById('faceid-setup-button')?.click();}
-      else if(x==='admin'){closeMenu(root);window.alternarModo?.('admin');}
-    });
-  };
-  const start=()=>{ensure();setInterval(()=>{if(!document.querySelector('#mobile-menu-stable [data-account-section="v3"]'))ensure();},300);new MutationObserver(()=>{if(!document.querySelector('#mobile-menu-stable [data-account-section="v3"]'))ensure();}).observe(document.documentElement,{childList:true,subtree:true});};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-})();
-<\/script>`;
-    html=html.replace('</body>',directFaceIdMenuFix+'</body>');
-
-    const directFaceIdMenuFixV2 = `<script id="direct-faceid-menu-fix-v2">
-(()=>{
-  const ensureFaceId=()=>{
-    if(innerWidth>=1024) return;
-    const root=document.getElementById('mobile-menu-stable');
-    if(!root) return;
-    const account=root.querySelector('[class*="mms-account-v"]');
-    const grid=account?.querySelector('[class*="-grid"]');
-    if(!grid || grid.querySelector('[data-direct-faceid="1"]')) return;
-    const btn=document.createElement('button');
-    btn.type='button';
-    btn.dataset.directFaceid='1';
-    btn.className='faceid full';
-    btn.style.cssText='grid-column:1/-1;min-height:52px;display:flex;align-items:center;justify-content:center;gap:9px;border-radius:13px;border:1px solid rgba(56,189,248,.28);background:linear-gradient(135deg,rgba(14,165,233,.14),rgba(59,130,246,.09));color:#7dd3fc;font:750 12px/1.1 Outfit,sans-serif;padding:8px';
-    btn.innerHTML='<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 3H6a3 3 0 00-3 3v2m13-5h2a3 3 0 013 3v2M8 21H6a3 3 0 01-3-3v-2m13 5h2a3 3 0 003-3v-2M9 10h.01M15 10h.01M9 15c1.7 1.35 4.3 1.35 6 0"/></svg><span>Cadastrar Face ID neste aparelho</span>';
-    const admin=grid.querySelector('[data-x="admin"], .admin');
-    if(admin) grid.insertBefore(btn,admin); else grid.appendChild(btn);
-    btn.addEventListener('click',()=>{
-      root.classList.remove('is-open');
-      document.documentElement.style.overflow='';
-      if(typeof window.abrirConfiguracaoFaceID==='function') window.abrirConfiguracaoFaceID();
-      else document.getElementById('faceid-setup-button')?.click();
-    });
-  };
-  const start=()=>{
-    ensureFaceId();
-    setInterval(ensureFaceId,300);
-    new MutationObserver(ensureFaceId).observe(document.documentElement,{childList:true,subtree:true});
-  };
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start,{once:true}); else start();
-})();
-<\/script>`;
-    html=html.replace('</body>',directFaceIdMenuFixV2+'</body>');
-
-    // Padronização global de títulos médicos no conteúdo carregado.
-    // Isso evita duplicidades no filtro quando a mesma pessoa aparece com e sem Dr./Dra.
-    const rotulosMedicosPadronizados = [
-      ['"Adnir (ECO) (HRC)"', '"Dra. Adnir (ECO) (HRC)"'],
-      ['"Dr. Caio (PNAR) (HRC)"', '"Dr. Caio (PNAR) (HRC)"'],
-      ['"Dr. Metódio (HRC)"', '"Dr. Metódio (HRC)"'],
-      ['"Dra. Flávia (HRC)"', '"Dra. Flávia (HRC)"'],
-      ['"F. Mota (HRC)"', '"Dr. F. Mota (HRC)"'],
-      ['"Gilmária (HRC)"', '"Dra. Gilmária (HRC)"'],
-      ['"Hellen (ECO) (HRC)"', '"Dra. Hellen (ECO) (HRC)"'],
-      ['"Lorena (ECO) (HRC)"', '"Dra. Lorena (ECO) (HRC)"'],
-      ['"Lucimara (HRC)"', '"Dra. Lucimara (HRC)"'],
-      ['"Marta (HRC)"', '"Dra. Marta (HRC)"'],
-      ['"Nádia (EUD) (HRC)"', '"Dra. Nádia (EUD) (HRC)"'],
-      ['"Rocha (HRC)"', '"Dr. Rocha (HRC)"'],
-      ['"Sádia (HRC)"', '"Dra. Sádia (HRC)"']
-    ];
-    for (const [semTitulo, comTitulo] of rotulosMedicosPadronizados) {
-      html = html.split(semTitulo).join(comTitulo);
-    }
-
-    const activityHelpersAnchor='window.renderizarFiltroAtividadeView = function() {';
-    if (html.includes(activityHelpersAnchor) && !html.includes('window.__obterAtividadesDisponiveis = obterAtividadesDisponiveis;')) {
-      html=html.replace(activityHelpersAnchor,`window.__obterAtividadesDisponiveis = obterAtividadesDisponiveis;
-window.__obterOcorrenciasAtividade = obterOcorrenciasAtividade;
-${activityHelpersAnchor}`);
-    }
-
-    // Unifica Caio e Dr. Caio no filtro, consulta e ranking de atividades.
-    // Exibe sempre Dr. Caio (PNAR) (HRC) e soma as ocorrências dos dois rótulos.
-    const helperAtividadeCanonica = `function normalizarAtividadeCanonical(valor = '') {
-      const texto = String(valor || '').replace(/\\s+/g, ' ').trim();
-      const chave = texto.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();
-      if (/^(?:dr\\.?\\s*)?caio\\s*\\(pnar\\)\\s*\\(hrc\\)$/.test(chave)) return 'Dr. Caio (PNAR) (HRC)';\n      if (/^(?:dra\\.?\\s*)?flavia\\s*\\(hrc\\)$/.test(chave)) return 'Dra. Flávia (HRC)';
-      return texto;
-    }\n\n`;
-    if (html.includes('function obterAtividadesDisponiveis() {') && !html.includes('function normalizarAtividadeCanonical(')) {
-      html = html.replace('function obterAtividadesDisponiveis() {', helperAtividadeCanonica + 'function obterAtividadesDisponiveis() {');
-    }
-    html = html.split('if (atividadeVisivelNoFiltro(turno.local)) atividades.add(turno.local);')
-      .join('if (atividadeVisivelNoFiltro(turno.local)) atividades.add(normalizarAtividadeCanonical(turno.local));');
-    html = html.split('if (turno.local !== atividade) return;')
-      .join('if (normalizarAtividadeCanonical(turno.local) !== normalizarAtividadeCanonical(atividade)) return;');
+    const datasAntigas = `const datasEscalaRecebida24a31=["24/08","25/08","26/08","27/08","28/08","29/08","30/08","31/08","01/09","02/09","03/09","04/09","05/09","06/09"];`;
+    const datasNovas = `const datasEscalaRecebida24a31=["24/08","25/08","26/08","27/08","28/08","29/08","30/08","31/08","01/09","02/09","03/09","04/09","05/09","06/09","07/09","08/09","09/09","10/09","11/09","12/09","13/09"];`;
+    if (!src.includes(datasAntigas)) throw new Error('Ponto de confirmação da nova semana não encontrado');
+    src = src.replace(datasAntigas, datasNovas);
 
     document.open();
-    document.write(html);
+    document.write(src);
     document.close();
-  }catch(err){
+  } catch (err) {
     console.error(err);
     const boot=document.getElementById('boot');
     boot.style.display='grid';
