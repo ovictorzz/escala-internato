@@ -19,26 +19,32 @@ html,body{margin:0;min-height:100%;background:#05070a;color:#e5e7eb;font-family:
     const anchor = `    src = src.replace(datasAntigas, datasNovas);`;
     const replacement = [
       `    src = src.replace(datasAntigas, datasNovas);`,
-      `    const patch01a04Outubro = \`// 01/10 a 04/10 — turnos ainda livres aguardam o envio da escala. Para os Trios 02 e 10, remove também resíduos assistenciais antigos.`,
-      `const datasAguardandoEscala01a04Outubro = new Set(["01/10","02/10","03/10","04/10"]);`,
-      `for (let i=1;i<=10;i++) {`,
-      `  const idTrio=String(i);`,
-      `  const forcarSemEscala = idTrio==="2" || idTrio==="10";`,
-      `  for (let semana=1;semana<=9;semana++) {`,
-      `    const dias=dadosEscala[idTrio]?.semanas?.[semana]||{};`,
-      `    Object.values(dias).forEach(infoDia=>{`,
-      `      if(!datasAguardandoEscala01a04Outubro.has(String(infoDia?.data||""))) return;`,
-      `      (infoDia.turnos||[]).forEach(turno=>{`,
-      `        if(forcarSemEscala) {`,
-      `          if(!compromissoAcademicoFixoSetembro(turno)) turno.local=ESCALA_NAO_ENVIADA;`,
-      `        } else if(turno.local==="—") {`,
-      `          turno.local=ESCALA_NAO_ENVIADA;`,
-      `        }`,
-      `      });`,
-      `    });`,
-      `  }`,
-      `}`,
-      `\`;`,
+      `    const patch01a04Outubro = \`// 01/10 a 04/10 — escala assistencial ainda não enviada.
+const datasAguardandoEscala01a04Outubro = new Set(["01/10","02/10","03/10","04/10"]);
+for (let i=1;i<=10;i++) {
+  const idTrio=String(i);
+  const forcarSemEscala = idTrio==="2" || idTrio==="10";
+  for (let semana=1;semana<=9;semana++) {
+    const dias=dadosEscala[idTrio]?.semanas?.[semana]||{};
+    Object.values(dias).forEach(infoDia=>{
+      if(!datasAguardandoEscala01a04Outubro.has(String(infoDia?.data||""))) return;
+      (infoDia.turnos||[]).forEach(turno=>{
+        if(forcarSemEscala) {
+          if(!compromissoAcademicoFixoSetembro(turno)) turno.local=ESCALA_NAO_ENVIADA;
+        } else if(turno.local==="—") {
+          turno.local=ESCALA_NAO_ENVIADA;
+        }
+      });
+    });
+  }
+}
+// A base antiga considerava 01/10–04/10 como escala já enviada para os Trios 02 e 10.
+// Remove essas datas antes da rotina que transforma pendências em "Livre".
+["2","10"].forEach(idTrio=>{
+  datasComEscalaEnviadaPorTrio[idTrio]=(datasComEscalaEnviadaPorTrio[idTrio]||[])
+    .filter(data=>!datasAguardandoEscala01a04Outubro.has(String(data)));
+});
+\`;`,
       `    src = src.replace(datasNovas, patch01a04Outubro + "\\n" + datasNovas);`
     ].join("\n");
 
