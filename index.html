@@ -14,109 +14,31 @@ html,body{margin:0;min-height:100%;background:#05070a;color:#e5e7eb;font-family:
 <script>
 (async()=>{
   try {
-    let src = await (await fetch('https://raw.githubusercontent.com/ovictorzz/escala-internato/2a680a55c1be1ec48e069207994d9eff21deef28/index.html', { cache: 'no-store' })).text();
+    let src = await (await fetch('https://raw.githubusercontent.com/ovictorzz/escala-internato/1f1a3cf6a2e520743fb50b625e8e1205c2a08dcf/index.html', { cache: 'no-store' })).text();
 
-    const anchorEscalaSemana = `Object.entries(escala01a06Setembro).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
+    const anchor = `    src = src.replace(datasAntigas, datasNovas);`;
+    const replacement = [
+      `    src = src.replace(datasAntigas, datasNovas);`,
+      `    const patch01a04Outubro = \`// 01/10 a 04/10 — turnos ainda livres aguardam o envio da escala.`,
+      `const datasAguardandoEscala01a04Outubro = new Set(["01/10","02/10","03/10","04/10"]);`,
+      `for (let i=1;i<=10;i++) {`,
+      `  const idTrio=String(i);`,
+      `  for (let semana=1;semana<=9;semana++) {`,
+      `    const dias=dadosEscala[idTrio]?.semanas?.[semana]||{};`,
+      `    Object.values(dias).forEach(infoDia=>{`,
+      `      if(!datasAguardandoEscala01a04Outubro.has(String(infoDia?.data||""))) return;`,
+      `      (infoDia.turnos||[]).forEach(turno=>{`,
+      `        if(turno.local==="—") turno.local=ESCALA_NAO_ENVIADA;`,
+      `      });`,
+      `    });`,
+      `  }`,
+      `}`,
+      `\`;`,
+      `    src = src.replace(datasNovas, patch01a04Outubro + "\\n" + datasNovas);`
+    ].join("\n");
 
-// Reaplica horários-base; PS FICHA, PS BOX e Amb UNIEURO recebem os horários especiais depois.`;
-
-    const escalaSemana07a30 = `Object.entries(escala01a06Setembro).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
-
-// Escala recebida em 07/09/2026 — período de 07/09 a 13/09.
-// Dias marcados como "mantém" preservam integralmente a escala que já estava publicada.
-const datasAssistenciais07a13Setembro = ["07/09","08/09","09/09","10/09","11/09","12/09","13/09"];
-const manterDias07a13Setembro = {
-  "4": new Set(["08/09","09/09","10/09","11/09","12/09"]),
-  "5": new Set(["08/09"]),
-  "6": new Set(["09/09","10/09","11/09","12/09","13/09"])
-};
-
-// Nos demais dias, turnos não informados ficam livres, preservando apenas atividades acadêmicas fixas.
-for (let i=1;i<=10;i++) {
-  const idTrio=String(i);
-  datasAssistenciais07a13Setembro.forEach(data=>{
-    if (manterDias07a13Setembro[idTrio]?.has(data)) return;
-    const infoDia=localizarInfoDiaPatch(idTrio,data);
-    if(!infoDia) return;
-    (infoDia.turnos||[]).forEach(turno=>{
-      if(compromissoAcademicoFixoSetembro(turno)) return;
-      turno.local="—";
-      if(horarioBasePorPeriodoSetembro[turno.periodo]) turno.horario=horarioBasePorPeriodoSetembro[turno.periodo];
-    });
-  });
-}
-
-const escala07a13Setembro = {
-"1":{"08/09":{manha:"CO (HRC)"},"09/09":{manha:"Dr. Caio (PNAR) (HRC)"},"10/09":{manha:"PS BOX (HRC)",tarde:"Dra. Sádia (HRC)"},"11/09":{manha:"PS BOX (HRC)",tarde:"PS FICHA (HRC)"}},
-"2":{"08/09":{manha:"BL (HRC)"},"09/09":{manha:"Poli (Dra. Mirna) (HRC)"},"10/09":{manha:"BL (HRC)",tarde:"Dr. Caio (PNAR) (HRC)"},"11/09":{manha:"CO (HRC)"},"13/09":{manha:"CO (HRC)"}},
-"3":{"08/09":{manha:"ALCON (HRC)"},"09/09":{manha:"Dra. Lorena (ECO) (HRC)"},"10/09":{manha:"ALCON (HRC)"},"11/09":{manha:"CC (HRC)"},"12/09":{noite:"CO (HRC)"},"13/09":{manha:"ALCON (HRC)"}},
-"4":{"13/09":{manha:"PS BOX (HRC)"}},
-"5":{"09/09":{manha:"Amb UNIEURO"},"10/09":{tarde:"Dra. Lucimara (HRC)",noite:"PS FICHA (HRC)"},"11/09":{manha:"Dr. Caio (PNAR) (HRC)",tarde:"CO (HRC)"}},
-"6":{"08/09":{tarde:"PS FICHA (HRC)"}},
-"7":{"08/09":{tarde:"Dra. Sádia (HRC)"},"10/09":{manha:"ALCON (HRC)",tarde:"CC (HRC)"},"11/09":{manha:"Dra. Gilmária (HRC)"},"12/09":{manha:"PS BOX (HRC)"},"13/09":{manha:"ALCON (HRC)",tarde:"CO (HRC)"}},
-"8":{"08/09":{manha:"PS FICHA (HRC)"},"09/09":{manha:"Amb UNIEURO"},"10/09":{manha:"Poli (Dra. Mirna) (HRC)",tarde:"Dra. Gilmária (HRC)"},"11/09":{manha:"Dr. F. Mota (HRC)"}},
-"9":{"08/09":{tarde:"CO (HRC)"},"09/09":{manha:"Amb UNIEURO"},"10/09":{tarde:"CO (HRC)"},"11/09":{tarde:"Poli (Dra. Mirna) (HRC)",noite:"CO (HRC)"}},
-"10":{"08/09":{manha:"ALCON (HRC)",tarde:"PS BOX (HRC)"},"10/09":{tarde:"PS FICHA (HRC)",noite:"CO (HRC)"},"11/09":{manha:"Dra. Nádia (EUD) (HRC)"},"13/09":{noite:"CO (HRC)"}}
-};
-Object.entries(escala07a13Setembro).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
-
-// Escala recebida em 07/09/2026 — período de 14/09 a 30/09.
-// "mantém" conserva o conteúdo anterior do dia; nos demais dias, apenas atividades acadêmicas fixas sobrevivem antes da aplicação da nova escala.
-const datasAssistenciais14a30Setembro = ["14/09","15/09","16/09","17/09","18/09","19/09","20/09","21/09","22/09","23/09","24/09","25/09","26/09","27/09","28/09","29/09","30/09"];
-const manterDias14a30Setembro = {
-  "2": new Set(["28/09","29/09","30/09"]),
-  "3": new Set(["21/09","22/09","23/09","24/09","25/09","26/09"]),
-  "5": new Set(["14/09","16/09","17/09","18/09","19/09"]),
-  "7": new Set(["15/09","16/09","17/09","18/09","19/09"]),
-  "8": new Set(["20/09","21/09","22/09","23/09","24/09","25/09"]),
-  "9": new Set(["26/09","27/09","28/09","29/09","30/09"])
-};
-
-for (let i=1;i<=10;i++) {
-  const idTrio=String(i);
-  datasAssistenciais14a30Setembro.forEach(data=>{
-    if (manterDias14a30Setembro[idTrio]?.has(data)) return;
-    const infoDia=localizarInfoDiaPatch(idTrio,data);
-    if(!infoDia) return;
-    (infoDia.turnos||[]).forEach(turno=>{
-      if(compromissoAcademicoFixoSetembro(turno)) return;
-      turno.local="—";
-      if(horarioBasePorPeriodoSetembro[turno.periodo]) turno.horario=horarioBasePorPeriodoSetembro[turno.periodo];
-    });
-  });
-}
-
-const escala14a30Setembro = {
-"1":{"14/09":{manha:"Dra. Sádia (HRC)"},"15/09":{manha:"CC (HRC)"},"17/09":{manha:"Poli (Dra. Mirna) (HRC)",tarde:"CC (HRC)"},"18/09":{manha:"Dra. Gilmária (HRC)"},"20/09":{manha:"ALCON (HRC)",tarde:"CO (HRC)"},"21/09":{manha:"Dra. Nádia (HRC)"},"22/09":{tarde:"PS BOX (HRC)"},"23/09":{manha:"Dra. Lorena (ECO) (HRC)"},"24/09":{manha:"ALCON (HRC)",tarde:"Dra. Gilmária (HRC)"},"25/09":{noite:"CO (HRC)"},"27/09":{manha:"CO (HRC)"},"28/09":{manha:"Dra. Hellen (ECO) (HRC)"},"29/09":{manha:"ALCON (HRC)"}},
-"2":{"14/09":{manha:"Dra. Hellen (ECO) (HRC)"},"15/09":{manha:"ALCON (HRC)",tarde:"PS BOX (HRC)"},"16/09":{manha:"Dra. Lorena (ECO) (HRC)"},"17/09":{manha:"ALCON (HRC)",tarde:"Dra. Sádia (HRC)"},"18/09":{manha:"CO (HRC)"},"21/09":{manha:"Dr. Metódio (HRC)"},"22/09":{tarde:"Dra. Gilmária (HRC)"},"24/09":{manha:"Poli (Dra. Mirna) (HRC)",tarde:"Dra. Hellen (ECO) (HRC)"},"25/09":{manha:"Dra. Gilmária (HRC)"},"27/09":{manha:"PS BOX (HRC)"}},
-"3":{"14/09":{manha:"Dra. Nádia (HRC)"},"15/09":{manha:"BL (HRC)",tarde:"Dra. Gilmária (HRC)"},"17/09":{manha:"BL (HRC)",tarde:"Dr. Caio (PNAR) (HRC)"},"18/09":{manha:"Poli (Dra. Mirna) (HRC)",tarde:"PS FICHA (HRC)"},"28/09":{manha:"Dr. F. Mota (HRC)"},"29/09":{tarde:"PS FICHA (HRC)"},"30/09":{manha:"Amb UNIEURO"}},
-"4":{"14/09":{manha:"Dra. Gilmária (HRC)"},"16/09":{manha:"Amb UNIEURO"},"17/09":{tarde:"PS FICHA (HRC)"},"18/09":{manha:"Dra. Nádia (EUD) (HRC)",tarde:"CO (HRC)"},"19/09":{manha:"PS BOX (HRC)"},"20/09":{manha:"PS BOX (HRC)"},"21/09":{manha:"Poli (Dra. Mirna) (HRC)"},"22/09":{manha:"CC (HRC)"},"23/09":{manha:"Amb UNIEURO"},"24/09":{tarde:"PS FICHA (HRC)"},"25/09":{manha:"Dr. Metódio (HRC)",tarde:"Poli (Dra. Mirna) (HRC)"},"27/09":{noite:"CO (HRC)"},"29/09":{manha:"ALCON (HRC)"}},
-"5":{"21/09":{manha:"Dra. Hellen (ECO) (HRC)"},"22/09":{manha:"ALCON (HRC)",tarde:"Dra. Sádia (HRC)"},"23/09":{manha:"Poli (Dra. Mirna) (HRC)"},"24/09":{manha:"PS BOX (HRC)",tarde:"CO (HRC)"},"25/09":{manha:"PS BOX (HRC)"},"28/09":{manha:"Dra. Gilmária (HRC)"},"29/09":{manha:"CO (HRC)"},"30/09":{manha:"Amb UNIEURO"}},
-"6":{"15/09":{manha:"CO (HRC)"},"16/09":{manha:"Poli (Dra. Mirna) (HRC)"},"17/09":{tarde:"Dra. Hellen (ECO) (HRC)",noite:"CO (HRC)"},"18/09":{manha:"Dr. Caio (PNAR) (HRC)"},"20/09":{manha:"CO (HRC)"},"21/09":{manha:"Dra. Gilmária (HRC)"},"22/09":{manha:"CO (HRC)"},"24/09":{tarde:"Dra. Sádia (HRC)",noite:"CO (HRC)"},"25/09":{manha:"Dra. Nádia (EUD) (HRC)"},"27/09":{manha:"ALCON (HRC)",tarde:"CO (HRC)"},"28/09":{manha:"Dra. Nádia (HRC)"},"29/09":{tarde:"Dra. Sádia (HRC)"},"30/09":{manha:"Dra. Lorena (ECO) (HRC)"}},
-"7":{"20/09":{noite:"CO (HRC)"},"22/09":{manha:"ALCON (HRC)"},"23/09":{manha:"Amb UNIEURO"},"24/09":{manha:"ALCON (HRC)",tarde:"Dra. Hellen (ECO) (HRC)"},"25/09":{manha:"CC (HRC)",tarde:"PS FICHA (HRC)"},"26/09":{manha:"PS BOX (HRC)"},"28/09":{manha:"Poli (Dra. Mirna) (HRC)"},"29/09":{tarde:"PS BOX (HRC)"},"30/09":{manha:"Dr. Caio (PNAR) (HRC)"}},
-"8":{"14/09":{manha:"Dr. F. Mota (HRC)"},"15/09":{manha:"PS FICHA (HRC)",tarde:"Dra. Sádia (HRC)"},"16/09":{manha:"Amb UNIEURO"},"17/09":{manha:"ALCON (HRC)",tarde:"Dra. Lucimara (HRC)"},"18/09":{noite:"CO (HRC)"},"26/09":{noite:"CO (HRC)"},"27/09":{manha:"ALCON (HRC)"},"29/09":{manha:"PS FICHA (HRC)",tarde:"CO (HRC)"},"30/09":{manha:"Poli (Dra. Mirna) (HRC)"}},
-"9":{"15/09":{manha:"ALCON (HRC)",tarde:"PS FICHA (HRC)"},"17/09":{tarde:"CO (HRC)",noite:"PS FICHA (HRC)"},"18/09":{manha:"CC (HRC)"},"19/09":{noite:"CO (HRC)"},"20/09":{manha:"ALCON (HRC)"},"21/09":{manha:"Dr. F. Mota (HRC)"},"22/09":{manha:"BL (HRC)"},"24/09":{manha:"BL (HRC)",tarde:"Dr. Caio (PNAR) (HRC)"},"25/09":{manha:"CO (HRC)"}},
-"10":{"14/09":{manha:"Poli (Dra. Mirna) (HRC)"},"15/09":{tarde:"CO (HRC)"},"16/09":{manha:"Dr. Caio (PNAR) (HRC)"},"17/09":{manha:"PS BOX (HRC)",tarde:"Dra. Gilmária (HRC)"},"18/09":{manha:"PS BOX (HRC)"},"22/09":{manha:"PS FICHA (HRC)",tarde:"CO (HRC)"},"23/09":{manha:"Dr. Caio (PNAR) (HRC)"},"24/09":{manha:"Dra. Lucimara (HRC)"},"25/09":{manha:"Dr. F. Mota (HRC)",tarde:"CO (HRC)"},"28/09":{manha:"CC (HRC)"},"29/09":{manha:"BL (HRC)",tarde:"Dra. Gilmária (HRC)"}}
-};
-Object.entries(escala14a30Setembro).forEach(([idTrio,escala])=>aplicarEscalaEspecifica(idTrio,escala));
-
-// Reaplica horários-base; PS FICHA, PS BOX e Amb UNIEURO recebem os horários especiais depois.`;
-
-    if (!src.includes(anchorEscalaSemana)) throw new Error('Ponto da escala 07/09–30/09 não encontrado');
-    src = src.replace(anchorEscalaSemana, escalaSemana07a30);
-
-    const limpezaAntiga = `const depoisDe06Set = (mm===9 && dd>6) || mm>9;
-      if(!depoisDe06Set) return;`;
-    const limpezaNova = `const depoisDe30Set = (mm===9 && dd>30) || mm>9;
-      if(!depoisDe30Set) return;`;
-    if (!src.includes(limpezaAntiga)) throw new Error('Ponto de limite da escala não encontrado');
-    src = src.replace(limpezaAntiga, limpezaNova);
-    src = src.replace('A escala assistencial publicada termina em 06/09.', 'A escala assistencial publicada termina em 30/09.');
-
-    const datasAntigas = `const datasEscalaRecebida24a31=["24/08","25/08","26/08","27/08","28/08","29/08","30/08","31/08","01/09","02/09","03/09","04/09","05/09","06/09"];`;
-    const datasNovas = `const datasEscalaRecebida24a31=["24/08","25/08","26/08","27/08","28/08","29/08","30/08","31/08","01/09","02/09","03/09","04/09","05/09","06/09","07/09","08/09","09/09","10/09","11/09","12/09","13/09","14/09","15/09","16/09","17/09","18/09","19/09","20/09","21/09","22/09","23/09","24/09","25/09","26/09","27/09","28/09","29/09","30/09"];`;
-    if (!src.includes(datasAntigas)) throw new Error('Ponto de confirmação da nova escala não encontrado');
-    src = src.replace(datasAntigas, datasNovas);
+    if (!src.includes(anchor)) throw new Error('Ponto de confirmação da escala não encontrado');
+    src = src.replace(anchor, replacement);
 
     document.open();
     document.write(src);
