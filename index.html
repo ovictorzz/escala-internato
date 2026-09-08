@@ -51,6 +51,11 @@ for (let i=1;i<=10;i++) {
     if (!src.includes(anchor)) throw new Error('Ponto de confirmação da escala não encontrado');
     src = src.replace(anchor, replacement);
 
+    const lucimara24Antiga = `"24/09":{manha:"Dra. Lucimara (HRC)"},"25/09":{manha:"Dr. F. Mota (HRC)",tarde:"CO (HRC)"}`;
+    const lucimara24Nova = `"24/09":{tarde:"Dra. Lucimara (HRC)"},"25/09":{manha:"Dr. F. Mota (HRC)",tarde:"CO (HRC)"}`;
+    if (!src.includes(lucimara24Antiga)) throw new Error('Ponto da Dra. Lucimara no Trio 10 em 24/09 não encontrado');
+    src = src.replace(lucimara24Antiga, lucimara24Nova);
+
     document.open();
     document.write(src);
     document.close();
