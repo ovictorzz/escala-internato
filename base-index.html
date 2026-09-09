@@ -6114,5 +6114,42 @@ abrirDestinoPushPendente();
 }
 };
 </script>
+
+<script id="pnar-hours-rule-20260909">
+(()=>{
+  const normalizarPnar=(valor)=>String(valor||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
+  const aplicarHorarioPnarCaio=()=>{
+    try {
+      if (typeof dadosEscala === 'undefined') return;
+      for (let idTrio=1; idTrio<=10; idTrio++) {
+        Object.values(dadosEscala[idTrio]?.semanas||{}).forEach(semana=>{
+          Object.values(semana||{}).forEach(infoDia=>{
+            (infoDia.turnos||[]).forEach(turno=>{
+              const local=normalizarPnar(turno.local);
+              if (!local.includes('PNAR') || !local.includes('CAIO')) return;
+              const periodo=normalizarPnar(turno.periodo);
+              if (periodo.includes('MANHA')) turno.horario='08h-13h';
+              else if (periodo.includes('TARDE')) turno.horario='13h-18h';
+            });
+          });
+        });
+      }
+    } catch (erro) {
+      console.warn('Não foi possível aplicar o horário do PNAR com Dr. Caio.', erro);
+    }
+  };
+
+  const anterior=typeof window.aplicarHorariosEspeciaisAtividades==='function'
+    ? window.aplicarHorariosEspeciaisAtividades
+    : null;
+  if (anterior && !anterior.__incluiPnarCaio) {
+    const combinado=function(){ anterior(); aplicarHorarioPnarCaio(); };
+    combinado.__incluiPnarCaio=true;
+    window.aplicarHorariosEspeciaisAtividades=combinado;
+  }
+  aplicarHorarioPnarCaio();
+})();
+</script>
+
 </body>
 </html>
