@@ -11,16 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Apply PNAR Dr. Caio hours
+      - name: Apply special activity hours
         run: |
           python - <<'PY'
           from pathlib import Path
 
           path = Path('base-index.html')
           html = path.read_text(encoding='utf-8')
-          marker = 'pnar-hours-rule-20260909'
-          if marker not in html:
-              patch = r'''
+
+          marker_pnar = 'pnar-hours-rule-20260909'
+          if marker_pnar not in html:
+              patch_pnar = r'''
           <script id="pnar-hours-rule-20260909">
           (()=>{
             const normalizarPnar=(valor)=>String(valor||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
@@ -44,7 +45,6 @@ jobs:
                 console.warn('Não foi possível aplicar o horário do PNAR com Dr. Caio.', erro);
               }
             };
-
             const anterior=typeof window.aplicarHorariosEspeciaisAtividades==='function'
               ? window.aplicarHorariosEspeciaisAtividades
               : null;
@@ -57,10 +57,51 @@ jobs:
           })();
           </script>
           '''
-              html = html.replace('</body>', patch + '\n</body>')
-              path.write_text(html, encoding='utf-8')
+              html = html.replace('</body>', patch_pnar + '\n</body>')
+
+          marker_bl = 'bl-hours-rule-base-20260909'
+          if marker_bl not in html:
+              patch_bl = r'''
+          <script id="bl-hours-rule-base-20260909">
+          (()=>{
+            const normalizarBL=(valor)=>String(valor||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();
+            const aplicarHorarioBL=()=>{
+              try {
+                if (typeof dadosEscala === 'undefined') return;
+                for (let idTrio=1; idTrio<=10; idTrio++) {
+                  Object.values(dadosEscala[idTrio]?.semanas||{}).forEach(semana=>{
+                    Object.values(semana||{}).forEach(infoDia=>{
+                      (infoDia.turnos||[]).forEach(turno=>{
+                        const local=normalizarBL(turno.local);
+                        const periodo=normalizarBL(turno.periodo);
+                        if ((local==='BL' || local.startsWith('BL (')) && periodo.includes('MANHA')) {
+                          turno.horario='08h-13h';
+                        }
+                      });
+                    });
+                  });
+                }
+              } catch (erro) {
+                console.warn('Não foi possível aplicar o horário do BL.', erro);
+              }
+            };
+            const anterior=typeof window.aplicarHorariosEspeciaisAtividades==='function'
+              ? window.aplicarHorariosEspeciaisAtividades
+              : null;
+            if (anterior && !anterior.__incluiBL08h) {
+              const combinado=function(){ anterior(); aplicarHorarioBL(); };
+              combinado.__incluiBL08h=true;
+              window.aplicarHorariosEspeciaisAtividades=combinado;
+            }
+            aplicarHorarioBL();
+          })();
+          </script>
+          '''
+              html = html.replace('</body>', patch_bl + '\n</body>')
+
+          path.write_text(html, encoding='utf-8')
           PY
-      - name: Commit PNAR hours
+      - name: Commit special activity hours
         run: |
           if git diff --quiet -- base-index.html; then exit 0; fi
           git config user.name "github-actions[bot]"
