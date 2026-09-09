@@ -11,13 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python scripts/fix_black_screen.py
-      - run: python scripts/normalize_doctor_titles.py
-      - run: python scripts/unify_flavia_activity.py
-      - run: python scripts/add_activity_ranking.py
-      - run: python scripts/fix_loader_and_activity_helpers.py
-      - run: python scripts/fix_activity_ranking_v2.py
-      - run: python scripts/use_member_names_in_ranking.py
       - name: Apply PNAR Dr. Caio hours
         run: |
           python - <<'PY'
@@ -67,6 +60,21 @@ jobs:
               html = html.replace('</body>', patch + '\n</body>')
               path.write_text(html, encoding='utf-8')
           PY
+      - name: Commit PNAR hours
+        run: |
+          if git diff --quiet -- base-index.html; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add base-index.html
+          git commit -m "Repair black screen loader"
+          git push
+      - run: python scripts/fix_black_screen.py
+      - run: python scripts/normalize_doctor_titles.py
+      - run: python scripts/unify_flavia_activity.py
+      - run: python scripts/add_activity_ranking.py
+      - run: python scripts/fix_loader_and_activity_helpers.py
+      - run: python scripts/fix_activity_ranking_v2.py
+      - run: python scripts/use_member_names_in_ranking.py
       - run: |
           if git diff --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
