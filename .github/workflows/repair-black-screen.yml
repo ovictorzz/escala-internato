@@ -18,10 +18,59 @@ jobs:
       - run: python scripts/fix_loader_and_activity_helpers.py
       - run: python scripts/fix_activity_ranking_v2.py
       - run: python scripts/use_member_names_in_ranking.py
+      - name: Apply PNAR Dr. Caio hours
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('base-index.html')
+          html = path.read_text(encoding='utf-8')
+          marker = 'pnar-hours-rule-20260909'
+          if marker not in html:
+              patch = r'''
+          <script id="pnar-hours-rule-20260909">
+          (()=>{
+            const normalizarPnar=(valor)=>String(valor||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
+            const aplicarHorarioPnarCaio=()=>{
+              try {
+                if (typeof dadosEscala === 'undefined') return;
+                for (let idTrio=1; idTrio<=10; idTrio++) {
+                  Object.values(dadosEscala[idTrio]?.semanas||{}).forEach(semana=>{
+                    Object.values(semana||{}).forEach(infoDia=>{
+                      (infoDia.turnos||[]).forEach(turno=>{
+                        const local=normalizarPnar(turno.local);
+                        if (!local.includes('PNAR') || !local.includes('CAIO')) return;
+                        const periodo=normalizarPnar(turno.periodo);
+                        if (periodo.includes('MANHA')) turno.horario='08h-13h';
+                        else if (periodo.includes('TARDE')) turno.horario='13h-18h';
+                      });
+                    });
+                  });
+                }
+              } catch (erro) {
+                console.warn('Não foi possível aplicar o horário do PNAR com Dr. Caio.', erro);
+              }
+            };
+
+            const anterior=typeof window.aplicarHorariosEspeciaisAtividades==='function'
+              ? window.aplicarHorariosEspeciaisAtividades
+              : null;
+            if (anterior && !anterior.__incluiPnarCaio) {
+              const combinado=function(){ anterior(); aplicarHorarioPnarCaio(); };
+              combinado.__incluiPnarCaio=true;
+              window.aplicarHorariosEspeciaisAtividades=combinado;
+            }
+            aplicarHorarioPnarCaio();
+          })();
+          </script>
+          '''
+              html = html.replace('</body>', patch + '\n</body>')
+              path.write_text(html, encoding='utf-8')
+          PY
       - run: |
           if git diff --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html webauthn-browser.min.js
+          git add index.html webauthn-browser.min.js base-index.html
           git commit -m "Repair black screen loader"
           git push
