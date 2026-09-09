@@ -56,6 +56,41 @@ for (let i=1;i<=10;i++) {
     if (!src.includes(lucimara24Antiga)) throw new Error('Ponto da Dra. Lucimara no Trio 10 em 24/09 não encontrado');
     src = src.replace(lucimara24Antiga, lucimara24Nova);
 
+    const regraHorarioBL = `
+<script id="bl-hours-rule-20260909">
+(()=>{
+  const normalizarBL=(valor)=>String(valor||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toUpperCase().trim();
+  const aplicarHorarioBL=()=>{
+    try {
+      if (typeof dadosEscala === 'undefined') return;
+      for (let idTrio=1; idTrio<=10; idTrio++) {
+        Object.values(dadosEscala[idTrio]?.semanas||{}).forEach(semana=>{
+          Object.values(semana||{}).forEach(infoDia=>{
+            (infoDia.turnos||[]).forEach(turno=>{
+              const local=normalizarBL(turno.local);
+              const periodo=normalizarBL(turno.periodo);
+              if ((local==='BL' || local.startsWith('BL (')) && periodo.includes('MANHA')) {
+                turno.horario='08h-13h';
+              }
+            });
+          });
+        });
+      }
+    } catch (erro) {
+      console.warn('Não foi possível aplicar o horário do BL.', erro);
+    }
+  };
+  const anterior=typeof window.aplicarHorariosEspeciaisAtividades==='function' ? window.aplicarHorariosEspeciaisAtividades : null;
+  if (anterior && !anterior.__incluiBL08h) {
+    const combinado=function(){ anterior(); aplicarHorarioBL(); };
+    combinado.__incluiBL08h=true;
+    window.aplicarHorariosEspeciaisAtividades=combinado;
+  }
+  aplicarHorarioBL();
+})();
+<\/script>`;
+    src = src.replace('</body>', regraHorarioBL + '\n</body>');
+
     document.open();
     document.write(src);
     document.close();
