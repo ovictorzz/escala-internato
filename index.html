@@ -68,6 +68,13 @@ for (let i=1;i<=10;i++) {
     if (!src.includes(trio05Metodio25Antiga)) throw new Error('Ponto do Trio 05 em 25/09 não encontrado');
     src = src.replace(trio05Metodio25Antiga, trio05Metodio25Nova);
 
+    // Remanejamento do Trio 06 (Leticia, Júlia e Luiza) em 25/09 pela manhã.
+    // Sai Dra. Nádia (EUD) e entra PS FICHA.
+    const trio06Nadia25Antiga = `"25/09":{manha:"Dra. Nádia (EUD) (HRC)"},"27/09":{manha:"ALCON (HRC)",tarde:"CO (HRC)"}`;
+    const trio06Nadia25Nova = `"25/09":{manha:"PS FICHA (HRC)"},"27/09":{manha:"ALCON (HRC)",tarde:"CO (HRC)"}`;
+    if (!src.includes(trio06Nadia25Antiga)) throw new Error('Ponto da Dra. Nádia (EUD) no Trio 06 em 25/09 não encontrado');
+    src = src.replace(trio06Nadia25Antiga, trio06Nadia25Nova);
+
     const regraHorarioBL = `
 <script id="bl-hours-rule-20260909">
 (()=>{
