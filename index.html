@@ -56,6 +56,18 @@ for (let i=1;i<=10;i++) {
     if (!src.includes(lucimara24Antiga)) throw new Error('Ponto da Dra. Lucimara no Trio 10 em 24/09 não encontrado');
     src = src.replace(lucimara24Antiga, lucimara24Nova);
 
+    // Remanejamento do Trio 05 em 21/09 e 25/09.
+    // 21/09 pela manhã fica livre; 25/09 mantém PS BOX de manhã e recebe Dr. Metódio à tarde.
+    const trio05Hellen21Antiga = `"5":{"21/09":{manha:"Dra. Hellen (ECO) (HRC)"},`;
+    const trio05Hellen21Nova = `"5":{"21/09":{},`;
+    if (!src.includes(trio05Hellen21Antiga)) throw new Error('Ponto da Dra. Hellen no Trio 05 em 21/09 não encontrado');
+    src = src.replace(trio05Hellen21Antiga, trio05Hellen21Nova);
+
+    const trio05Metodio25Antiga = `"24/09":{manha:"PS BOX (HRC)",tarde:"CO (HRC)"},"25/09":{manha:"PS BOX (HRC)"},"28/09":{manha:"Dra. Gilmária (HRC)"}`;
+    const trio05Metodio25Nova = `"24/09":{manha:"PS BOX (HRC)",tarde:"CO (HRC)"},"25/09":{manha:"PS BOX (HRC)",tarde:"Dr. Metódio (HRC)"},"28/09":{manha:"Dra. Gilmária (HRC)"}`;
+    if (!src.includes(trio05Metodio25Antiga)) throw new Error('Ponto do Trio 05 em 25/09 não encontrado');
+    src = src.replace(trio05Metodio25Antiga, trio05Metodio25Nova);
+
     const regraHorarioBL = `
 <script id="bl-hours-rule-20260909">
 (()=>{
