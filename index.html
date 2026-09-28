@@ -19,7 +19,7 @@ html,body{margin:0;min-height:100%;background:#05070a;color:#e5e7eb;font-family:
     const anchor = `    src = src.replace(datasAntigas, datasNovas);`;
     const replacement = [
       `    src = src.replace(datasAntigas, datasNovas);`,
-      `    const patch01a04Outubro = \`// 01/10 a 04/10 — escala assistencial ainda não enviada.
+      `    const patch01a04Outubro = \`// Normaliza as pendências antigas antes de aplicar a escala confirmada de outubro.
 const datasAguardandoEscala01a04Outubro = new Set(["01/10","02/10","03/10","04/10"]);
 for (let i=1;i<=10;i++) {
   const idTrio=String(i);
@@ -46,19 +46,18 @@ for (let i=1;i<=10;i++) {
 });
 
 // Escala assistencial confirmada de 01 a 04/10/2026.
-const escalaOutubro01a04={"1":{"01/10":{"tarde":"Dra. Gilmária (HRC)","noite":"PS FICHA (HRC)"},"02/10":{"manha":"PS BOX (HRC)","tarde":"Poli (Dra. Mirna) (HRC)"}},"3":{"01/10":{"manha":"Poli (Dra. Mirna) (HRC)","tarde":"Dra. Sádia (HRC)"},"02/10":{"manha":"CO (HRC)","tarde":"Dra. Nádia (HRC)"}},"4":{"01/10":{"manha":"PS BOX (HRC)","tarde":"PS FICHA (HRC)"},"02/10":{"manha":"Dra. Sâmia (PNAR) (HRC)","tarde":"Dr. Rocha (HRC)"}},"5":{"01/10":{"manha":"ALCON (HRC)","tarde":"Dr. Caio (PNAR) (HRC)"},"02/10":{"manha":"Dra. Nádia (EUD) (HRC)"},"03/10":{"noite":"CO (HRC)"}},"6":{"01/10":{"manha":"ALCON (HRC)"},"02/10":{"tarde":"PS FICHA (HRC)","noite":"CO (HRC)"},"03/10":{"manha":"PS BOX (HRC)"}},"7":{"01/10":{"manha":"PS BOX (HRC)"},"02/10":{"manha":"CC (HRC)","tarde":"Dra. Flávia (HRC)"}},"8":{"01/10":{"manha":"BL (HRC)","tarde":"CO (HRC)"},"02/10":{"manha":"Dr. Caio (PNAR) (HRC)","tarde":"CO (HRC)"}},"9":{"01/10":{"tarde":"Dra. Gilmária (HRC)","noite":"CO (HRC)"},"02/10":{"manha":"Dra. Gilmária (HRC)","tarde":"Dr. F. Mota (HRC)"}},"10":{"01/10":{"tarde":"HRSM"},"02/10":{"tarde":"HRSM"},"03/10":{"tarde":"HRSM"}}};
+const escalaOutubro01a04={"1":{"01/10":{"tarde":"Dra. Gilmária (HRC)","noite":"PS FICHA (HRC)"},"02/10":{"manha":"PS BOX (HRC)","tarde":"Poli (Dra. Mirna) (HRC)"}},"2":{"01/10":{"tarde":"CO (HRAN)"},"02/10":{"tarde":"CO (HRAN)"},"03/10":{"tarde":"CO (HRAN)"},"04/10":{"noite":"CO (HRAN)"}},"3":{"01/10":{"manha":"Poli (Dra. Mirna) (HRC)","tarde":"Dra. Sádia (HRC)"},"02/10":{"manha":"CO (HRC)","tarde":"Dra. Nádia (HRC)"}},"4":{"01/10":{"manha":"PS BOX (HRC)","tarde":"PS FICHA (HRC)"},"02/10":{"manha":"Dra. Sâmia (PNAR) (HRC)","tarde":"Dr. Rocha (HRC)"}},"5":{"01/10":{"manha":"ALCON (HRC)","tarde":"Dr. Caio (PNAR) (HRC)"},"02/10":{"manha":"Dra. Nádia (EUD) (HRC)"},"03/10":{"noite":"CO (HRC)"}},"6":{"01/10":{"manha":"ALCON (HRC)"},"02/10":{"tarde":"PS FICHA (HRC)","noite":"CO (HRC)"},"03/10":{"manha":"PS BOX (HRC)"}},"7":{"01/10":{"manha":"PS BOX (HRC)"},"02/10":{"manha":"CC (HRC)","tarde":"Dra. Flávia (HRC)"}},"8":{"01/10":{"manha":"BL (HRC)","tarde":"CO (HRC)"},"02/10":{"manha":"Dr. Caio (PNAR) (HRC)","tarde":"CO (HRC)"}},"9":{"01/10":{"tarde":"Dra. Gilmária (HRC)","noite":"CO (HRC)"},"02/10":{"manha":"Dra. Gilmária (HRC)","tarde":"Dr. F. Mota (HRC)"}},"10":{"01/10":{"tarde":"HRSM"},"02/10":{"tarde":"HRSM"},"03/10":{"tarde":"HRSM"}}};
 for (let i=1;i<=10;i++) {
   const idTrio=String(i);
   for (let semana=1;semana<=9;semana++) {
     Object.values(dadosEscala[idTrio]?.semanas?.[semana]||{}).forEach(infoDia=>{
       const data=String(infoDia?.data||"");
       if(!datasAguardandoEscala01a04Outubro.has(data)) return;
-      const manterPendente=idTrio==="2" && data!=="04/10";
+      
       (infoDia.turnos||[]).forEach(turno=>{
         if(!compromissoAcademicoFixoSetembro(turno))
-          turno.local=manterPendente ? ESCALA_NAO_ENVIADA : "—";
+          turno.local="—";
       });
-      if(manterPendente) return;
       Object.entries(escalaOutubro01a04[idTrio]?.[data]||{}).forEach(([chave,local])=>{
         const turno=infoDia.turnos?.[{manha:0,tarde:1,noite:2}[chave]];
         if(turno && !compromissoAcademicoFixoSetembro(turno)) {
@@ -69,7 +68,7 @@ for (let i=1;i<=10;i++) {
     });
   }
   const confirmadas=new Set(datasComEscalaEnviadaPorTrio[idTrio]||[]);
-  (idTrio==="2" ? ["04/10"] : [...datasAguardandoEscala01a04Outubro])
+  [...datasAguardandoEscala01a04Outubro]
     .forEach(data=>confirmadas.add(data));
   datasComEscalaEnviadaPorTrio[idTrio]=[...confirmadas];
 }
