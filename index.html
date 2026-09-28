@@ -72,6 +72,18 @@ for (let i=1;i<=10;i++) {
     .forEach(data=>confirmadas.add(data));
   datasComEscalaEnviadaPorTrio[idTrio]=[...confirmadas];
 }
+
+// Trio 04: PNAR com Dra. Sâmia na manhã de 30/09.
+Object.values(dadosEscala["4"]?.semanas||{}).forEach(semana=>{
+  Object.values(semana||{}).forEach(infoDia=>{
+    if(String(infoDia?.data||"")!=="30/09") return;
+    const turno=infoDia.turnos?.[0];
+    if(turno) {
+      turno.local="Dra. Sâmia (PNAR) (HRC)";
+      turno.horario="07h-13h";
+    }
+  });
+});
 \`;`,
       `    src = src.replace(datasNovas, patch01a04Outubro + "\\n" + datasNovas);`
     ].join("\n");
