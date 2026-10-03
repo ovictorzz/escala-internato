@@ -6744,7 +6744,7 @@ Escala Diária por Turnos
       if(noite){
         noite.local='Avaliação de Pediatria — 50 questões';
         noite.atividade=noite.local;
-        noite.horario='A definir';
+        noite.horario='18h30';
         noite.temas='50 questões de Pediatria';
         noite.apresentadores='Turma T7A';
         noite.localSeminario='';
@@ -7360,7 +7360,7 @@ function renderSeminarios(){
       return cardTurnoPed({
         data:evento.data,
         periodo:'Noite',
-        horario:avaliacao?'A definir':'18h30-21h30',
+        horario:avaliacao?'18h30':'18h30-21h30',
         local:titulo,
         atividade:titulo,
         temas:evento.tema.replace(/ e /,' | ').replace(/\n/g,' | '),
