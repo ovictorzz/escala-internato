@@ -8075,10 +8075,12 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
 
   function atividadesDisponiveisPed(){
     var set=new Set();
-    Object.keys(pedEscalaTrio1Oficial).forEach(function(data){
-      turnosPedPorData('1',data).forEach(function(turno){
-        if(!atividadePedConfirmada(turno.local))return;
-        set.add(nomeAtividadeFiltroPed(turno.local));
+    Object.keys(pedEscalasOficiais||{}).forEach(function(trio){
+      Object.keys(pedEscalasOficiais[trio]||{}).forEach(function(data){
+        turnosPedPorData(trio,data).forEach(function(turno){
+          if(!atividadePedConfirmada(turno.local))return;
+          set.add(nomeAtividadeFiltroPed(turno.local));
+        });
       });
     });
     return Array.from(set).sort(function(a,b){return a.localeCompare(b,'pt-BR');});
@@ -8086,26 +8088,28 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
 
   function ocorrenciasAtividadePed(nome){
     var ocorrencias=[];
-    Object.keys(pedEscalaTrio1Oficial).forEach(function(data){
-      turnosPedPorData('1',data).forEach(function(turno){
-        if(!atividadePedConfirmada(turno.local))return;
-        if(nomeAtividadeFiltroPed(turno.local)!==nome)return;
-        ocorrencias.push({
-          trio:'1',
-          data:data,
-          periodo:turno.periodo,
-          horario:turno.horario,
-          local:turno.local,
-          membros:turno.membros||[],
-          temas:turno.temas,
-          apresentadores:turno.apresentadores,
-          sci:turno.sci,
-          semana:semanaDaDataPed(data)
+    Object.keys(pedEscalasOficiais||{}).forEach(function(trio){
+      Object.keys(pedEscalasOficiais[trio]||{}).forEach(function(data){
+        turnosPedPorData(trio,data).forEach(function(turno){
+          if(!atividadePedConfirmada(turno.local))return;
+          if(nome && nomeAtividadeFiltroPed(turno.local)!==nome)return;
+          ocorrencias.push({
+            trio:String(trio),
+            data:data,
+            periodo:turno.periodo,
+            horario:turno.horario,
+            local:turno.local,
+            membros:turno.membros||[],
+            temas:turno.temas,
+            apresentadores:turno.apresentadores,
+            sci:turno.sci,
+            semana:semanaDaDataPed(data)
+          });
         });
       });
     });
     return ocorrencias.sort(function(a,b){
-      return dataBrParaDate(a.data)-dataBrParaDate(b.data);
+      return dataBrParaDate(a.data)-dataBrParaDate(b.data) || Number(a.trio)-Number(b.trio);
     });
   }
 
