@@ -6658,7 +6658,7 @@ Escala Diária por Turnos
     if(!atividadePedConfirmada(local))return false;
     if(nome.indexOf('seminário')>=0)return false;
     if(nome==='sci'||nome.indexOf('sci ')===0||nome.indexOf('sessões clínicas integradas')===0)return false;
-    if(nome.indexOf('simulação')>=0)return false;
+    if(nome.indexOf('simulação')>=0||nome.indexOf('simulado')>=0)return false;
     return true;
   }
 
@@ -6695,8 +6695,35 @@ Escala Diária por Turnos
   }
 
   // Seminários são compromissos acadêmicos da turma inteira.
+  const programacaoSCIPed={
+    '05/10/2026':{tema:'Clínica Cirúrgica | MFC',docentes:'Dra. Kátia | Dra. Érika'},
+    '12/10/2026':{feriado:true},
+    '19/10/2026':{tema:'Clínica Médica',docentes:'Dr. André'},
+    '26/10/2026':{tema:'Clínica Cirúrgica',docentes:'Dra. Kátia'},
+    '02/11/2026':{feriado:true},
+    '09/11/2026':{tema:'Simulado 4',simulado:true},
+    '16/11/2026':{tema:'Clínica Médica',docentes:'Dr. André'},
+    '23/11/2026':{tema:'Clínica Cirúrgica | MFC',docentes:'Dra. Kátia | Dra. Érika'},
+    '30/11/2026':{tema:'Clínica Médica | MFC',docentes:'Dra. Érika'}
+  };
+  function detalhesSCIPed(turno){
+    if(!turno.sci||turno.sci.feriado)return '';
+    return '<div class="mt-2 mb-4 space-y-2 text-left" data-ped-sci>'+
+      '<div><span class="block text-[8px] font-black uppercase tracking-wider text-blue-500">Tema</span><p class="text-[11px] font-semibold leading-relaxed">'+escapar(turno.sci.tema)+'</p></div>'+
+      (turno.sci.docentes?'<div><span class="block text-[8px] font-black uppercase tracking-wider text-indigo-500">Docentes</span><p class="text-[10px] font-semibold leading-relaxed">'+escapar(turno.sci.docentes)+'</p></div>':'')+'</div>';
+  }
+
   function turnosPedPorData(trioId,dataCompleta){
     const turnos=turnosPedPorDataBase(trioId,dataCompleta);
+    const sci=programacaoSCIPed[dataCompleta];
+    if(sci){
+      const tarde=turnos.find(t=>t.periodo==='Tarde');
+      if(tarde){
+        tarde.local=sci.feriado?'—':(sci.simulado?'Simulado 4':nomeCenarioPed('SCI'));
+        tarde.sci=sci;
+        tarde.membros=[];
+      }
+    }
     const eventos=seminariosPed.filter(s=>s.data===dataCompleta&&s.tipo!=='avaliacao');
     if(eventos.length){
       const noite=turnos.find(t=>t.periodo==='Noite');
@@ -6934,7 +6961,7 @@ Escala Diária por Turnos
     const hasPlantao=atividadePedConfirmada(t.local);
     const turnoLivre=t.local==='—';
     const ehSeminarioDetalhado=Boolean(t.temas&&t.apresentadores);
-    const tituloLocal=turnoLivre?'Turno livre':(ehSeminarioDetalhado?t.atividade:t.local);
+    const tituloLocal=t.sci?.feriado?'Feriado':(turnoLivre?'Turno livre':(ehSeminarioDetalhado?t.atividade:t.local));
     const cardBorder=hasPlantao?'border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-900/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]':'glass-panel opacity-70';
     const turnoClass=t.periodo==='Manhã'?'turno-manha':(t.periodo==='Tarde'?'turno-tarde':'turno-noite');
     const iconeTurno=iconeTurnoPed(t.periodo);
@@ -6950,6 +6977,7 @@ ${iconeTurno}
 </div>
 <span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">${t.periodo}</span>
 <h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight ${turnoLivre ? 'mb-2' : 'mb-5'}">${escapar(tituloLocal)}</h4>
+${detalhesSCIPed(t)}
 ${hasPlantao&&t.membros?.length?`<p class="text-xs font-semibold text-zinc-600 dark:text-zinc-300 mb-4" data-ped-participantes>${t.membros.map(escapar).join(' • ')}</p>`:''}
 ${ehSeminarioDetalhado ? `<div class="w-full text-left space-y-3 mb-5"><div class="rounded-xl bg-blue-500/[.07] border border-blue-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-blue-500 mb-1">Temas</span><p class="text-[10px] sm:text-[11px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed whitespace-pre-line">${escapar(t.temas)}</p></div><div class="rounded-xl bg-indigo-500/[.07] border border-indigo-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-indigo-500 mb-1">Apresentadores</span><p class="text-[10px] sm:text-[11px] text-zinc-700 dark:text-zinc-200 font-bold leading-relaxed">${escapar(t.apresentadores)}</p></div><div class="rounded-xl bg-emerald-500/[.08] border border-emerald-500/20 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-emerald-500 mb-1">${String(t.orientador || '').includes('|') ? 'Orientadores' : 'Orientador'}</span><p class="text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-300 font-black leading-relaxed">${escapar(t.orientador)}</p></div></div>` : ''}
 ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4 max-w-[230px]">${'Sem atividade programada neste turno.'}</p>` : ''}
@@ -6964,6 +6992,7 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
   }
 
   function detalhesSeminarioDiaPed(turno){
+    if(turno.sci)return detalhesSCIPed(turno);
     if(!turno.temas||!turno.apresentadores)return '';
     return '<div class="mt-2 space-y-2 text-left" data-ped-seminario-dia>'+
       '<div><span class="block text-[8px] font-black uppercase tracking-wider text-blue-500">Tema</span><p class="text-[11px] font-semibold whitespace-pre-line leading-relaxed">'+escapar(turno.temas)+'</p></div>'+
@@ -7171,6 +7200,7 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
           membros:turno.membros||[],
           temas:turno.temas,
           apresentadores:turno.apresentadores,
+          sci:turno.sci,
           semana:semanaDaDataPed(data)
         });
       });
