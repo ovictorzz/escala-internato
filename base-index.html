@@ -6627,6 +6627,12 @@ Escala Diária por Turnos
     return nomes[nome]||nome;
   }
 
+  function participantesTurnoPed(trioId,local){
+    const membros=dadosTrioPedPorId(trioId).membros||[];
+    const dupla=String(local||'').match(/\b([1-3])\/([1-3])\b/);
+    return dupla?[membros[Number(dupla[1])-1],membros[Number(dupla[2])-1]].filter(Boolean):membros.slice();
+  }
+
   function horarioAtividadePed(periodo,local){
     if(String(local||'').toLowerCase().indexOf('seminário')>=0)return '18h30-21h30';
     var item=periodosPed.find(function(p){return p.nome===periodo;});
@@ -6664,7 +6670,7 @@ Escala Diária por Turnos
     return periodosPed.map(function(p){
       var local=entrada[p.key]||'—';
       if(local==='Seminário')local='Seminário • Sala 03';
-      var turno={periodo:p.nome,horario:horarioAtividadePed(p.nome,local),local:nomeCenarioPed(local)};
+      var turno={periodo:p.nome,horario:horarioAtividadePed(p.nome,local),local:nomeCenarioPed(local),membros:participantesTurnoPed(id,local)};
       if(local.indexOf('Seminário')===0){
         var eventos=seminariosPed.filter(function(s){return s.data===dataCompleta&&s.tipo!=='avaliacao';});
         if(eventos.length){
@@ -6916,6 +6922,7 @@ ${iconeTurno}
 </div>
 <span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">${t.periodo}</span>
 <h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight ${turnoLivre ? 'mb-2' : 'mb-5'}">${escapar(tituloLocal)}</h4>
+${hasPlantao&&t.membros?.length?`<p class="text-xs font-semibold text-zinc-600 dark:text-zinc-300 mb-4" data-ped-participantes>${t.membros.map(escapar).join(' • ')}</p>`:''}
 ${ehSeminarioDetalhado ? `<div class="w-full text-left space-y-3 mb-5"><div class="rounded-xl bg-blue-500/[.07] border border-blue-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-blue-500 mb-1">Temas</span><p class="text-[10px] sm:text-[11px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed whitespace-pre-line">${escapar(t.temas)}</p></div><div class="rounded-xl bg-indigo-500/[.07] border border-indigo-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-indigo-500 mb-1">Apresentadores</span><p class="text-[10px] sm:text-[11px] text-zinc-700 dark:text-zinc-200 font-bold leading-relaxed">${escapar(t.apresentadores)}</p></div><div class="rounded-xl bg-emerald-500/[.08] border border-emerald-500/20 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-emerald-500 mb-1">${String(t.orientador || '').includes('|') ? 'Orientadores' : 'Orientador'}</span><p class="text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-300 font-black leading-relaxed">${escapar(t.orientador)}</p></div><div class="rounded-xl bg-violet-500/[.08] border border-violet-500/20 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-violet-500 mb-1">Local</span><p class="text-[10px] sm:text-[11px] text-violet-700 dark:text-violet-300 font-black leading-relaxed">${escapar(t.localSeminario)}</p></div></div>` : ''}
 ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4 max-w-[230px]">${'Sem atividade programada neste turno.'}</p>` : ''}
 <div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10">
@@ -7057,7 +7064,7 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
       let rotulo=estado==='agora'?'Agora':(estado==='passado'?'Concluído':'Mais tarde');
       if(estado==='futuro'&&!primeiroFuturoMarcado){rotulo='Próximo';primeiroFuturoMarcado=true;}
       const local=confirmado?turno.local:(pendente?'Escala não enviada':'Turno livre');
-      const status=confirmado?'Atividade obrigatória':(pendente?'Aguardando envio da escala':'Sem atividade programada neste turno.');
+      const status=confirmado?('Atividade obrigatória'+(turno.membros?.length?' • '+turno.membros.join(' • '):'')):(pendente?'Aguardando envio da escala':'Sem atividade programada neste turno.');
       timelineHtml+=`<div class="timeline-item" data-state="${estado}"><div class="timeline-dot">${iconeTurnoPed(turno.periodo)}</div><div class="timeline-card"><div class="flex items-start justify-between gap-3"><div><div class="flex items-center gap-2 flex-wrap"><span class="text-[10px] font-black uppercase tracking-[.18em] text-blue-500">${escapar(turno.periodo)}</span><span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${estado === 'agora' ? 'bg-blue-500 text-white' : 'bg-black/5 dark:bg-white/5 text-zinc-500'}">${rotulo}</span></div><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-1.5">${escapar(local)}</h4><p class="text-[10px] text-zinc-500 mt-1">${escapar(status)}</p></div><span class="shrink-0 text-[10px] font-bold text-zinc-600 dark:text-zinc-300 bg-black/5 dark:bg-black/25 border border-black/5 dark:border-white/5 px-2.5 py-1.5 rounded-lg">${escapar(turno.horario)}</span></div></div></div>`;
     });
     container.innerHTML=`<div class="today-shell space-y-4 pb-4"><section class="today-hero glass-panel rounded-3xl p-5 sm:p-6"><div class="relative z-10 flex items-start justify-between gap-4"><div><span class="text-[10px] font-black uppercase tracking-[.2em] text-blue-500">${obterSaudacaoTemporal(agora)}</span><h3 class="font-outfit font-black text-2xl sm:text-3xl text-zinc-900 dark:text-white mt-2">${escapar(infoDia.nome)}, ${infoDia.data}</h3><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2">${atividadesHoje ? `${atividadesHoje} atividade${atividadesHoje > 1 ? 's' : ''} programada${atividadesHoje > 1 ? 's' : ''} para o Trio A${idTrio}.` : 'Seu trio está livre hoje.'}</p></div><span class="hidden sm:inline-flex px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold">● Painel atualizado</span></div></section><div class="grid grid-cols-1 xl:grid-cols-12 gap-4"><section class="xl:col-span-8 glass-panel rounded-3xl p-4 sm:p-5"><div class="flex items-center justify-between mb-3"><div><span class="text-[9px] font-black uppercase tracking-[.2em] text-blue-500">Linha do tempo</span><h3 class="font-outfit font-extrabold text-lg text-zinc-900 dark:text-white mt-1">Manhã, tarde e noite</h3></div><span class="text-[10px] font-mono font-bold text-zinc-500">${agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span></div><div class="timeline-list">${timelineHtml}</div></section><aside class="xl:col-span-4 space-y-4"><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-blue-500">Próxima atividade</span><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-2">${escapar(proximaTexto)}</h4><p class="text-[11px] text-zinc-500 mt-1">${proxima ? escapar(proxima.turno.local) : 'Aproveite o tempo livre.'}</p>${proxima ? `<button onclick="abrirDiaDaEscalaPed('${idTrio}', ${proxima.semana}, '${proxima.diaKey}')" class="mt-4 text-[10px] font-bold text-blue-500 hover:text-blue-400">Abrir na escala →</button>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><div class="flex items-center justify-between"><span class="text-[9px] font-black uppercase tracking-[.18em] text-violet-500">Último recado</span><button onclick="alternarModoPed('recados')" class="text-[9px] font-bold text-blue-500">Ver mural</button></div><p class="text-xs text-zinc-600 dark:text-zinc-300 mt-3 leading-relaxed">${recado ? escapar(recado.texto) : 'Nenhum aviso publicado até o momento.'}</p>${recado ? `<span class="block text-[9px] text-zinc-500 mt-2">${escapar(recado.autor || 'Turma T7A')}</span>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-emerald-500">Seminários</span><div class="flex items-end justify-between mt-2"><div><strong class="font-outfit font-black text-3xl text-zinc-900 dark:text-white">${seminariosPed.length}</strong><span class="text-[10px] text-zinc-500 ml-1">eventos</span></div><button onclick="alternarModoPed('seminarios')" class="px-3 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold border border-emerald-500/20">Ver agenda</button></div></div></aside></div></div>`;
@@ -7080,7 +7087,7 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
           : (livre?'text-zinc-500 dark:text-zinc-400 bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/5':'text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5');
         return '<div class="flex items-center justify-between text-[10px] py-1.5 px-3 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5 gap-2">'+
           '<span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit uppercase tracking-widest">'+t.periodo+'</span>'+
-          '<span class="font-extrabold font-outfit '+badge+' px-2 py-0.5 rounded whitespace-normal leading-tight text-center border max-w-[68%]">'+escapar(texto)+'</span>'+
+          '<span class="font-extrabold font-outfit '+badge+' px-2 py-0.5 rounded whitespace-normal leading-tight text-center border max-w-[68%]">'+escapar(texto)+(confirmado&&t.membros?.length?'<small class="block mt-1 text-[9px] font-semibold">'+t.membros.map(escapar).join(' • ')+'</small>':'')+'</span>'+
         '</div>';
       }).join('');
 
@@ -7126,6 +7133,7 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
           periodo:turno.periodo,
           horario:turno.horario,
           local:turno.local,
+          membros:turno.membros||[],
           semana:semanaDaDataPed(data)
         });
       });
@@ -7158,7 +7166,7 @@ const atividade = atividadeSelecionadaPed || '';
 const ocorrencias = ocorrenciasAtividadePed(atividade).map(item=>({
 ...item,idTrio:item.trio,diaKey:diasPedConfig[(dataBrParaDate(item.data).getDay()+6)%7][0],
 diaNome:['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'][dataBrParaDate(item.data).getDay()],
-atividade:item.local,nomeGrupo:dadosTrioPedPorId(item.trio).nomeGrupo
+atividade:item.local,nomeGrupo:'Trio A'+item.trio+': '+(item.membros||[]).join(' • ')
 }));
 const totalTrios = new Set(ocorrencias.map(item => item.idTrio)).size;
 const agora = new Date();
@@ -7340,7 +7348,7 @@ containerTurnos.innerHTML = html;
           var sigla=t.periodo==='Manhã'?'M':(t.periodo==='Tarde'?'T':'N');
           var texto=t.local==='—'?'Livre':(t.local==='Escala não enviada'?'Pendente':t.local);
           var badge=ativo?'bg-blue-600 text-white font-bold shadow-sm':'bg-black/10 dark:bg-white/5 text-zinc-400 dark:text-zinc-500';
-          return '<div class="calendar-shift '+badge+'" title="'+escapar(t.periodo+': '+texto)+'">'+
+          return '<div class="calendar-shift '+badge+'" title="'+escapar(t.periodo+': '+texto+(ativo&&t.membros?.length?' — '+t.membros.join(' • '):''))+'">'+
             '<span class="calendar-shift-period uppercase font-mono"><span class="calendar-shift-period-full">'+t.periodo+'</span><span class="calendar-shift-period-short">'+sigla+'</span></span>'+
             '<span class="calendar-shift-text">'+escapar(texto)+'</span>'+
           '</div>';
