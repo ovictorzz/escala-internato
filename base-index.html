@@ -8360,13 +8360,29 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
     return nome;
   }
 
+  function atividadeContavelPed(nome){
+    var chave=String(nome||'').trim().toLocaleLowerCase('pt-BR');
+    return !(
+      chave==='seminário' ||
+      chave==='simulado 4' ||
+      chave==='sci' ||
+      chave.indexOf('sci —')===0 ||
+      chave.indexOf('sci -')===0 ||
+      chave.indexOf('sessões clínicas integradas')===0 ||
+      chave.indexOf('avaliação de pediatria')===0 ||
+      chave.indexOf('avaliação somativa')===0
+    );
+  }
+
   function atividadesDisponiveisPed(){
     var set=new Set();
     Object.keys(pedEscalasOficiais||{}).forEach(function(trio){
       Object.keys(pedEscalasOficiais[trio]||{}).forEach(function(data){
         turnosPedPorData(trio,data).forEach(function(turno){
           if(!atividadePedConfirmada(turno.local))return;
-          set.add(nomeAtividadeFiltroPed(turno.local));
+          var atividade=nomeAtividadeFiltroPed(turno.local);
+          if(!atividadeContavelPed(atividade))return;
+          set.add(atividade);
         });
       });
     });
@@ -8379,7 +8395,9 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
       Object.keys(pedEscalasOficiais[trio]||{}).forEach(function(data){
         turnosPedPorData(trio,data).forEach(function(turno){
           if(!atividadePedConfirmada(turno.local))return;
-          if(nome && nomeAtividadeFiltroPed(turno.local)!==nome)return;
+          var atividade=nomeAtividadeFiltroPed(turno.local);
+          if(!atividadeContavelPed(atividade))return;
+          if(nome && atividade!==nome)return;
           ocorrencias.push({
             trio:String(trio),
             data:data,
