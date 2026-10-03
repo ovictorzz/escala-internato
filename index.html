@@ -152,6 +152,15 @@ Object.values(dadosEscala["4"]?.semanas||{}).forEach(semana=>{
 
 
 
+    // PED Atividades: exibe os integrantes no lugar de "Trio A01/A1".
+    const pedAtividadesTrioLabelOld = \`<span class="text-[9px] font-black uppercase tracking-[.14em] text-blue-500">Trio A\${item.idTrio}</span>\`;
+    const pedAtividadesTrioLabelNew = \`<span class="text-[9px] font-black uppercase tracking-[.08em] text-blue-500">\${escaparHTML(item.nomeGrupo.includes(':') ? item.nomeGrupo.split(':').slice(1).join(':').trim() : item.nomeGrupo)}</span>\`;
+    if (src.includes(pedAtividadesTrioLabelOld)) {
+      src = src.replace(pedAtividadesTrioLabelOld, pedAtividadesTrioLabelNew);
+    } else {
+      console.warn('Rótulo antigo de Trio na PED Atividades não foi encontrado.');
+    }
+
     document.open();
     document.write(src);
     document.close();
