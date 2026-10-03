@@ -6522,6 +6522,154 @@ Escala Diária por Turnos
   var horarioSeminariosPed='18:30';
   var localSeminariosPed='Sala 03';
 
+  var pedEscalaTrio1Oficial={
+    '05/10/2026':{tarde:'SCI'},
+    '06/10/2026':{manha:'HRSAM NEO 2/3',noite:'Seminário'},
+    '07/10/2026':{manha:'HRSAM NEO 1/3'},
+    '08/10/2026':{noite:'HRSAM NEO 1/2'},
+    '09/10/2026':{status:'livre'},
+    '10/10/2026':{noite:'HRSAM NEO 2/3'},
+    '11/10/2026':{manha:'HRSAM NEO 1/3'},
+
+    '12/10/2026':{tarde:'SCI'},
+    '13/10/2026':{manha:'HRSAM NEO 2/3',noite:'Seminário'},
+    '14/10/2026':{manha:'HRSAM NEO 1/3'},
+    '15/10/2026':{manha:'HRSAM NEO 1/2'},
+    '16/10/2026':{tarde:'HRSAM NEO 2/3'},
+    '17/10/2026':{manha:'HRSAM NEO 1/2'},
+    '18/10/2026':{status:'livre'},
+
+    '19/10/2026':{tarde:'SCI',noite:'PS HRT'},
+    '20/10/2026':{noite:'Seminário'},
+    '21/10/2026':{tarde:'HRT Amb.'},
+    '22/10/2026':{manha:'UNIEURO Amb.',tarde:'UNIEURO Amb.'},
+    '23/10/2026':{tarde:'PS HRT'},
+    '24/10/2026':{status:'livre'},
+    '25/10/2026':{status:'livre'},
+
+    '26/10/2026':{manha:'UBS Taguatinga',tarde:'UBS Taguatinga'},
+    '27/10/2026':{manha:'UBS Planaltina',tarde:'UBS Planaltina',noite:'Seminário'},
+    '28/10/2026':{manha:'UBS Planaltina'},
+    '29/10/2026':{tarde:'HRL PS'},
+    '30/10/2026':{manha:'UBS Taguatinga',tarde:'UBS Taguatinga'},
+    '31/10/2026':{status:'livre'},
+    '01/11/2026':{status:'livre'},
+
+    '02/11/2026':{manha:'HRGU',tarde:'SCI'},
+    '03/11/2026':{manha:'HRGU',noite:'Seminário'},
+    '04/11/2026':{manha:'HRGU'},
+    '05/11/2026':{tarde:'UNIEURO Amb.'},
+    '06/11/2026':{manha:'HRGU'},
+    '07/11/2026':{status:'livre'},
+    '08/11/2026':{status:'livre'},
+
+    '09/11/2026':{manha:'UNIEURO Amb.'},
+    '10/11/2026':{manha:'UBS VP',tarde:'UBS VP',noite:'Seminário'},
+    '11/11/2026':{status:'livre'},
+    '12/11/2026':{manha:'UBS Planaltina',tarde:'UNIEURO Simulação'},
+    '13/11/2026':{manha:'UBS Planaltina',tarde:'UBS Planaltina'},
+    '14/11/2026':{status:'livre'},
+    '15/11/2026':{status:'livre'},
+
+    '16/11/2026':{manha:'UNIEURO Amb.',tarde:'SCI'},
+    '17/11/2026':{noite:'Seminário'},
+    '18/11/2026':{status:'livre'},
+    '19/11/2026':{manha:'UNIEURO Amb.',tarde:'UNIEURO Simulação'},
+    '20/11/2026':{tarde:'UNIEURO Amb.'},
+    '21/11/2026':{status:'pendente'},
+    '22/11/2026':{status:'livre'},
+
+    '23/11/2026':{tarde:'HRSM PS'},
+    '24/11/2026':{tarde:'SCI'},
+    '25/11/2026':{manha:'UBS VP',tarde:'UBS VP',noite:'Seminário'},
+    '26/11/2026':{manha:'HRL PS'},
+    '27/11/2026':{manha:'HRL PS',tarde:'UNIEURO Simulação'},
+    '28/11/2026':{tarde:'UNIEURO Amb.'},
+    '29/11/2026':{status:'livre'}
+  };
+
+  // Recebido junto com a escala, mas fora das 8 semanas oficiais (05/10–29/11).
+  // Mantido separado até confirmação sobre extensão do rodízio.
+  var pedEscalaTrio1Extra={
+    '30/11/2026':{status:'livre'},
+    '01/12/2026':{manha:'UNIEURO Amb.',tarde:'SCI'},
+    '02/12/2026':{manha:'HRGU',noite:'Seminário'},
+    '03/12/2026':{manha:'HRGU'},
+    '04/12/2026':{manha:'UNIEURO Amb.',tarde:'UNIEURO Simulação'},
+    '05/12/2026':{status:'livre'},
+    '06/12/2026':{status:'livre'},
+    '07/12/2026':{status:'livre'},
+    '08/12/2026':{status:'pendente'},
+    '09/12/2026':{status:'pendente'},
+    '10/12/2026':{status:'pendente'},
+    '11/12/2026':{status:'pendente'},
+    '12/12/2026':{status:'pendente'},
+    '13/12/2026':{status:'pendente'}
+  };
+
+  var periodosPed=[
+    {key:'manha',nome:'Manhã',horario:'07h-13h'},
+    {key:'tarde',nome:'Tarde',horario:'13h-18h'},
+    {key:'noite',nome:'Noite',horario:'18h-22h'}
+  ];
+
+  function horarioAtividadePed(periodo,local){
+    if(String(local||'').toLowerCase().indexOf('seminário')>=0)return '18h30-21h30';
+    var item=periodosPed.find(function(p){return p.nome===periodo;});
+    return item?item.horario:'A definir';
+  }
+
+  function atividadePedConfirmada(local){
+    var nome=String(local||'').trim();
+    return !!nome && nome!=='—' && nome!=='Escala não enviada';
+  }
+
+  function atividadePedAssistencial(local){
+    var nome=String(local||'').trim().toLocaleLowerCase('pt-BR');
+    if(!atividadePedConfirmada(local))return false;
+    if(nome.indexOf('seminário')>=0)return false;
+    if(nome==='sci'||nome.indexOf('sci ')===0)return false;
+    if(nome.indexOf('simulação')>=0)return false;
+    return true;
+  }
+
+  function turnosPedPorData(trioId,dataCompleta){
+    var id=String(trioId||'1');
+    var entrada=id==='1'?pedEscalaTrio1Oficial[dataCompleta]:null;
+    if(id!=='1'||!entrada){
+      return periodosPed.map(function(p){
+        return {periodo:p.nome,horario:p.horario,local:'Escala não enviada'};
+      });
+    }
+    if(entrada.status==='livre'){
+      return periodosPed.map(function(p){return {periodo:p.nome,horario:p.horario,local:'—'};});
+    }
+    if(entrada.status==='pendente'){
+      return periodosPed.map(function(p){return {periodo:p.nome,horario:p.horario,local:'Escala não enviada'};});
+    }
+    return periodosPed.map(function(p){
+      var local=entrada[p.key]||'—';
+      if(local==='Seminário')local='Seminário • Sala 03';
+      return {periodo:p.nome,horario:horarioAtividadePed(p.nome,local),local:local};
+    });
+  }
+
+  function dataSelecionadaPedCompleta(){
+    return formatarDataCompletaPed(dataRodizioPed(semanaPed,indiceDiaPed(diaPed)));
+  }
+
+  function turnosSelecionadosPed(trioId){
+    return turnosPedPorData(String(trioId||el('grupo-select')?.value||'1'),dataSelecionadaPedCompleta());
+  }
+
+  function horasTurnoPed(turno){
+    if(!atividadePedConfirmada(turno.local))return 0;
+    if(String(turno.local).toLowerCase().indexOf('seminário')>=0)return 3;
+    if(turno.periodo==='Manhã')return 6;
+    if(turno.periodo==='Tarde')return 5;
+    return 4;
+  }
+
   var classAtivo="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)] transition-all cursor-pointer";
   var classInativo="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-semibold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer";
 
