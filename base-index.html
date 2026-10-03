@@ -5748,6 +5748,7 @@ ocorrencias.forEach(item => {
 const dataObj = dataEscalaParaDate(item.data);
 const passou = dataObj ? dataObj < inicioDoDiaPainel(agora) : false;
 const nomes = item.nomeGrupo.includes(':') ? item.nomeGrupo.split(':').slice(1).join(':').trim() : item.nomeGrupo;
+const nomesIntegrantes = nomes;
 cards += `
 <article class="glass-panel rounded-2xl p-4 sm:p-5 border ${passou ? 'border-black/5 dark:border-white/5 opacity-55' : 'border-blue-500/20'} shadow-sm">
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -5758,7 +5759,7 @@ cards += `
 </div>
 <div class="min-w-0">
 <div class="flex items-center gap-2 flex-wrap">
-<span class="text-[9px] font-black uppercase tracking-[.14em] text-blue-500">Trio A${item.idTrio}</span>
+<span class="text-[9px] font-black uppercase tracking-[.08em] text-blue-500">${escaparHTML(nomesIntegrantes)}</span>
 <span class="text-[9px] text-zinc-400">${escaparHTML(item.diaNome)} • ${escaparHTML(item.periodo)}</span>
 ${passou ? '<span class="text-[8px] font-black uppercase tracking-wider text-zinc-400">Realizado</span>' : ''}
 </div>
