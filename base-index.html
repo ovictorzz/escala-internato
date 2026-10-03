@@ -7302,7 +7302,7 @@ Escala Diária por Turnos
       geral:'Visão Geral: Todos os 10 Trios do Dia',
       atividade:'Atividades • Consulte toda a escala',
       seminarios:'Cronograma de Seminários e Avaliação • Pediatria',
-      calendario:'Calendário Mensal do Trio Selecionado',
+      calendario:'Calendário Mensal do Trio Selecionado (Outubro a Dezembro de 2026)',
       recados:'Quadro de Recados Oficiais e Avisos',
       admin:'Painel Administrativo Exclusivo (Representante)'
     };
@@ -7311,7 +7311,7 @@ Escala Diária por Turnos
       if(span)span.textContent=labels[modo];
     }
 
-    if(modo==='individual')renderTurnosVazios();
+    if(modo==='individual')renderTurnosPed();
     else if(modo==='hoje')renderHoje();
     else if(modo==='geral')renderGeral();
     else if(modo==='atividade')renderAtividades();
