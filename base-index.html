@@ -6628,11 +6628,12 @@ Escala Diária por Turnos
   }
 
   function nomeCurtoPed(nome){
+    if(/^Andr[ée]\s+Victor\b/i.test(String(nome||'').trim()))return 'André Victor';
     const partes=String(nome||'').trim().split(/\s+/);
     return partes.length>1?partes[0]+' '+partes[partes.length-1]:partes[0]||'';
   }
   function tituloSeminarioPed(eventos){
-    return eventos.map(evento=>'Seminário '+String(seminariosPed.indexOf(evento)+1).padStart(2,'0')).join(' e ');
+    return eventos.map(evento=>'Seminário '+String(seminariosPed.indexOf(evento)+1).padStart(2,'0')).join(' | ');
   }
 
   function participantesTurnoPed(trioId,local){
@@ -6683,7 +6684,7 @@ Escala Diária por Turnos
         var eventos=seminariosPed.filter(function(s){return s.data===dataCompleta&&s.tipo!=='avaliacao';});
         if(!eventos.length)eventos=[{tema:'Tema a definir',apresentadores:'Apresentadores a definir'}];
         if(eventos.length){
-          turno.atividade='Seminário';turno.temas=eventos.map(function(s){return s.tema;}).join('\n');
+          turno.atividade='Seminário';turno.temas=eventos.map(function(s){return s.tema.replace(/ e /g,' | ').replace(/\n/g,' | ');}).join(' | ');
           turno.apresentadores=eventos.map(function(s){return String(s.apresentadores||'').split(' • ').map(nomeCurtoPed).join(' • ');}).join(' | ');
           turno.orientador=eventos.map(function(s){return s.orientador||'A definir';}).join(' | ');
           turno.localSeminario=localSeminariosPed;
@@ -6703,7 +6704,7 @@ Escala Diária por Turnos
         noite.local=tituloSeminarioPed(eventos);
         noite.atividade=noite.local;
         noite.horario='18h30-21h30';
-        noite.temas=eventos.map(s=>s.tema).join('\n');
+        noite.temas=eventos.map(s=>s.tema.replace(/ e /g,' | ').replace(/\n/g,' | ')).join(' | ');
         noite.apresentadores=eventos.map(s=>s.apresentadores.split(' • ').map(nomeCurtoPed).join(' • ')).join(' | ');
         noite.membros=[];
       }
@@ -7266,7 +7267,7 @@ function renderSeminarios() {
 const containerTurnos = el('lista-turnos');
 const agora = new Date();
 let html = '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-full overflow-y-auto pr-1 pb-4">';
-seminariosPed.map((s,i)=>({tipo:s.tipo,numero:s.tipo==='avaliacao'?null:String(i+1).padStart(2,'0'),data:escapar(s.data),hora:s.tipo==='avaliacao'?'Horário a definir':horarioSeminariosPed,mediador:escapar(s.orientador||'A definir'),apresentadores:escapar(s.apresentadores.split(' • ').map(nomeCurtoPed).join(' • ')),tema:escapar(s.tema)})).forEach(s => {
+seminariosPed.map((s,i)=>({tipo:s.tipo,numero:s.tipo==='avaliacao'?null:String(i+1).padStart(2,'0'),data:escapar(s.data),hora:s.tipo==='avaliacao'?'Horário a definir':horarioSeminariosPed,mediador:escapar(s.orientador||'A definir'),apresentadores:escapar(s.apresentadores.split(' • ').map(nomeCurtoPed).join(' • ')),tema:escapar(s.tema.replace(/ e /g,' | ').replace(/\n/g,' | '))})).forEach(s => {
 const avaliacao = s.tipo === 'avaliacao';
 const fimEvento = dataBrParaDate(s.data);
 const passado = Boolean(fimEvento && fimEvento < agora);
