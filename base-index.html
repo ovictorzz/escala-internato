@@ -6017,6 +6017,7 @@ ${iconeTurno}
 </div>
 <span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">${t.periodo}</span>
 <h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight ${turnoLivre ? 'mb-2' : 'mb-5'}">${escaparHTML(tituloLocal)}</h4>
+${detalhesResponsaveisPed(t)}
 ${ehSeminarioDetalhado ? `<div class="w-full text-left space-y-3 mb-5"><div class="rounded-xl bg-blue-500/[.07] border border-blue-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-blue-500 mb-1">Temas</span><p class="text-[10px] sm:text-[11px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed whitespace-pre-line">${escaparHTML(t.temas)}</p></div><div class="rounded-xl bg-indigo-500/[.07] border border-indigo-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-indigo-500 mb-1">Apresentadores</span><p class="text-[10px] sm:text-[11px] text-zinc-700 dark:text-zinc-200 font-bold leading-relaxed">${escaparHTML(t.apresentadores)}</p></div><div class="rounded-xl bg-emerald-500/[.08] border border-emerald-500/20 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-emerald-500 mb-1">${String(t.orientador || '').includes('|') ? 'Orientadores' : 'Orientador'}</span><p class="text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-300 font-black leading-relaxed">${escaparHTML(t.orientador)}</p></div><div class="rounded-xl bg-violet-500/[.08] border border-violet-500/20 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-violet-500 mb-1">Local</span><p class="text-[10px] sm:text-[11px] text-violet-700 dark:text-violet-300 font-black leading-relaxed">${escaparHTML(t.localSeminario)}</p></div></div>` : ''}
 ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4 max-w-[230px]">${mensagemTurnoLivre(t.periodo)}</p>` : ''}
 <div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10">
@@ -7550,9 +7551,26 @@ Escala Diária por Turnos
       const t=turnos.find(x=>x.periodo===o.periodo);if(!t)return;
       Object.assign(t,{local:o.local,horario:o.horario,atividade:o.local,membros:[],temas:'',apresentadores:'',seminarios:[],localSeminario:'',sci:null});
     });
+    turnos.forEach(t=>{t.responsaveis=responsaveisDataPed(t,dataCompleta);});
     return turnos;
   }
 
+  const regrasResponsaveisPed=[{"match":"HRL","dias":[3,4],"periodo":"Manhã","p":[["Dra. Fernanda Ramos","62999031811"]]},{"match":"HRL","dias":[4],"periodo":"Tarde","p":[["Dra. Bárbara Paes Leme","61999738878"]]},{"match":"UNIEURO Amb","dias":[1],"periodo":"Manhã","p":[["Dr. João Pimentel","61999816058"],["Dr. Celso","65984035194"]]},{"match":"UNIEURO Amb","dias":[4],"periodo":"Manhã","p":[["Dra. Virgínia Leite","61996369336"]]},{"match":"UNIEURO Amb","dias":[4],"periodo":"Tarde","p":[["Dra. Virgínia Leite","61996369336"]]},{"match":"UNIEURO Amb","dias":[5],"periodo":"Tarde","p":[["Dra. Isabela Serra","31994347802"]]},{"match":"HRT","dias":[1],"periodo":"Noite","p":[["Dr. Fernando Lino","61999752726"]]},{"match":"HRT","dias":[3,5],"periodo":"Tarde","p":[["Dr. Fernando Lino","61999752726"]]},{"match":"HRGu","dias":[1,2,3],"periodo":"Manhã","p":[["Dra. Daniela Marinho Vila Real Araújo","61996452515"]]},{"match":"HRGu","dias":[5],"periodo":"Manhã","p":[["Dra. Simone Araújo Dias","61999050717"]]},{"match":"Fissurados","dias":[1,3],"periodo":"Manhã","p":[["Dra. Rafaella Carvalho Amaral Marques Santiago","61992773355"]]},{"match":"BLH HRAN","dias":[2],"periodo":"Manhã","p":[["Dra. Rafaella Carvalho Amaral Marques Santiago","61992773355"]]},{"match":"BLH HRAN","dias":[2],"periodo":"Tarde","p":[["Dra. Rafaella Carvalho Amaral Marques Santiago","61992773355"]]},{"match":"UBS Vicente Pires","dias":[2],"periodo":"Manhã","p":[["Dra. Nayara Leal Ferreira Baldini","61991197574"]]},{"match":"UBS Vicente Pires","dias":[2],"periodo":"Tarde","p":[["Dra. Nayara Leal Ferreira Baldini","61991197574"]]},{"match":"UBS Planaltina","dias":[4,5],"periodo":"Manhã","p":[["Dra. Victoria Mendes","38988014042"]]},{"match":"UBS Planaltina","dias":[5],"periodo":"Tarde","p":[["Dra. Victoria Mendes","38988014042"]]},{"match":"UBS Planaltina","dias":[2,3],"periodo":"Manhã","p":[["Dra. Karellyne Barbosa Cunha Nobre","61995536376"]]},{"match":"UBS Planaltina","dias":[2],"periodo":"Tarde","p":[["Dra. Karellyne Barbosa Cunha Nobre","61995536376"]]},{"match":"UBS Taguatinga","dias":[1,5],"periodo":"Manhã","p":[["Dra. Sara da Rocha Viana","61992146512"]]},{"match":"HRSM","dias":[0,6],"periodo":"Manhã","p":[["Dra. Luiza Reis","61999182203"]]}];
+  regrasResponsaveisPed.push({match:'HRSM',excluir:'Pronto-socorro',dias:[1,2,3,4,5],periodo:'Manhã',p:[['Dra. Luiza Reis','61999182203']]});
+  const equipeHrsamPed=[["Dra. Luciana de Melo Russo","61999616631"],["Dra. Simone Ferreira Brito","61999761515"],["Dra. Elaine Cristina Rey Moura","61981892024"],["Dra. Adriana Rannielle Rodrigues Pereira de Sant’ana","61984617237"],["Dra. Aline Esmeraldo Andrade de Almeida","61981710612"],["Dr. Marcelo Feitosa","61999329919"]];
+  function responsaveisDataPed(turno,dataCompleta){
+    const partes=String(dataCompleta).split('/').map(Number),dia=new Date(partes[2],partes[1]-1,partes[0],12).getDay();
+    const local=String(turno.local||'');
+    if(local.includes('HRSAM')){
+      const dias={Manhã:[1,2,4,6],Tarde:[0,1,3,5,6],Noite:[3,4,6]};
+      return (dias[turno.periodo]||[]).includes(dia)?equipeHrsamPed:[];
+    }
+    return regrasResponsaveisPed.filter(r=>local.includes(r.match)&&(!r.excluir||!local.includes(r.excluir))&&r.dias.includes(dia)&&r.periodo===turno.periodo).flatMap(r=>r.p);
+  }
+  function detalhesResponsaveisPed(t){
+    if(!t.responsaveis?.length)return '';
+    return '<div class="w-full mt-2 mb-4 text-left rounded-xl bg-blue-500/[.06] border border-blue-500/15 p-3" data-ped-responsaveis><span class="block text-[8px] font-black uppercase tracking-wider text-blue-500 mb-2">'+(String(t.local).includes('HRSAM')?'Contatos da equipe':'Responsável'+(t.responsaveis.length>1?'s':''))+'</span>'+t.responsaveis.map(p=>'<div class="mb-2 last:mb-0"><p class="text-[11px] font-bold leading-relaxed">'+escapar(p[0])+'</p><a class="text-[10px] text-blue-500 font-semibold" href="tel:+55'+p[1]+'">('+p[1].slice(0,2)+') '+p[1].slice(2,7)+'-'+p[1].slice(7)+'</a></div>').join('')+'</div>';
+  }
   function dataSelecionadaPedCompleta(){
     return formatarDataCompletaPed(dataRodizioPed(semanaPed,indiceDiaPed(diaPed)));
   }
@@ -7847,7 +7865,7 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
   }
   function detalhesSeminarioDiaPed(turno){
     if(turno.sci)return detalhesSCIPed(turno);
-    if(!turno.temas||!turno.apresentadores)return '';
+    if(!turno.temas||!turno.apresentadores)return detalhesResponsaveisPed(turno);
     if(turno.seminarios?.length>1)return '<div class="w-full mt-2 space-y-3 text-left" data-ped-seminario-dia>'+apresentacoesSeparadasPed(turno.seminarios)+localDetalhesPed(turno)+'</div>';
     const conteudoTemas=temasSeparadosPed(turno.temas);
     return '<div class="mt-2 space-y-2 text-left" data-ped-seminario-dia>'+
@@ -8002,7 +8020,7 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
       var turnosHtml=turnos.map(function(t){
         var confirmado=atividadePedConfirmada(t.local);
         var livre=t.local==='—';
-        var texto=descricaoCompactaPed(t);
+        var texto=descricaoCompactaPed(t)+(t.responsaveis?.length?' — '+t.responsaveis.map(p=>p[0]+' ('+p[1].slice(0,2)+') '+p[1].slice(2,7)+'-'+p[1].slice(7)).join(' – '):'');
         var badge=confirmado
           ? 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20 shadow-inner'
           : (livre?'text-zinc-500 dark:text-zinc-400 bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/5':'text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5');
