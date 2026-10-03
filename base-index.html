@@ -5747,7 +5747,7 @@ let cards = '';
 ocorrencias.forEach(item => {
 const dataObj = dataEscalaParaDate(item.data);
 const passou = dataObj ? dataObj < inicioDoDiaPainel(agora) : false;
-const nomes = item.nomeGrupo.includes(':') ? item.nomeGrupo.split(':').slice(1).join(':').trim() : item.nomeGrupo;
+const nomes = item.nomeGrupo;
 const nomesIntegrantes = nomes;
 cards += `
 <article class="glass-panel rounded-2xl p-4 sm:p-5 border ${passou ? 'border-black/5 dark:border-white/5 opacity-55' : 'border-blue-500/20'} shadow-sm">
@@ -8148,11 +8148,14 @@ if(modoAtividadesPed==='ranking')return renderRankingAtividadesPed();
 const container = el('lista-turnos');
 if (!container) return;
 const atividade = atividadeSelecionadaPed || '';
-const ocorrencias = ocorrenciasAtividadePed(atividade).map(item=>({
+const ocorrencias = ocorrenciasAtividadePed(atividade).map(item=>{
+const membrosTrio=(item.membros&&item.membros.length?item.membros:(dadosTrioPedPorId(String(item.trio)).membros||[]));
+return {
 ...item,idTrio:item.trio,diaKey:diasPedConfig[(dataBrParaDate(item.data).getDay()+6)%7][0],
 diaNome:['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'][dataBrParaDate(item.data).getDay()],
-atividade:item.local,nomeGrupo:item.membros?.length?'Trio A'+item.trio+': '+item.membros.join(' – '):'Trio A'+item.trio
-}));
+atividade:item.local,membrosTrio,nomeGrupo:membrosTrio.length?membrosTrio.map(nomeCurtoPed).join(' & '):'Integrantes não cadastrados'
+};
+});
 const totalTrios = new Set(ocorrencias.map(item => item.idTrio)).size;
 const agora = new Date();
 let cards = '';
