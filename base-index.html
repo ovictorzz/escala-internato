@@ -6533,6 +6533,17 @@ Escala Diária por Turnos
     if(partes.length>1)return ((partes[0][0]||'')+(partes[1][0]||'')).toUpperCase();
     return String(nome||'T7').slice(0,2).toUpperCase();
   }
+
+  function dadosTrioPedPorId(id){
+    var select=el('grupo-select');
+    if(!select)return {nomeGrupo:'Trio A'+id,membros:[]};
+    var option=Array.prototype.slice.call(select.options).find(function(opt){return String(opt.value)===String(id);});
+    var texto=option?String(option.textContent||'').trim():'Trio A'+id;
+    var partes=texto.split(':');
+    var nomeGrupo=partes.length>1?partes.slice(1).join(':').trim():texto;
+    var membros=nomeGrupo.split(/\s*&\s*/).map(function(nome){return nome.trim();}).filter(Boolean);
+    return {nomeGrupo:nomeGrupo,membros:membros};
+  }
   function escapar(valor){
     return String(valor??'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];});
   }
@@ -6628,8 +6639,8 @@ Escala Diária por Turnos
     var lista=el('lista-membros');
     if(!select||!lista)return;
     var id=String(select.value||'1');
-    var dados=(typeof dadosEscala!=='undefined')?(dadosEscala[id]||dadosEscala[Number(id)]):null;
-    var membros=dados?.membros||[];
+    var dados=dadosTrioPedPorId(id);
+    var membros=dados.membros||[];
     lista.innerHTML='';
     membros.forEach(function(nome){
       lista.innerHTML+='<li class="flex items-center space-x-3 group cursor-default">'+
@@ -6716,9 +6727,9 @@ Escala Diária por Turnos
     if(refreshMode===undefined)refreshMode=true;
     var select=el('grupo-select');if(!select)return;
     var id=String(select.value||'1');
-    var dados=(typeof dadosEscala!=='undefined')?(dadosEscala[id]||dadosEscala[Number(id)]):null;
+    var dados=dadosTrioPedPorId(id);
     if(el('grupo-badge-num'))el('grupo-badge-num').textContent='A'+id;
-    if(el('titulo-grupo-header'))el('titulo-grupo-header').textContent=dados?.nomeGrupo||select.options[select.selectedIndex]?.textContent||('Trio A'+id);
+    if(el('titulo-grupo-header'))el('titulo-grupo-header').textContent=dados.nomeGrupo||select.options[select.selectedIndex]?.textContent||('Trio A'+id);
     renderMembros();
     atualizarProximaAtividade();
     atualizarResumo();
@@ -6740,8 +6751,8 @@ Escala Diária por Turnos
     var container=el('lista-turnos');if(!container)return;
     var html='<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 overflow-y-auto pr-1 pb-4 h-full content-start">';
     for(var i=1;i<=10;i++){
-      var dados=(typeof dadosEscala!=='undefined')?(dadosEscala[String(i)]||dadosEscala[i]):null;
-      var nome=dados?.nomeGrupo?.split(':')[1]||('Trio A'+i);
+      var dados=dadosTrioPedPorId(i);
+      var nome=dados.nomeGrupo||('Trio A'+i);
       var turnos=['Manhã','Tarde','Noite'].map(function(periodo){
         return '<div class="flex items-center justify-between text-[10px] py-1.5 px-3 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5"><span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit uppercase tracking-widest">'+periodo+'</span><span class="font-extrabold font-outfit text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5 px-2 py-0.5 rounded whitespace-normal leading-tight text-center border">Pendente</span></div>';
       }).join('');
