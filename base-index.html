@@ -166,7 +166,7 @@ main > header h2 {
 letter-spacing: -0.035em;
 }
 
-#banner-hero {
+:is(#banner-hero,#ped-banner-hero) {
 min-height: 108px;
 background:
 radial-gradient(circle at 88% 20%, rgba(34, 211, 238, 0.14), transparent 22%),
@@ -175,7 +175,7 @@ border-color: rgba(96, 165, 250, 0.32);
 box-shadow: 0 22px 55px -38px rgba(37, 99, 235, 0.8), inset 0 1px 0 rgba(255,255,255,.06);
 }
 
-#banner-hero::after {
+:is(#banner-hero,#ped-banner-hero)::after {
 content: "GO";
 position: absolute;
 right: 20px;
@@ -189,15 +189,15 @@ letter-spacing: -.08em;
 color: rgba(96, 165, 250, 0.075);
 }
 
-#semanas-tab-container button,
-#container-abas-dias button {
+:is(#semanas-tab-container,#ped-semanas-tab-container) button,
+:is(#container-abas-dias,#ped-container-abas-dias) button {
 position: relative;
 overflow: hidden;
 box-shadow: 0 10px 25px -22px rgba(0, 0, 0, .85);
 }
 
-#semanas-tab-container button::before,
-#container-abas-dias button::before {
+:is(#semanas-tab-container,#ped-semanas-tab-container) button::before,
+:is(#container-abas-dias,#ped-container-abas-dias) button::before {
 content: "";
 position: absolute;
 inset: 0;
@@ -206,18 +206,18 @@ transform: translateX(-120%);
 transition: transform .55s ease;
 }
 
-#semanas-tab-container button:hover::before,
-#container-abas-dias button:hover::before {
+:is(#semanas-tab-container,#ped-semanas-tab-container) button:hover::before,
+:is(#container-abas-dias,#ped-container-abas-dias) button:hover::before {
 transform: translateX(120%);
 }
 
-#lista-turnos > div > div,
-#lista-turnos .glass-panel {
+:is(#lista-turnos,#ped-lista-turnos) > div > div,
+:is(#lista-turnos,#ped-lista-turnos) .glass-panel {
 transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease, background-color .25s ease;
 }
 
-#lista-turnos > div > div:hover,
-#lista-turnos .glass-panel:hover {
+:is(#lista-turnos,#ped-lista-turnos) > div > div:hover,
+:is(#lista-turnos,#ped-lista-turnos) .glass-panel:hover {
 transform: translateY(-3px);
 box-shadow: 0 22px 48px -32px rgba(37, 99, 235, .75);
 }
@@ -249,7 +249,7 @@ box-shadow: 0 35px 90px -30px rgba(37,99,235,.55), 0 14px 38px -26px rgba(0,0,0,
 /* Segurança estrutural do login: o dashboard só aparece depois da autenticação. */
 body:not(.app-authenticated) > aside,
 body:not(.app-authenticated) > main,
-body:not(.app-authenticated) > #mobile-bottom-nav,
+body:not(.app-authenticated) > :is(#mobile-bottom-nav,#ped-mobile-bottom-nav),
 body:not(.app-authenticated) > #notification-backdrop,
 body:not(.app-authenticated) > a[href^="https://wa.me/"] {
 display: none !important;
@@ -330,7 +330,7 @@ animation: student-picker-in .22s cubic-bezier(.2,.8,.2,1) both;
 @keyframes student-picker-mobile-in { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 }
 
-#contador-capotes-val {
+:is(#contador-capotes-val,#ped-contador-capotes-val) {
 filter: drop-shadow(0 12px 22px rgba(59, 130, 246, .18));
 }
 
@@ -341,8 +341,8 @@ main { padding: 1.35rem 1.55rem !important; }
 
 @media (max-width: 1023px) {
 body > aside::after { display: none; }
-#banner-hero { min-height: 94px; }
-#banner-hero::after { right: 14px; opacity: .75; }
+:is(#banner-hero,#ped-banner-hero) { min-height: 94px; }
+:is(#banner-hero,#ped-banner-hero)::after { right: 14px; opacity: .75; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1462,7 +1462,7 @@ border-right-color: rgba(244, 114, 182, .16);
 background: linear-gradient(to bottom, transparent, rgba(236, 72, 153, .75), transparent);
 }
 
-.tema-rosa #banner-hero {
+.tema-rosa :is(#banner-hero,#ped-banner-hero) {
 background:
 radial-gradient(circle at 88% 20%, rgba(251, 113, 133, .14), transparent 22%),
 linear-gradient(115deg, rgba(219, 39, 119, .22), rgba(192, 38, 211, .09) 45%, rgba(24, 4, 18, .08));
@@ -1470,12 +1470,12 @@ border-color: rgba(244, 114, 182, .36);
 box-shadow: 0 22px 55px -38px rgba(219, 39, 119, .9), inset 0 1px 0 rgba(255,255,255,.06);
 }
 
-.tema-rosa #banner-hero::after { color: rgba(244, 114, 182, .09); }
-.tema-rosa #lista-turnos > div > div:hover,
-.tema-rosa #lista-turnos .glass-panel:hover { box-shadow: 0 22px 48px -32px rgba(219, 39, 119, .78); }
+.tema-rosa :is(#banner-hero,#ped-banner-hero)::after { color: rgba(244, 114, 182, .09); }
+.tema-rosa :is(#lista-turnos,#ped-lista-turnos) > div > div:hover,
+.tema-rosa :is(#lista-turnos,#ped-lista-turnos) .glass-panel:hover { box-shadow: 0 22px 48px -32px rgba(219, 39, 119, .78); }
 .tema-rosa #login-overlay > .glass-panel { box-shadow: 0 35px 90px -30px rgba(219, 39, 119, .6), inset 0 1px 0 rgba(255,255,255,.08); }
 .tema-rosa #login-overlay > .glass-panel::before { background: linear-gradient(90deg, transparent, #f472b6, #d946ef, transparent); }
-.tema-rosa #contador-capotes-val { filter: drop-shadow(0 12px 22px rgba(236, 72, 153, .22)); }
+.tema-rosa :is(#contador-capotes-val,#ped-contador-capotes-val) { filter: drop-shadow(0 12px 22px rgba(236, 72, 153, .22)); }
 .tema-rosa .dashboard-status { background: rgba(236, 72, 153, .08); border-color: rgba(244, 114, 182, .2); }
 .tema-rosa .dashboard-clock { background: linear-gradient(135deg, rgba(219,39,119,.2), rgba(192,38,211,.18)); color: #f9a8d4; border-color: rgba(244,114,182,.26); }
 .tema-rosa .trio-spotlight::before,
@@ -1690,8 +1690,8 @@ html:not(.dark) .timeline-dot { background: rgba(255,255,255,.96); border-color:
 html:not(.dark) .command-dialog { background: rgba(255,255,255,.98); border-color: rgba(0,0,0,.1); box-shadow: 0 40px 100px -40px rgba(15,23,42,.45); }
 .admin-kpi { position: relative; overflow: hidden; }
 .admin-kpi::after { content: ''; position: absolute; width: 75px; height: 75px; right: -25px; top: -28px; border-radius: 50%; background: rgba(99,102,241,.09); }
-#mobile-bottom-nav { padding-bottom: max(8px, env(safe-area-inset-bottom)); background: rgba(7,9,16,.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,.08); }
-html:not(.dark) #mobile-bottom-nav { background: rgba(255,255,255,.92); border-top-color: rgba(0,0,0,.08); }
+:is(#mobile-bottom-nav,#ped-mobile-bottom-nav) { padding-bottom: max(8px, env(safe-area-inset-bottom)); background: rgba(7,9,16,.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,.08); }
+html:not(.dark) :is(#mobile-bottom-nav,#ped-mobile-bottom-nav) { background: rgba(255,255,255,.92); border-top-color: rgba(0,0,0,.08); }
 .mobile-bottom-item { min-width: 58px; color: #71717a; transition: color .2s ease, transform .2s ease; }
 .mobile-bottom-item.is-active { color: #60a5fa; transform: translateY(-2px); }
 .tema-rosa .mobile-bottom-item.is-active { color: #f472b6; }
@@ -6315,7 +6315,7 @@ Internato de Pediatria
 </div>
 <div class="dashboard-topbar-actions flex items-center gap-2 sm:gap-2.5">
 <div class="relative">
-<button id="ped-notification-trigger" onclick="toggleNotificacoesPed()" class="premium-action" title="Central de notificações" aria-label="Abrir notificações" aria-controls="ped-notification-panel" aria-expanded="false">
+<button id="ped-notification-trigger" onclick="toggleNotificacoesPed()" class="premium-action" title="Central de notificações" aria-label="Abrir notificações" aria-controls="notification-panel" aria-expanded="false">
 <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 00-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 01-6 0"/></svg>
 <span id="ped-notification-count" class="notification-count hidden">0</span>
 </button>
@@ -6372,7 +6372,7 @@ A1
 <div class="lg:col-span-7 grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
 <div class="stat-card stat-periodo glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center">
 <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Período</span>
-<span class="text-base sm:text-xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-white dark:to-zinc-300 truncate" id="ped-stat-semana">-- de 9</span>
+<span class="text-base sm:text-xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-white dark:to-zinc-300 truncate" id="ped-stat-semana">-- de 10</span>
 </div>
 <div class="stat-card stat-turnos glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center">
 <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Turnos/Sem.</span>
@@ -6402,7 +6402,7 @@ A1
 <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
 <span>Navegação por Semanas</span>
 </span>
-<div class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2.5 w-full" id="ped-semanas-tab-container"></div>
+<div class="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-10 gap-2.5 w-full" id="ped-semanas-tab-container"></div>
 </div>
 <div id="ped-banner-hero" class="relative bg-gradient-to-r from-blue-900/20 via-black/5 to-black/5 dark:from-blue-900/30 dark:via-black/40 dark:to-black/40 border border-blue-500/30 rounded-2xl p-4 sm:p-5 shadow-lg overflow-hidden flex flex-col justify-center backdrop-blur-xl shrink-0">
 <div class="relative z-10 space-y-1">
@@ -6646,7 +6646,17 @@ Escala Diária por Turnos
     return periodosPed.map(function(p){
       var local=entrada[p.key]||'—';
       if(local==='Seminário')local='Seminário • Sala 03';
-      return {periodo:p.nome,horario:horarioAtividadePed(p.nome,local),local:local};
+      var turno={periodo:p.nome,horario:horarioAtividadePed(p.nome,local),local:local};
+      if(local.indexOf('Seminário')===0){
+        var eventos=seminariosPed.filter(function(s){return s.data===dataCompleta&&s.tipo!=='avaliacao';});
+        if(eventos.length){
+          turno.atividade='Seminário';turno.temas=eventos.map(function(s){return s.tema;}).join('\n');
+          turno.apresentadores=eventos.map(function(s){return s.apresentadores;}).join(' | ');
+          turno.orientador=eventos.map(function(s){return s.orientador||'A definir';}).join(' | ');
+          turno.localSeminario=localSeminariosPed;
+        }
+      }
+      return turno;
     });
   }
 
@@ -6853,33 +6863,51 @@ Escala Diária por Turnos
     });
   }
 
-  function iconeTurno(periodo){
+  function iconeTurnoPed(periodo){
     if(periodo==='Manhã')return '<svg class="w-7 h-7 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
     if(periodo==='Tarde')return '<svg class="w-7 h-7 text-orange-500 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
     return '<svg class="w-7 h-7 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
   }
 
-  function cardTurnoPed(turno){
-    var confirmado=atividadePedConfirmada(turno.local);
-    var livre=turno.local==='—';
-    var pendente=turno.local==='Escala não enviada';
-    var cls=turno.periodo==='Manhã'?'turno-manha':(turno.periodo==='Tarde'?'turno-tarde':'turno-noite');
-    var borda=confirmado?'border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-900/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]':'glass-panel opacity-70';
-    var titulo=livre?'Turno livre':(pendente?'Escala não enviada':turno.local);
-    var mensagem=livre?'Sem atividade programada neste turno.':(pendente?'Aguardando informação para este turno.':'');
-    var status=confirmado?'Obrigatório':(livre?'Livre':'Pendente');
-    var statusCls=confirmado?'bg-blue-600 text-white shadow-md':'bg-black/5 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 border border-black/10 dark:border-white/10';
+  function estadoTurnoPed(data,turno,agora=new Date()){
+    const alvo=dataBrParaDate(data);alvo.setHours(0,0,0,0);
+    const hoje=new Date(agora);hoje.setHours(0,0,0,0);
+    if(alvo<hoje)return 'passado';if(alvo>hoje)return 'futuro';
+    const faixa=typeof obterFaixaHorarioTurno==='function'?obterFaixaHorarioTurno(turno.horario,turno.periodo):{inicio:420,fim:780};
+    const minutos=agora.getHours()*60+agora.getMinutes();
+    return minutos<faixa.inicio?'futuro':(minutos>=faixa.fim?'passado':'agora');
+  }
 
-    return '<div class="turno-card '+cls+' '+borda+' border hover:border-blue-500/60 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all duration-300 shadow-md group relative overflow-hidden h-full min-h-[200px]">'+
-      (confirmado?'<div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>':'')+
-      '<div class="w-14 h-14 rounded-full bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 flex items-center justify-center shadow-inner mb-4 group-hover:scale-110 transition-transform duration-300">'+iconeTurno(turno.periodo)+'</div>'+
-      '<span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">'+turno.periodo+'</span>'+
-      '<h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight '+(livre||pendente?'mb-2':'mb-5')+'">'+escapar(titulo)+'</h4>'+
-      ((livre||pendente)?'<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4 max-w-[230px]">'+mensagem+'</p>':'')+
-      '<div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10"><div class="flex justify-between items-center gap-2">'+
-      '<span class="text-xs font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">'+escapar(turno.horario)+'</span>'+
-      '<span class="px-3 py-1.5 rounded-lg '+statusCls+' text-[10px] font-outfit font-bold uppercase tracking-wide transition-colors">'+status+'</span>'+
-      '</div></div></div>';
+  function cardTurnoPed(t){
+    const hasPlantao=atividadePedConfirmada(t.local);
+    const turnoLivre=t.local==='—';
+    const ehSeminarioDetalhado=Boolean(t.temas&&t.apresentadores&&t.localSeminario);
+    const tituloLocal=turnoLivre?'Turno livre':(ehSeminarioDetalhado?t.atividade:t.local);
+    const cardBorder=hasPlantao?'border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-900/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]':'glass-panel opacity-70';
+    const turnoClass=t.periodo==='Manhã'?'turno-manha':(t.periodo==='Tarde'?'turno-tarde':'turno-noite');
+    const iconeTurno=iconeTurnoPed(t.periodo);
+    const estadoTemporal=estadoTurnoPed(dataSelecionadaPedCompleta(),t);
+    const classeTemporal=estadoTemporal==='passado'?'turno-passado-card':(estadoTemporal==='agora'?'turno-atual-card':'');
+    const indicadorTemporal=estadoTemporal==='passado'?'<span class="temporal-status-badge temporal-status-passado">Concluído</span>':(estadoTemporal==='agora'?'<span class="temporal-status-badge temporal-status-agora">Agora</span>':'');
+return `
+<div data-estado-temporal="${estadoTemporal}" aria-label="${t.periodo}: ${estadoTemporal === 'agora' ? 'turno vigente' : (estadoTemporal === 'passado' ? 'turno concluído' : 'próximo turno')}" class="turno-card ${turnoClass} ${classeTemporal} ${cardBorder} border hover:border-blue-500/60 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all duration-300 shadow-md group relative overflow-hidden h-full min-h-[200px]">
+${indicadorTemporal}
+${hasPlantao ? '<div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>' : ''}
+<div class="w-14 h-14 rounded-full bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 flex items-center justify-center shadow-inner mb-4 group-hover:scale-110 transition-transform duration-300">
+${iconeTurno}
+</div>
+<span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">${t.periodo}</span>
+<h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight ${turnoLivre ? 'mb-2' : 'mb-5'}">${escapar(tituloLocal)}</h4>
+${ehSeminarioDetalhado ? `<div class="w-full text-left space-y-3 mb-5"><div class="rounded-xl bg-blue-500/[.07] border border-blue-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-blue-500 mb-1">Temas</span><p class="text-[10px] sm:text-[11px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed whitespace-pre-line">${escapar(t.temas)}</p></div><div class="rounded-xl bg-indigo-500/[.07] border border-indigo-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-indigo-500 mb-1">Apresentadores</span><p class="text-[10px] sm:text-[11px] text-zinc-700 dark:text-zinc-200 font-bold leading-relaxed">${escapar(t.apresentadores)}</p></div><div class="rounded-xl bg-emerald-500/[.08] border border-emerald-500/20 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-emerald-500 mb-1">${String(t.orientador || '').includes('|') ? 'Orientadores' : 'Orientador'}</span><p class="text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-300 font-black leading-relaxed">${escapar(t.orientador)}</p></div><div class="rounded-xl bg-violet-500/[.08] border border-violet-500/20 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-violet-500 mb-1">Local</span><p class="text-[10px] sm:text-[11px] text-violet-700 dark:text-violet-300 font-black leading-relaxed">${escapar(t.localSeminario)}</p></div></div>` : ''}
+${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4 max-w-[230px]">${'Sem atividade programada neste turno.'}</p>` : ''}
+<div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10">
+<div class="flex justify-between items-center gap-2">
+<span class="text-xs font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">${t.horario}</span>
+<span class="px-3 py-1.5 rounded-lg ${hasPlantao ? 'bg-blue-600 text-white shadow-md' : 'bg-black/5 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 border border-black/10 dark:border-white/10'} text-[10px] font-outfit font-bold uppercase tracking-wide transition-colors">${hasPlantao ? "Obrigatório" : (t.local === 'Escala não enviada' ? "Pendente" : "Livre")}</span>
+</div>
+</div>
+</div>
+`;
   }
 
   function renderTurnosPed(trioId){
@@ -6990,21 +7018,31 @@ Escala Diária por Turnos
     }
   };
 
+  window.abrirDiaDaEscalaPed=function(trio,semana,dia){
+    el('grupo-select').value=String(trio);semanaPed=Number(semana);diaPed=dia;
+    window.renderizarSemanasPed();window.renderizarAbasDiasPed();
+    window.mudarGrupoPed(false);window.alternarModoPed('individual');
+  };
   function renderHoje(){
-    var container=el('lista-turnos');if(!container)return;
-    var agora=new Date();
-    var dataHoje=pad2(agora.getDate())+'/'+pad2(agora.getMonth()+1)+'/'+agora.getFullYear();
-    var trio=String(el('grupo-select')?.value||'1');
-    var turnos=turnosPedPorData(trio,dataHoje);
-
-    var label=el('label-dia-topo');
-    var nomes=['DOMINGO','SEGUNDA-FEIRA','TERÇA-FEIRA','QUARTA-FEIRA','QUINTA-FEIRA','SEXTA-FEIRA','SÁBADO'];
-    if(label)label.textContent=nomes[agora.getDay()]+' • '+pad2(agora.getDate())+'/'+pad2(agora.getMonth()+1);
-
-    var titulo=el('titulo-banner-hero');
-    if(titulo)titulo.textContent='Seu dia na Pediatria';
-
-    container.innerHTML='<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">'+turnos.map(cardTurnoPed).join('')+'</div>';
+    const container=el('lista-turnos');if(!container)return;
+    const agora=new Date(),idTrio=String(el('grupo-select')?.value||'1');
+    const data=formatarDataCompletaPed(agora);
+    const infoDia={nome:['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'][agora.getDay()],data:formatarDataCurtaPed(agora)};
+    const turnos=turnosPedPorData(idTrio,data);
+    const futuro=proximoEventoPed();
+    const proxima=futuro?{infoDia:{nome:'Próxima atividade',data:futuro.data},turno:futuro,semana:semanaDaDataPed(futuro.data),diaKey:diasPedConfig[(dataBrParaDate(futuro.data).getDay()+6)%7][0]}:null;
+    const proximaTexto=futuro?futuro.data+' • '+futuro.periodo:'Nenhuma atividade futura';
+    const recado=null,atividadesHoje=turnos.filter(t=>atividadePedConfirmada(t.local)).length;
+    let primeiroFuturoMarcado=false,timelineHtml='';
+    turnos.forEach(turno=>{
+      const estado=estadoTurnoPed(data,turno,agora),confirmado=atividadePedConfirmada(turno.local),pendente=turno.local==='Escala não enviada';
+      let rotulo=estado==='agora'?'Agora':(estado==='passado'?'Concluído':'Mais tarde');
+      if(estado==='futuro'&&!primeiroFuturoMarcado){rotulo='Próximo';primeiroFuturoMarcado=true;}
+      const local=confirmado?turno.local:(pendente?'Escala não enviada':'Turno livre');
+      const status=confirmado?'Atividade obrigatória':(pendente?'Aguardando envio da escala':'Sem atividade programada neste turno.');
+      timelineHtml+=`<div class="timeline-item" data-state="${estado}"><div class="timeline-dot">${iconeTurnoPed(turno.periodo)}</div><div class="timeline-card"><div class="flex items-start justify-between gap-3"><div><div class="flex items-center gap-2 flex-wrap"><span class="text-[10px] font-black uppercase tracking-[.18em] text-blue-500">${escapar(turno.periodo)}</span><span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${estado === 'agora' ? 'bg-blue-500 text-white' : 'bg-black/5 dark:bg-white/5 text-zinc-500'}">${rotulo}</span></div><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-1.5">${escapar(local)}</h4><p class="text-[10px] text-zinc-500 mt-1">${escapar(status)}</p></div><span class="shrink-0 text-[10px] font-bold text-zinc-600 dark:text-zinc-300 bg-black/5 dark:bg-black/25 border border-black/5 dark:border-white/5 px-2.5 py-1.5 rounded-lg">${escapar(turno.horario)}</span></div></div></div>`;
+    });
+    container.innerHTML=`<div class="today-shell space-y-4 pb-4"><section class="today-hero glass-panel rounded-3xl p-5 sm:p-6"><div class="relative z-10 flex items-start justify-between gap-4"><div><span class="text-[10px] font-black uppercase tracking-[.2em] text-blue-500">${obterSaudacaoTemporal(agora)}</span><h3 class="font-outfit font-black text-2xl sm:text-3xl text-zinc-900 dark:text-white mt-2">${escapar(infoDia.nome)}, ${infoDia.data}</h3><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2">${atividadesHoje ? `${atividadesHoje} atividade${atividadesHoje > 1 ? 's' : ''} programada${atividadesHoje > 1 ? 's' : ''} para o Trio A${idTrio}.` : 'Seu trio está livre hoje.'}</p></div><span class="hidden sm:inline-flex px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold">● Painel atualizado</span></div></section><div class="grid grid-cols-1 xl:grid-cols-12 gap-4"><section class="xl:col-span-8 glass-panel rounded-3xl p-4 sm:p-5"><div class="flex items-center justify-between mb-3"><div><span class="text-[9px] font-black uppercase tracking-[.2em] text-blue-500">Linha do tempo</span><h3 class="font-outfit font-extrabold text-lg text-zinc-900 dark:text-white mt-1">Manhã, tarde e noite</h3></div><span class="text-[10px] font-mono font-bold text-zinc-500">${agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span></div><div class="timeline-list">${timelineHtml}</div></section><aside class="xl:col-span-4 space-y-4"><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-blue-500">Próxima atividade</span><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-2">${escapar(proximaTexto)}</h4><p class="text-[11px] text-zinc-500 mt-1">${proxima ? escapar(proxima.turno.local) : 'Aproveite o tempo livre.'}</p>${proxima ? `<button onclick="abrirDiaDaEscalaPed('${idTrio}', ${proxima.semana}, '${proxima.diaKey}')" class="mt-4 text-[10px] font-bold text-blue-500 hover:text-blue-400">Abrir na escala →</button>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><div class="flex items-center justify-between"><span class="text-[9px] font-black uppercase tracking-[.18em] text-violet-500">Último recado</span><button onclick="alternarModoPed('recados')" class="text-[9px] font-bold text-blue-500">Ver mural</button></div><p class="text-xs text-zinc-600 dark:text-zinc-300 mt-3 leading-relaxed">${recado ? escapar(recado.texto) : 'Nenhum aviso publicado até o momento.'}</p>${recado ? `<span class="block text-[9px] text-zinc-500 mt-2">${escapar(recado.autor || 'Turma T7A')}</span>` : ''}</div><div class="quick-card glass-panel rounded-3xl p-5"><span class="text-[9px] font-black uppercase tracking-[.18em] text-emerald-500">Seminários</span><div class="flex items-end justify-between mt-2"><div><strong class="font-outfit font-black text-3xl text-zinc-900 dark:text-white">${seminariosPed.length}</strong><span class="text-[10px] text-zinc-500 ml-1">eventos</span></div><button onclick="alternarModoPed('seminarios')" class="px-3 py-2 rounded-xl bg-emerald-500/10 text-emerald-500 text-[10px] font-bold border border-emerald-500/20">Ver agenda</button></div></div></aside></div></div>`;
   }
 
   function renderGeral(){
@@ -7146,23 +7184,52 @@ Escala Diária por Turnos
     popularFiltroAtividadesPed();
   }
 
-  function renderSeminarios(){
-    var c=el('lista-turnos');if(!c)return;
-    var agora=new Date();
-    var trio=String(el('grupo-select')?.value||'1');
-    var html='<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-full overflow-y-auto pr-1 pb-4">';
-    seminariosPed.forEach(function(item){
-      var avaliacao=item.tipo==='avaliacao';
-      var passado=dataBrParaDate(item.data)<agora;
-      var proprio=String(item.trio)===trio;
-      var cardClass=passado?'opacity-50 saturate-[.45] bg-zinc-500/5 border-zinc-500/20 hover:opacity-60':(avaliacao?'bg-amber-500/[.07] border-amber-500/35 shadow-[0_0_22px_rgba(245,158,11,.08)]':(proprio?'border-blue-500/40 shadow-[0_0_24px_rgba(59,130,246,.12)]':'border-black/5 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5'));
-      var barra=avaliacao?'from-amber-400 to-orange-500':(passado?'from-zinc-500/40 to-zinc-400/30':'from-blue-500/50 to-indigo-500/50');
-      var dataClass=avaliacao?'bg-amber-500/15 border-amber-500/30 text-amber-600 dark:text-amber-300':(passado?'bg-zinc-500/10 border-zinc-500/20 text-zinc-500':'bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400');
-      var tag=avaliacao?'<span class="px-2.5 py-1 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-300 text-[9px] font-black uppercase tracking-widest">Avaliação</span>':'<span class="px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-black uppercase tracking-widest">'+(item.trio==='geral'?'Turma T7A':'Trio '+item.trio)+'</span>';
-      html+='<div class="glass-panel rounded-2xl p-4 transition-all shadow-md group border flex flex-col h-full relative overflow-hidden '+cardClass+'"><div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r '+barra+'"></div><div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-black/5 dark:border-white/10 mb-3"><div class="flex flex-wrap items-center gap-2"><span class="px-2 py-1 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-outfit font-black text-[9px] uppercase tracking-wider">'+(avaliacao?'Avaliação Somativa':'Seminário')+'</span><span class="px-2.5 py-1 rounded-md border font-outfit font-extrabold text-[11px] '+dataClass+'">'+escapar(item.data)+'</span><span class="text-[11px] font-semibold text-zinc-600 dark:text-zinc-300 font-outfit">'+(avaliacao?'Horário a definir':horarioSeminariosPed+' • '+localSeminariosPed)+'</span></div><div class="flex items-center gap-1.5">'+tag+(passado?'<span class="px-2 py-1 rounded-md bg-zinc-500/10 border border-zinc-500/20 text-zinc-500 text-[8px] font-black uppercase tracking-widest">Realizado</span>':'')+'</div></div><div class="space-y-3 flex-grow flex flex-col">'+(avaliacao?'':'<div><span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">Apresentadores</span><p class="text-xs font-bold dark:text-white text-zinc-900 leading-snug">'+escapar(item.apresentadores)+'</p></div>')+'<div class="mt-auto pt-2"><span class="text-[9px] font-bold '+(avaliacao?'text-amber-600 dark:text-amber-400':'text-indigo-600 dark:text-indigo-400')+' uppercase tracking-widest block mb-1">'+(avaliacao?'Atividade':'Tema')+'</span><p class="text-sm font-outfit font-extrabold dark:text-zinc-100 text-zinc-800 leading-snug whitespace-pre-line">'+escapar(item.tema)+'</p></div></div></div>';
-    });
-    html+='</div>';c.innerHTML=html;
-  }
+function renderSeminarios() {
+const containerTurnos = el('lista-turnos');
+const agora = new Date();
+let html = '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-full overflow-y-auto pr-1 pb-4">';
+seminariosPed.map((s,i)=>({tipo:s.tipo,numero:s.tipo==='avaliacao'?null:i+1,data:escapar(s.data),hora:s.tipo==='avaliacao'?'Horário a definir':horarioSeminariosPed+' • '+localSeminariosPed,mediador:escapar(s.orientador||'A definir'),apresentadores:escapar(s.apresentadores),tema:escapar(s.tema)})).forEach(s => {
+const avaliacao = s.tipo === 'avaliacao';
+const fimEvento = dataBrParaDate(s.data);
+const passado = Boolean(fimEvento && fimEvento < agora);
+const cardClass = passado
+? 'opacity-50 saturate-[.45] bg-zinc-500/5 border-zinc-500/20 hover:opacity-60'
+: (avaliacao ? 'bg-amber-500/[.07] border-amber-500/35 shadow-[0_0_22px_rgba(245,158,11,.08)]' : 'border-black/5 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5');
+const barraClass = avaliacao
+? 'from-amber-400 to-orange-500'
+: (passado ? 'from-zinc-500/40 to-zinc-400/30' : 'from-blue-500/50 to-indigo-500/50');
+const dataClass = avaliacao
+? 'bg-amber-500/15 border-amber-500/30 text-amber-600 dark:text-amber-300'
+: (passado ? 'bg-zinc-500/10 border-zinc-500/20 text-zinc-500' : 'bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400');
+const cabecalhoDireito = avaliacao
+? '<span class="px-2.5 py-1 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-300 text-[9px] font-black uppercase tracking-widest">Avaliação</span>'
+: (s.numero
+? `<div class="flex items-center space-x-1.5 text-[10px] bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20"><span class="text-emerald-600 dark:text-emerald-400">${String(s.mediador || '').includes('|') ? 'Orientadores:' : 'Orientador:'}</span><span class="dark:text-white text-zinc-900 font-bold font-outfit">${s.mediador}</span></div>`
+: `<div class="flex items-center space-x-1.5 text-[10px] bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-md border border-black/5 dark:border-white/5"><span class="text-zinc-500 dark:text-zinc-400">Mediador:</span><span class="dark:text-white text-zinc-900 font-bold font-outfit">${s.mediador}</span></div>`);
+html += `
+<div class="glass-panel rounded-2xl p-4 transition-all shadow-md group border flex flex-col h-full relative overflow-hidden ${cardClass}">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${barraClass}"></div>
+<div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-black/5 dark:border-white/10 mb-3">
+<div class="flex flex-wrap items-center gap-2">
+${s.numero ? `<span class="px-2 py-1 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-outfit font-black text-[9px] uppercase tracking-wider">Seminário ${s.numero}</span>` : ''}
+<span class="px-2.5 py-1 rounded-md border font-outfit font-extrabold text-[11px] ${dataClass}">${s.data}</span>
+<span class="text-[11px] font-semibold text-zinc-600 dark:text-zinc-300 font-outfit">${s.hora.replace('\n', ' • ')}</span>
+</div>
+<div class="flex items-center gap-1.5">${cabecalhoDireito}${passado ? '<span class="px-2 py-1 rounded-md bg-zinc-500/10 border border-zinc-500/20 text-zinc-500 text-[8px] font-black uppercase tracking-widest">Realizado</span>' : ''}</div>
+</div>
+<div class="space-y-3 flex-grow flex flex-col">
+${avaliacao ? '' : `<div><span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">Apresentadores</span><p class="text-xs font-bold dark:text-white text-zinc-900 leading-snug">${s.apresentadores}</p></div>`}
+<div class="mt-auto pt-2">
+<span class="text-[9px] font-bold ${avaliacao ? 'text-amber-600 dark:text-amber-400' : 'text-zinc-400 dark:text-zinc-500'} uppercase tracking-widest block mb-1.5">${avaliacao ? 'Avaliação Somativa' : 'Temas Abordados'}</span>
+<p class="text-[11px] whitespace-pre-line leading-relaxed ${avaliacao ? 'font-black text-amber-700 dark:text-amber-200 bg-amber-500/15 border-amber-500/30' : 'font-medium text-zinc-600 dark:text-zinc-300 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5'} p-2.5 rounded-lg border">${s.tema}</p>
+</div>
+</div>
+</div>
+`;
+});
+html += '</div>';
+containerTurnos.innerHTML = html;
+}
 
   function estadoTemporalDataPed(dataObj){
     var hoje=new Date();hoje.setHours(0,0,0,0);
@@ -7311,6 +7378,7 @@ Escala Diária por Turnos
       if(span)span.textContent=labels[modo];
     }
 
+    if(el('titulo-banner-hero'))el('titulo-banner-hero').textContent='Escala Diária por Turnos';
     if(modo==='individual')renderTurnosPed();
     else if(modo==='hoje')renderHoje();
     else if(modo==='geral')renderGeral();
@@ -7376,3 +7444,4 @@ Escala Diária por Turnos
 </script>
 </body>
 </html>
+
