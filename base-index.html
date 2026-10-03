@@ -6763,13 +6763,55 @@ Escala Diária por Turnos
     window.mudarGrupoPed(false);
   }
 
+  function dataHoraInicioTurnoPed(data,turno){
+    var p=String(data||'').split('/').map(Number);
+    if(p.length!==3)return null;
+    var hora=7,min=0;
+    if(turno.periodo==='Tarde'){hora=13;min=0;}
+    if(turno.periodo==='Noite'){hora=18;min=0;}
+    if(String(turno.local||'').toLowerCase().indexOf('seminário')>=0){hora=18;min=30;}
+    return new Date(p[2],p[1]-1,p[0],hora,min,0,0);
+  }
+
+  function proximasAtividadesTrio1Ped(){
+    var itens=[];
+    Object.keys(pedEscalaTrio1Oficial).forEach(function(data){
+      turnosPedPorData('1',data).forEach(function(turno){
+        if(!atividadePedConfirmada(turno.local))return;
+        itens.push({
+          data:data,
+          periodo:turno.periodo,
+          horario:turno.horario,
+          local:turno.local,
+          inicio:dataHoraInicioTurnoPed(data,turno)
+        });
+      });
+    });
+    return itens.sort(function(a,b){return (a.inicio?.getTime()||0)-(b.inicio?.getTime()||0);});
+  }
+
   function proximoEventoPed(){
     var trio=String(el('grupo-select')?.value||'1');
     var agora=new Date();
-    return seminariosPed
+    if(trio==='1'){
+      var atividade=proximasAtividadesTrio1Ped().find(function(item){
+        return item.inicio&&item.inicio>=agora;
+      });
+      if(atividade)return atividade;
+    }
+    var seminario=seminariosPed
       .filter(function(item){return item.trio==='geral'||String(item.trio)===trio;})
       .filter(function(item){return dataBrParaDate(item.data)>=agora;})
       .sort(function(a,b){return dataBrParaDate(a.data)-dataBrParaDate(b.data);})[0]||null;
+    if(!seminario)return null;
+    return {
+      data:seminario.data,
+      periodo:'Noite',
+      horario:seminario.tipo==='avaliacao'?'A definir':'18h30-21h30',
+      local:seminario.tipo==='avaliacao'?seminario.tema:('Seminário • '+localSeminariosPed),
+      tema:seminario.tema,
+      tipo:seminario.tipo||'seminario'
+    };
   }
 
   function atualizarProximaAtividade(){
@@ -6782,8 +6824,8 @@ Escala Diária por Turnos
       box.innerHTML='<span class="italic">Aguardando novas informações da Pediatria.</span>';
       return;
     }
-    badge.textContent='Próxima: '+proximo.data;
-    box.innerHTML='<span class="font-bold text-blue-300">'+escapar(proximo.data)+(proximo.tipo==='avaliacao'?'':' • '+horarioSeminariosPed+' • '+localSeminariosPed)+'</span><br><span>'+escapar(proximo.tema).replace(/\n/g,' • ')+'</span>';
+    badge.textContent='Próxima: '+proximo.data+' • '+proximo.periodo;
+    box.innerHTML='<span class="font-bold text-blue-300">'+escapar(proximo.data)+' • '+escapar(proximo.horario)+'</span><br><span>'+escapar(proximo.tema||proximo.local)+'</span>';
   }
 
   function renderMembros(){
