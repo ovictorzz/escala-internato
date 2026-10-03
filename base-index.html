@@ -8132,7 +8132,7 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
 var modoAtividadesPed='consulta';
 window.alternarConsultaRankingPed=function(modo){modoAtividadesPed=modo==='ranking'?'ranking':'consulta';renderAtividades();};
 function abasRankingPed(){
- return '<div class="flex gap-2 mb-4"><button onclick="alternarConsultaRankingPed(\'consulta\')" class="px-4 py-2 rounded-xl border border-blue-500/20 text-xs font-bold '+(modoAtividadesPed==='consulta'?'bg-blue-500/20 text-blue-500':'text-zinc-500')+'">Consultar escala</button><button onclick="alternarConsultaRankingPed(\'ranking\')" class="px-4 py-2 rounded-xl border border-blue-500/20 text-xs font-bold '+(modoAtividadesPed==='ranking'?'bg-blue-500/20 text-blue-500':'text-zinc-500')+'">Ranking dos trios</button></div>';
+ return '<div class="mb-4"><p class="text-xs font-black uppercase tracking-wide mb-2">Consultar escala e Ranking dos trios</p><div class="flex gap-2"><button onclick="alternarConsultaRankingPed(\'consulta\')" class="px-4 py-2 rounded-xl border border-blue-500/20 text-xs font-bold '+(modoAtividadesPed==='consulta'?'bg-blue-500/20 text-blue-500':'text-zinc-500')+'">Consultar escala</button><button onclick="alternarConsultaRankingPed(\'ranking\')" class="px-4 py-2 rounded-xl border border-blue-500/20 text-xs font-bold '+(modoAtividadesPed==='ranking'?'bg-blue-500/20 text-blue-500':'text-zinc-500')+'">Ranking dos trios</button></div></div>';
 }
 function renderRankingAtividadesPed(){
  const atividade=atividadeSelecionadaPed||'',ocorrencias=ocorrenciasAtividadePed(atividade);
