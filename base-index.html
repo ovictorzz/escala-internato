@@ -1992,6 +1992,10 @@ Internato de Ginecologia & Obstetrícia
 <p class="text-[9px] sm:text-[10px] text-zinc-500 dark:text-zinc-400 font-semibold mt-0.5">Criado por <span class="text-zinc-700 dark:text-zinc-200 font-extrabold">André Victor</span></p>
 </div>
 <div class="dashboard-topbar-actions flex items-center gap-2 sm:gap-2.5">
+<div id="rotation-switcher" aria-label="Selecionar rodízio">
+<button type="button" data-rotation="go" class="is-active" aria-pressed="true">GO</button>
+<button type="button" data-rotation="ped" aria-pressed="false">PED</button>
+</div>
 <div class="relative">
 <button id="notification-trigger" onclick="toggleNotificacoes()" class="premium-action" title="Central de notificações" aria-label="Abrir notificações" aria-controls="notification-panel" aria-expanded="false">
 <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 00-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 01-6 0"/></svg>
@@ -6209,10 +6213,6 @@ body.rotation-ped{overflow:hidden!important}
 @media(max-width:1023px){body.rotation-ped{overflow-y:auto!important;padding-bottom:calc(78px + env(safe-area-inset-bottom))!important}body.rotation-ped>#ped-mobile-bottom-nav{display:flex!important}#ped-banner-hero{min-height:94px}#ped-banner-hero::after{right:14px;opacity:.75}#rotation-switcher button{min-width:42px;height:28px;padding:0 9px}}
 </style>
 
-<div id="rotation-switcher" aria-label="Selecionar rodízio">
-<button type="button" data-rotation="go" class="is-active" aria-pressed="true">GO</button>
-<button type="button" data-rotation="ped" aria-pressed="false">PED</button>
-</div>
 
 <aside id="ped-aside" class="w-full lg:w-80 glass-panel border-b lg:border-b-0 lg:border-r border-black/10 dark:border-white/5 flex flex-col justify-between p-5 lg:p-6 shrink-0 z-30 shadow-2xl">
 <div class="space-y-6">
