@@ -6609,6 +6609,24 @@ Escala Diária por Turnos
     {key:'noite',nome:'Noite',horario:'18h-22h'}
   ];
 
+  // Nomes oficiais dos cenários de Pediatria; mantém os setores da escala.
+  function nomeCenarioPed(local){
+    const nomes={
+      'HRGU':'Hospital Regional do Guará (HRGu)',
+      'HRL PS':'Hospital Regional Leste – Paranoá (HRL) — Pronto-socorro',
+      'HRSM PS':'Hospital Regional de Santa Maria (HRSM) — Pronto-socorro',
+      'PS HRT':'Hospital Regional de Taguatinga (HRT) — Pronto-socorro',
+      'HRT Amb.':'Hospital Regional de Taguatinga (HRT) — Ambulatório',
+      'SCI':'Sessões Clínicas Integradas (Aula Teórica) — UNIEURO',
+      'UBS Planaltina':'UBS Planaltina 07',
+      'UBS Taguatinga':'UBS Taguatinga 06',
+      'UBS VP':'UBS Vicente Pires 01'
+    };
+    const nome=String(local||'');
+    if(nome.startsWith('HRSAM NEO '))return 'Hospital Regional da Samambaia (HRSAM) — '+nome.slice(6);
+    return nomes[nome]||nome;
+  }
+
   function horarioAtividadePed(periodo,local){
     if(String(local||'').toLowerCase().indexOf('seminário')>=0)return '18h30-21h30';
     var item=periodosPed.find(function(p){return p.nome===periodo;});
@@ -6624,7 +6642,7 @@ Escala Diária por Turnos
     var nome=String(local||'').trim().toLocaleLowerCase('pt-BR');
     if(!atividadePedConfirmada(local))return false;
     if(nome.indexOf('seminário')>=0)return false;
-    if(nome==='sci'||nome.indexOf('sci ')===0)return false;
+    if(nome==='sci'||nome.indexOf('sci ')===0||nome.indexOf('sessões clínicas integradas')===0)return false;
     if(nome.indexOf('simulação')>=0)return false;
     return true;
   }
@@ -6646,7 +6664,7 @@ Escala Diária por Turnos
     return periodosPed.map(function(p){
       var local=entrada[p.key]||'—';
       if(local==='Seminário')local='Seminário • Sala 03';
-      var turno={periodo:p.nome,horario:horarioAtividadePed(p.nome,local),local:local};
+      var turno={periodo:p.nome,horario:horarioAtividadePed(p.nome,local),local:nomeCenarioPed(local)};
       if(local.indexOf('Seminário')===0){
         var eventos=seminariosPed.filter(function(s){return s.data===dataCompleta&&s.tipo!=='avaliacao';});
         if(eventos.length){
