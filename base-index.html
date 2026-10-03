@@ -8155,7 +8155,7 @@ const responsaveis=(turnoEscala&&turnoEscala.responsaveis)||[];
 return {
 ...item,idTrio:item.trio,diaKey:diasPedConfig[(dataBrParaDate(item.data).getDay()+6)%7][0],
 diaNome:['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'][dataBrParaDate(item.data).getDay()],
-atividade:item.local,membrosTrio,responsaveis,nomeGrupo:membrosTrio.length?membrosTrio.map(nomeCurtoPed).join(' & '):'Integrantes não cadastrados'
+atividade:item.local,membrosTrio,responsaveis,nomeGrupo:membrosTrio.length?(membrosTrio.length===1?nomeCurtoPed(membrosTrio[0]):membrosTrio.length===2?membrosTrio.map(nomeCurtoPed).join(' & '):membrosTrio.slice(0,-1).map(nomeCurtoPed).join(', ')+' & '+nomeCurtoPed(membrosTrio[membrosTrio.length-1])):'Integrantes não cadastrados'
 };
 });
 const totalTrios = new Set(ocorrencias.map(item => item.idTrio)).size;
