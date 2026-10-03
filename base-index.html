@@ -6931,10 +6931,43 @@ Escala Diária por Turnos
     var detalhes=el('stat-detalhes-turnos');
     var carga=el('stat-carga-semanal');
     var cargaDetalhes=el('stat-carga-detalhes');
-    if(atividades)atividades.textContent='--';
-    if(detalhes)detalhes.innerHTML='<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">Escala aguardando tabela</span>';
-    if(carga)carga.textContent='--';
-    if(cargaDetalhes)cargaDetalhes.innerHTML='Semana aguardando escala<br>Total: -- • Teóricas: --';
+    var trio=String(el('grupo-select')?.value||'1');
+
+    var totalConfirmados=0,totalPossiveis=21;
+    var manha=0,tarde=0,noite=0,fds=0;
+    var horasTotal=0,horasPratica=0,horasAcademica=0;
+
+    for(var indice=0;indice<7;indice++){
+      var data=formatarDataCompletaPed(dataRodizioPed(semanaPed,indice));
+      var turnos=turnosPedPorData(trio,data);
+      turnos.forEach(function(turno){
+        if(!atividadePedConfirmada(turno.local))return;
+        totalConfirmados++;
+        if(turno.periodo==='Manhã')manha++;
+        else if(turno.periodo==='Tarde')tarde++;
+        else if(turno.periodo==='Noite')noite++;
+        if(indice>=5)fds++;
+
+        var h=horasTurnoPed(turno);
+        horasTotal+=h;
+        if(atividadePedAssistencial(turno.local))horasPratica+=h;
+        else horasAcademica+=h;
+      });
+    }
+
+    if(atividades)atividades.textContent=totalConfirmados+'/'+totalPossiveis;
+    if(detalhes)detalhes.innerHTML=
+      '<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🌅 Manhã: '+manha+'</span>'+
+      '<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">☀️ Tarde: '+tarde+'</span>'+
+      '<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🌙 Noite: '+noite+'</span>'+
+      '<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🏖️ FDS: '+fds+'</span>';
+
+    if(carga)carga.textContent=horasTotal?horasTotal+'h':'--';
+    if(cargaDetalhes){
+      cargaDetalhes.innerHTML=horasTotal
+        ? '<span class="text-emerald-600 dark:text-emerald-400 font-bold">'+horasPratica+'h de prática</span><br><span class="text-violet-600 dark:text-violet-400 font-bold">'+horasAcademica+'h acadêmicas</span><br>Total da semana: '+horasTotal+'h'
+        : 'Semana aguardando escala<br>Total: --';
+    }
   }
 
   window.mudarGrupoPed=function(refreshMode){
