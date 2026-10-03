@@ -6761,9 +6761,61 @@ Escala Diária por Turnos
     html+='</div>';container.innerHTML=html;
   }
 
+  var atividadeSelecionadaPed='';
+
+  function popularFiltroAtividadesPed(){
+    var select=document.getElementById('ped-atividade-select');
+    if(!select)return;
+    var selecionada=atividadeSelecionadaPed||select.value||'';
+    select.innerHTML='<option value="">Selecione uma atividade</option>';
+    // A lista será preenchida quando a tabela assistencial da Pediatria for cadastrada.
+    select.value='';
+    atividadeSelecionadaPed='';
+    var limpar=document.getElementById('ped-limpar-filtro-atividade');
+    if(limpar)limpar.classList.add('hidden');
+  }
+
+  window.filtrarPorAtividadePed=function(atividade){
+    atividadeSelecionadaPed=atividade||'';
+    renderAtividades();
+  };
+
   function renderAtividades(){
-    var c=el('lista-turnos');if(!c)return;
-    c.innerHTML='<div class="glass-panel rounded-2xl p-5 shadow-lg border border-black/5 dark:border-white/10 h-full"><div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 pb-4 border-b border-black/5 dark:border-white/10"><div><span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">Atividades</span><h3 class="text-lg font-outfit font-black dark:text-white text-zinc-900 mt-1">Consulte toda a escala</h3></div><div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-semibold">Aguardando tabela assistencial da Pediatria</div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div class="glass-panel rounded-xl p-4 border border-black/5 dark:border-white/10"><span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Filtro</span><p class="text-sm font-bold dark:text-white text-zinc-900 mt-2">Locais e atividades</p><p class="text-[10px] text-zinc-500 mt-1">Será preenchido automaticamente quando a tabela chegar.</p></div><div class="glass-panel rounded-xl p-4 border border-black/5 dark:border-white/10"><span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Status</span><p class="text-sm font-bold dark:text-white text-zinc-900 mt-2">Nenhuma escala assistencial cadastrada</p><p class="text-[10px] text-zinc-500 mt-1">Sem dados inventados.</p></div></div></div>';
+    var container=el('lista-turnos');if(!container)return;
+    var atividade=atividadeSelecionadaPed||'';
+    var ocorrencias=[];
+    var totalTrios=0;
+    var cards='';
+
+    container.innerHTML=
+    '<div class="h-full overflow-y-auto pr-1 pb-4 space-y-4">'+
+      '<section class="glass-panel rounded-2xl p-5 sm:p-6 border border-blue-500/20 bg-gradient-to-r from-blue-500/[.06] to-indigo-500/[.04]">'+
+        '<div class="max-w-3xl">'+
+          '<span class="text-[9px] font-black uppercase tracking-[.18em] text-blue-500">Consulta da escala</span>'+
+          '<h3 class="font-outfit font-black text-xl sm:text-2xl text-zinc-900 dark:text-white mt-1">Filtrar por atividade</h3>'+
+          '<p class="text-[11px] text-zinc-500 mt-1">Selecione uma atividade para ver em quais datas, turnos e trios ela aparece.</p>'+
+          '<div class="flex flex-col sm:flex-row gap-2 mt-4">'+
+            '<div class="relative flex-1">'+
+              '<select id="ped-atividade-select" onchange="filtrarPorAtividadePed(this.value)" class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-100 text-zinc-800 font-bold text-sm rounded-xl px-4 py-3 pr-11 appearance-none focus:outline-none focus:border-blue-500 transition-all cursor-pointer shadow-inner">'+
+                '<option value="">Selecione uma atividade</option>'+
+              '</select>'+
+              '<div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-zinc-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>'+
+            '</div>'+
+            '<button id="ped-limpar-filtro-atividade" type="button" onclick="filtrarPorAtividadePed(\'\')" class="'+(atividade?'':'hidden')+' px-4 py-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-[10px] font-bold text-zinc-500 hover:text-blue-500 transition-colors">Limpar filtro</button>'+
+          '</div>'+
+        '</div>'+
+        (atividade?
+          '<div class="mt-5 pt-4 border-t border-black/5 dark:border-white/10 flex flex-col sm:flex-row sm:items-end justify-between gap-3">'+
+            '<div><span class="text-[8px] font-black uppercase tracking-[.16em] text-zinc-400">Resultado para</span><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-1">'+escapar(atividade)+'</h4></div>'+
+            '<div class="flex items-center gap-2"><span class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-600 dark:text-blue-400">'+ocorrencias.length+' ocorrências</span><span class="px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 text-[10px] font-bold text-zinc-500">'+totalTrios+' trios</span></div>'+
+          '</div>':'')+
+      '</section>'+
+      (atividade?
+        (ocorrencias.length?'<div class="grid grid-cols-1 xl:grid-cols-2 gap-3">'+cards+'</div>':'<div class="glass-panel rounded-2xl p-6 text-center text-sm text-zinc-500">Nenhuma ocorrência encontrada para esta atividade.</div>'):
+        '<div class="glass-panel rounded-2xl p-6 text-center text-sm text-zinc-500">Escolha uma atividade acima para consultar a escala.</div>')+
+    '</div>';
+
+    popularFiltroAtividadesPed();
   }
 
   function renderSeminarios(){
