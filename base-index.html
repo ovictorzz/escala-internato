@@ -6453,5 +6453,403 @@ Escala Diária por Turnos
 </nav>
 
 
+
+<script id="rotation-ui-script">
+(function(){
+  var STORAGE_KEY='rodizioAtivoT7A';
+  var MODE_KEY='modoPedT7A';
+  var semanaPed=1;
+  var diaPed='seg';
+
+  var seminariosPed=[
+    {trio:'1',data:'06/10/2026',tema:'Exame Físico Neonatal e Icterícia Neonatal',apresentadores:'André Victor de Oliveira Almeida • Davi Carvalho Barbosa • Leticia Barbosa Nunes Otaviano'},
+    {trio:'2',data:'13/10/2026',tema:'Sífilis Neonatal (STORCHZ) e Distúrbios respiratórios no período neonatal',apresentadores:'Nadya Veras Jarosczynski • Louise Albuquerque Mirindiba Bonfim • Isabella Teixeira de Lima'},
+    {trio:'3',data:'20/10/2026',tema:'Aula - Puberdade (Dra. Fernanda)\nAdolescência e Meningites na Infância',apresentadores:'Hiago Kaian Xavier Lisboa • Isabela Frota Carmona • Maria Eduarda Lima de Aquino'},
+    {trio:'4',data:'27/10/2026',tema:'Diagnóstico Diferencial das Anemias e Anemia Falciforme',apresentadores:'Heitor Stoduto Mello Ferreira • Bruno Azevedo Lima • Andressa Costa Maboni'},
+    {trio:'5',data:'27/10/2026',tema:'Diarreia e Desidratação',apresentadores:'Maria Luiza de Ornelas Nobrega • Maria Eduarda Santiago • Luiza de Santes'},
+    {trio:'6',data:'03/11/2026',tema:'ITU e Diagnóstico diferencial da Síndrome Nefrótica e Nefrítica',apresentadores:'Letícia Teixeira Monteiro • Júlia Matos Guimarães • Luiza Borges Sales'},
+    {trio:'7',data:'10/11/2026',tema:'Doenças Exantemáticas',apresentadores:'Ana Clara Estrela Ghisleni • Carolina Banholi • Kamilly Lima do Vale'},
+    {trio:'8',data:'10/11/2026',tema:'Parasitoses intestinais',apresentadores:'Giovanna Muniz • Rayane Maria • Sofia Dias'},
+    {trio:'9',data:'17/11/2026',tema:'Doenças Respiratórias na Infância: Bronquiolite, Asma e PNM na infância',apresentadores:'Annelise Paiva • Camila Souza • Gabriella Reis'},
+    {trio:'10',data:'24/11/2026',tema:'Calendário vacinal na infância e suas particularidades',apresentadores:'José Henrique Ferreira • João Victor Tajra • Ana Luiza Daros'},
+    {trio:'geral',data:'01/12/2026',tema:'Avaliação Somativa – Finalização devolutivas',apresentadores:'Turma T7A',tipo:'avaliacao'}
+  ];
+
+  var classAtivo="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)] transition-all cursor-pointer";
+  var classInativo="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-semibold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer";
+
+  function el(id){return document.getElementById('ped-'+id);}
+  function pad2(n){return String(n).padStart(2,'0');}
+  function dataBrParaDate(data){
+    var p=String(data||'').split('/').map(Number);
+    return new Date(p[2],p[1]-1,p[0],23,59,59,999);
+  }
+  function iniciais(nome){
+    var partes=String(nome||'T7').trim().split(/\s+/);
+    if(partes.length>1)return ((partes[0][0]||'')+(partes[1][0]||'')).toUpperCase();
+    return String(nome||'T7').slice(0,2).toUpperCase();
+  }
+  function escapar(valor){
+    return String(valor??'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];});
+  }
+
+  function getGoTopbarActions(){
+    var all=Array.prototype.slice.call(document.querySelectorAll('main .dashboard-topbar-actions'));
+    return all.find(function(node){return !node.closest('#ped-main');})||null;
+  }
+  function montarSeletor(rodizio){
+    var seletor=document.getElementById('rotation-switcher');
+    var destino=rodizio==='ped'?document.querySelector('#ped-main .dashboard-topbar-actions'):getGoTopbarActions();
+    if(seletor&&destino&&seletor.parentElement!==destino)destino.prepend(seletor);
+  }
+
+  window.togglePedMobileMenu=function(){
+    var menu=el('mobile-nav-menu');
+    var footer=el('mobile-footer-menu');
+    if(menu)menu.classList.toggle('hidden');
+    if(footer)footer.classList.toggle('hidden');
+  };
+
+  window.toggleNotificacoesPed=function(forcar){
+    var painel=el('notification-panel');
+    var trigger=el('notification-trigger');
+    if(!painel)return;
+    var abrir=typeof forcar==='boolean'?forcar:painel.classList.contains('hidden');
+    painel.classList.toggle('hidden',!abrir);
+    if(trigger)trigger.setAttribute('aria-expanded',abrir?'true':'false');
+  };
+
+  function syncAccent(){
+    var rosa=localStorage.getItem('corPainel')==='rosa';
+    var azul=el('cor-painel-azul'), pink=el('cor-painel-rosa');
+    if(azul){azul.dataset.active=rosa?'false':'true';azul.setAttribute('aria-pressed',rosa?'false':'true');}
+    if(pink){pink.dataset.active=rosa?'true':'false';pink.setAttribute('aria-pressed',rosa?'true':'false');}
+  }
+
+  function sincronizarTrioComAluno(){
+    var select=el('grupo-select');
+    if(!select)return;
+    var goSelect=document.getElementById('grupo-select');
+    if(goSelect&&goSelect.value){
+      select.value=goSelect.value;
+      return;
+    }
+    var aluno=sessionStorage.getItem('alunoLogado');
+    if(!aluno||typeof dadosEscala==='undefined')return;
+    for(var i=1;i<=10;i++){
+      var membros=(dadosEscala[String(i)]||dadosEscala[i])?.membros||[];
+      if(membros.some(function(n){return String(n).toLowerCase().includes(String(aluno).split(' ')[0].toLowerCase());})){
+        select.value=String(i);break;
+      }
+    }
+  }
+
+  function atualizarIdentidade(){
+    var aluno=sessionStorage.getItem('alunoLogado')||'Turma T7A';
+    var badge=el('aluno-logado-badge');
+    var saudacao=el('saudacao-aluno');
+    var perfil=el('profile-initials');
+    if(badge)badge.textContent=aluno;
+    if(saudacao)saudacao.textContent=aluno==='Turma T7A'?'Olá!':'Olá,';
+    if(perfil)perfil.textContent=aluno==='Turma T7A'?'T7':iniciais(aluno);
+    sincronizarTrioComAluno();
+    window.mudarGrupoPed(false);
+  }
+
+  function proximoEventoPed(){
+    var trio=String(el('grupo-select')?.value||'1');
+    var agora=new Date();
+    return seminariosPed
+      .filter(function(item){return item.trio==='geral'||String(item.trio)===trio;})
+      .filter(function(item){return dataBrParaDate(item.data)>=agora;})
+      .sort(function(a,b){return dataBrParaDate(a.data)-dataBrParaDate(b.data);})[0]||null;
+  }
+
+  function atualizarProximaAtividade(){
+    var box=el('proxima-atividade-conteudo');
+    var badge=el('proxima-atividade-badge');
+    var proximo=proximoEventoPed();
+    if(!box||!badge)return;
+    if(!proximo){
+      badge.textContent='Próxima: nenhuma atividade cadastrada';
+      box.innerHTML='<span class="italic">Aguardando novas informações da Pediatria.</span>';
+      return;
+    }
+    badge.textContent='Próxima: '+proximo.data;
+    box.innerHTML='<span class="font-bold text-blue-300">'+escapar(proximo.data)+'</span><br><span>'+escapar(proximo.tema).replace(/\n/g,' • ')+'</span>';
+  }
+
+  function renderMembros(){
+    var select=el('grupo-select');
+    var lista=el('lista-membros');
+    if(!select||!lista)return;
+    var id=String(select.value||'1');
+    var dados=(typeof dadosEscala!=='undefined')?(dadosEscala[id]||dadosEscala[Number(id)]):null;
+    var membros=dados?.membros||[];
+    lista.innerHTML='';
+    membros.forEach(function(nome){
+      lista.innerHTML+='<li class="flex items-center space-x-3 group cursor-default">'+
+      '<div class="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center text-[11px] font-outfit font-extrabold text-zinc-700 dark:text-zinc-300 shrink-0 group-hover:bg-blue-500/20 group-hover:text-blue-500 transition-all shadow-inner">'+iniciais(nome)+'</div>'+
+      '<span class="text-sm font-semibold text-zinc-700 dark:text-zinc-200 leading-tight group-hover:text-zinc-900 dark:group-hover:text-white transition-colors truncate">'+escapar(nome)+'</span></li>';
+    });
+  }
+
+  function iconeTurno(periodo){
+    if(periodo==='Manhã')return '<svg class="w-7 h-7 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+    if(periodo==='Tarde')return '<svg class="w-7 h-7 text-orange-500 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>';
+    return '<svg class="w-7 h-7 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
+  }
+
+  function cardTurnoVazio(periodo){
+    var cls=periodo==='Manhã'?'turno-manha':(periodo==='Tarde'?'turno-tarde':'turno-noite');
+    return '<div class="turno-card '+cls+' glass-panel opacity-70 border hover:border-blue-500/60 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all duration-300 shadow-md group relative overflow-hidden h-full min-h-[200px]">'+
+      '<div class="w-14 h-14 rounded-full bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 flex items-center justify-center shadow-inner mb-4 group-hover:scale-110 transition-transform duration-300">'+iconeTurno(periodo)+'</div>'+
+      '<span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">'+periodo+'</span>'+
+      '<h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight mb-2">Escala não enviada</h4>'+
+      '<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4 max-w-[230px]">Aguardando a tabela assistencial da Pediatria.</p>'+
+      '<div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10"><div class="flex justify-between items-center gap-2">'+
+      '<span class="text-xs font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">A definir</span>'+
+      '<span class="px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 border border-black/10 dark:border-white/10 text-[10px] font-outfit font-bold uppercase tracking-wide">Pendente</span>'+
+      '</div></div></div>';
+  }
+
+  function renderTurnosVazios(){
+    var container=el('lista-turnos');
+    if(!container)return;
+    container.innerHTML='<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">'+cardTurnoVazio('Manhã')+cardTurnoVazio('Tarde')+cardTurnoVazio('Noite')+'</div>';
+  }
+
+  window.renderizarSemanasPed=function(){
+    var c=el('semanas-tab-container');if(!c)return;
+    c.innerHTML='';
+    for(var n=1;n<=9;n++){
+      var selecionada=n===semanaPed;
+      var cls=selecionada?'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_4px_12px_rgba(79,70,229,0.3)] scale-[1.02]':'glass-panel text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 border-black/5 dark:border-white/5';
+      c.innerHTML+='<button onclick="selecionarSemanaPed('+n+')" class="relative border rounded-xl py-2.5 px-2 flex flex-col items-center justify-center transition-all duration-300 '+cls+' w-full cursor-pointer"><span class="text-[9px] font-bold uppercase tracking-wider font-outfit">SEM '+n+'</span><span class="text-[10px] font-extrabold font-outfit mt-0.5 tracking-tight">A definir</span></button>';
+    }
+    var stat=el('stat-semana');if(stat)stat.textContent=semanaPed+' de 9';
+  };
+
+  window.selecionarSemanaPed=function(n){
+    semanaPed=n;
+    window.renderizarSemanasPed();
+    window.renderizarAbasDiasPed();
+    window.mudarGrupoPed(false);
+  };
+
+  window.renderizarAbasDiasPed=function(){
+    var c=el('container-abas-dias');if(!c)return;
+    var dias=[['seg','Segunda'],['ter','Terça'],['qua','Quarta'],['qui','Quinta'],['sex','Sexta'],['sab','Sábado'],['dom','Domingo']];
+    c.innerHTML='';
+    dias.forEach(function(item){
+      var sel=item[0]===diaPed;
+      var cls=sel?'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_4px_12px_rgba(79,70,229,0.3)] scale-[1.02]':'glass-panel text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 border-black/5 dark:border-white/5';
+      c.innerHTML+='<button onclick="selecionarDiaPed(\''+item[0]+'\')" class="relative border rounded-xl py-3 px-2 flex flex-col items-center justify-center transition-all duration-300 '+cls+' w-full cursor-pointer"><span class="text-[11px] font-bold uppercase tracking-widest font-outfit">'+item[1]+'</span><span class="text-xs font-extrabold font-outfit mt-1">--/--</span></button>';
+    });
+  };
+
+  window.selecionarDiaPed=function(key){
+    diaPed=key;
+    window.renderizarAbasDiasPed();
+    window.mudarGrupoPed(false);
+  };
+
+  function atualizarResumo(){
+    var atividades=el('stat-atividades');
+    var detalhes=el('stat-detalhes-turnos');
+    var carga=el('stat-carga-semanal');
+    var cargaDetalhes=el('stat-carga-detalhes');
+    if(atividades)atividades.textContent='--';
+    if(detalhes)detalhes.innerHTML='<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">Escala aguardando tabela</span>';
+    if(carga)carga.textContent='--';
+    if(cargaDetalhes)cargaDetalhes.innerHTML='Semana aguardando escala<br>Total: -- • Teóricas: --';
+  }
+
+  window.mudarGrupoPed=function(refreshMode){
+    if(refreshMode===undefined)refreshMode=true;
+    var select=el('grupo-select');if(!select)return;
+    var id=String(select.value||'1');
+    var dados=(typeof dadosEscala!=='undefined')?(dadosEscala[id]||dadosEscala[Number(id)]):null;
+    if(el('grupo-badge-num'))el('grupo-badge-num').textContent='A'+id;
+    if(el('titulo-grupo-header'))el('titulo-grupo-header').textContent=dados?.nomeGrupo||select.options[select.selectedIndex]?.textContent||('Trio A'+id);
+    renderMembros();
+    atualizarProximaAtividade();
+    atualizarResumo();
+    var label=el('label-dia-topo');
+    var nomes={seg:'SEGUNDA-FEIRA',ter:'TERÇA-FEIRA',qua:'QUARTA-FEIRA',qui:'QUINTA-FEIRA',sex:'SEXTA-FEIRA',sab:'SÁBADO',dom:'DOMINGO'};
+    if(label)label.textContent=(nomes[diaPed]||'DIA')+' • A DEFINIR';
+    if(refreshMode){
+      var modo='individual';try{modo=localStorage.getItem(MODE_KEY)||'individual';}catch(e){}
+      window.alternarModoPed(modo,false);
+    }
+  };
+
+  function renderHoje(){
+    renderTurnosVazios();
+  }
+
+  function renderGeral(){
+    var container=el('lista-turnos');if(!container)return;
+    var html='<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 overflow-y-auto pr-1 pb-4 h-full content-start">';
+    for(var i=1;i<=10;i++){
+      var dados=(typeof dadosEscala!=='undefined')?(dadosEscala[String(i)]||dadosEscala[i]):null;
+      var nome=dados?.nomeGrupo?.split(':')[1]||('Trio A'+i);
+      var turnos=['Manhã','Tarde','Noite'].map(function(periodo){
+        return '<div class="flex items-center justify-between text-[10px] py-1.5 px-3 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5"><span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit uppercase tracking-widest">'+periodo+'</span><span class="font-extrabold font-outfit text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5 px-2 py-0.5 rounded whitespace-normal leading-tight text-center border">Pendente</span></div>';
+      }).join('');
+      html+='<div class="glass-panel rounded-2xl p-4 space-y-3 transition-all shadow-md border border-black/5 dark:border-white/10 hover:border-blue-500/30"><div class="flex items-center justify-between border-b border-black/5 dark:border-white/10 pb-2"><div class="flex items-center space-x-2.5 min-w-0"><div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-outfit font-black text-[11px] flex items-center justify-center shrink-0 shadow-inner">A'+i+'</div><h4 class="text-xs font-outfit font-bold dark:text-white text-zinc-900 tracking-tight truncate">'+escapar(nome)+'</h4></div><button onclick="document.getElementById(\'ped-grupo-select\').value=\''+i+'\'; alternarModoPed(\'individual\');" class="text-[10px] font-outfit font-bold text-blue-600 dark:text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-2.5 py-1 rounded-md transition-all cursor-pointer shrink-0">Ver</button></div><div class="space-y-1.5">'+turnos+'</div></div>';
+    }
+    html+='</div>';container.innerHTML=html;
+  }
+
+  function renderAtividades(){
+    var c=el('lista-turnos');if(!c)return;
+    c.innerHTML='<div class="glass-panel rounded-2xl p-5 shadow-lg border border-black/5 dark:border-white/10 h-full"><div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 pb-4 border-b border-black/5 dark:border-white/10"><div><span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">Atividades</span><h3 class="text-lg font-outfit font-black dark:text-white text-zinc-900 mt-1">Consulte toda a escala</h3></div><div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-semibold">Aguardando tabela assistencial da Pediatria</div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div class="glass-panel rounded-xl p-4 border border-black/5 dark:border-white/10"><span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Filtro</span><p class="text-sm font-bold dark:text-white text-zinc-900 mt-2">Locais e atividades</p><p class="text-[10px] text-zinc-500 mt-1">Será preenchido automaticamente quando a tabela chegar.</p></div><div class="glass-panel rounded-xl p-4 border border-black/5 dark:border-white/10"><span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Status</span><p class="text-sm font-bold dark:text-white text-zinc-900 mt-2">Nenhuma escala assistencial cadastrada</p><p class="text-[10px] text-zinc-500 mt-1">Sem dados inventados.</p></div></div></div>';
+  }
+
+  function renderSeminarios(){
+    var c=el('lista-turnos');if(!c)return;
+    var agora=new Date();
+    var trio=String(el('grupo-select')?.value||'1');
+    var html='<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-full overflow-y-auto pr-1 pb-4">';
+    seminariosPed.forEach(function(item){
+      var avaliacao=item.tipo==='avaliacao';
+      var passado=dataBrParaDate(item.data)<agora;
+      var proprio=String(item.trio)===trio;
+      var cardClass=passado?'opacity-50 saturate-[.45] bg-zinc-500/5 border-zinc-500/20 hover:opacity-60':(avaliacao?'bg-amber-500/[.07] border-amber-500/35 shadow-[0_0_22px_rgba(245,158,11,.08)]':(proprio?'border-blue-500/40 shadow-[0_0_24px_rgba(59,130,246,.12)]':'border-black/5 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5'));
+      var barra=avaliacao?'from-amber-400 to-orange-500':(passado?'from-zinc-500/40 to-zinc-400/30':'from-blue-500/50 to-indigo-500/50');
+      var dataClass=avaliacao?'bg-amber-500/15 border-amber-500/30 text-amber-600 dark:text-amber-300':(passado?'bg-zinc-500/10 border-zinc-500/20 text-zinc-500':'bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400');
+      var tag=avaliacao?'<span class="px-2.5 py-1 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-300 text-[9px] font-black uppercase tracking-widest">Avaliação</span>':'<span class="px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-black uppercase tracking-widest">'+(item.trio==='geral'?'Turma T7A':'Trio '+item.trio)+'</span>';
+      html+='<div class="glass-panel rounded-2xl p-4 transition-all shadow-md group border flex flex-col h-full relative overflow-hidden '+cardClass+'"><div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r '+barra+'"></div><div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-black/5 dark:border-white/10 mb-3"><div class="flex flex-wrap items-center gap-2"><span class="px-2 py-1 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-outfit font-black text-[9px] uppercase tracking-wider">'+(avaliacao?'Avaliação Somativa':'Seminário')+'</span><span class="px-2.5 py-1 rounded-md border font-outfit font-extrabold text-[11px] '+dataClass+'">'+escapar(item.data)+'</span><span class="text-[11px] font-semibold text-zinc-600 dark:text-zinc-300 font-outfit">Horário a definir</span></div><div class="flex items-center gap-1.5">'+tag+(passado?'<span class="px-2 py-1 rounded-md bg-zinc-500/10 border border-zinc-500/20 text-zinc-500 text-[8px] font-black uppercase tracking-widest">Realizado</span>':'')+'</div></div><div class="space-y-3 flex-grow flex flex-col">'+(avaliacao?'':'<div><span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">Apresentadores</span><p class="text-xs font-bold dark:text-white text-zinc-900 leading-snug">'+escapar(item.apresentadores)+'</p></div>')+'<div class="mt-auto pt-2"><span class="text-[9px] font-bold '+(avaliacao?'text-amber-600 dark:text-amber-400':'text-indigo-600 dark:text-indigo-400')+' uppercase tracking-widest block mb-1">'+(avaliacao?'Atividade':'Tema')+'</span><p class="text-sm font-outfit font-extrabold dark:text-zinc-100 text-zinc-800 leading-snug whitespace-pre-line">'+escapar(item.tema)+'</p></div></div></div>';
+    });
+    html+='</div>';c.innerHTML=html;
+  }
+
+  function renderCalendario(){
+    var c=el('lista-turnos');if(!c)return;
+    var agora=new Date();
+    var ano=agora.getFullYear(), mes=agora.getMonth();
+    var primeiro=new Date(ano,mes,1), ultimo=new Date(ano,mes+1,0).getDate();
+    var offset=primeiro.getDay(), cells='';
+    for(var x=0;x<offset;x++)cells+='<div class="min-h-[88px] rounded-xl border border-black/5 dark:border-white/5 bg-black/[.015] dark:bg-white/[.015]"></div>';
+    for(var d=1;d<=ultimo;d++){
+      var ds=pad2(d)+'/'+pad2(mes+1)+'/'+ano;
+      var eventos=seminariosPed.filter(function(ev){return ev.data===ds;});
+      cells+='<div class="min-h-[88px] rounded-xl border '+(d===agora.getDate()?'border-blue-500/35 bg-blue-500/[.07]':'border-black/5 dark:border-white/10 bg-black/[.02] dark:bg-white/[.02]')+' p-2.5"><div class="text-[10px] font-black font-outfit '+(d===agora.getDate()?'text-blue-500':'text-zinc-500')+'">'+d+'</div>'+eventos.map(function(ev){return '<div class="mt-2 rounded-lg bg-blue-500/10 border border-blue-500/15 px-2 py-1 text-[8px] font-bold text-blue-600 dark:text-blue-300 leading-tight">'+escapar(ev.trio==='geral'?'Avaliação':'Seminário T'+ev.trio)+'</div>';}).join('')+'</div>';
+    }
+    c.innerHTML='<div class="glass-panel rounded-2xl p-4 sm:p-5 shadow-lg border border-black/5 dark:border-white/10 h-full overflow-y-auto"><div class="flex items-center justify-between mb-4"><div><span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">Calendário</span><h3 class="text-lg font-outfit font-black dark:text-white text-zinc-900 mt-1">'+agora.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})+'</h3></div><span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Pediatria</span></div><div class="grid grid-cols-7 gap-2 mb-2">'+['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(function(n){return '<div class="text-center text-[8px] font-black uppercase tracking-widest text-zinc-500">'+n+'</div>';}).join('')+'</div><div class="grid grid-cols-7 gap-2">'+cells+'</div></div>';
+  }
+
+  function renderRecados(){
+    var c=el('lista-turnos');if(!c)return;
+    c.innerHTML='<div class="glass-panel rounded-2xl p-6 shadow-lg border border-black/5 dark:border-white/10 h-full flex flex-col items-center justify-center text-center"><div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-500 flex items-center justify-center mb-4"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg></div><h3 class="text-lg font-outfit font-black dark:text-white text-zinc-900">Nenhum recado de Pediatria</h3><p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-2 max-w-md">A área está pronta para avisos, alterações de escala e comunicados do rodízio.</p></div>';
+  }
+
+  function renderAdmin(){
+    var c=el('lista-turnos');if(!c)return;
+    c.innerHTML='<div class="glass-panel rounded-2xl p-6 max-w-sm mx-auto shadow-xl space-y-5 text-center mt-6 border border-indigo-500/20"><div class="w-12 h-12 bg-indigo-600/20 text-indigo-500 rounded-xl mx-auto flex items-center justify-center border border-indigo-500/30"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div><h3 class="text-xl font-outfit font-black dark:text-white text-zinc-900">Painel Admin • PED</h3><p class="text-[11px] text-zinc-500">Estrutura preparada para administração da Pediatria.</p></div>';
+  }
+
+  window.alternarModoPed=function(modo,persistir){
+    if(persistir===undefined)persistir=true;
+    var valid=['hoje','individual','geral','atividade','seminarios','calendario','recados','admin'];
+    if(valid.indexOf(modo)<0)modo='individual';
+
+    var ids={hoje:'btn-modo-hoje',individual:'btn-modo-ind',geral:'btn-modo-geral',atividade:'btn-modo-atividade',seminarios:'btn-modo-seminarios',calendario:'btn-modo-calendario',recados:'btn-modo-recados'};
+    Object.keys(ids).forEach(function(k){var b=el(ids[k]);if(b)b.className=(k===modo?classAtivo:classInativo);});
+    document.querySelectorAll('[data-ped-mobile-mode]').forEach(function(b){b.classList.toggle('is-active',b.dataset.pedMobileMode===modo);});
+
+    var admin=el('btn-header-admin');
+    if(admin)admin.className=modo==='admin'?"w-full py-3 px-4 rounded-xl bg-indigo-600 text-white text-sm font-bold tracking-wide shadow-[0_0_15px_rgba(79,70,229,0.4)] transition-all cursor-pointer flex items-center justify-center space-x-2":"w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-sm font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm";
+
+    var membros=el('coluna-membros'), turnos=el('coluna-turnos-wrapper'), titulo=el('titulo-secao-inferior'), dias=el('container-abas-dias'), banner=el('banner-hero'), semanas=el('wrapper-semanas-tabs');
+    if(!turnos)return;
+    if(membros)membros.style.display=modo==='individual'?'flex':'none';
+    turnos.className=modo==='individual'?"lg:col-span-9 flex flex-col h-full":"lg:col-span-12 flex flex-col h-full";
+
+    var showDays=modo==='individual'||modo==='geral';
+    var showWeeks=modo==='individual'||modo==='geral';
+    var showBanner=modo==='individual'||modo==='geral'||modo==='hoje';
+    if(dias)dias.style.display=showDays?'grid':'none';
+    if(semanas)semanas.style.display=showWeeks?'block':'none';
+    if(banner)banner.style.display=showBanner?'flex':'none';
+
+    var labels={
+      hoje:'Hoje • Linha do tempo do seu trio',
+      individual:'Divisão por Turnos (Manhã, Tarde e Noite)',
+      geral:'Visão Geral: Todos os 10 Trios do Dia',
+      atividade:'Atividades • Consulte toda a escala',
+      seminarios:'Cronograma de Seminários e Avaliação • Pediatria',
+      calendario:'Calendário Mensal do Trio Selecionado',
+      recados:'Quadro de Recados Oficiais e Avisos',
+      admin:'Painel Administrativo Exclusivo (Representante)'
+    };
+    if(titulo){
+      var span=titulo.querySelector('span:last-child');
+      if(span)span.textContent=labels[modo];
+    }
+
+    if(modo==='individual')renderTurnosVazios();
+    else if(modo==='hoje')renderHoje();
+    else if(modo==='geral')renderGeral();
+    else if(modo==='atividade')renderAtividades();
+    else if(modo==='seminarios')renderSeminarios();
+    else if(modo==='calendario')renderCalendario();
+    else if(modo==='recados')renderRecados();
+    else renderAdmin();
+
+    if(persistir)try{localStorage.setItem(MODE_KEY,modo);}catch(e){}
+  };
+
+  function atualizarRelogio(){
+    var r=el('relogio-dashboard');
+    if(r)r.textContent=new Intl.DateTimeFormat('pt-BR',{hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
+  }
+
+  function aplicarRodizio(nome,persistir){
+    if(persistir===undefined)persistir=true;
+    var rodizio=nome==='ped'?'ped':'go';
+    document.body.classList.toggle('rotation-ped',rodizio==='ped');
+    document.body.classList.toggle('rotation-go',rodizio==='go');
+    document.querySelectorAll('#rotation-switcher [data-rotation]').forEach(function(btn){
+      var ativo=btn.dataset.rotation===rodizio;
+      btn.classList.toggle('is-active',ativo);
+      btn.setAttribute('aria-pressed',ativo?'true':'false');
+    });
+    montarSeletor(rodizio);
+    if(rodizio==='ped'){
+      atualizarIdentidade();syncAccent();atualizarRelogio();
+      window.renderizarSemanasPed();window.renderizarAbasDiasPed();
+      var modo='individual';try{modo=localStorage.getItem(MODE_KEY)||'individual';}catch(e){}
+      window.alternarModoPed(modo,false);
+      document.title='PED T7A • Painel do Internato';
+    }else{
+      document.title='GO T7A • Painel do Internato';
+    }
+    if(persistir)try{localStorage.setItem(STORAGE_KEY,rodizio);}catch(e){}
+  }
+
+  window.alternarRodizioT7A=aplicarRodizio;
+  document.addEventListener('click',function(ev){
+    var btn=ev.target.closest&&ev.target.closest('#rotation-switcher [data-rotation]');
+    if(btn)aplicarRodizio(btn.dataset.rotation,true);
+  });
+
+  function iniciar(){
+    window.renderizarSemanasPed();
+    window.renderizarAbasDiasPed();
+    atualizarIdentidade();
+    atualizarRelogio();
+    setInterval(atualizarRelogio,30000);
+    var salvo='go';try{salvo=localStorage.getItem(STORAGE_KEY)||'go';}catch(e){}
+    aplicarRodizio(salvo,false);
+    new MutationObserver(function(){
+      if(document.body.classList.contains('app-authenticated'))atualizarIdentidade();
+    }).observe(document.body,{attributes:true,attributeFilter:['class']});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});
+  else iniciar();
+})();
+</script>
 </body>
 </html>
