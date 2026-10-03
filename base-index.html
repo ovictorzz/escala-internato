@@ -6746,7 +6746,7 @@ Escala Diária por Turnos
         noite.atividade=noite.local;
         noite.horario='18h30';
         noite.temas='';
-        noite.apresentadores='Turma T7A';
+        noite.apresentadores='';
         noite.localSeminario='';
         noite.seminarios=[];
         noite.membros=[];
@@ -7364,7 +7364,7 @@ function renderSeminarios(){
         local:titulo,
         atividade:titulo,
         temas:avaliacao?'':evento.tema.replace(/ e /,' | ').replace(/\n/g,' | '),
-        apresentadores:avaliacao?'Turma T7A':evento.apresentadores.split(' • ').map(nomeCurtoPed).join(' – '),
+        apresentadores:avaliacao?'':evento.apresentadores.split(' • ').map(nomeCurtoPed).join(' – '),
         orientador:evento.orientador||'',
         localSeminario:avaliacao?'':localSeminariosPed
       });
