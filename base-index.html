@@ -6849,23 +6849,33 @@ Escala Diária por Turnos
     return '<svg class="w-7 h-7 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
   }
 
-  function cardTurnoVazio(periodo){
-    var cls=periodo==='Manhã'?'turno-manha':(periodo==='Tarde'?'turno-tarde':'turno-noite');
-    return '<div class="turno-card '+cls+' glass-panel opacity-70 border hover:border-blue-500/60 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all duration-300 shadow-md group relative overflow-hidden h-full min-h-[200px]">'+
-      '<div class="w-14 h-14 rounded-full bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 flex items-center justify-center shadow-inner mb-4 group-hover:scale-110 transition-transform duration-300">'+iconeTurno(periodo)+'</div>'+
-      '<span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">'+periodo+'</span>'+
-      '<h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight mb-2">Escala não enviada</h4>'+
-      '<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4 max-w-[230px]">Aguardando a tabela assistencial da Pediatria.</p>'+
+  function cardTurnoPed(turno){
+    var confirmado=atividadePedConfirmada(turno.local);
+    var livre=turno.local==='—';
+    var pendente=turno.local==='Escala não enviada';
+    var cls=turno.periodo==='Manhã'?'turno-manha':(turno.periodo==='Tarde'?'turno-tarde':'turno-noite');
+    var borda=confirmado?'border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-900/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]':'glass-panel opacity-70';
+    var titulo=livre?'Turno livre':(pendente?'Escala não enviada':turno.local);
+    var mensagem=livre?'Sem atividade programada neste turno.':(pendente?'Aguardando informação para este turno.':'');
+    var status=confirmado?'Obrigatório':(livre?'Livre':'Pendente');
+    var statusCls=confirmado?'bg-blue-600 text-white shadow-md':'bg-black/5 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 border border-black/10 dark:border-white/10';
+
+    return '<div class="turno-card '+cls+' '+borda+' border hover:border-blue-500/60 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all duration-300 shadow-md group relative overflow-hidden h-full min-h-[200px]">'+
+      (confirmado?'<div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>':'')+
+      '<div class="w-14 h-14 rounded-full bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 flex items-center justify-center shadow-inner mb-4 group-hover:scale-110 transition-transform duration-300">'+iconeTurno(turno.periodo)+'</div>'+
+      '<span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">'+turno.periodo+'</span>'+
+      '<h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight '+(livre||pendente?'mb-2':'mb-5')+'">'+escapar(titulo)+'</h4>'+
+      ((livre||pendente)?'<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4 max-w-[230px]">'+mensagem+'</p>':'')+
       '<div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10"><div class="flex justify-between items-center gap-2">'+
-      '<span class="text-xs font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">A definir</span>'+
-      '<span class="px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 border border-black/10 dark:border-white/10 text-[10px] font-outfit font-bold uppercase tracking-wide">Pendente</span>'+
+      '<span class="text-xs font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">'+escapar(turno.horario)+'</span>'+
+      '<span class="px-3 py-1.5 rounded-lg '+statusCls+' text-[10px] font-outfit font-bold uppercase tracking-wide transition-colors">'+status+'</span>'+
       '</div></div></div>';
   }
 
-  function renderTurnosVazios(){
-    var container=el('lista-turnos');
-    if(!container)return;
-    container.innerHTML='<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">'+cardTurnoVazio('Manhã')+cardTurnoVazio('Tarde')+cardTurnoVazio('Noite')+'</div>';
+  function renderTurnosPed(trioId){
+    var container=el('lista-turnos');if(!container)return;
+    var turnos=turnosSelecionadosPed(String(trioId||el('grupo-select')?.value||'1'));
+    container.innerHTML='<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">'+turnos.map(cardTurnoPed).join('')+'</div>';
   }
 
   window.renderizarSemanasPed=function(){
