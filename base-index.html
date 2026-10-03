@@ -6906,7 +6906,7 @@ Escala Diária por Turnos
     semanaPed=Math.min(totalSemanasPed,Math.max(1,Number(n)||1));
     window.renderizarSemanasPed();
     window.renderizarAbasDiasPed();
-    window.mudarGrupoPed(false);
+    window.mudarGrupoPed();
   };
 
   window.renderizarAbasDiasPed=function(){
@@ -6923,7 +6923,7 @@ Escala Diária por Turnos
   window.selecionarDiaPed=function(key){
     diaPed=key;
     window.renderizarAbasDiasPed();
-    window.mudarGrupoPed(false);
+    window.mudarGrupoPed();
   };
 
   function atualizarResumo(){
