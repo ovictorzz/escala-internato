@@ -8037,12 +8037,7 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
       var turnosHtml=turnos.map(function(t){
         var confirmado=atividadePedConfirmada(t.local);
         var livre=t.local==='—';
-        var texto=descricaoCompactaPed(t)
-          .replace(/Hospital Regional do Guará \(HRGu\)/g,'HRGu')
-          .replace(/Hospital Regional Leste – Paranoá \(HRL\)/g,'HRL')
-          .replace(/Hospital Regional da Samambaia \(HRSAM\)/g,'HRSAM')
-          .replace(/Hospital Regional de Santa Maria \(HRSM\)/g,'HRSM')
-          .replace(/Hospital Regional de Taguatinga \(HRT\)/g,'HRT');
+        var texto=descricaoCompactaPed(t).split("Hospital Regional do Guará (HRGu)").join("HRGu").split("Hospital Regional Leste – Paranoá (HRL)").join("HRL").split("Hospital Regional da Samambaia (HRSAM)").join("HRSAM").split("Hospital Regional de Santa Maria (HRSM)").join("HRSM").split("Hospital Regional de Taguatinga (HRT)").join("HRT");
         var badge=confirmado
           ? 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20 shadow-inner'
           : (livre?'text-zinc-500 dark:text-zinc-400 bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/5':'text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5');
