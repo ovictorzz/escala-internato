@@ -8211,25 +8211,55 @@ popularFiltroAtividadesPed();
 
 
 function renderSeminarios(){
-    const container=el('lista-turnos');if(!container)return;
-    container.innerHTML='<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pb-4">'+seminariosPed.map(evento=>{
-      const avaliacao=evento.tipo==='avaliacao';
-      const titulo=avaliacao?'Avaliação de Pediatria — 50 questões':tituloSeminarioPed([evento]);
-      return cardTurnoPed({
-        data:evento.data,
-        periodo:'Noite',
-        horario:avaliacao?'18h30':'18h30-21h30',
-        local:titulo,
-        atividade:titulo,
-        temas:avaliacao?'':evento.tema.replace(/ e /,' | ').replace(/\n/g,' | '),
-        apresentadores:avaliacao?'':evento.apresentadores.split(' • ').map(nomeCurtoPed).join(' – '),
-        orientador:evento.orientador||'',
-        localSeminario:avaliacao?'':localSeminariosPed
-      });
-    }).join('')+'</div>';
-  }
+  const container=el('lista-turnos');if(!container)return;
+  const agora=new Date();
+  let html='<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-full overflow-y-auto pr-1 pb-4">';
+  seminariosPed.forEach((evento,idx)=>{
+    const avaliacao=evento.tipo==='avaliacao';
+    let fimEvento=null;
+    try{
+      const partes=String(evento.data||'').split('/');
+      if(partes.length===3) fimEvento=new Date(Number(partes[2]),Number(partes[1])-1,Number(partes[0]),avaliacao?23:21,avaliacao?59:30,0,0);
+    }catch(e){}
+    const passado=Boolean(fimEvento&&fimEvento<agora);
+    const cardClass=passado
+      ? 'opacity-50 saturate-[.45] bg-zinc-500/5 border-zinc-500/20 hover:opacity-60'
+      : (avaliacao?'bg-amber-500/[.07] border-amber-500/35 shadow-[0_0_22px_rgba(245,158,11,.08)]':'border-black/5 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5');
+    const barraClass=avaliacao?'from-amber-400 to-orange-500':(passado?'from-zinc-500/40 to-zinc-400/30':'from-blue-500/50 to-indigo-500/50');
+    const dataClass=avaliacao
+      ? 'bg-amber-500/15 border-amber-500/30 text-amber-600 dark:text-amber-300'
+      : (passado?'bg-zinc-500/10 border-zinc-500/20 text-zinc-500':'bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400');
+    const trioLabel=evento.trio==='geral'?'Turma T7A':('Trio '+String(evento.trio).padStart(2,'0'));
+    const temas=String(evento.tema||'').replace(/\n+/g,' • ');
+    html+=`
+<div class="glass-panel rounded-2xl p-4 transition-all shadow-md group border flex flex-col h-full relative overflow-hidden ${cardClass}">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${barraClass}"></div>
+<div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-black/5 dark:border-white/10 mb-3">
+<div class="flex flex-wrap items-center gap-2">
+${avaliacao?'<span class="px-2 py-1 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-300 font-outfit font-black text-[9px] uppercase tracking-wider">Avaliação</span>':`<span class="px-2 py-1 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-outfit font-black text-[9px] uppercase tracking-wider">Seminário ${String(idx+1).padStart(2,'0')}</span>`}
+<span class="px-2.5 py-1 rounded-md border font-outfit font-extrabold text-[11px] ${dataClass}">${String(evento.data).replace(/\/2026$/,'')}</span>
+<span class="text-[11px] font-semibold text-zinc-600 dark:text-zinc-300 font-outfit">18h30–21h30</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="px-2.5 py-1 rounded-md bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 text-zinc-600 dark:text-zinc-300 text-[9px] font-black uppercase tracking-widest">${trioLabel}</span>
+${passado?'<span class="px-2 py-1 rounded-md bg-zinc-500/10 border border-zinc-500/20 text-zinc-500 text-[8px] font-black uppercase tracking-widest">Realizado</span>':''}
+</div>
+</div>
+<div class="space-y-3 flex-grow flex flex-col">
+${avaliacao?'':`<div><span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">Apresentadores</span><p class="text-xs font-bold dark:text-white text-zinc-900 leading-snug">${evento.apresentadores}</p></div>`}
+<div class="mt-auto pt-2">
+<span class="text-[9px] font-bold ${avaliacao?'text-amber-600 dark:text-amber-400':'text-zinc-400 dark:text-zinc-500'} uppercase tracking-widest block mb-1.5">${avaliacao?'Avaliação Somativa':'Temas Abordados'}</span>
+<p class="text-[11px] whitespace-pre-line leading-relaxed ${avaliacao?'font-black text-amber-700 dark:text-amber-200 bg-amber-500/15 border-amber-500/30':'font-medium text-zinc-600 dark:text-zinc-300 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5'} p-2.5 rounded-lg border">${temas}</p>
+</div>
+<div class="pt-1 flex items-center gap-2 text-[10px] text-zinc-500 dark:text-zinc-400 font-outfit"><span class="font-bold uppercase tracking-wider">Local</span><span>•</span><span>${localSeminariosPed}</span></div>
+</div>
+</div>`;
+  });
+  html+='</div>';
+  container.innerHTML=html;
+}
 
-  function estadoTemporalDataPed(dataObj){
+function estadoTemporalDataPed(dataObj){
     var hoje=new Date();hoje.setHours(0,0,0,0);
     var alvo=new Date(dataObj);alvo.setHours(0,0,0,0);
     if(alvo.getTime()===hoje.getTime())return 'hoje';
