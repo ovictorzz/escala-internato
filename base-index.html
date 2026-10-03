@@ -8469,7 +8469,7 @@ function estadoTemporalDataPed(dataObj){
     atualizarIdentidade();
     atualizarRelogio();
     setInterval(atualizarRelogio,30000);
-    var salvo='go';try{salvo=localStorage.getItem(STORAGE_KEY)||'go';}catch(e){}
+    var salvo='ped';
     aplicarRodizio(salvo,false);
     new MutationObserver(function(){
       if(document.body.classList.contains('app-authenticated'))atualizarIdentidade();
