@@ -2047,7 +2047,7 @@ A1
 </div>
 </div>
 </div>
-<div class="lg:col-span-7 grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+<div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
 <div class="stat-card stat-periodo glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center">
 <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Período</span>
 <span class="text-base sm:text-xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-white dark:to-zinc-300 truncate" id="stat-semana">-- de 9</span>
@@ -6298,10 +6298,7 @@ html:not(.dark) .ped-empty-copy strong{color:#27272a}html:not(.dark) .ped-empty-
     <div class="stat-card stat-periodo glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center"><span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Período</span><span class="text-base sm:text-xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-white dark:to-zinc-300 truncate">-- de 9</span></div>
     <div class="stat-card stat-turnos glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center"><span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Turnos/Sem.</span><span class="text-base sm:text-xl font-outfit font-black dark:text-white text-zinc-900">--</span><div class="flex flex-wrap justify-center items-center gap-x-1.5 gap-y-1 mt-2 text-[9px] sm:text-[10px] text-zinc-600 dark:text-zinc-300 font-semibold tracking-wide px-1">Escala ainda não cadastrada</div></div>
     <div class="stat-card stat-carga glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center"><span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Carga Horária</span><span class="text-base sm:text-xl font-outfit font-black text-violet-600 dark:text-violet-400">--</span><div class="mt-2 text-[9px] sm:text-[10px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed">Semana aguardando escala<br>Total: -- • Teóricas: --</div></div>
-    <div class="stat-card stat-capotes glass-panel rounded-2xl p-4 flex flex-col items-center justify-between text-center bg-gradient-to-br from-blue-500/5 to-indigo-500/5 border border-blue-500/20 shadow-md">
-      <div class="w-full flex flex-col items-center justify-center py-2"><span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-2">Capotes</span><div class="flex items-center justify-center space-x-1.5"><span id="ped-contador-capotes" class="font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 drop-shadow-sm text-[4.5rem] sm:text-[5.5rem] leading-none">0</span></div></div>
-      <div class="flex items-center justify-center space-x-2 mt-2 pt-3 border-t border-blue-500/20 w-full"><button type="button" onclick="alterarCapotesPed(-1)" class="flex-1 bg-black/5 dark:bg-white/5 hover:bg-black/10 hover:dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-outfit font-bold py-1.5 rounded-lg text-xs transition-all cursor-pointer">-1</button><button type="button" onclick="alterarCapotesPed(1)" class="flex-1 bg-blue-600/20 hover:bg-blue-600/40 text-blue-700 dark:text-blue-300 font-outfit font-bold py-1.5 rounded-lg text-xs transition-all cursor-pointer">+1</button></div>
-    </div>
+    
   </div>
 </div>
 
@@ -6406,11 +6403,6 @@ html:not(.dark) .ped-empty-copy strong{color:#27272a}html:not(.dark) .ped-empty-
     var banner=document.getElementById('ped-titulo-banner-hero');if(banner) banner.textContent=modo==='hoje'?'Hoje no Rodízio de Pediatria':'Escala Diária por Turnos';
   };
 
-  window.alterarCapotesPed=function(delta){
-    var valor=Number(localStorage.getItem('pedCapotesT7A')||0);valor=Math.max(0,valor+Number(delta||0));localStorage.setItem('pedCapotesT7A',String(valor));
-    var el=document.getElementById('ped-contador-capotes');if(el)el.textContent=String(valor);
-  };
-
   function atualizarRelogioPed(){var el=document.getElementById('ped-relogio-dashboard');if(el)el.textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
 
   function aplicarRodizio(nome,persistir){
@@ -6429,7 +6421,6 @@ html:not(.dark) .ped-empty-copy strong{color:#27272a}html:not(.dark) .ped-empty-
 
   function iniciar(){
     renderSemanasPed();renderDiasPed();window.alternarModoPed('individual');
-    var cap=document.getElementById('ped-contador-capotes');if(cap)cap.textContent=localStorage.getItem('pedCapotesT7A')||'0';
     var salvo='go';try{salvo=localStorage.getItem(STORAGE_KEY)||'go';}catch(e){}
     aplicarRodizio(salvo,false);atualizarRelogioPed();setInterval(atualizarRelogioPed,30000);
     new MutationObserver(function(){if(document.body.classList.contains('app-authenticated'))atualizarIdentidadePed();}).observe(document.body,{attributes:true,attributeFilter:['class']});
