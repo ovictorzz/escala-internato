@@ -8423,7 +8423,16 @@ function abasRankingPed(){
 }
 function renderRankingAtividadesPed(){
  const atividade=atividadeSelecionadaPed||'',ocorrencias=ocorrenciasAtividadePed(atividade);
- const ranking=Array.from({length:10},(_,i)=>{const id=String(i+1),dados=dadosTrioPedPorId(id);return {id,nome:(dados.nomeGrupo||'Trio A'+id).split(':').slice(1).join(':').trim()||'Trio A'+id,total:ocorrencias.filter(o=>String(o.trio)===id).length};}).sort((a,b)=>b.total-a.total||Number(a.id)-Number(b.id));
+ const atividadeColetiva=atividade==='Seminário'||atividade==='Avaliação de Pediatria — 50 questões';
+ const totalColetivo=atividade==='Seminário'
+   ? seminariosPed.filter(function(s){return s.tipo!=='avaliacao';}).length
+   : (atividade==='Avaliação de Pediatria — 50 questões' ? seminariosPed.filter(function(s){return s.tipo==='avaliacao';}).length : null);
+ const ranking=Array.from({length:10},(_,i)=>{
+   const id=String(i+1),dados=dadosTrioPedPorId(id);
+   const nome=(dados.nomeGrupo||'Trio A'+id).split(':').slice(1).join(':').trim()||'Trio A'+id;
+   const total=atividadeColetiva?totalColetivo:ocorrencias.filter(o=>String(o.trio)===id).length;
+   return {id,nome,total};
+ }).sort((a,b)=>b.total-a.total||Number(a.id)-Number(b.id));
  const podium=[1,0,2].map(pos=>{const item=ranking[pos];return '<article class="glass-panel rounded-3xl p-6 text-center border '+(pos===0?'border-amber-500/30 md:-translate-y-4':'border-black/10 dark:border-white/10')+'"><span class="text-3xl">'+['🥇','🥈','🥉'][pos]+'</span><p class="text-[9px] uppercase font-black text-zinc-500 mt-2">'+(pos+1)+'º lugar</p><h4 class="font-outfit text-sm font-black mt-3">'+escapar(item.nome)+'</h4><p class="text-blue-500 font-black mt-2">'+item.total+' vezes</p></article>';}).join('');
  el('lista-turnos').innerHTML='<div class="h-full overflow-y-auto pb-4 space-y-5"><section class="glass-panel rounded-3xl p-5 sm:p-7 border border-blue-500/20">'+abasRankingPed()+'<span class="text-[9px] uppercase tracking-widest font-black text-blue-500">Comparativo por local</span><h3 class="font-outfit text-2xl font-black mt-1">Ranking dos trios</h3><p class="text-xs text-zinc-500 mt-2">Quantas vezes cada trio está escalado na atividade selecionada.</p><div class="flex flex-col sm:flex-row gap-3 mt-5"><select id="ped-atividade-select" onchange="filtrarPorAtividadePed(this.value)" class="admin-field flex-1"><option value="">Selecione uma atividade</option></select><div class="glass-panel rounded-xl px-4 py-3"><span class="block text-[8px] font-black uppercase text-blue-500">Total registrado</span><strong>'+ocorrencias.length+' passagens</strong></div></div></section>'+(atividade?'<div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-5 max-w-5xl mx-auto">'+podium+'</div><div class="space-y-2 max-w-6xl mx-auto">'+ranking.slice(3).map((item,i)=>'<div class="glass-panel rounded-2xl px-5 py-4 flex justify-between items-center gap-3"><span class="text-blue-500 font-black">'+(i+4)+'º</span><strong class="text-sm flex-1">'+escapar(item.nome)+'</strong><span class="font-bold text-zinc-500">'+item.total+' vezes</span></div>').join('')+'</div>':'<div class="glass-panel rounded-2xl p-6 text-center text-zinc-500 text-sm">Selecione uma atividade para comparar os trios.</div>')+'</div>';
  popularFiltroAtividadesPed();
