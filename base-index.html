@@ -6675,6 +6675,20 @@ Escala Diária por Turnos
     var p=String(data||'').split('/').map(Number);
     return new Date(p[2],p[1]-1,p[0],23,59,59,999);
   }
+
+  function escapar(valor){
+    return String(valor==null?'':valor).replace(/[&<>"']/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function semanaDaDataPed(dataBr){
+    var data=dataBrParaDate(dataBr);
+    data.setHours(12,0,0,0);
+    var inicio=new Date(inicioRodizioPed);
+    inicio.setHours(12,0,0,0);
+    return Math.floor((data-inicio)/604800000)+1;
+  }
   function iniciais(nome){
     var partes=String(nome||'T7').trim().split(/\s+/);
     if(partes.length>1)return ((partes[0][0]||'')+(partes[1][0]||'')).toUpperCase();
