@@ -6728,6 +6728,7 @@ Escala Diária por Turnos
     if(eventos.length){
       const noite=turnos.find(t=>t.periodo==='Noite');
       if(noite){
+        noite.seminarios=eventos;
         noite.local=tituloSeminarioPed(eventos);
         noite.atividade=noite.local;
         noite.horario='18h30-21h30';
@@ -6967,6 +6968,16 @@ Escala Diária por Turnos
       return '<span class="block font-bold">Tema '+String(i+1).padStart(2,'0')+' – '+escapar(tema)+'</span>';
     }).join('');
   }
+  function apresentacoesSeparadasPed(eventos){
+    return eventos.map(function(evento){
+      const conteudo=temasSeparadosPed(evento.tema.replace(/ e /,' | ').replace(/\n/g,' | '));
+      return '<section class="rounded-xl border border-blue-500/20 bg-blue-500/[.06] p-3 sm:p-4 space-y-3" data-ped-apresentacao="'+escapar(evento.trio)+'">'+
+        '<div class="pb-2 border-b border-blue-500/15"><h4 class="text-xs font-black text-blue-500">'+escapar(tituloSeminarioPed([evento]))+'</h4><span class="text-[9px] font-bold text-zinc-500 dark:text-zinc-400">Trio '+String(evento.trio).padStart(2,'0')+'</span></div>'+
+        (conteudo.aula?'<div><span class="block text-[8px] font-black uppercase text-cyan-500 mb-1">Aula da Dra. Fernanda</span><p class="text-[11px] font-bold">Puberdade</p></div>':'')+
+        '<div><span class="block text-[8px] font-black uppercase tracking-wider text-blue-500 mb-1">Temas</span><div class="text-[11px] leading-relaxed">'+temasNumeradosPed(conteudo.temas)+'</div></div>'+
+        '<div class="pt-2 border-t border-indigo-500/10"><span class="block text-[8px] font-black uppercase tracking-wider text-indigo-500 mb-1">Apresentadores</span><p class="text-[11px] font-bold leading-relaxed">'+escapar(evento.apresentadores.split(' • ').map(nomeCurtoPed).join(' • '))+'</p></div></section>';
+    }).join('');
+  }
   function cardTurnoPed(t){
     const conteudoTemas=temasSeparadosPed(t.temas);
     const hasPlantao=atividadePedConfirmada(t.local);
@@ -6990,7 +7001,7 @@ ${iconeTurno}
 <h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight ${turnoLivre ? 'mb-2' : 'mb-5'}">${escapar(tituloLocal)}</h4>
 ${detalhesSCIPed(t)}
 ${hasPlantao&&t.membros?.length?`<p class="text-xs font-semibold text-zinc-600 dark:text-zinc-300 mb-4" data-ped-participantes>${t.membros.map(escapar).join(' • ')}</p>`:''}
-${ehSeminarioDetalhado ? `<div class="w-full text-left space-y-3 mb-5">${conteudoTemas.aula?`<div class="rounded-xl bg-cyan-500/[.07] border border-cyan-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-cyan-500 mb-1">Aula da Dra. Fernanda</span><p class="text-[10px] sm:text-[11px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed">Puberdade</p></div>`:''}<div class="rounded-xl bg-blue-500/[.07] border border-blue-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-blue-500 mb-1">Temas</span><p class="text-[10px] sm:text-[11px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed whitespace-pre-line">${temasNumeradosPed(conteudoTemas.temas)}</p></div><div class="rounded-xl bg-indigo-500/[.07] border border-indigo-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-indigo-500 mb-1">Apresentadores</span><p class="text-[10px] sm:text-[11px] text-zinc-700 dark:text-zinc-200 font-bold leading-relaxed">${escapar(t.apresentadores)}</p></div>${t.localSeminario?`<div class="rounded-xl bg-purple-500/[.08] border border-purple-500/20 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-purple-500 mb-1">Local</span><p class="text-[10px] sm:text-[11px] text-purple-700 dark:text-purple-300 font-black leading-relaxed">${escapar(t.localSeminario)}</p></div>`:''}</div>` : ''}
+${ehSeminarioDetalhado ? `<div class="w-full text-left space-y-3 mb-5">${t.seminarios?.length>1?apresentacoesSeparadasPed(t.seminarios):`${conteudoTemas.aula?`<div class="rounded-xl bg-cyan-500/[.07] border border-cyan-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-cyan-500 mb-1">Aula da Dra. Fernanda</span><p class="text-[10px] sm:text-[11px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed">Puberdade</p></div>`:''}<div class="rounded-xl bg-blue-500/[.07] border border-blue-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-blue-500 mb-1">Temas</span><p class="text-[10px] sm:text-[11px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed whitespace-pre-line">${temasNumeradosPed(conteudoTemas.temas)}</p></div><div class="rounded-xl bg-indigo-500/[.07] border border-indigo-500/15 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-indigo-500 mb-1">Apresentadores</span><p class="text-[10px] sm:text-[11px] text-zinc-700 dark:text-zinc-200 font-bold leading-relaxed">${escapar(t.apresentadores)}</p></div>`}${t.localSeminario?`<div class="rounded-xl bg-purple-500/[.08] border border-purple-500/20 p-3"><span class="block text-[8px] font-black uppercase tracking-[.16em] text-purple-500 mb-1">Local</span><p class="text-[10px] sm:text-[11px] text-purple-700 dark:text-purple-300 font-black leading-relaxed">${escapar(t.localSeminario)}</p></div>`:''}</div>` : ''}
 ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4 max-w-[230px]">${'Sem atividade programada neste turno.'}</p>` : ''}
 <div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10">
 <div class="flex justify-between items-center gap-2">
@@ -7005,6 +7016,7 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
   function detalhesSeminarioDiaPed(turno){
     if(turno.sci)return detalhesSCIPed(turno);
     if(!turno.temas||!turno.apresentadores)return '';
+    if(turno.seminarios?.length>1)return '<div class="w-full mt-2 space-y-3 text-left" data-ped-seminario-dia>'+apresentacoesSeparadasPed(turno.seminarios)+'</div>';
     const conteudoTemas=temasSeparadosPed(turno.temas);
     return '<div class="mt-2 space-y-2 text-left" data-ped-seminario-dia>'+
       (conteudoTemas.aula?'<div><span class="block text-[8px] font-black uppercase tracking-wider text-cyan-500">Aula da Dra. Fernanda</span><p class="text-[11px] font-semibold">Puberdade</p></div>':'')+
