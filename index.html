@@ -150,7 +150,7 @@ Object.values(dadosEscala["4"]?.semanas||{}).forEach(semana=>{
 <\/script>`;
     src = src.replace('</body>', regraHorarioBL + '\n</body>');
 
-    const interfaceRodizios = \`
+    const interfaceRodizios = `
 <style id="rotation-ui-styles">
 #rotation-switcher{
   position:fixed;top:max(12px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);
@@ -393,7 +393,7 @@ html:not(.dark) .ped-empty strong,html:not(.dark) .ped-stat{color:#0f172a}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar,{once:true});
   else iniciar();
 })();
-<\/script>\`;
+<\/script>`;
 
     src = src.replace('</body>', interfaceRodizios + '\\n</body>');
 
