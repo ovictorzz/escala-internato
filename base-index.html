@@ -6402,7 +6402,7 @@ A1
 <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
 <span>Navegação por Semanas</span>
 </span>
-<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 w-full" id="ped-semanas-tab-container"></div>
+<div class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2.5 w-full" id="ped-semanas-tab-container"></div>
 </div>
 <div id="ped-banner-hero" class="relative bg-gradient-to-r from-blue-900/20 via-black/5 to-black/5 dark:from-blue-900/30 dark:via-black/40 dark:to-black/40 border border-blue-500/30 rounded-2xl p-4 sm:p-5 shadow-lg overflow-hidden flex flex-col justify-center backdrop-blur-xl shrink-0">
 <div class="relative z-10 space-y-1">
@@ -6437,7 +6437,7 @@ Escala Diária por Turnos
 </div>
 <div class="mt-4 pt-4 border-t border-black/5 dark:border-white/10 text-[9px] text-zinc-400 dark:text-zinc-500 font-bold tracking-[0.15em] uppercase text-center font-outfit flex flex-col items-center justify-center space-y-1.5">
 <svg class="w-5 h-5 text-zinc-300 dark:text-zinc-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-<span>Rodízio de Pediatria (8 Semanas)</span>
+<span>Rodízio de Pediatria (10 Semanas)</span>
 </div>
 </div>
 <div class="lg:col-span-9 flex flex-col h-full" id="ped-coluna-turnos-wrapper">
@@ -6462,7 +6462,7 @@ Escala Diária por Turnos
   var semanaPed=1;
   var diaPed='seg';
   var inicioRodizioPed=new Date(2026,9,5,12,0,0,0);
-  var totalSemanasPed=8;
+  var totalSemanasPed=10;
   var diasPedConfig=[
     ['seg','Segunda'],['ter','Terça'],['qua','Quarta'],['qui','Quinta'],['sex','Sexta'],['sab','Sábado'],['dom','Domingo']
   ];
@@ -6522,6 +6522,150 @@ Escala Diária por Turnos
   var horarioSeminariosPed='18:30';
   var localSeminariosPed='Sala 03';
 
+  var pedEscalaTrio1Oficial={
+    '05/10/2026':{tarde:'SCI'},
+    '06/10/2026':{manha:'HRSAM NEO 2/3',noite:'Seminário'},
+    '07/10/2026':{manha:'HRSAM NEO 1/3'},
+    '08/10/2026':{noite:'HRSAM NEO 1/2'},
+    '09/10/2026':{status:'livre'},
+    '10/10/2026':{noite:'HRSAM NEO 2/3'},
+    '11/10/2026':{manha:'HRSAM NEO 1/3'},
+
+    '12/10/2026':{tarde:'SCI'},
+    '13/10/2026':{manha:'HRSAM NEO 2/3',noite:'Seminário'},
+    '14/10/2026':{manha:'HRSAM NEO 1/3'},
+    '15/10/2026':{manha:'HRSAM NEO 1/2'},
+    '16/10/2026':{tarde:'HRSAM NEO 2/3'},
+    '17/10/2026':{manha:'HRSAM NEO 1/2'},
+    '18/10/2026':{status:'livre'},
+
+    '19/10/2026':{tarde:'SCI',noite:'PS HRT'},
+    '20/10/2026':{noite:'Seminário'},
+    '21/10/2026':{tarde:'HRT Amb.'},
+    '22/10/2026':{manha:'UNIEURO Amb.',tarde:'UNIEURO Amb.'},
+    '23/10/2026':{tarde:'PS HRT'},
+    '24/10/2026':{status:'livre'},
+    '25/10/2026':{status:'livre'},
+
+    '26/10/2026':{manha:'UBS Taguatinga',tarde:'UBS Taguatinga'},
+    '27/10/2026':{manha:'UBS Planaltina',tarde:'UBS Planaltina',noite:'Seminário'},
+    '28/10/2026':{manha:'UBS Planaltina'},
+    '29/10/2026':{tarde:'HRL PS'},
+    '30/10/2026':{manha:'UBS Taguatinga',tarde:'UBS Taguatinga'},
+    '31/10/2026':{status:'livre'},
+    '01/11/2026':{status:'livre'},
+
+    '02/11/2026':{manha:'HRGU',tarde:'SCI'},
+    '03/11/2026':{manha:'HRGU',noite:'Seminário'},
+    '04/11/2026':{manha:'HRGU'},
+    '05/11/2026':{tarde:'UNIEURO Amb.'},
+    '06/11/2026':{manha:'HRGU'},
+    '07/11/2026':{status:'livre'},
+    '08/11/2026':{status:'livre'},
+
+    '09/11/2026':{manha:'UNIEURO Amb.'},
+    '10/11/2026':{manha:'UBS VP',tarde:'UBS VP',noite:'Seminário'},
+    '11/11/2026':{status:'livre'},
+    '12/11/2026':{manha:'UBS Planaltina',tarde:'UNIEURO Simulação'},
+    '13/11/2026':{manha:'UBS Planaltina',tarde:'UBS Planaltina'},
+    '14/11/2026':{status:'livre'},
+    '15/11/2026':{status:'livre'},
+
+    '16/11/2026':{manha:'UNIEURO Amb.',tarde:'SCI'},
+    '17/11/2026':{noite:'Seminário'},
+    '18/11/2026':{status:'livre'},
+    '19/11/2026':{manha:'UNIEURO Amb.',tarde:'UNIEURO Simulação'},
+    '20/11/2026':{tarde:'UNIEURO Amb.'},
+    '21/11/2026':{status:'pendente'},
+    '22/11/2026':{status:'livre'},
+
+    '23/11/2026':{tarde:'HRSM PS'},
+    '24/11/2026':{tarde:'SCI'},
+    '25/11/2026':{manha:'UBS VP',tarde:'UBS VP',noite:'Seminário'},
+    '26/11/2026':{manha:'HRL PS'},
+    '27/11/2026':{manha:'HRL PS',tarde:'UNIEURO Simulação'},
+    '28/11/2026':{tarde:'UNIEURO Amb.'},
+    '29/11/2026':{status:'livre'},
+
+    '30/11/2026':{status:'livre'},
+    '01/12/2026':{manha:'UNIEURO Amb.',tarde:'SCI'},
+    '02/12/2026':{manha:'HRGU',noite:'Seminário'},
+    '03/12/2026':{manha:'HRGU'},
+    '04/12/2026':{manha:'UNIEURO Amb.',tarde:'UNIEURO Simulação'},
+    '05/12/2026':{status:'livre'},
+    '06/12/2026':{status:'livre'},
+    '07/12/2026':{status:'livre'},
+    '08/12/2026':{status:'pendente'},
+    '09/12/2026':{status:'pendente'},
+    '10/12/2026':{status:'pendente'},
+    '11/12/2026':{status:'pendente'},
+    '12/12/2026':{status:'pendente'},
+    '13/12/2026':{status:'pendente'}
+  };
+
+  var periodosPed=[
+    {key:'manha',nome:'Manhã',horario:'07h-13h'},
+    {key:'tarde',nome:'Tarde',horario:'13h-18h'},
+    {key:'noite',nome:'Noite',horario:'18h-22h'}
+  ];
+
+  function horarioAtividadePed(periodo,local){
+    if(String(local||'').toLowerCase().indexOf('seminário')>=0)return '18h30-21h30';
+    var item=periodosPed.find(function(p){return p.nome===periodo;});
+    return item?item.horario:'A definir';
+  }
+
+  function atividadePedConfirmada(local){
+    var nome=String(local||'').trim();
+    return !!nome && nome!=='—' && nome!=='Escala não enviada';
+  }
+
+  function atividadePedAssistencial(local){
+    var nome=String(local||'').trim().toLocaleLowerCase('pt-BR');
+    if(!atividadePedConfirmada(local))return false;
+    if(nome.indexOf('seminário')>=0)return false;
+    if(nome==='sci'||nome.indexOf('sci ')===0)return false;
+    if(nome.indexOf('simulação')>=0)return false;
+    return true;
+  }
+
+  function turnosPedPorData(trioId,dataCompleta){
+    var id=String(trioId||'1');
+    var entrada=id==='1'?pedEscalaTrio1Oficial[dataCompleta]:null;
+    if(id!=='1'||!entrada){
+      return periodosPed.map(function(p){
+        return {periodo:p.nome,horario:p.horario,local:'Escala não enviada'};
+      });
+    }
+    if(entrada.status==='livre'){
+      return periodosPed.map(function(p){return {periodo:p.nome,horario:p.horario,local:'—'};});
+    }
+    if(entrada.status==='pendente'){
+      return periodosPed.map(function(p){return {periodo:p.nome,horario:p.horario,local:'Escala não enviada'};});
+    }
+    return periodosPed.map(function(p){
+      var local=entrada[p.key]||'—';
+      if(local==='Seminário')local='Seminário • Sala 03';
+      return {periodo:p.nome,horario:horarioAtividadePed(p.nome,local),local:local};
+    });
+  }
+
+  function dataSelecionadaPedCompleta(){
+    return formatarDataCompletaPed(dataRodizioPed(semanaPed,indiceDiaPed(diaPed)));
+  }
+
+  function turnosSelecionadosPed(trioId){
+    return turnosPedPorData(String(trioId||el('grupo-select')?.value||'1'),dataSelecionadaPedCompleta());
+  }
+
+  function horasTurnoPed(turno){
+    if(!atividadePedConfirmada(turno.local))return 0;
+    if(String(turno.local).toLowerCase().indexOf('seminário')>=0)return 3;
+    if(turno.periodo==='Manhã')return 6;
+    if(turno.periodo==='Tarde')return 5;
+    return 4;
+  }
+
   var classAtivo="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)] transition-all cursor-pointer";
   var classInativo="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-semibold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer";
 
@@ -6530,6 +6674,20 @@ Escala Diária por Turnos
   function dataBrParaDate(data){
     var p=String(data||'').split('/').map(Number);
     return new Date(p[2],p[1]-1,p[0],23,59,59,999);
+  }
+
+  function escapar(valor){
+    return String(valor==null?'':valor).replace(/[&<>"']/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function semanaDaDataPed(dataBr){
+    var data=dataBrParaDate(dataBr);
+    data.setHours(12,0,0,0);
+    var inicio=new Date(inicioRodizioPed);
+    inicio.setHours(12,0,0,0);
+    return Math.floor((data-inicio)/604800000)+1;
   }
   function iniciais(nome){
     var partes=String(nome||'T7').trim().split(/\s+/);
@@ -6615,13 +6773,55 @@ Escala Diária por Turnos
     window.mudarGrupoPed(false);
   }
 
+  function dataHoraInicioTurnoPed(data,turno){
+    var p=String(data||'').split('/').map(Number);
+    if(p.length!==3)return null;
+    var hora=7,min=0;
+    if(turno.periodo==='Tarde'){hora=13;min=0;}
+    if(turno.periodo==='Noite'){hora=18;min=0;}
+    if(String(turno.local||'').toLowerCase().indexOf('seminário')>=0){hora=18;min=30;}
+    return new Date(p[2],p[1]-1,p[0],hora,min,0,0);
+  }
+
+  function proximasAtividadesTrio1Ped(){
+    var itens=[];
+    Object.keys(pedEscalaTrio1Oficial).forEach(function(data){
+      turnosPedPorData('1',data).forEach(function(turno){
+        if(!atividadePedConfirmada(turno.local))return;
+        itens.push({
+          data:data,
+          periodo:turno.periodo,
+          horario:turno.horario,
+          local:turno.local,
+          inicio:dataHoraInicioTurnoPed(data,turno)
+        });
+      });
+    });
+    return itens.sort(function(a,b){return (a.inicio?.getTime()||0)-(b.inicio?.getTime()||0);});
+  }
+
   function proximoEventoPed(){
     var trio=String(el('grupo-select')?.value||'1');
     var agora=new Date();
-    return seminariosPed
+    if(trio==='1'){
+      var atividade=proximasAtividadesTrio1Ped().find(function(item){
+        return item.inicio&&item.inicio>=agora;
+      });
+      if(atividade)return atividade;
+    }
+    var seminario=seminariosPed
       .filter(function(item){return item.trio==='geral'||String(item.trio)===trio;})
       .filter(function(item){return dataBrParaDate(item.data)>=agora;})
       .sort(function(a,b){return dataBrParaDate(a.data)-dataBrParaDate(b.data);})[0]||null;
+    if(!seminario)return null;
+    return {
+      data:seminario.data,
+      periodo:'Noite',
+      horario:seminario.tipo==='avaliacao'?'A definir':'18h30-21h30',
+      local:seminario.tipo==='avaliacao'?seminario.tema:('Seminário • '+localSeminariosPed),
+      tema:seminario.tema,
+      tipo:seminario.tipo||'seminario'
+    };
   }
 
   function atualizarProximaAtividade(){
@@ -6634,8 +6834,8 @@ Escala Diária por Turnos
       box.innerHTML='<span class="italic">Aguardando novas informações da Pediatria.</span>';
       return;
     }
-    badge.textContent='Próxima: '+proximo.data;
-    box.innerHTML='<span class="font-bold text-blue-300">'+escapar(proximo.data)+(proximo.tipo==='avaliacao'?'':' • '+horarioSeminariosPed+' • '+localSeminariosPed)+'</span><br><span>'+escapar(proximo.tema).replace(/\n/g,' • ')+'</span>';
+    badge.textContent='Próxima: '+proximo.data+' • '+proximo.periodo;
+    box.innerHTML='<span class="font-bold text-blue-300">'+escapar(proximo.data)+' • '+escapar(proximo.horario)+'</span><br><span>'+escapar(proximo.tema||proximo.local)+'</span>';
   }
 
   function renderMembros(){
@@ -6659,23 +6859,33 @@ Escala Diária por Turnos
     return '<svg class="w-7 h-7 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
   }
 
-  function cardTurnoVazio(periodo){
-    var cls=periodo==='Manhã'?'turno-manha':(periodo==='Tarde'?'turno-tarde':'turno-noite');
-    return '<div class="turno-card '+cls+' glass-panel opacity-70 border hover:border-blue-500/60 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all duration-300 shadow-md group relative overflow-hidden h-full min-h-[200px]">'+
-      '<div class="w-14 h-14 rounded-full bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 flex items-center justify-center shadow-inner mb-4 group-hover:scale-110 transition-transform duration-300">'+iconeTurno(periodo)+'</div>'+
-      '<span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">'+periodo+'</span>'+
-      '<h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight mb-2">Escala não enviada</h4>'+
-      '<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4 max-w-[230px]">Aguardando a tabela assistencial da Pediatria.</p>'+
+  function cardTurnoPed(turno){
+    var confirmado=atividadePedConfirmada(turno.local);
+    var livre=turno.local==='—';
+    var pendente=turno.local==='Escala não enviada';
+    var cls=turno.periodo==='Manhã'?'turno-manha':(turno.periodo==='Tarde'?'turno-tarde':'turno-noite');
+    var borda=confirmado?'border-blue-500/30 bg-gradient-to-b from-blue-500/10 to-transparent dark:from-blue-900/20 shadow-[0_4px_20px_rgba(59,130,246,0.1)]':'glass-panel opacity-70';
+    var titulo=livre?'Turno livre':(pendente?'Escala não enviada':turno.local);
+    var mensagem=livre?'Sem atividade programada neste turno.':(pendente?'Aguardando informação para este turno.':'');
+    var status=confirmado?'Obrigatório':(livre?'Livre':'Pendente');
+    var statusCls=confirmado?'bg-blue-600 text-white shadow-md':'bg-black/5 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 border border-black/10 dark:border-white/10';
+
+    return '<div class="turno-card '+cls+' '+borda+' border hover:border-blue-500/60 rounded-2xl p-5 sm:p-6 flex flex-col items-center justify-center text-center transition-all duration-300 shadow-md group relative overflow-hidden h-full min-h-[200px]">'+
+      (confirmado?'<div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>':'')+
+      '<div class="w-14 h-14 rounded-full bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 flex items-center justify-center shadow-inner mb-4 group-hover:scale-110 transition-transform duration-300">'+iconeTurno(turno.periodo)+'</div>'+
+      '<span class="text-[10px] font-outfit font-extrabold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1.5">'+turno.periodo+'</span>'+
+      '<h4 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 leading-tight '+(livre||pendente?'mb-2':'mb-5')+'">'+escapar(titulo)+'</h4>'+
+      ((livre||pendente)?'<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4 max-w-[230px]">'+mensagem+'</p>':'')+
       '<div class="mt-auto pt-4 w-full border-t border-black/5 dark:border-white/10"><div class="flex justify-between items-center gap-2">'+
-      '<span class="text-xs font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">A definir</span>'+
-      '<span class="px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 text-zinc-500 dark:text-zinc-400 border border-black/10 dark:border-white/10 text-[10px] font-outfit font-bold uppercase tracking-wide">Pendente</span>'+
+      '<span class="text-xs font-bold font-outfit text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">'+escapar(turno.horario)+'</span>'+
+      '<span class="px-3 py-1.5 rounded-lg '+statusCls+' text-[10px] font-outfit font-bold uppercase tracking-wide transition-colors">'+status+'</span>'+
       '</div></div></div>';
   }
 
-  function renderTurnosVazios(){
-    var container=el('lista-turnos');
-    if(!container)return;
-    container.innerHTML='<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">'+cardTurnoVazio('Manhã')+cardTurnoVazio('Tarde')+cardTurnoVazio('Noite')+'</div>';
+  function renderTurnosPed(trioId){
+    var container=el('lista-turnos');if(!container)return;
+    var turnos=turnosSelecionadosPed(String(trioId||el('grupo-select')?.value||'1'));
+    container.innerHTML='<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">'+turnos.map(cardTurnoPed).join('')+'</div>';
   }
 
   window.renderizarSemanasPed=function(){
@@ -6721,10 +6931,43 @@ Escala Diária por Turnos
     var detalhes=el('stat-detalhes-turnos');
     var carga=el('stat-carga-semanal');
     var cargaDetalhes=el('stat-carga-detalhes');
-    if(atividades)atividades.textContent='--';
-    if(detalhes)detalhes.innerHTML='<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">Escala aguardando tabela</span>';
-    if(carga)carga.textContent='--';
-    if(cargaDetalhes)cargaDetalhes.innerHTML='Semana aguardando escala<br>Total: -- • Teóricas: --';
+    var trio=String(el('grupo-select')?.value||'1');
+
+    var totalConfirmados=0,totalPossiveis=21;
+    var manha=0,tarde=0,noite=0,fds=0;
+    var horasTotal=0,horasPratica=0,horasAcademica=0;
+
+    for(var indice=0;indice<7;indice++){
+      var data=formatarDataCompletaPed(dataRodizioPed(semanaPed,indice));
+      var turnos=turnosPedPorData(trio,data);
+      turnos.forEach(function(turno){
+        if(!atividadePedConfirmada(turno.local))return;
+        totalConfirmados++;
+        if(turno.periodo==='Manhã')manha++;
+        else if(turno.periodo==='Tarde')tarde++;
+        else if(turno.periodo==='Noite')noite++;
+        if(indice>=5)fds++;
+
+        var h=horasTurnoPed(turno);
+        horasTotal+=h;
+        if(atividadePedAssistencial(turno.local))horasPratica+=h;
+        else horasAcademica+=h;
+      });
+    }
+
+    if(atividades)atividades.textContent=totalConfirmados+'/'+totalPossiveis;
+    if(detalhes)detalhes.innerHTML=
+      '<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🌅 Manhã: '+manha+'</span>'+
+      '<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">☀️ Tarde: '+tarde+'</span>'+
+      '<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🌙 Noite: '+noite+'</span>'+
+      '<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🏖️ FDS: '+fds+'</span>';
+
+    if(carga)carga.textContent=horasTotal?horasTotal+'h':'--';
+    if(cargaDetalhes){
+      cargaDetalhes.innerHTML=horasTotal
+        ? '<span class="text-emerald-600 dark:text-emerald-400 font-bold">'+horasPratica+'h de prática</span><br><span class="text-violet-600 dark:text-violet-400 font-bold">'+horasAcademica+'h acadêmicas</span><br>Total da semana: '+horasTotal+'h'
+        : 'Semana aguardando escala<br>Total: --';
+    }
   }
 
   window.mudarGrupoPed=function(refreshMode){
@@ -6748,35 +6991,103 @@ Escala Diária por Turnos
   };
 
   function renderHoje(){
-    renderTurnosVazios();
+    var container=el('lista-turnos');if(!container)return;
+    var agora=new Date();
+    var dataHoje=pad2(agora.getDate())+'/'+pad2(agora.getMonth()+1)+'/'+agora.getFullYear();
+    var trio=String(el('grupo-select')?.value||'1');
+    var turnos=turnosPedPorData(trio,dataHoje);
+
+    var label=el('label-dia-topo');
+    var nomes=['DOMINGO','SEGUNDA-FEIRA','TERÇA-FEIRA','QUARTA-FEIRA','QUINTA-FEIRA','SEXTA-FEIRA','SÁBADO'];
+    if(label)label.textContent=nomes[agora.getDay()]+' • '+pad2(agora.getDate())+'/'+pad2(agora.getMonth()+1);
+
+    var titulo=el('titulo-banner-hero');
+    if(titulo)titulo.textContent='Seu dia na Pediatria';
+
+    container.innerHTML='<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">'+turnos.map(cardTurnoPed).join('')+'</div>';
   }
 
   function renderGeral(){
     var container=el('lista-turnos');if(!container)return;
+    var data=dataSelecionadaPedCompleta();
     var html='<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 overflow-y-auto pr-1 pb-4 h-full content-start">';
     for(var i=1;i<=10;i++){
       var dados=dadosTrioPedPorId(i);
       var nome=(dados.nomeGrupo&&dados.nomeGrupo.includes(':'))?dados.nomeGrupo.split(':').slice(1).join(':').trim():(dados.nomeGrupo||('Trio A'+i));
-      var turnos=['Manhã','Tarde','Noite'].map(function(periodo){
-        return '<div class="flex items-center justify-between text-[10px] py-1.5 px-3 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5"><span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit uppercase tracking-widest">'+periodo+'</span><span class="font-extrabold font-outfit text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5 px-2 py-0.5 rounded whitespace-normal leading-tight text-center border">Pendente</span></div>';
+      var turnos=turnosPedPorData(String(i),data);
+      var turnosHtml=turnos.map(function(t){
+        var confirmado=atividadePedConfirmada(t.local);
+        var livre=t.local==='—';
+        var texto=confirmado?t.local:(livre?'Livre':'Pendente');
+        var badge=confirmado
+          ? 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20 shadow-inner'
+          : (livre?'text-zinc-500 dark:text-zinc-400 bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/5':'text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5');
+        return '<div class="flex items-center justify-between text-[10px] py-1.5 px-3 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5 gap-2">'+
+          '<span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit uppercase tracking-widest">'+t.periodo+'</span>'+
+          '<span class="font-extrabold font-outfit '+badge+' px-2 py-0.5 rounded whitespace-normal leading-tight text-center border max-w-[68%]">'+escapar(texto)+'</span>'+
+        '</div>';
       }).join('');
-      html+='<div class="glass-panel rounded-2xl p-4 space-y-3 transition-all shadow-md border border-black/5 dark:border-white/10 hover:border-blue-500/30"><div class="flex items-center justify-between border-b border-black/5 dark:border-white/10 pb-2"><div class="flex items-center space-x-2.5 min-w-0"><div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-outfit font-black text-[11px] flex items-center justify-center shrink-0 shadow-inner">A'+i+'</div><h4 class="text-xs font-outfit font-bold dark:text-white text-zinc-900 tracking-tight truncate">'+escapar(nome)+'</h4></div><button onclick="document.getElementById(\'ped-grupo-select\').value=\''+i+'\'; alternarModoPed(\'individual\');" class="text-[10px] font-outfit font-bold text-blue-600 dark:text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-2.5 py-1 rounded-md transition-all cursor-pointer shrink-0">Ver</button></div><div class="space-y-1.5">'+turnos+'</div></div>';
+
+      html+='<div class="glass-panel rounded-2xl p-4 space-y-3 transition-all shadow-md border border-black/5 dark:border-white/10 hover:border-blue-500/30">'+
+        '<div class="flex items-center justify-between border-b border-black/5 dark:border-white/10 pb-2">'+
+          '<div class="flex items-center space-x-2.5 min-w-0"><div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-outfit font-black text-[11px] flex items-center justify-center shrink-0 shadow-inner">A'+i+'</div>'+
+          '<h4 class="text-xs font-outfit font-bold dark:text-white text-zinc-900 tracking-tight truncate">'+escapar(nome)+'</h4></div>'+
+          '<button onclick="document.getElementById(\'ped-grupo-select\').value=\''+i+'\'; mudarGrupoPed(false); alternarModoPed(\'individual\');" class="text-[10px] font-outfit font-bold text-blue-600 dark:text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-2.5 py-1 rounded-md transition-all cursor-pointer shrink-0">Ver</button>'+
+        '</div><div class="space-y-1.5">'+turnosHtml+'</div></div>';
     }
-    html+='</div>';container.innerHTML=html;
+    html+='</div>';
+    container.innerHTML=html;
   }
 
   var atividadeSelecionadaPed='';
 
+  function nomeAtividadeFiltroPed(local){
+    var nome=String(local||'').trim();
+    if(nome.indexOf('Seminário')===0)return 'Seminário';
+    return nome;
+  }
+
+  function atividadesDisponiveisPed(){
+    var set=new Set();
+    Object.keys(pedEscalaTrio1Oficial).forEach(function(data){
+      turnosPedPorData('1',data).forEach(function(turno){
+        if(!atividadePedConfirmada(turno.local))return;
+        set.add(nomeAtividadeFiltroPed(turno.local));
+      });
+    });
+    return Array.from(set).sort(function(a,b){return a.localeCompare(b,'pt-BR');});
+  }
+
+  function ocorrenciasAtividadePed(nome){
+    var ocorrencias=[];
+    Object.keys(pedEscalaTrio1Oficial).forEach(function(data){
+      turnosPedPorData('1',data).forEach(function(turno){
+        if(!atividadePedConfirmada(turno.local))return;
+        if(nomeAtividadeFiltroPed(turno.local)!==nome)return;
+        ocorrencias.push({
+          trio:'1',
+          data:data,
+          periodo:turno.periodo,
+          horario:turno.horario,
+          local:turno.local,
+          semana:semanaDaDataPed(data)
+        });
+      });
+    });
+    return ocorrencias.sort(function(a,b){
+      return dataBrParaDate(a.data)-dataBrParaDate(b.data);
+    });
+  }
+
   function popularFiltroAtividadesPed(){
     var select=document.getElementById('ped-atividade-select');
     if(!select)return;
-    var selecionada=atividadeSelecionadaPed||select.value||'';
-    select.innerHTML='<option value="">Selecione uma atividade</option>';
-    // A lista será preenchida quando a tabela assistencial da Pediatria for cadastrada.
-    select.value='';
-    atividadeSelecionadaPed='';
+    var opcoes=atividadesDisponiveisPed();
+    select.innerHTML='<option value="">Selecione uma atividade</option>'+
+      opcoes.map(function(nome){return '<option value="'+escapar(nome)+'">'+escapar(nome)+'</option>';}).join('');
+    select.value=atividadeSelecionadaPed||'';
     var limpar=document.getElementById('ped-limpar-filtro-atividade');
-    if(limpar)limpar.classList.add('hidden');
+    if(limpar)limpar.classList.toggle('hidden',!atividadeSelecionadaPed);
   }
 
   window.filtrarPorAtividadePed=function(atividade){
@@ -6787,9 +7098,22 @@ Escala Diária por Turnos
   function renderAtividades(){
     var container=el('lista-turnos');if(!container)return;
     var atividade=atividadeSelecionadaPed||'';
-    var ocorrencias=[];
-    var totalTrios=0;
-    var cards='';
+    var ocorrencias=atividade?ocorrenciasAtividadePed(atividade):[];
+    var totalTrios=ocorrencias.length?1:0;
+
+    var cards=ocorrencias.map(function(item){
+      return '<div class="glass-panel rounded-2xl p-4 shadow-md border border-black/5 dark:border-white/10 hover:border-blue-500/30 transition-all">'+
+        '<div class="flex items-center justify-between gap-3 pb-3 border-b border-black/5 dark:border-white/10">'+
+          '<div class="flex items-center gap-2.5 min-w-0">'+
+            '<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 flex items-center justify-center font-outfit font-black text-[10px] shrink-0">A1</div>'+
+            '<div class="min-w-0"><span class="block text-[9px] font-black uppercase tracking-[.14em] text-zinc-400">Semana '+item.semana+'</span><strong class="block text-sm font-outfit font-black dark:text-white text-zinc-900">'+escapar(item.data)+'</strong></div>'+
+          '</div>'+
+          '<span class="px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">'+escapar(item.periodo)+'</span>'+
+        '</div>'+
+        '<div class="pt-3"><span class="block text-[9px] font-black uppercase tracking-[.14em] text-zinc-400">Atividade</span><p class="text-sm font-outfit font-extrabold dark:text-zinc-100 text-zinc-800 mt-1">'+escapar(item.local)+'</p>'+
+        '<div class="mt-3 flex items-center justify-between text-[10px]"><span class="text-zinc-500 font-bold">Trio A1</span><span class="text-blue-600 dark:text-blue-400 font-black">'+escapar(item.horario)+'</span></div></div>'+
+      '</div>';
+    }).join('');
 
     container.innerHTML=
     '<div class="h-full overflow-y-auto pr-1 pb-4 space-y-4">'+
@@ -6811,7 +7135,7 @@ Escala Diária por Turnos
         (atividade?
           '<div class="mt-5 pt-4 border-t border-black/5 dark:border-white/10 flex flex-col sm:flex-row sm:items-end justify-between gap-3">'+
             '<div><span class="text-[8px] font-black uppercase tracking-[.16em] text-zinc-400">Resultado para</span><h4 class="font-outfit font-extrabold text-base text-zinc-900 dark:text-white mt-1">'+escapar(atividade)+'</h4></div>'+
-            '<div class="flex items-center gap-2"><span class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-600 dark:text-blue-400">'+ocorrencias.length+' ocorrências</span><span class="px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 text-[10px] font-bold text-zinc-500">'+totalTrios+' trios</span></div>'+
+            '<div class="flex items-center gap-2"><span class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-600 dark:text-blue-400">'+ocorrencias.length+' ocorrências</span><span class="px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 text-[10px] font-bold text-zinc-500">'+totalTrios+' trio</span></div>'+
           '</div>':'')+
       '</section>'+
       (atividade?
@@ -6840,19 +7164,102 @@ Escala Diária por Turnos
     html+='</div>';c.innerHTML=html;
   }
 
+  function estadoTemporalDataPed(dataObj){
+    var hoje=new Date();hoje.setHours(0,0,0,0);
+    var alvo=new Date(dataObj);alvo.setHours(0,0,0,0);
+    if(alvo.getTime()===hoje.getTime())return 'hoje';
+    return alvo<hoje?'passado':'futuro';
+  }
+
+  function dataDentroRodizioPed(dataObj){
+    var inicio=new Date(inicioRodizioPed);inicio.setHours(0,0,0,0);
+    var fim=dataRodizioPed(totalSemanasPed,6);fim.setHours(23,59,59,999);
+    return dataObj>=inicio&&dataObj<=fim;
+  }
+
+  window.definirVisualizacaoCalendarioPed=function(modo){
+    if(['grade','compacta','lista'].indexOf(modo)<0)modo='lista';
+    try{localStorage.setItem('calendarioPedView',modo);}catch(e){}
+    renderCalendario();
+  };
+
   function renderCalendario(){
-    var c=el('lista-turnos');if(!c)return;
-    var agora=new Date();
-    var ano=agora.getFullYear(), mes=agora.getMonth();
-    var primeiro=new Date(ano,mes,1), ultimo=new Date(ano,mes+1,0).getDate();
-    var offset=primeiro.getDay(), cells='';
-    for(var x=0;x<offset;x++)cells+='<div class="min-h-[88px] rounded-xl border border-black/5 dark:border-white/5 bg-black/[.015] dark:bg-white/[.015]"></div>';
-    for(var d=1;d<=ultimo;d++){
-      var ds=pad2(d)+'/'+pad2(mes+1)+'/'+ano;
-      var eventos=seminariosPed.filter(function(ev){return ev.data===ds;});
-      cells+='<div class="min-h-[88px] rounded-xl border '+(d===agora.getDate()?'border-blue-500/35 bg-blue-500/[.07]':'border-black/5 dark:border-white/10 bg-black/[.02] dark:bg-white/[.02]')+' p-2.5"><div class="text-[10px] font-black font-outfit '+(d===agora.getDate()?'text-blue-500':'text-zinc-500')+'">'+d+'</div>'+eventos.map(function(ev){return '<div class="mt-2 rounded-lg bg-blue-500/10 border border-blue-500/15 px-2 py-1 text-[8px] font-bold text-blue-600 dark:text-blue-300 leading-tight">'+escapar(ev.trio==='geral'?'Avaliação':'Seminário T'+ev.trio)+'</div>';}).join('')+'</div>';
-    }
-    c.innerHTML='<div class="glass-panel rounded-2xl p-4 sm:p-5 shadow-lg border border-black/5 dark:border-white/10 h-full overflow-y-auto"><div class="flex items-center justify-between mb-4"><div><span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">Calendário</span><h3 class="text-lg font-outfit font-black dark:text-white text-zinc-900 mt-1">'+agora.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})+'</h3></div><span class="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Pediatria</span></div><div class="grid grid-cols-7 gap-2 mb-2">'+['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(function(n){return '<div class="text-center text-[8px] font-black uppercase tracking-widest text-zinc-500">'+n+'</div>';}).join('')+'</div><div class="grid grid-cols-7 gap-2">'+cells+'</div></div>';
+    var container=el('lista-turnos');if(!container)return;
+    var trio=String(el('grupo-select')?.value||'1');
+    var dadosTrio=dadosTrioPedPorId(trio);
+    var visual='lista';
+    try{
+      var pref=localStorage.getItem('calendarioPedView');
+      visual=['grade','compacta','lista'].indexOf(pref)>=0?pref:'lista';
+    }catch(e){}
+
+    var meses=[
+      {nome:'Outubro de 2026',ano:2026,mes:9,diasNoMes:31},
+      {nome:'Novembro de 2026',ano:2026,mes:10,diasNoMes:30},
+      {nome:'Dezembro de 2026',ano:2026,mes:11,diasNoMes:31}
+    ];
+    var classes={grade:'calendar-mobile-grid',compacta:'calendar-compact-grid',lista:'calendar-mobile-list'};
+    var html='<div class="calendar-months '+classes[visual]+' grid grid-cols-1 gap-5 pb-4 h-full overflow-y-auto pr-1">'+
+      '<div class="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-3 px-2 py-2 bg-zinc-100/90 dark:bg-[#080a11]/90 backdrop-blur-xl rounded-xl border border-black/5 dark:border-white/5">'+
+        '<div><span class="block text-[9px] font-black uppercase tracking-[.14em] text-zinc-500">Visualização</span><span class="block text-[10px] font-semibold text-zinc-400 mt-0.5">Escolha como ver o mês</span></div>'+
+        '<div class="calendar-view-switch" role="group" aria-label="Visualização do calendário da Pediatria">'+
+          '<button type="button" onclick="definirVisualizacaoCalendarioPed(\'grade\')" aria-pressed="'+(visual==='grade')+'" class="calendar-view-btn '+(visual==='grade'?'is-active':'')+'">▦ Grade</button>'+
+          '<button type="button" onclick="definirVisualizacaoCalendarioPed(\'compacta\')" aria-pressed="'+(visual==='compacta')+'" class="calendar-view-btn '+(visual==='compacta'?'is-active':'')+'">▥ Compacta</button>'+
+          '<button type="button" onclick="definirVisualizacaoCalendarioPed(\'lista\')" aria-pressed="'+(visual==='lista')+'" class="calendar-view-btn '+(visual==='lista'?'is-active':'')+'">☰ Lista</button>'+
+        '</div>'+
+      '</div>';
+
+    meses.forEach(function(m){
+      html+='<div class="calendar-month-card glass-panel rounded-2xl p-4 shadow-lg space-y-3 h-fit border border-black/5 dark:border-white/5">'+
+        '<div class="flex items-center justify-between pb-2.5 border-b border-black/5 dark:border-white/10">'+
+          '<h3 class="text-sm font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">'+m.nome+'</h3>'+
+          '<span class="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 font-outfit">Escala do '+escapar((dadosTrio.nomeGrupo||('Trio A'+trio)).split(':')[0])+'</span>'+
+        '</div>'+
+        '<div class="calendar-month-grid grid grid-cols-7 gap-2 text-center">'+
+        ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].map(function(d){return '<div class="calendar-weekday text-[10px] font-bold text-zinc-400 uppercase tracking-widest py-1">'+d+'</div>';}).join('');
+
+      var primeiro=new Date(m.ano,m.mes,1).getDay();
+      var offset=primeiro===0?6:primeiro-1;
+      for(var vazio=0;vazio<offset;vazio++)html+='<div class="calendar-empty rounded-xl bg-black/5 dark:bg-black/20 opacity-20 min-h-[154px]"></div>';
+      var total=offset;
+
+      for(var dia=1;dia<=m.diasNoMes;dia++){
+        var dataObj=new Date(m.ano,m.mes,dia);
+        var full=pad2(dia)+'/'+pad2(m.mes+1)+'/'+m.ano;
+        var dentro=dataDentroRodizioPed(dataObj);
+        var turnos=dentro?turnosPedPorData(trio,full):periodosPed.map(function(p){return {periodo:p.nome,horario:p.horario,local:'—'};});
+        var temAtividade=turnos.some(function(t){return atividadePedConfirmada(t.local);});
+        var estado=estadoTemporalDataPed(dataObj);
+        var fimSemana=dataObj.getDay()===0||dataObj.getDay()===6;
+        var cardClass=temAtividade
+          ? 'bg-blue-600/10 dark:bg-blue-900/35 border-blue-500/40 text-zinc-900 dark:text-white shadow-[0_0_8px_rgba(59,130,246,0.15)]'
+          : (fimSemana?'bg-black/10 dark:bg-black/40 border-black/10 dark:border-white/10 text-zinc-400 dark:text-zinc-500':'bg-black/5 dark:bg-black/30 border-black/5 dark:border-white/5 text-zinc-500 dark:text-zinc-400');
+
+        var turnosHtml=turnos.map(function(t){
+          var ativo=atividadePedConfirmada(t.local);
+          var sigla=t.periodo==='Manhã'?'M':(t.periodo==='Tarde'?'T':'N');
+          var texto=t.local==='—'?'Livre':(t.local==='Escala não enviada'?'Pendente':t.local);
+          var badge=ativo?'bg-blue-600 text-white font-bold shadow-sm':'bg-black/10 dark:bg-white/5 text-zinc-400 dark:text-zinc-500';
+          return '<div class="calendar-shift '+badge+'" title="'+escapar(t.periodo+': '+texto)+'">'+
+            '<span class="calendar-shift-period uppercase font-mono"><span class="calendar-shift-period-full">'+t.periodo+'</span><span class="calendar-shift-period-short">'+sigla+'</span></span>'+
+            '<span class="calendar-shift-text">'+escapar(texto)+'</span>'+
+          '</div>';
+        }).join('');
+
+        html+='<div class="calendar-day-card '+(estado==='passado'?'calendario-dia-passado':(estado==='hoje'?'calendario-dia-hoje':''))+' p-2 rounded-xl border '+cardClass+' flex flex-col justify-between box-border space-y-1.5 transition-transform hover:scale-[1.01]">'+
+          '<div class="flex items-center justify-between px-0.5"><div class="flex items-baseline gap-2"><span class="calendar-day-number text-sm font-outfit font-extrabold">'+dia+'</span><span class="calendar-day-name-mobile md:hidden text-[10px] uppercase tracking-widest font-bold opacity-70">'+['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'][dataObj.getDay()]+'</span></div>'+
+          (estado==='hoje'?'<span class="text-[6px] font-black uppercase tracking-wider text-blue-500">Hoje</span>':(temAtividade?'<span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]"></span>':''))+
+          '</div><div class="space-y-1">'+turnosHtml+'</div></div>';
+        total++;
+      }
+
+      var resto=total%7;
+      if(resto!==0)for(var faltam=0;faltam<7-resto;faltam++)html+='<div class="calendar-empty rounded-xl bg-black/5 dark:bg-black/20 opacity-15 min-h-[154px]"></div>';
+      html+='</div></div>';
+    });
+
+    html+='</div>';
+    container.innerHTML=html;
   }
 
   function renderRecados(){
@@ -6895,7 +7302,7 @@ Escala Diária por Turnos
       geral:'Visão Geral: Todos os 10 Trios do Dia',
       atividade:'Atividades • Consulte toda a escala',
       seminarios:'Cronograma de Seminários e Avaliação • Pediatria',
-      calendario:'Calendário Mensal do Trio Selecionado',
+      calendario:'Calendário Mensal do Trio Selecionado (Outubro a Dezembro de 2026)',
       recados:'Quadro de Recados Oficiais e Avisos',
       admin:'Painel Administrativo Exclusivo (Representante)'
     };
@@ -6904,7 +7311,7 @@ Escala Diária por Turnos
       if(span)span.textContent=labels[modo];
     }
 
-    if(modo==='individual')renderTurnosVazios();
+    if(modo==='individual')renderTurnosPed();
     else if(modo==='hoje')renderHoje();
     else if(modo==='geral')renderGeral();
     else if(modo==='atividade')renderAtividades();
