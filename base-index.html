@@ -2882,7 +2882,7 @@ if (novaSenha === senhaAtualInformada) return mostrarMensagemTrocaSenha('Escolha
 if (botao) { botao.disabled = true; botao.innerText = 'SALVANDO...'; }
 try {
 const senhaRef = doc(db, 'senhas_usuarios', idDocumentoSenhaUsuario(nome));
-const historicoRef = doc(collection(db, 'historico_senhas'));
+const historicoRef = doc(collection(db, document.body.classList.contains('rotation-ped')?'ped_historico_senhas':'historico_senhas'));
 const agora = new Date();
 await runTransaction(db, async transaction => {
 const snapshot = await transaction.get(senhaRef);
@@ -2926,7 +2926,9 @@ if (botao) { botao.disabled = false; botao.innerText = 'SALVAR NOVA SENHA'; }
 async function registrarHistoricoLoginEmSegundoPlano(alunoSelect, metodo) {
 try {
 const agora = new Date();
-const docRef = await addDoc(collection(db, "historico_logins"), {
+const colecaoLogin=document.body.classList.contains('rotation-ped')?'ped_historico_logins':'historico_logins';
+sessionStorage.setItem('loginSessionCollection',colecaoLogin);
+const docRef = await addDoc(collection(db, colecaoLogin), {
 nome: alunoSelect,
 data: agora.toLocaleDateString('pt-BR'),
 entrada: agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'}),
@@ -3010,7 +3012,7 @@ const sessionId = sessionStorage.getItem('loginSessionId') || currentLoginSessio
 if (sessionId && sessionStorage.getItem('autenticado') === 'true') {
 try {
 const saidaHora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-await updateDoc(doc(db, "historico_logins", sessionId), { saida: saidaHora });
+await updateDoc(doc(db, sessionStorage.getItem('loginSessionCollection')||'historico_logins', sessionId), { saida: saidaHora });
 } catch(e) {
 console.error("Erro ao registrar saída:", e);
 }
@@ -3042,7 +3044,7 @@ const sessionId = sessionStorage.getItem('loginSessionId') || currentLoginSessio
 if (sessionId && sessionStorage.getItem('autenticado') === 'true') {
 const saidaHora = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
 try {
-updateDoc(doc(db, "historico_logins", sessionId), { saida: saidaHora });
+updateDoc(doc(db, sessionStorage.getItem('loginSessionCollection')||'historico_logins', sessionId), { saida: saidaHora });
 } catch(err) {}
 }
 });
@@ -3695,7 +3697,7 @@ const el = document.getElementById('contador-capotes-val');
 if (el) el.innerText = capotesCount;
 const adminKpiCapotes = document.getElementById('admin-kpi-capotes');
 if (adminKpiCapotes) adminKpiCapotes.innerText = capotesCount;
-if(window.atualizarAdminCapotesPed)window.atualizarAdminCapotesPed();
+
 if (window.modoVisualizacao === 'hoje') renderizarHojeView();
 if (window.modoVisualizacao === 'admin' && isAdminAutenticado) atualizarAnalyticsAdminSeAtivo();
 }
@@ -3937,6 +3939,7 @@ erro.classList.remove('hidden');
 }
 }
 window.alterarCapotes = async function(delta) {
+if(document.body.classList.contains('rotation-ped'))return window.alterarCapotesPed?.(delta);
 const ajuste = Number(delta) > 0 ? 1 : -1;
 const autor = sessionStorage.getItem('alunoLogado') || 'Usuário não identificado';
 try {
@@ -6122,6 +6125,7 @@ abrirDestinoPushPendente();
 };
 
 (function(){
+let capotesCount=0;
 let adminSecaoAtiva='dashboard',recadosListaGlobal=[],escalaOverridesGlobal=[],historicoRecadosGlobal=[],historicoLoginsGlobal=[],historicoSenhasGlobal=[],historicoCapotesGlobal=[],historicoEscalasGlobal=[],dadosEscala={};
 let iniciado=false,historicosIniciados=false;
 function pedAdminElement(id){return document.getElementById('ped-'+id);}
@@ -6147,14 +6151,15 @@ function atualizarPainelPed(){
 function observarPed(nome,destino){return onSnapshot(query(collection(db,nome),orderBy('timestamp','desc'),limit(100)),s=>{destino(s.docs.map(d=>({id:d.id,...d.data()})));atualizarPainelPed();},e=>console.error('Falha ao sincronizar painel PED:',e));}
 function iniciarHistoricosAdminPed(){
  if(historicosIniciados||!autorizadoPed())return;historicosIniciados=true;
- observarPed('historico_logins',x=>historicoLoginsGlobal=x);
- observarPed('historico_senhas',x=>historicoSenhasGlobal=x);
- observarPed('historico_capotes',x=>historicoCapotesGlobal=x);
+ observarPed('ped_historico_logins',x=>historicoLoginsGlobal=x);
+ observarPed('ped_historico_senhas',x=>historicoSenhasGlobal=x);
+ observarPed('ped_historico_capotes',x=>historicoCapotesGlobal=x);
  observarPed('ped_historico_recados',x=>historicoRecadosGlobal=x);
  observarPed('ped_historico_escalas',x=>historicoEscalasGlobal=x);
 }
 function iniciarDadosPed(){
  if(iniciado)return;iniciado=true;
+ onSnapshot(doc(db,'ped_geral','contador'),s=>{capotesCount=s.exists()?Math.max(0,Number(s.data()?.capotes)||0):0;const n=document.getElementById('ped-contador-capotes-val');if(n)n.innerText=capotesCount;atualizarPainelPed();},e=>console.error('Falha no contador PED:',e));
  observarPed('ped_recados',x=>recadosListaGlobal=x);
  onSnapshot(collection(db,'ped_escala_overrides'),s=>{
  escalaOverridesGlobal=s.docs.map(d=>({id:d.id,...d.data()}));
@@ -6256,9 +6261,9 @@ let limpezaHistoricoEmAndamento = false;
 window.limparHistoricoAdminPed = async function(tipo) {
 if (!isAdminAutenticado || limpezaHistoricoEmAndamento) return;
 const configuracoes = {
-logins: { colecao: 'historico_logins', titulo: 'histórico de acessos', itens: historicoLoginsGlobal },
-senhas: { colecao: 'historico_senhas', titulo: 'histórico de alterações de senha', itens: historicoSenhasGlobal },
-capotes: { colecao: 'historico_capotes', titulo: 'histórico do contador de capotes', itens: historicoCapotesGlobal },
+logins: { colecao: 'ped_historico_logins', titulo: 'histórico de acessos', itens: historicoLoginsGlobal },
+senhas: { colecao: 'ped_historico_senhas', titulo: 'histórico de alterações de senha', itens: historicoSenhasGlobal },
+capotes: { colecao: 'ped_historico_capotes', titulo: 'histórico do contador de capotes', itens: historicoCapotesGlobal },
 recados: { colecao: 'ped_historico_recados', titulo: 'histórico de auditoria dos recados', itens: historicoRecadosGlobal },
 escalas: { colecao: 'ped_historico_escalas', titulo: 'histórico de auditoria das escalas', itens: historicoEscalasGlobal }
 };
@@ -6294,9 +6299,9 @@ limpezaHistoricoEmAndamento = false;
 window.excluirRegistroHistoricoAdminPed = async function(tipo, id) {
 if (!isAdminAutenticado || !id) return;
 const configuracoes = {
-logins: { colecao: 'historico_logins', titulo: 'este acesso' },
-senhas: { colecao: 'historico_senhas', titulo: 'esta alteração de senha' },
-capotes: { colecao: 'historico_capotes', titulo: 'esta movimentação de capote' },
+logins: { colecao: 'ped_historico_logins', titulo: 'este acesso' },
+senhas: { colecao: 'ped_historico_senhas', titulo: 'esta alteração de senha' },
+capotes: { colecao: 'ped_historico_capotes', titulo: 'esta movimentação de capote' },
 recados: { colecao: 'ped_historico_recados', titulo: 'este registro de recado' },
 escalas: { colecao: 'ped_historico_escalas', titulo: 'este registro de escala' }
 };
@@ -6520,12 +6525,12 @@ container.innerHTML = `
 <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Visão Geral</h4>
 <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Indicadores e infográficos do painel.</p>
 </div>
-<div data-admin-secao="historico_logins" onclick="abrirAdminSecaoPed('historico_logins')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<div data-admin-secao="historico_logins" onclick="abrirAdminSecaoPed('ped_historico_logins')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
 <span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 mb-3">↗</span>
 <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Logins</h4>
 <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Acessos e alterações de senha.</p>
 </div>
-<div data-admin-secao="historico_capotes" onclick="abrirAdminSecaoPed('historico_capotes')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<div data-admin-secao="historico_capotes" onclick="abrirAdminSecaoPed('ped_historico_capotes')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
 <span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 mb-3">±</span>
 <h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Capotes</h4>
 <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Quem alterou, horário e valor antes/depois.</p>
@@ -6567,7 +6572,7 @@ card.classList.toggle('admin-active', card.dataset.adminSecao === secao);
 const sub = pedAdminElement('admin-subconteudo');
 if (secao === 'dashboard') {
 renderizarAdminDashboardPed();
-} else if (secao === 'historico_logins') {
+} else if (secao === 'ped_historico_logins') {
 let html = `
 <h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between gap-3 flex-wrap">
 <span>Histórico de Logins (Entrada e Saída)</span>
@@ -6619,7 +6624,7 @@ html += `<div class="p-3.5 rounded-xl glass-panel border border-violet-500/10 fl
 }
 html += `</div></div>`;
 sub.innerHTML = html;
-} else if (secao === 'historico_capotes') {
+} else if (secao === 'ped_historico_capotes') {
 let html = `
 <h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between gap-3 flex-wrap">
 <span>Histórico do Contador de Capotes</span>
@@ -6896,7 +6901,16 @@ alert('Não foi possível desfazer a alteração.');
 
 
 for(const nome of ['limparHistoricoAdminPed','excluirRegistroHistoricoAdminPed','salvarAlteracaoEscalaPed','removerAlteracaoEscalaPed']){const original=window[nome];window[nome]=function(...args){if(!autorizadoPed())return;return original(...args);};}
-window.atualizarAdminCapotesPed=atualizarPainelPed;
+window.alterarCapotesPed=async function(delta){
+ const ref=doc(db,'ped_geral','contador'),autor=sessionStorage.getItem('alunoLogado')||'Usuário';
+ try{await runTransaction(db,async t=>{
+ const s=await t.get(ref),anterior=s.exists()?Math.max(0,Number(s.data()?.capotes)||0):0,novo=Math.max(0,anterior+(Number(delta)>0?1:-1));
+ t.set(ref,{capotes:novo,atualizadoPor:autor,atualizadoEm:serverTimestamp()},{merge:true});
+ t.set(doc(collection(db,'ped_historico_capotes')),{autor,alteracao:Number(delta)>0?'+1':'-1',valorAnterior:anterior,valorNovo:novo,timestamp:serverTimestamp()});
+ });}catch(e){console.error(e);alert('Não foi possível alterar os capotes de PED.');}
+};
+window.iniciarDadosPainelPed=iniciarDadosPed;
+window.registrarAcessoRodizio=()=>registrarHistoricoLoginEmSegundoPlano(sessionStorage.getItem('alunoLogado')||'Aluno T7A',document.body.classList.contains('rotation-ped')?'Rodízio PED':'Rodízio GO');
 window.dispatchEvent(new Event('ped-admin-pronto'));
 })();
 </script>
@@ -8330,8 +8344,11 @@ function renderSeminarios(){
       btn.setAttribute('aria-pressed',ativo?'true':'false');
     });
     montarSeletor(rodizio);
+    if(window.registrarAcessoRodizio&&sessionStorage.getItem('autenticado')==='true'&&sessionStorage.getItem('loginSessionCollection')!==(rodizio==='ped'?'ped_historico_logins':'historico_logins'))window.registrarAcessoRodizio();
     if(rodizio==='ped'){
       atualizarIdentidade();syncAccent();atualizarRelogio();
+      if(window.iniciarDadosPainelPed)window.iniciarDadosPainelPed();
+
       window.renderizarSemanasPed();window.renderizarAbasDiasPed();
       var modo='individual';try{modo=localStorage.getItem(MODE_KEY)||'individual';}catch(e){}
       window.alternarModoPed(modo,false);
