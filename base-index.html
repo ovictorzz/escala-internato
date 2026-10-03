@@ -6518,7 +6518,7 @@ Escala Diária por Turnos
     {trio:'8',data:'10/11/2026',tema:'Parasitoses intestinais',apresentadores:'Giovanna Muniz • Rayane Maria • Sofia Dias'},
     {trio:'9',data:'17/11/2026',tema:'Doenças Respiratórias na Infância: Bronquiolite, Asma e PNM na infância',apresentadores:'Annelise Paiva • Camila Souza • Gabriella Reis'},
     {trio:'10',data:'24/11/2026',tema:'Calendário vacinal na infância e suas particularidades',apresentadores:'José Henrique Ferreira • João Victor Tajra • Ana Luiza Daros'},
-    {trio:'geral',data:'01/12/2026',tema:'Avaliação Somativa – Finalização devolutivas',apresentadores:'Turma T7A',tipo:'avaliacao'}
+    {trio:'geral',data:'01/12/2026',tema:'Avaliação de Pediatria — 50 questões',apresentadores:'Turma T7A',tipo:'avaliacao'}
   ];
   var horarioSeminariosPed='18:30';
   var localSeminariosPed='Sala 3, Bloco D, UNIEURO';
@@ -6652,7 +6652,7 @@ Escala Diária por Turnos
     if(!atividadePedConfirmada(local))return false;
     if(nome.indexOf('seminário')>=0)return false;
     if(nome==='sci'||nome.indexOf('sci ')===0||nome.indexOf('sessões clínicas integradas')===0)return false;
-    if(nome.indexOf('simulação')>=0||nome.indexOf('simulado')>=0)return false;
+    if(nome.indexOf('simulação')>=0||nome.indexOf('simulado')>=0||nome.indexOf('avaliação')>=0)return false;
     return true;
   }
 
@@ -6735,6 +6735,20 @@ Escala Diária por Turnos
         noite.horario='18h30-21h30';
         noite.temas=eventos.map(s=>s.tema.replace(/ e /,' | ').replace(/\n/g,' | ')).join(' | ');
         noite.apresentadores=eventos.map(s=>s.apresentadores.split(' • ').map(nomeCurtoPed).join(' – ')).join(' | ');
+        noite.membros=[];
+      }
+    }
+    const avaliacao=seminariosPed.find(s=>s.data===dataCompleta&&s.tipo==='avaliacao');
+    if(avaliacao){
+      const noite=turnos.find(t=>t.periodo==='Noite');
+      if(noite){
+        noite.local='Avaliação de Pediatria — 50 questões';
+        noite.atividade=noite.local;
+        noite.horario='A definir';
+        noite.temas='50 questões de Pediatria';
+        noite.apresentadores='Turma T7A';
+        noite.localSeminario='';
+        noite.seminarios=[];
         noite.membros=[];
       }
     }
@@ -7342,7 +7356,7 @@ function renderSeminarios(){
     const container=el('lista-turnos');if(!container)return;
     container.innerHTML='<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pb-4">'+seminariosPed.map(evento=>{
       const avaliacao=evento.tipo==='avaliacao';
-      const titulo=avaliacao?'Avaliação Somativa':tituloSeminarioPed([evento]);
+      const titulo=avaliacao?'Avaliação de Pediatria — 50 questões':tituloSeminarioPed([evento]);
       return cardTurnoPed({
         data:evento.data,
         periodo:'Noite',
