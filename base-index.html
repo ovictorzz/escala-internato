@@ -3695,6 +3695,7 @@ const el = document.getElementById('contador-capotes-val');
 if (el) el.innerText = capotesCount;
 const adminKpiCapotes = document.getElementById('admin-kpi-capotes');
 if (adminKpiCapotes) adminKpiCapotes.innerText = capotesCount;
+if(window.atualizarAdminCapotesPed)window.atualizarAdminCapotesPed();
 if (window.modoVisualizacao === 'hoje') renderizarHojeView();
 if (window.modoVisualizacao === 'admin' && isAdminAutenticado) atualizarAnalyticsAdminSeAtivo();
 }
@@ -6119,6 +6120,785 @@ abrirDestinoPushPendente();
 }
 }
 };
+
+(function(){
+let adminSecaoAtiva='dashboard',recadosListaGlobal=[],escalaOverridesGlobal=[],historicoRecadosGlobal=[],historicoLoginsGlobal=[],historicoSenhasGlobal=[],historicoCapotesGlobal=[],historicoEscalasGlobal=[],dadosEscala={};
+let iniciado=false,historicosIniciados=false;
+function pedAdminElement(id){return document.getElementById('ped-'+id);}
+function atividadeConfirmada(local){return !!local&&local!=='—'&&local!=='Escala não enviada';}
+function calcularCargaHorariaTrio(id){
+ let total=0,teorica=0,pratica=0,semanas={};
+ Object.entries(dadosEscala[id]?.semanas||{}).forEach(([n,dias])=>{
+ let subtotal=0,semPratica=0,semTeorica=0;Object.values(dias).forEach(dia=>dia.turnos.forEach(t=>{
+ if(!atividadeConfirmada(t.local))return;const minutos=window.horasTurnoPedAdmin(t)*60;
+ total+=minutos;subtotal+=minutos;if(window.atividadePedAssistencialAdmin(t.local)){pratica+=minutos;semPratica+=minutos;}else{teorica+=minutos;semTeorica+=minutos;}
+ }));semanas[n]={total:subtotal,pratica:semPratica,teorica:semTeorica};
+ });return {total,teorica,pratica,semanas};
+}
+function atualizarDadosEscalaPed(){
+ dadosEscala={};for(let id=1;id<=10;id++){let semanas={};for(let n=1;n<=9;n++){let dias={};for(let d=0;d<7;d++){const date=new Date(2026,9,5+(n-1)*7+d,12);const data=date.toLocaleDateString('pt-BR');dias[['seg','ter','qua','qui','sex','sab','dom'][d]]={data,turnos:window.obterTurnosPed(String(id),data)};}semanas[n]=dias;}dadosEscala[id]={semanas};}
+}
+function autorizadoPed(){return isAdminAutenticado;}
+function atualizarPainelPed(){
+ if(!window.obterTurnosPed)return;
+ if(window.modoVisualizacaoPed==='admin'&&autorizadoPed()){atualizarDadosEscalaPed();atualizarKpisAdminPed();abrirAdminSecaoPed(adminSecaoAtiva);}
+ else if(window.modoVisualizacaoPed==='recados')window.renderizarMuralPed();
+}
+function observarPed(nome,destino){return onSnapshot(query(collection(db,nome),orderBy('timestamp','desc'),limit(100)),s=>{destino(s.docs.map(d=>({id:d.id,...d.data()})));atualizarPainelPed();},e=>console.error('Falha ao sincronizar painel PED:',e));}
+function iniciarHistoricosAdminPed(){
+ if(historicosIniciados||!autorizadoPed())return;historicosIniciados=true;
+ observarPed('historico_logins',x=>historicoLoginsGlobal=x);
+ observarPed('historico_senhas',x=>historicoSenhasGlobal=x);
+ observarPed('historico_capotes',x=>historicoCapotesGlobal=x);
+ observarPed('ped_historico_recados',x=>historicoRecadosGlobal=x);
+ observarPed('ped_historico_escalas',x=>historicoEscalasGlobal=x);
+}
+function iniciarDadosPed(){
+ if(iniciado)return;iniciado=true;
+ observarPed('ped_recados',x=>recadosListaGlobal=x);
+ onSnapshot(collection(db,'ped_escala_overrides'),s=>{
+ escalaOverridesGlobal=s.docs.map(d=>({id:d.id,...d.data()}));
+ window.pedEscalaOverrides=escalaOverridesGlobal;
+ window.dispatchEvent(new Event('ped-dados-atualizados'));atualizarPainelPed();
+ },e=>console.error('Falha ao carregar alterações PED:',e));
+}
+window.verificarAdminLoginPed=function(event){
+ event.preventDefault();if(pedAdminElement('admin-senha-input').value===SENHA_ADMIN){
+ isAdminAutenticado=true;sessionStorage.setItem('adminAutenticado','true');window.abrirPainelAdminPed();
+ }else pedAdminElement('admin-erro').classList.remove('hidden');
+};
+window.abrirPainelAdminPed=function(){
+ iniciarDadosPed();if(!autorizadoPed()){renderizarAdminLoginPed();return;}
+ atualizarDadosEscalaPed();renderizarAdminPainelPrincipalPed();
+};
+async function auditoriaRecadoPed(acao,r){await addDoc(collection(db,'ped_historico_recados'),{acao,autor:r.autor,texto:r.texto,timestamp:serverTimestamp()});}
+window.adicionarRecadoPed=async function(event){
+ event.preventDefault();if(!autorizadoPed())return;
+ const autor=pedAdminElement('recado-autor').value.trim()||'Representante T7A',texto=pedAdminElement('recado-texto').value.trim();if(!texto)return;
+ try{await addDoc(collection(db,'ped_recados'),{autor,texto,timestamp:serverTimestamp()});await auditoriaRecadoPed('Enviado',{autor,texto});pedAdminElement('recado-texto').value='';}catch(e){console.error(e);alert('Não foi possível publicar o recado.');}
+};
+window.editarRecadoPed=async function(id){
+ if(!autorizadoPed())return;const r=recadosListaGlobal.find(x=>x.id===id);if(!r)return;const texto=prompt('Editar recado:',r.texto);if(!texto?.trim())return;
+ try{await updateDoc(doc(db,'ped_recados',id),{texto:texto.trim()});await auditoriaRecadoPed('Editado',{autor:r.autor,texto:'De: '+r.texto+' Para: '+texto.trim()});}catch(e){console.error(e);alert('Não foi possível editar o recado.');}
+};
+window.deletarRecadoPed=async function(id){
+ if(!autorizadoPed()||!confirm('Deseja eliminar este recado?'))return;const r=recadosListaGlobal.find(x=>x.id===id);
+ try{await deleteDoc(doc(db,'ped_recados',id));if(r)await auditoriaRecadoPed('Apagado',r);}catch(e){console.error(e);alert('Não foi possível apagar o recado.');}
+};
+window.renderizarMuralPed=function(){
+ iniciarDadosPed();const container=pedAdminElement('lista-turnos');if(!container)return;
+ container.innerHTML='<div class="space-y-3">'+(recadosListaGlobal.length?recadosListaGlobal.map(r=>'<article class="glass-panel rounded-2xl p-5"><strong class="text-xs text-indigo-500">'+escaparHtmlAdminPed(r.autor)+'</strong><p class="text-sm mt-2 whitespace-pre-line">'+escaparHtmlAdminPed(r.texto)+'</p></article>').join(''):'<div class="glass-panel rounded-2xl p-6 text-center text-sm text-zinc-500">Nenhum recado de Pediatria</div>')+'</div>';
+};
+window.renderizarAdminLoginPed = function() {
+const container = pedAdminElement('lista-turnos');
+container.innerHTML = `
+<div class="glass-panel rounded-2xl p-6 max-w-sm mx-auto shadow-xl space-y-5 text-center mt-6 border border-indigo-500/20">
+<div class="w-12 h-12 bg-indigo-600/20 text-indigo-500 rounded-xl mx-auto flex items-center justify-center border border-indigo-500/30">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+</div>
+<div>
+<h3 class="text-base font-outfit font-extrabold dark:text-white text-zinc-900">Acesso Restrito</h3>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Introduza a sua senha para gerir o painel.</p>
+</div>
+<form onsubmit="verificarAdminLogin(event)" class="space-y-4">
+<input type="password" id="ped-admin-senha-input" placeholder="Senha do painel admin" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3 text-center focus:outline-none focus:border-indigo-500 shadow-inner">
+<button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-indigo-500 text-white font-outfit font-bold py-3.5 rounded-xl transition-all shadow-[0_4px_15px_rgba(79,70,229,0.4)] active:scale-95 cursor-pointer text-sm">ENTRAR</button>
+<p id="ped-admin-erro" class="text-xs text-rose-400 font-semibold hidden animate-pulse">Senha incorreta.</p>
+</form>
+</div>
+`;
+}
+function obterDataEventoAdminPed(item) {
+if (item?.timestamp?.toDate) return item.timestamp.toDate();
+if (!item?.data) return null;
+const partesData = String(item.data).split('/').map(Number);
+if (partesData.length !== 3 || partesData.some(numero => !Number.isFinite(numero))) return null;
+const partesHora = String(item.entrada || '00:00').split(':').map(Number);
+return new Date(partesData[2], partesData[1] - 1, partesData[0], partesHora[0] || 0, partesHora[1] || 0, partesHora[2] || 0);
+}
+
+function criarDonutAdminPed(valores, cores) {
+const total = valores.reduce((soma, valor) => soma + valor, 0);
+if (!total) return 'conic-gradient(rgba(113,113,122,.18) 0 100%)';
+let acumulado = 0;
+const segmentos = valores.map((valor, indice) => {
+const inicio = acumulado;
+acumulado += (valor / total) * 100;
+return `${cores[indice]} ${inicio.toFixed(2)}% ${acumulado.toFixed(2)}%`;
+});
+return `conic-gradient(${segmentos.join(', ')})`;
+}
+
+function atualizarKpisAdminPed() {
+const usuariosUnicos = new Set(historicoLoginsGlobal.map(item => item.nome).filter(Boolean)).size;
+const valores = {
+'admin-kpi-acessos': historicoLoginsGlobal.length,
+'admin-kpi-usuarios': usuariosUnicos,
+'admin-kpi-recados': recadosListaGlobal.length,
+'admin-kpi-escalas': escalaOverridesGlobal.length,
+'admin-kpi-capotes': capotesCount,
+'admin-kpi-capotes-movimentos': historicoCapotesGlobal.length
+};
+Object.entries(valores).forEach(([id, valor]) => {
+const elemento = pedAdminElement(id);
+if (elemento) elemento.innerText = valor;
+});
+}
+
+function atualizarAnalyticsAdminSeAtivoPed() {
+atualizarKpisAdminPed();
+if (window.modoVisualizacaoPed === 'admin' && isAdminAutenticado && adminSecaoAtiva === 'dashboard' && pedAdminElement('admin-subconteudo')) {
+renderizarAdminDashboardPed();
+}
+}
+
+let limpezaHistoricoEmAndamento = false;
+window.limparHistoricoAdminPed = async function(tipo) {
+if (!isAdminAutenticado || limpezaHistoricoEmAndamento) return;
+const configuracoes = {
+logins: { colecao: 'historico_logins', titulo: 'histórico de acessos', itens: historicoLoginsGlobal },
+senhas: { colecao: 'historico_senhas', titulo: 'histórico de alterações de senha', itens: historicoSenhasGlobal },
+capotes: { colecao: 'historico_capotes', titulo: 'histórico do contador de capotes', itens: historicoCapotesGlobal },
+recados: { colecao: 'ped_historico_recados', titulo: 'histórico de auditoria dos recados', itens: historicoRecadosGlobal },
+escalas: { colecao: 'ped_historico_escalas', titulo: 'histórico de auditoria das escalas', itens: historicoEscalasGlobal }
+};
+const config = configuracoes[tipo];
+if (!config) return;
+const ids = config.itens.map(item => item.id).filter(Boolean);
+if (!ids.length) {
+alert(`O ${config.titulo} já está vazio.`);
+return;
+}
+const confirmou = confirm(`Limpar ${config.titulo}?\n\nSerão apagados ${ids.length} registro(s). Esta ação não pode ser desfeita.`);
+if (!confirmou) return;
+limpezaHistoricoEmAndamento = true;
+try {
+for (let inicio = 0; inicio < ids.length; inicio += 400) {
+const lote = writeBatch(db);
+ids.slice(inicio, inicio + 400).forEach(id => lote.delete(doc(db, config.colecao, id)));
+await lote.commit();
+}
+if (tipo === 'logins') {
+currentLoginSessionId = null;
+sessionStorage.removeItem('loginSessionId');
+}
+alert(`${config.titulo.charAt(0).toUpperCase() + config.titulo.slice(1)} limpo com sucesso.`);
+} catch (erro) {
+console.error('Erro ao limpar histórico:', erro);
+alert('Não foi possível limpar esse histórico. Verifique a conexão e tente novamente.');
+} finally {
+limpezaHistoricoEmAndamento = false;
+}
+};
+
+window.excluirRegistroHistoricoAdminPed = async function(tipo, id) {
+if (!isAdminAutenticado || !id) return;
+const configuracoes = {
+logins: { colecao: 'historico_logins', titulo: 'este acesso' },
+senhas: { colecao: 'historico_senhas', titulo: 'esta alteração de senha' },
+capotes: { colecao: 'historico_capotes', titulo: 'esta movimentação de capote' },
+recados: { colecao: 'ped_historico_recados', titulo: 'este registro de recado' },
+escalas: { colecao: 'ped_historico_escalas', titulo: 'este registro de escala' }
+};
+const config = configuracoes[tipo];
+if (!config || !confirm(`Apagar ${config.titulo} do histórico?\n\nEsta ação não pode ser desfeita.`)) return;
+try {
+await deleteDoc(doc(db, config.colecao, id));
+if (tipo === 'logins' && (sessionStorage.getItem('loginSessionId') === id || currentLoginSessionId === id)) {
+currentLoginSessionId = null;
+sessionStorage.removeItem('loginSessionId');
+}
+} catch (erro) {
+console.error('Erro ao apagar registro do histórico:', erro);
+alert('Não foi possível apagar esse registro. Tente novamente.');
+}
+};
+
+function prepararAnalyticsAdminPed() {
+const agora = new Date();
+const inicioHoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+const acessosPorDia = Array.from({ length: 7 }, (_, indice) => {
+const data = new Date(inicioHoje);
+data.setDate(data.getDate() - (6 - indice));
+return {
+chave: data.toLocaleDateString('pt-BR'),
+rotulo: data.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', ''),
+dataCurta: data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+valor: 0
+};
+});
+const mapaDias = new Map(acessosPorDia.map(item => [item.chave, item]));
+const periodosAcesso = [
+{ nome: 'Madrugada', valor: 0, cor: '#64748b' },
+{ nome: 'Manhã', valor: 0, cor: '#38bdf8' },
+{ nome: 'Tarde', valor: 0, cor: '#f59e0b' },
+{ nome: 'Noite', valor: 0, cor: '#818cf8' }
+];
+const rankingMap = new Map();
+historicoLoginsGlobal.forEach(login => {
+const data = obterDataEventoAdminPed(login);
+if (data) {
+const itemDia = mapaDias.get(data.toLocaleDateString('pt-BR'));
+if (itemDia) itemDia.valor++;
+const hora = data.getHours();
+const indicePeriodo = hora < 6 ? 0 : hora < 12 ? 1 : hora < 18 ? 2 : 3;
+periodosAcesso[indicePeriodo].valor++;
+}
+if (login.nome) rankingMap.set(login.nome, (rankingMap.get(login.nome) || 0) + 1);
+});
+const rankingUsuarios = [...rankingMap.entries()]
+.map(([nome, valor]) => ({ nome, valor }))
+.sort((a, b) => b.valor - a.valor || a.nome.localeCompare(b.nome))
+.slice(0, 6);
+
+const cargaTrios = [];
+const turnosEscala = { 'Manhã': 0, 'Tarde': 0, 'Noite': 0 };
+let atividadesFds = 0;
+let totalMinutosCarga = 0;
+let totalMinutosTeoricos = 0;
+if (typeof dadosEscala !== 'undefined') {
+Object.entries(dadosEscala).forEach(([trioId, trio]) => {
+const cargaTrio = calcularCargaHorariaTrio(trioId);
+Object.values(trio.semanas || {}).forEach(semana => {
+Object.entries(semana || {}).forEach(([diaKey, dia]) => {
+(dia.turnos || []).forEach(turno => {
+if (!atividadeConfirmada(turno.local)) return;
+if (turnosEscala[turno.periodo] !== undefined) turnosEscala[turno.periodo]++;
+if (diaKey === 'sab' || diaKey === 'dom') atividadesFds++;
+});
+});
+});
+totalMinutosCarga += cargaTrio.total;
+totalMinutosTeoricos += cargaTrio.teorica;
+cargaTrios.push({ trioId: Number(trioId), nome: `Trio A${trioId}`, valor: cargaTrio.total, teorica: cargaTrio.teorica, pratica: cargaTrio.pratica, semanas: cargaTrio.semanas });
+});
+}
+cargaTrios.sort((a, b) => a.trioId - b.trioId);
+
+const capotesAdicionados = historicoCapotesGlobal.filter(item => item.alteracao === '+1').length;
+const capotesRetirados = historicoCapotesGlobal.filter(item => item.alteracao === '-1').length;
+const auditoriaRecados = {
+enviados: historicoRecadosGlobal.filter(item => item.acao === 'Enviado').length,
+editados: historicoRecadosGlobal.filter(item => item.acao === 'Editado').length,
+apagados: historicoRecadosGlobal.filter(item => item.acao === 'Apagado').length
+};
+
+const eventosRecentes = [];
+historicoLoginsGlobal.forEach(item => {
+const data = obterDataEventoAdminPed(item);
+if (data) eventosRecentes.push({ data, icone: '↗', titulo: 'Acesso ao painel', detalhe: item.nome || 'Aluno T7A', cor: 'blue' });
+});
+historicoCapotesGlobal.forEach(item => {
+const data = obterDataEventoAdminPed(item);
+if (data) eventosRecentes.push({ data, icone: item.alteracao === '+1' ? '+' : '−', titulo: `${item.alteracao || '±1'} no contador`, detalhe: `${item.autor || 'Usuário'} • ${item.valorAnterior ?? '—'} → ${item.valorNovo ?? '—'}`, cor: item.alteracao === '+1' ? 'emerald' : 'rose' });
+});
+historicoRecadosGlobal.forEach(item => {
+const data = obterDataEventoAdminPed(item);
+if (data) eventosRecentes.push({ data, icone: '≡', titulo: `Recado ${String(item.acao || '').toLowerCase()}`, detalhe: item.autor || 'Representante T7A', cor: 'amber' });
+});
+historicoEscalasGlobal.forEach(item => {
+const data = obterDataEventoAdminPed(item);
+if (data) eventosRecentes.push({ data, icone: '▦', titulo: item.acao || 'Escala alterada', detalhe: `Trio A${item.trio || '—'} • ${item.data || ''} ${item.periodo || ''}`, cor: 'violet' });
+});
+eventosRecentes.sort((a, b) => b.data - a.data);
+
+const totalTurnos = Object.values(turnosEscala).reduce((soma, valor) => soma + valor, 0);
+const periodoPico = [...periodosAcesso].sort((a, b) => b.valor - a.valor)[0];
+return {
+acessosPorDia,
+periodosAcesso,
+rankingUsuarios,
+cargaTrios,
+turnosEscala,
+totalTurnos,
+totalMinutosCarga,
+totalMinutosTeoricos,
+atividadesFds,
+capotesAdicionados,
+capotesRetirados,
+auditoriaRecados,
+eventosRecentes: eventosRecentes.slice(0, 8),
+periodoPico: periodoPico?.valor ? periodoPico.nome : 'Sem dados',
+usuarioMaisAtivo: rankingUsuarios[0]?.nome || 'Sem dados',
+usuariosUnicos: rankingMap.size
+};
+}
+
+window.renderizarAdminDashboardPed = function() {
+const sub = pedAdminElement('admin-subconteudo');
+if (!sub) return;
+const dados = prepararAnalyticsAdminPed();
+const maxAcessosDia = Math.max(1, ...dados.acessosPorDia.map(item => item.valor));
+const barrasAcesso = dados.acessosPorDia.map(item => {
+const altura = item.valor ? Math.max(10, Math.round((item.valor / maxAcessosDia) * 100)) : 4;
+return `<div class="admin-bar-column" title="${item.dataCurta}: ${item.valor} acesso(s)"><span class="admin-bar-value">${item.valor}</span><div class="admin-bar-track"><span class="admin-bar-fill" style="height:${altura}%"></span></div><span class="admin-bar-label">${escaparHtmlAdminPed(item.rotulo)}</span></div>`;
+}).join('');
+const donutAcessos = criarDonutAdminPed(dados.periodosAcesso.map(item => item.valor), dados.periodosAcesso.map(item => item.cor));
+const legendaAcessos = dados.periodosAcesso.map(item => `<div class="flex items-center justify-between gap-3"><span class="flex items-center gap-2 text-[10px] text-zinc-500 dark:text-zinc-400"><i class="admin-legend-dot" style="background:${item.cor};color:${item.cor}"></i>${item.nome}</span><strong class="text-[11px] text-zinc-800 dark:text-zinc-200">${item.valor}</strong></div>`).join('');
+const maxRanking = Math.max(1, ...dados.rankingUsuarios.map(item => item.valor));
+const rankingHtml = dados.rankingUsuarios.length ? dados.rankingUsuarios.map((item, indice) => `<div class="space-y-1.5"><div class="flex items-start justify-between gap-3 text-[10px]"><span class="font-bold text-zinc-600 dark:text-zinc-300 leading-snug"><i class="text-zinc-500 mr-1">#${indice + 1}</i>${escaparHtmlAdminPed(item.nome)}</span><strong class="text-blue-500 shrink-0">${item.valor}</strong></div><div class="admin-rank-track"><div class="admin-rank-fill" style="width:${Math.max(6, Math.round((item.valor / maxRanking) * 100))}%"></div></div></div>`).join('') : '<p class="text-[11px] text-zinc-500 py-5 text-center">Ainda não há acessos suficientes para formar o ranking.</p>';
+const cargaTriosHtml = dados.cargaTrios.map(item => {
+const semanasHtml = Array.from({ length: 9 }, (_, indice) => {
+const numero = indice + 1;
+const semana = item.semanas[numero] || { total: 0, teorica: 0, pratica: 0 };
+return `<div class="rounded-lg bg-black/5 dark:bg-white/[.045] border border-black/5 dark:border-white/5 px-2 py-2 text-center" title="Semana ${numero}: ${formatarCargaHoraria(semana.total)} no total, ${formatarCargaHoraria(semana.pratica)} práticas e ${formatarCargaHoraria(semana.teorica)} teóricas"><span class="block text-[8px] font-black uppercase tracking-wider text-zinc-500">S${numero}</span><strong class="block text-[10px] text-zinc-800 dark:text-zinc-200 mt-1">${formatarCargaHoraria(semana.total)}</strong><span class="block text-[8px] text-emerald-500 mt-0.5">P ${formatarCargaHoraria(semana.pratica)}</span><span class="block text-[8px] text-violet-500 mt-0.5">T ${formatarCargaHoraria(semana.teorica)}</span></div>`;
+}).join('');
+return `<article class="rounded-xl p-3.5 bg-black/[.025] dark:bg-black/20 border border-black/5 dark:border-white/5"><div class="flex items-center justify-between gap-3 flex-wrap"><div><strong class="font-outfit font-black text-sm text-zinc-900 dark:text-white">${item.nome}</strong><span class="block text-[9px] text-zinc-500 mt-0.5">Confirmado até agora</span></div><div class="flex items-center gap-2 flex-wrap"><span class="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 text-[9px] font-bold">Prática ${formatarCargaHoraria(item.pratica)}</span><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 text-violet-500 text-[9px] font-bold">Teórica ${formatarCargaHoraria(item.teorica)}</span><span class="px-2.5 py-1.5 rounded-lg bg-blue-500/10 text-blue-500 text-[10px] font-black">Total ${formatarCargaHoraria(item.valor)}</span></div></div><div class="grid grid-cols-3 sm:grid-cols-5 xl:grid-cols-9 gap-1.5 mt-3">${semanasHtml}</div></article>`;
+}).join('');
+const valoresTurnos = [dados.turnosEscala['Manhã'], dados.turnosEscala['Tarde'], dados.turnosEscala['Noite']];
+const coresTurnos = ['#38bdf8', '#f59e0b', '#818cf8'];
+const donutTurnos = criarDonutAdminPed(valoresTurnos, coresTurnos);
+const totalAuditoria = dados.auditoriaRecados.enviados + dados.auditoriaRecados.editados + dados.auditoriaRecados.apagados + historicoEscalasGlobal.length;
+const pctAuditoria = valor => totalAuditoria ? Math.max(2, (valor / totalAuditoria) * 100) : 0;
+const recentesHtml = dados.eventosRecentes.length ? dados.eventosRecentes.map(evento => {
+const dataTexto = evento.data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' • ' + evento.data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+return `<div class="relative flex items-start gap-3"><span class="admin-activity-dot">${evento.icone}</span><div class="min-w-0 flex-1 pb-3"><div class="flex items-start justify-between gap-3"><strong class="text-[11px] text-zinc-800 dark:text-zinc-200">${escaparHtmlAdminPed(evento.titulo)}</strong><span class="text-[8px] font-mono text-zinc-500 shrink-0">${dataTexto}</span></div><p class="text-[9px] text-zinc-500 mt-1 leading-snug">${escaparHtmlAdminPed(evento.detalhe)}</p></div></div>`;
+}).join('') : '<p class="text-[11px] text-zinc-500 py-6 text-center">As próximas ações registradas aparecerão aqui.</p>';
+const variacaoCapotes = dados.capotesAdicionados - dados.capotesRetirados;
+
+sub.innerHTML = `
+<div id="ped-admin-analytics-root" class="space-y-4">
+<div class="flex items-start justify-between gap-4 flex-wrap">
+<div><span class="text-[9px] font-black uppercase tracking-[.18em] text-indigo-400">Central Analítica</span><h3 class="text-base font-outfit font-black text-zinc-900 dark:text-white mt-1">Visão geral do painel</h3><p class="text-[10px] text-zinc-500 mt-1">Indicadores calculados em tempo real a partir dos registros da turma.</p></div>
+<div class="flex flex-wrap gap-2"><span class="px-2.5 py-1.5 rounded-lg bg-blue-500/10 text-blue-500 text-[9px] font-bold border border-blue-500/20">Pico: ${dados.periodoPico}</span><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 text-violet-500 text-[9px] font-bold border border-violet-500/20">Mais ativo: ${escaparHtmlAdminPed(dados.usuarioMaisAtivo)}</span><span class="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 text-[9px] font-bold border border-emerald-500/20">● Ao vivo</span></div>
+</div>
+
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+<div class="admin-mini-kpi rounded-2xl p-4"><span class="text-[8px] font-black uppercase tracking-[.15em] text-zinc-500">Sessões totais</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">${historicoLoginsGlobal.length}</strong><span class="text-[9px] text-blue-500">${dados.usuariosUnicos} usuários únicos</span></div>
+<div class="admin-mini-kpi rounded-2xl p-4"><span class="text-[8px] font-black uppercase tracking-[.15em] text-zinc-500">Ações administrativas</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">${historicoRecadosGlobal.length + historicoEscalasGlobal.length}</strong><span class="text-[9px] text-violet-500">Recados e escalas</span></div>
+<div class="admin-mini-kpi rounded-2xl p-4"><span class="text-[8px] font-black uppercase tracking-[.15em] text-zinc-500">Movimento líquido</span><strong class="block text-2xl font-outfit font-black ${variacaoCapotes >= 0 ? 'text-emerald-500' : 'text-rose-500'} mt-2">${variacaoCapotes > 0 ? '+' : ''}${variacaoCapotes}</strong><span class="text-[9px] text-zinc-500">No contador de capotes</span></div>
+<div class="admin-mini-kpi rounded-2xl p-4"><span class="text-[8px] font-black uppercase tracking-[.15em] text-zinc-500">Carga confirmada</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">${formatarCargaHoraria(dados.totalMinutosCarga)}</strong><span class="text-[9px] text-violet-500">${formatarCargaHoraria(dados.totalMinutosTeoricos)} de atividade teórica</span></div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-7"><div class="relative z-10"><div class="flex items-start justify-between gap-3"><div><h4 class="admin-chart-title">Acessos nos últimos 7 dias</h4><p class="admin-chart-subtitle">Quantidade de sessões iniciadas por dia.</p></div><span class="text-[9px] font-bold text-blue-500 px-2 py-1 rounded-md bg-blue-500/10">${dados.acessosPorDia.reduce((soma, item) => soma + item.valor, 0)} acessos</span></div><div class="admin-bars">${barrasAcesso}</div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-5"><div class="relative z-10"><h4 class="admin-chart-title">Horários de maior acesso</h4><p class="admin-chart-subtitle">Distribuição de todas as entradas por período.</p><div class="flex items-center justify-center gap-5 mt-5"><div class="admin-donut" style="background:${donutAcessos}" role="img" aria-label="Distribuição de acessos por período"><div class="admin-donut-center"><strong>${historicoLoginsGlobal.length}</strong><span>acessos</span></div></div><div class="space-y-2.5 min-w-[112px]">${legendaAcessos}</div></div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-5"><div class="relative z-10"><h4 class="admin-chart-title">Usuários mais ativos</h4><p class="admin-chart-subtitle">Ranking por quantidade de sessões registradas.</p><div class="space-y-3.5 mt-5">${rankingHtml}</div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-7"><div class="relative z-10"><div class="flex items-start justify-between gap-3"><div><h4 class="admin-chart-title">Movimentação dos capotes</h4><p class="admin-chart-subtitle">Entradas e retiradas registradas no contador.</p></div><strong class="text-3xl font-outfit font-black text-emerald-500">${capotesCount}</strong></div><div class="grid grid-cols-2 gap-3 mt-5"><div class="rounded-xl p-4 bg-emerald-500/10 border border-emerald-500/15"><span class="text-[9px] font-black uppercase tracking-widest text-emerald-500">Adicionados</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">+${dados.capotesAdicionados}</strong></div><div class="rounded-xl p-4 bg-rose-500/10 border border-rose-500/15"><span class="text-[9px] font-black uppercase tracking-widest text-rose-500">Retirados</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">−${dados.capotesRetirados}</strong></div></div><div class="flex h-2 rounded-full overflow-hidden bg-zinc-500/10 mt-4"><span class="bg-emerald-500" style="width:${historicoCapotesGlobal.length ? (dados.capotesAdicionados / historicoCapotesGlobal.length) * 100 : 0}%"></span><span class="bg-rose-500" style="width:${historicoCapotesGlobal.length ? (dados.capotesRetirados / historicoCapotesGlobal.length) * 100 : 0}%"></span></div><div class="flex justify-between mt-2 text-[9px] text-zinc-500"><span>${historicoCapotesGlobal.length} movimentações</span><span>Saldo: ${variacaoCapotes > 0 ? '+' : ''}${variacaoCapotes}</span></div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><div class="flex items-start justify-between gap-3 flex-wrap"><div><h4 class="admin-chart-title">Carga horária confirmada por trio</h4><p class="admin-chart-subtitle">Cada semana separa prática (P) e teórica (T), além do total confirmado.</p></div><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-500 text-[9px] font-bold">Teóricas fixas: segunda à tarde + terça à noite</span></div><div class="space-y-2.5 mt-5">${cargaTriosHtml}</div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-5"><div class="relative z-10"><h4 class="admin-chart-title">Atividades por turno</h4><p class="admin-chart-subtitle">Composição dos turnos confirmados na escala.</p><div class="flex items-center justify-center gap-5 mt-5"><div class="admin-donut" style="background:${donutTurnos}" role="img" aria-label="Distribuição das atividades por turno"><div class="admin-donut-center"><strong>${dados.totalTurnos}</strong><span>turnos</span></div></div><div class="space-y-2.5 min-w-[112px]">${['Manhã','Tarde','Noite'].map((nome, i) => `<div class="flex items-center justify-between gap-3"><span class="flex items-center gap-2 text-[10px] text-zinc-500"><i class="admin-legend-dot" style="background:${coresTurnos[i]};color:${coresTurnos[i]}"></i>${nome}</span><strong class="text-[11px] text-zinc-800 dark:text-zinc-200">${valoresTurnos[i]}</strong></div>`).join('')}<div class="pt-2 mt-2 border-t border-black/5 dark:border-white/5 text-[9px] text-zinc-500">${dados.atividadesFds} no fim de semana<br>${formatarCargaHoraria(dados.totalMinutosTeoricos)} teóricas</div></div></div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-7"><div class="relative z-10"><h4 class="admin-chart-title">Auditoria de conteúdo</h4><p class="admin-chart-subtitle">Ações registradas em recados e escalas.</p><div class="flex h-2.5 rounded-full overflow-hidden bg-zinc-500/10 mt-5"><span class="admin-audit-segment bg-blue-500" style="width:${pctAuditoria(dados.auditoriaRecados.enviados)}%"></span><span class="admin-audit-segment bg-amber-500" style="width:${pctAuditoria(dados.auditoriaRecados.editados)}%"></span><span class="admin-audit-segment bg-rose-500" style="width:${pctAuditoria(dados.auditoriaRecados.apagados)}%"></span><span class="admin-audit-segment bg-violet-500" style="width:${pctAuditoria(historicoEscalasGlobal.length)}%"></span></div><div class="grid grid-cols-2 gap-3 mt-5"><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-blue-500 font-bold">Recados enviados</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${dados.auditoriaRecados.enviados}</strong></div><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-amber-500 font-bold">Editados</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${dados.auditoriaRecados.editados}</strong></div><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-rose-500 font-bold">Apagados</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${dados.auditoriaRecados.apagados}</strong></div><div class="p-3 rounded-xl bg-black/5 dark:bg-white/5"><span class="text-[9px] text-violet-500 font-bold">Ações em escalas</span><strong class="block text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">${historicoEscalasGlobal.length}</strong></div></div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><div class="flex items-start justify-between gap-3"><div><h4 class="admin-chart-title">Atividade recente</h4><p class="admin-chart-subtitle">Últimos eventos importantes registrados no painel.</p></div><span class="text-[9px] text-zinc-500">Mais recentes primeiro</span></div><div class="relative mt-5"><span class="admin-activity-line"></span>${recentesHtml}</div></div></section>
+
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><h4 class="admin-chart-title">Gerenciar históricos</h4><p class="admin-chart-subtitle">Limpe somente a categoria desejada. Recados ativos, senhas atuais e alterações de escala publicadas não serão apagados.</p><div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 mt-5"><button onclick="limparHistoricoAdminPed('logins')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar acessos</span><span class="text-[9px] text-zinc-500">${historicoLoginsGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdminPed('senhas')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar alterações de senha</span><span class="text-[9px] text-zinc-500">${historicoSenhasGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdminPed('capotes')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar capotes</span><span class="text-[9px] text-zinc-500">${historicoCapotesGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdminPed('recados')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar auditoria de recados</span><span class="text-[9px] text-zinc-500">${historicoRecadosGlobal.length} registro(s)</span></button><button onclick="limparHistoricoAdminPed('escalas')" class="p-3 rounded-xl text-left bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"><span class="block text-[10px] font-black text-rose-500">Limpar auditoria de escalas</span><span class="text-[9px] text-zinc-500">${historicoEscalasGlobal.length} registro(s)</span></button></div></div></section>
+</div>
+</div>`;
+atualizarKpisAdminPed();
+}
+
+window.renderizarAdminPainelPrincipalPed = function() {
+if(!autorizadoPed())return renderizarAdminLoginPed();
+iniciarHistoricosAdminPed();
+const container = pedAdminElement('lista-turnos');
+container.innerHTML = `
+<div class="space-y-4 h-full flex flex-col">
+<div class="flex items-center justify-between gap-3 flex-wrap">
+<div>
+<span class="text-[9px] font-extrabold uppercase tracking-[0.18em] text-indigo-400">Central de Gestão</span>
+<h3 class="text-lg font-outfit font-black text-zinc-900 dark:text-white mt-1">Painel Administrativo</h3>
+</div>
+<span class="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold">● Sessão autorizada</span>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Acessos</span><strong id="ped-admin-kpi-acessos" class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${historicoLoginsGlobal.length}</strong><span class="text-[9px] text-emerald-500">Sessões registradas</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Usuários</span><strong id="ped-admin-kpi-usuarios" class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${new Set(historicoLoginsGlobal.map(item => item.nome).filter(Boolean)).size}</strong><span class="text-[9px] text-sky-500">Pessoas diferentes</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Recados ativos</span><strong id="ped-admin-kpi-recados" class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${recadosListaGlobal.length}</strong><span class="text-[9px] text-blue-500">Visíveis para a turma</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Ajustes ativos</span><strong id="ped-admin-kpi-escalas" class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${escalaOverridesGlobal.length}</strong><span class="text-[9px] text-violet-500">Mudanças publicadas</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Capotes</span><strong id="ped-admin-kpi-capotes" class="block font-outfit font-black text-2xl text-emerald-500 mt-1">${capotesCount}</strong><span class="text-[9px] text-zinc-500">Disponíveis agora</span></div>
+<div class="admin-kpi glass-panel rounded-2xl p-4"><span class="text-[9px] font-black uppercase tracking-[.16em] text-zinc-500">Movimentações</span><strong id="ped-admin-kpi-capotes-movimentos" class="block font-outfit font-black text-2xl text-zinc-900 dark:text-white mt-1">${historicoCapotesGlobal.length}</strong><span class="text-[9px] text-amber-500">Histórico de capotes</span></div>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 shrink-0">
+<div data-admin-secao="dashboard" onclick="abrirAdminSecaoPed('dashboard')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400 mb-3">⌁</span>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Visão Geral</h4>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Indicadores e infográficos do painel.</p>
+</div>
+<div data-admin-secao="historico_logins" onclick="abrirAdminSecaoPed('historico_logins')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 mb-3">↗</span>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Logins</h4>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Acessos e alterações de senha.</p>
+</div>
+<div data-admin-secao="historico_capotes" onclick="abrirAdminSecaoPed('historico_capotes')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 mb-3">±</span>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Capotes</h4>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Quem alterou, horário e valor antes/depois.</p>
+</div>
+<div data-admin-secao="historico_recados" onclick="abrirAdminSecaoPed('ped_historico_recados')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400 mb-3">≡</span>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Recados</h4>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Avisos enviados, editados e apagados.</p>
+</div>
+<div data-admin-secao="historico_escalas" onclick="abrirAdminSecaoPed('ped_historico_escalas')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-violet-500/10 text-violet-400 mb-3">↺</span>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Histórico de Escalas</h4>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Auditoria das alterações publicadas.</p>
+</div>
+<div data-admin-secao="recados" onclick="abrirAdminSecaoPed('recados')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-violet-500/10 text-violet-400 mb-3">✦</span>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Gerir Recados</h4>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Publicar, editar ou remover avisos oficiais.</p>
+</div>
+<div data-admin-secao="escalas" onclick="abrirAdminSecaoPed('escalas')" class="admin-nav-card glass-panel p-4 rounded-2xl cursor-pointer hover:border-indigo-500/50 transition-all shadow-md group">
+<span class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 mb-3">▦</span>
+<h4 class="text-sm font-outfit font-extrabold dark:text-white text-zinc-900 group-hover:text-indigo-500 transition-colors">Editar Escalas</h4>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">Alterar trio, data, turno, horário e local.</p>
+</div>
+</div>
+<div id="ped-admin-subconteudo" class="glass-panel rounded-2xl p-5 shadow-md flex-1">
+<p class="text-sm text-zinc-400 text-center py-5">Selecione uma opção acima para visualizar.</p>
+</div>
+</div>
+`;
+abrirAdminSecaoPed('dashboard');
+}
+window.abrirAdminSecaoPed = function(secao) {
+if(!autorizadoPed())return;
+adminSecaoAtiva = secao;
+document.querySelectorAll('#ped-section [data-admin-secao]').forEach(card => {
+card.classList.toggle('admin-active', card.dataset.adminSecao === secao);
+});
+const sub = pedAdminElement('admin-subconteudo');
+if (secao === 'dashboard') {
+renderizarAdminDashboardPed();
+} else if (secao === 'historico_logins') {
+let html = `
+<h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between gap-3 flex-wrap">
+<span>Histórico de Logins (Entrada e Saída)</span>
+<span class="flex items-center gap-2"><span class="text-[10px] text-zinc-400 font-normal">${historicoLoginsGlobal.length} acesso(s)</span><button onclick="limparHistoricoAdminPed('logins')" class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[9px] font-black hover:bg-rose-500/20">Limpar histórico</button></span>
+</h3>
+<div class="space-y-3 max-h-[350px] overflow-y-auto pr-2" id="ped-sub-sec-historico-logins">
+`;
+if (historicoLoginsGlobal.length === 0) {
+html += `<p class="text-xs text-zinc-400 py-2">Nenhum acesso registrado ainda.</p>`;
+} else {
+historicoLoginsGlobal.forEach(l => {
+html += `
+<div class="p-3.5 rounded-xl glass-panel border border-black/5 dark:border-white/5 flex items-center justify-between gap-3">
+<div>
+<span class="text-sm font-outfit font-bold text-indigo-400">${l.nome}</span>
+<p class="text-[10px] text-zinc-400 mt-1">Data: ${l.data}</p>
+</div>
+<div class="flex items-center gap-2 flex-wrap justify-end">
+<div class="text-right">
+<span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">Entrada: ${l.entrada}</span>
+<span class="text-[10px] font-mono text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-md border border-rose-500/20 ml-2">Saída: ${l.saida}</span>
+${l.metodo ? `<span class="text-[9px] font-black text-sky-400 bg-sky-500/10 px-2 py-1 rounded-md border border-sky-500/20 ml-2">${escaparHtmlAdminPed(l.metodo)}</span>` : ''}
+</div>
+<button onclick="excluirRegistroHistoricoAdminPed('logins','${l.id}')" class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500/20" title="Apagar somente este acesso" aria-label="Apagar este acesso">×</button>
+</div>
+</div>
+`;
+});
+}
+html += `</div>`;
+html += `
+<div class="mt-6 pt-5 border-t border-black/5 dark:border-white/10">
+<div class="flex items-center justify-between gap-3 flex-wrap mb-3">
+<div><span class="text-[9px] font-black uppercase tracking-[.16em] text-violet-500">Segurança de acesso</span><h4 class="text-sm font-outfit font-extrabold text-zinc-900 dark:text-white mt-1">Alterações de senha</h4></div>
+<span class="flex items-center gap-2"><span class="text-[10px] text-zinc-400">${historicoSenhasGlobal.length} alteração(ões)</span><button onclick="limparHistoricoAdminPed('senhas')" class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[9px] font-black hover:bg-rose-500/20">Limpar histórico</button></span>
+</div>
+<div class="space-y-3 max-h-[320px] overflow-y-auto pr-2" id="ped-sub-sec-historico-senhas">`;
+if (historicoSenhasGlobal.length === 0) {
+html += `<p class="text-xs text-zinc-400 py-3">Nenhuma alteração de senha registrada ainda.</p>`;
+} else {
+historicoSenhasGlobal.forEach(item => {
+let dataFormatada = `${item.data || 'Data não informada'}${item.hora ? ` às ${item.hora}` : ''}`;
+if (item.timestamp && item.timestamp.toDate) {
+const dataEvento = item.timestamp.toDate();
+dataFormatada = dataEvento.toLocaleDateString('pt-BR') + ' às ' + dataEvento.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+html += `<div class="p-3.5 rounded-xl glass-panel border border-violet-500/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div class="min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="px-2 py-1 rounded-md bg-violet-500/10 border border-violet-500/20 text-violet-500 text-[9px] font-black">SENHA ALTERADA</span><strong class="text-xs text-zinc-800 dark:text-zinc-200">${escaparHtmlAdminPed(item.nome || 'Usuário')}</strong></div><span class="block text-[9px] text-zinc-500 font-mono mt-1.5">${dataFormatada}</span></div><div class="flex items-center gap-2 flex-wrap justify-end"><span class="px-2.5 py-1.5 rounded-lg bg-black/5 dark:bg-black/25 border border-black/5 dark:border-white/5 text-[10px] text-zinc-500">Antes: <strong class="font-mono text-rose-500">${escaparHtmlAdminPed(item.senhaAnterior || '—')}</strong></span><span class="text-zinc-500">→</span><span class="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/15 text-[10px] text-zinc-500">Agora: <strong class="font-mono text-emerald-500">${escaparHtmlAdminPed(item.senhaNova || '—')}</strong></span><button onclick="excluirRegistroHistoricoAdminPed('senhas','${item.id}')" class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500/20" title="Apagar somente esta alteração" aria-label="Apagar esta alteração de senha">×</button></div></div>`;
+});
+}
+html += `</div></div>`;
+sub.innerHTML = html;
+} else if (secao === 'historico_capotes') {
+let html = `
+<h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between gap-3 flex-wrap">
+<span>Histórico do Contador de Capotes</span>
+<span class="flex items-center gap-2"><span class="text-[10px] text-zinc-400 font-normal">${historicoCapotesGlobal.length} movimentações</span><button onclick="limparHistoricoAdminPed('capotes')" class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[9px] font-black hover:bg-rose-500/20">Limpar histórico</button></span>
+</h3>
+<div class="space-y-3 max-h-[350px] overflow-y-auto pr-2" id="ped-sub-sec-historico-capotes">
+`;
+if (historicoCapotesGlobal.length === 0) {
+html += `<p class="text-xs text-zinc-400 py-2">Nenhuma alteração do contador foi registrada desde a ativação do histórico.</p>`;
+} else {
+historicoCapotesGlobal.forEach(h => {
+let dataFormatada = 'Agora há pouco';
+if (h.timestamp && h.timestamp.toDate) {
+const d = h.timestamp.toDate();
+dataFormatada = d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+}
+const positivo = h.alteracao === '+1';
+const badgeColor = positivo
+? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+: 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+html += `
+<div class="p-3.5 rounded-xl glass-panel border border-black/5 dark:border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+<div class="min-w-0">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-2.5 py-1 rounded-md border text-[10px] font-black ${badgeColor}">${escaparHtmlAdminPed(h.alteracao || '—')}</span>
+<span class="text-sm font-outfit font-bold text-zinc-800 dark:text-zinc-200">${escaparHtmlAdminPed(h.autor || 'Usuário não identificado')}</span>
+</div>
+<p class="text-[10px] text-zinc-400 mt-1.5 font-mono">${dataFormatada}</p>
+</div>
+<div class="sm:text-right">
+<span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/5 dark:bg-black/25 border border-black/5 dark:border-white/5 text-[11px] font-mono font-bold text-zinc-600 dark:text-zinc-300">
+<span>${escaparHtmlAdminPed(h.valorAnterior ?? '—')}</span><span class="text-zinc-500">→</span><span class="text-blue-500">${escaparHtmlAdminPed(h.valorNovo ?? '—')}</span>
+</span>
+<button onclick="excluirRegistroHistoricoAdminPed('capotes','${h.id}')" class="ml-2 w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500/20" title="Apagar somente esta movimentação" aria-label="Apagar esta movimentação">×</button>
+</div>
+</div>`;
+});
+}
+html += `</div>`;
+sub.innerHTML = html;
+} else if (secao === 'ped_historico_recados') {
+let html = `
+<h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between gap-3 flex-wrap">
+<span>Histórico de Auditoria de Recados</span>
+<span class="flex items-center gap-2"><span class="text-[10px] text-zinc-400 font-normal">${historicoRecadosGlobal.length} registro(s)</span><button onclick="limparHistoricoAdminPed('recados')" class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[9px] font-black hover:bg-rose-500/20">Limpar histórico</button></span>
+</h3>
+<div class="space-y-3 max-h-[350px] overflow-y-auto pr-2" id="ped-sub-sec-historico-recados">
+`;
+if (historicoRecadosGlobal.length === 0) {
+html += `<p class="text-xs text-zinc-400 py-2">Nenhum registro no histórico de recados ainda.</p>`;
+} else {
+historicoRecadosGlobal.forEach(h => {
+let dataFormatada = "Recentemente";
+if (h.timestamp && h.timestamp.toDate) {
+const d = h.timestamp.toDate();
+dataFormatada = d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+}
+let badgeColor = 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+if (h.acao === 'Editado') badgeColor = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+if (h.acao === 'Apagado') badgeColor = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+html += `
+<div class="p-3.5 rounded-xl glass-panel border border-black/5 dark:border-white/5 space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<span class="px-2.5 py-1 rounded-md border text-[10px] font-bold ${badgeColor}">${h.acao}</span>
+<span class="text-xs font-outfit font-bold text-zinc-300">${h.autor}</span>
+</div>
+<span class="flex items-center gap-2"><span class="text-[10px] text-zinc-400 font-mono">${dataFormatada}</span><button onclick="excluirRegistroHistoricoAdminPed('recados','${h.id}')" class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500/20" title="Apagar somente este registro" aria-label="Apagar este registro">×</button></span>
+</div>
+<p class="text-[11px] text-zinc-400 dark:text-zinc-300 font-mono leading-relaxed bg-black/5 dark:bg-black/30 p-2 rounded-lg">${h.texto}</p>
+</div>
+`;
+});
+}
+html += `</div>`;
+sub.innerHTML = html;
+} else if (secao === 'ped_historico_escalas') {
+let html = `
+<h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4 flex items-center justify-between gap-3 flex-wrap">
+<span>Histórico de Auditoria das Escalas</span>
+<span class="flex items-center gap-2"><span class="text-[10px] text-zinc-400 font-normal">${historicoEscalasGlobal.length} registro(s)</span><button onclick="limparHistoricoAdminPed('escalas')" class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[9px] font-black hover:bg-rose-500/20">Limpar histórico</button></span>
+</h3>
+<div class="space-y-3 max-h-[350px] overflow-y-auto pr-2" id="ped-sub-sec-historico-escalas">`;
+if (historicoEscalasGlobal.length === 0) {
+html += `<p class="text-xs text-zinc-400 py-2">Nenhuma alteração de escala registrada ainda.</p>`;
+} else {
+historicoEscalasGlobal.forEach(item => {
+let dataFormatada = 'Recentemente';
+if (item.timestamp && item.timestamp.toDate) {
+const dataEvento = item.timestamp.toDate();
+dataFormatada = dataEvento.toLocaleDateString('pt-BR') + ' às ' + dataEvento.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+}
+const desfeita = String(item.acao || '').toLowerCase().includes('desfeita');
+html += `<div class="p-3.5 rounded-xl glass-panel border border-black/5 dark:border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div class="min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="px-2.5 py-1 rounded-md border text-[10px] font-black ${desfeita ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' : 'bg-violet-500/10 text-violet-400 border-violet-500/20'}">${escaparHtmlAdminPed(item.acao || 'Alteração')}</span><strong class="text-xs text-zinc-800 dark:text-zinc-200">Trio A${escaparHtmlAdminPed(item.trio || '—')}</strong><span class="text-[10px] text-zinc-500">${escaparHtmlAdminPed(item.data || '')} • ${escaparHtmlAdminPed(item.periodo || '')}</span></div><p class="text-[11px] text-zinc-600 dark:text-zinc-300 mt-2">${escaparHtmlAdminPed(item.local || '—')} <span class="text-zinc-500">• ${escaparHtmlAdminPed(item.horario || '—')}</span></p></div><span class="flex items-center gap-2 shrink-0"><span class="text-[9px] text-zinc-400 font-mono">${dataFormatada}</span><button onclick="excluirRegistroHistoricoAdminPed('escalas','${item.id}')" class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500/20" title="Apagar somente este registro" aria-label="Apagar este registro">×</button></span></div>`;
+});
+}
+html += `</div>`;
+sub.innerHTML = html;
+} else if (secao === 'recados') {
+renderizarAdminRecadosPed();
+} else if (secao === 'escalas') {
+renderizarAdminEscalasPed();
+}
+}
+window.renderizarAdminRecadosPed = function() {
+const sub = pedAdminElement('admin-subconteudo');
+if (!sub) return;
+let html = `
+<h3 class="text-sm font-outfit font-extrabold text-indigo-500 mb-4">Gerir Quadro de Recados</h3>
+<form onsubmit="adicionarRecadoPed(event)" class="space-y-3 mb-4 pb-4 border-b border-black/5 dark:border-white/10">
+<input type="text" id="ped-recado-autor" value="Representante (T7A)" required class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 shadow-inner">
+<textarea id="ped-recado-texto" required rows="3" placeholder="Escreva um aviso oficial..." class="w-full glass-panel border border-black/10 dark:border-white/10 dark:text-zinc-200 text-zinc-800 font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 shadow-inner resize-none"></textarea>
+<button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-outfit font-bold px-5 py-2.5 rounded-xl text-xs transition-all cursor-pointer">Publicar Aviso</button>
+</form>
+<div class="space-y-3 max-h-48 overflow-y-auto pr-2">
+`;
+if (recadosListaGlobal.length === 0) {
+html += `<p class="text-xs text-zinc-400">Nenhum recado encontrado.</p>`;
+} else {
+recadosListaGlobal.forEach(r => {
+html += `
+<div class="flex items-center justify-between p-3.5 rounded-xl glass-panel border border-black/5 dark:border-white/5 gap-3">
+<div class="flex-1">
+<span class="text-[11px] font-outfit font-bold text-indigo-400">${r.autor}</span>
+<p class="text-[11px] text-zinc-300 mt-1">${r.texto}</p>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<button onclick="editarRecadoPed('${r.id}')" class="px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-400 hover:bg-amber-500 hover:text-white text-[10px] font-bold transition-all cursor-pointer">Editar</button>
+<button onclick="deletarRecadoPed('${r.id}')" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white text-[10px] font-bold transition-all cursor-pointer">Apagar</button>
+</div>
+</div>
+`;
+});
+}
+html += `</div>`;
+sub.innerHTML = html;
+}
+
+function escaparHtmlAdminPed(valor) {
+return String(valor ?? '').replace(/[&<>'"]/g, caractere => ({
+'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+})[caractere]);
+}
+
+function dataIsoParaBrPed(dataIso) {
+if (!dataIso) return '';
+const [ano, mes, dia] = dataIso.split('-');
+return `${dia}/${mes}/${ano}`;
+}
+
+function localizarDiaEscalaPed(trioId,dataBr){
+ const partes=dataBr.split('/').map(Number),data=new Date(partes[2],partes[1]-1,partes[0],12);
+ const inicio=new Date(2026,9,5,12),delta=Math.round((data-inicio)/86400000);
+ if(!Number.isFinite(delta)||delta<0||delta>=63)return null;
+ return {semana:Math.floor(delta/7)+1,diaKey:['seg','ter','qua','qui','sex','sab','dom'][delta%7],infoDia:{data:dataBr,turnos:window.obterTurnosPed(trioId,dataBr)}};
+}
+window.renderizarAdminEscalasPed = function() {
+const sub = pedAdminElement('admin-subconteudo');
+if (!sub) return;
+const opcoesTrios = Array.from({length: 10}, (_, i) => `<option value="${i + 1}">Trio A${i + 1}</option>`).join('');
+let overridesHtml = '';
+if (escalaOverridesGlobal.length === 0) {
+overridesHtml = `<p class="text-xs text-zinc-500 py-5 text-center">Nenhuma alteração administrativa registrada.</p>`;
+} else {
+overridesHtml = escalaOverridesGlobal
+.slice()
+.sort((a, b) => `${a.data}-${a.periodo}`.localeCompare(`${b.data}-${b.periodo}`))
+.map(item => `
+<div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-black/5 dark:bg-black/20 border border-black/5 dark:border-white/5">
+<div class="min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<span class="text-[10px] font-extrabold text-indigo-400">TRIO A${escaparHtmlAdminPed(item.trio)}</span>
+<span class="text-[10px] font-bold text-zinc-500">${escaparHtmlAdminPed(item.data)} • ${escaparHtmlAdminPed(item.periodo)}</span>
+</div>
+<p class="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate mt-1">${escaparHtmlAdminPed(item.local)}</p>
+<p class="text-[10px] text-zinc-500 mt-0.5">${escaparHtmlAdminPed(item.horario)}</p>
+</div>
+<button onclick="removerAlteracaoEscalaPed('${escaparHtmlAdminPed(item.id)}')" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white text-[10px] font-bold shrink-0">Desfazer</button>
+</div>`).join('');
+}
+sub.innerHTML = `
+<div class="flex items-start justify-between gap-4 mb-5">
+<div>
+<span class="text-[9px] font-extrabold uppercase tracking-[0.16em] text-indigo-400">Editor de Escalas</span>
+<h3 class="text-base font-outfit font-black text-zinc-900 dark:text-white mt-1">Alterar um turno</h3>
+<p class="text-[11px] text-zinc-500 mt-1">A alteração é aplicada para todos imediatamente e fica registrada abaixo.</p>
+</div>
+<span class="hidden sm:inline-flex px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold">Sincronização em tempo real</span>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
+<form onsubmit="salvarAlteracaoEscalaPed(event)" class="xl:col-span-7 space-y-4">
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<label><span class="admin-label">Trio</span><select id="ped-admin-escala-trio" class="admin-field" onchange="atualizarPreviewAdminEscalaPed()">${opcoesTrios}</select></label>
+<label><span class="admin-label">Data</span><input id="ped-admin-escala-data" type="date" min="2026-10-05" max="2026-12-06" value="2026-10-05" required class="admin-field" onchange="atualizarPreviewAdminEscalaPed()"></label>
+<label><span class="admin-label">Turno</span><select id="ped-admin-escala-periodo" class="admin-field" onchange="atualizarPreviewAdminEscalaPed()"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></label>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<label><span class="admin-label">Horário</span><input id="ped-admin-escala-horario" type="text" value="07h00-13h00" required class="admin-field" placeholder="Ex.: 07h00-13h00"></label>
+<label class="sm:col-span-2"><span class="admin-label">Atividade / local</span><input id="ped-admin-escala-local" type="text" required class="admin-field" list="ped-admin-locais-comuns" placeholder="Ex.: Hospital Regional do Guará (HRGu)"></label>
+</div>
+<datalist id="ped-admin-locais-comuns"><option value="Hospital Regional do Guará (HRGu)"><option value="Hospital Regional da Samambaia (HRSAM) — NEO 1/2"><option value="Hospital Regional Leste – Paranoá (HRL) — Pronto-socorro"><option value="Hospital Regional de Santa Maria (HRSM) — Pronto-socorro"><option value="UBS Planaltina 07"><option value="UBS Taguatinga 06"><option value="UBS Vicente Pires 01"><option value="UNIEURO Amb."><option value="UNIEURO Simulação"></datalist>
+<div class="flex flex-wrap gap-2">
+<button type="button" onclick="preencherStatusEscalaPed('livre')" class="px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold">Marcar como livre</button>
+<button type="button" onclick="preencherStatusEscalaPed('pendente')" class="px-3 py-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-bold">Escala não enviada</button>
+</div>
+<div id="ped-admin-escala-preview" class="admin-preview rounded-xl p-4"></div>
+<button type="submit" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs font-outfit font-extrabold shadow-[0_12px_28px_-16px_rgba(79,70,229,.85)]">Salvar e publicar alteração</button>
+</form>
+<div class="xl:col-span-5 xl:border-l border-black/5 dark:border-white/10 xl:pl-4">
+<div class="flex items-center justify-between mb-3">
+<h4 class="text-xs font-outfit font-extrabold text-zinc-900 dark:text-white">Alterações ativas</h4>
+<span class="px-2 py-1 rounded-md bg-indigo-500/10 text-indigo-400 text-[9px] font-bold">${escalaOverridesGlobal.length}</span>
+</div>
+<div class="space-y-2 max-h-[360px] overflow-y-auto pr-1">${overridesHtml}</div>
+</div>
+</div>`;
+atualizarPreviewAdminEscalaPed();
+}
+
+window.atualizarPreviewAdminEscalaPed = function() {
+const preview = pedAdminElement('admin-escala-preview');
+if (!preview) return;
+const trio = pedAdminElement('admin-escala-trio').value;
+const dataBr = dataIsoParaBrPed(pedAdminElement('admin-escala-data').value);
+const periodo = pedAdminElement('admin-escala-periodo').value;
+const encontrado = localizarDiaEscalaPed(trio, dataBr);
+const turno = encontrado?.infoDia.turnos.find(t => t.periodo === periodo);
+preview.innerHTML = `
+<span class="admin-label">Como está atualmente</span>
+<div class="flex items-center justify-between gap-3">
+<div><p class="text-xs font-extrabold text-zinc-900 dark:text-white">Trio A${trio} • ${dataBr || '--/--'} • ${periodo}</p><p class="text-[11px] text-zinc-500 mt-1">${escaparHtmlAdminPed(turno?.horario || 'Horário não encontrado')}</p></div>
+<span class="max-w-[55%] text-right text-xs font-bold text-blue-500">${escaparHtmlAdminPed(turno?.local || 'Sem informação')}</span>
+</div>`;
+}
+
+window.preencherStatusEscalaPed = function(status) {
+const local = pedAdminElement('admin-escala-local');
+if (!local) return;
+local.value = status === 'livre' ? '—' : ESCALA_NAO_ENVIADA;
+}
+
+window.salvarAlteracaoEscalaPed = async function(event) {
+event.preventDefault();
+if(!autorizadoPed())return;
+const trio = pedAdminElement('admin-escala-trio').value;
+const data = dataIsoParaBrPed(pedAdminElement('admin-escala-data').value);
+const periodo = pedAdminElement('admin-escala-periodo').value;
+const horario = pedAdminElement('admin-escala-horario').value.trim();
+const local = pedAdminElement('admin-escala-local').value.trim();
+if (!localizarDiaEscalaPed(trio, data)) return alert('A data selecionada não pertence ao período do rodízio.');
+const id = `${trio}_${data.replace('/', '-')}_${periodo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`;
+try {
+await setDoc(doc(db, 'ped_escala_overrides', id), { trio, data, periodo, horario, local, atualizadoPor: 'Representante T7A', timestamp: serverTimestamp() });
+await addDoc(collection(db, 'ped_historico_escalas'), { acao: 'Alteração publicada', trio, data, periodo, horario, local, timestamp: serverTimestamp() });
+alert('Escala atualizada com sucesso.');
+} catch (erro) {
+console.error(erro);
+alert('Não foi possível salvar a alteração. Verifique a conexão e tente novamente.');
+}
+}
+
+window.removerAlteracaoEscalaPed = async function(id) {
+if(!autorizadoPed())return;
+if (!confirm('Deseja desfazer esta alteração e restaurar a escala original?')) return;
+try {
+const item = escalaOverridesGlobal.find(o => o.id === id);
+await deleteDoc(doc(db, 'ped_escala_overrides', id));
+if (item) await addDoc(collection(db, 'ped_historico_escalas'), { acao: 'Alteração desfeita', ...item, timestamp: serverTimestamp() });
+} catch (erro) {
+console.error(erro);
+alert('Não foi possível desfazer a alteração.');
+}
+}
+
+
+for(const nome of ['limparHistoricoAdminPed','excluirRegistroHistoricoAdminPed','salvarAlteracaoEscalaPed','removerAlteracaoEscalaPed']){const original=window[nome];window[nome]=function(...args){if(!autorizadoPed())return;return original(...args);};}
+window.atualizarAdminCapotesPed=atualizarPainelPed;
+window.dispatchEvent(new Event('ped-admin-pronto'));
+})();
 </script>
 
 <script id="pnar-hours-rule-20260909">
@@ -6752,6 +7532,10 @@ Escala Diária por Turnos
         noite.membros=[];
       }
     }
+    (window.pedEscalaOverrides||[]).filter(o=>String(o.trio)===String(trioId)&&o.data===dataCompleta).forEach(o=>{
+      const t=turnos.find(x=>x.periodo===o.periodo);if(!t)return;
+      Object.assign(t,{local:o.local,horario:o.horario,atividade:o.local,membros:[],temas:'',apresentadores:'',seminarios:[],localSeminario:'',sci:null});
+    });
     return turnos;
   }
 
@@ -7469,17 +8253,16 @@ function renderSeminarios(){
     container.innerHTML=html;
   }
 
-  function renderRecados(){
-    var c=el('lista-turnos');if(!c)return;
-    c.innerHTML='<div class="glass-panel rounded-2xl p-6 shadow-lg border border-black/5 dark:border-white/10 h-full flex flex-col items-center justify-center text-center"><div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-500 flex items-center justify-center mb-4"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg></div><h3 class="text-lg font-outfit font-black dark:text-white text-zinc-900">Nenhum recado de Pediatria</h3><p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-2 max-w-md">A área está pronta para avisos, alterações de escala e comunicados do rodízio.</p></div>';
-  }
-
-  function renderAdmin(){
-    var c=el('lista-turnos');if(!c)return;
-    c.innerHTML='<div class="glass-panel rounded-2xl p-6 max-w-sm mx-auto shadow-xl space-y-5 text-center mt-6 border border-indigo-500/20"><div class="w-12 h-12 bg-indigo-600/20 text-indigo-500 rounded-xl mx-auto flex items-center justify-center border border-indigo-500/30"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div><h3 class="text-xl font-outfit font-black dark:text-white text-zinc-900">Painel Admin • PED</h3><p class="text-[11px] text-zinc-500">Estrutura preparada para administração da Pediatria.</p></div>';
-  }
+  function renderRecados(){if(window.renderizarMuralPed)window.renderizarMuralPed();}
+  function renderAdmin(){if(window.abrirPainelAdminPed)window.abrirPainelAdminPed();}
+  window.obterTurnosPed=turnosPedPorData;
+  window.horasTurnoPedAdmin=horasTurnoPed;
+  window.atividadePedAssistencialAdmin=atividadePedAssistencial;
+  window.addEventListener('ped-admin-pronto',function(){if(window.modoVisualizacaoPed==='admin')renderAdmin();else if(window.modoVisualizacaoPed==='recados')renderRecados();});
+  window.addEventListener('ped-dados-atualizados',function(){if(window.modoVisualizacaoPed&&window.modoVisualizacaoPed!=='admin')window.alternarModoPed(window.modoVisualizacaoPed,false);});
 
   window.alternarModoPed=function(modo,persistir){
+    window.modoVisualizacaoPed=modo;
     if(persistir===undefined)persistir=true;
     var valid=['hoje','individual','geral','atividade','seminarios','calendario','recados','admin'];
     if(valid.indexOf(modo)<0)modo='individual';
