@@ -5227,6 +5227,7 @@ for(let s=1; s<=9; s++) {
 dadosEscala[i].semanas[s] = gerarDiasSemana(s, semanasDatas[s]);
 }
 }
+window.dadosTriosT7A = dadosEscala;
 
 // Escala específica do Trio 01 entre 03/08 e 23/08.
 // Os turnos não informados nesse período permanecem livres.
@@ -6537,17 +6538,18 @@ Escala Diária por Turnos
   }
 
   function dadosTrioPedPorId(id){
+    var fonte=window.dadosTriosT7A;
+    var dados=fonte?(fonte[String(id)]||fonte[Number(id)]):null;
+    if(dados){
+      return {
+        nomeGrupo:String(dados.nomeGrupo||('Trio A'+id)),
+        membros:Array.isArray(dados.membros)?dados.membros.slice():[]
+      };
+    }
     var select=el('grupo-select');
-    if(!select)return {nomeGrupo:'Trio A'+id,membros:[]};
-    var option=Array.prototype.slice.call(select.options).find(function(opt){return String(opt.value)===String(id);});
-    var texto=option?String(option.textContent||'').trim():'Trio A'+id;
-    var partes=texto.split(':');
-    var nomeGrupo=partes.length>1?partes.slice(1).join(':').trim():texto;
-    var membros=nomeGrupo.split(/\s*&\s*/).map(function(nome){return nome.trim();}).filter(Boolean);
-    return {nomeGrupo:nomeGrupo,membros:membros};
-  }
-  function escapar(valor){
-    return String(valor??'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];});
+    var option=select?Array.prototype.slice.call(select.options).find(function(opt){return String(opt.value)===String(id);}):null;
+    var texto=option?String(option.textContent||'').trim():('Trio A'+id);
+    return {nomeGrupo:texto,membros:[]};
   }
 
   function getGoTopbarActions(){
@@ -6754,7 +6756,7 @@ Escala Diária por Turnos
     var html='<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 overflow-y-auto pr-1 pb-4 h-full content-start">';
     for(var i=1;i<=10;i++){
       var dados=dadosTrioPedPorId(i);
-      var nome=dados.nomeGrupo||('Trio A'+i);
+      var nome=(dados.nomeGrupo&&dados.nomeGrupo.includes(':'))?dados.nomeGrupo.split(':').slice(1).join(':').trim():(dados.nomeGrupo||('Trio A'+i));
       var turnos=['Manhã','Tarde','Noite'].map(function(periodo){
         return '<div class="flex items-center justify-between text-[10px] py-1.5 px-3 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5"><span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit uppercase tracking-widest">'+periodo+'</span><span class="font-extrabold font-outfit text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5 px-2 py-0.5 rounded whitespace-normal leading-tight text-center border">Pendente</span></div>';
       }).join('');
