@@ -7550,7 +7550,12 @@ Escala Diária por Turnos
       const t=turnos.find(x=>x.periodo===o.periodo);if(!t)return;
       Object.assign(t,{local:o.local,horario:o.horario,atividade:o.local,membros:[],temas:'',apresentadores:'',seminarios:[],localSeminario:'',sci:null});
     });
-    turnos.forEach(t=>{t.responsaveis=responsaveisDataPed(t,dataCompleta);});
+    const partesDia=dataCompleta.split('/').map(Number);
+    const diaSemana=new Date(partesDia[2],partesDia[1]-1,partesDia[0],12).getDay();
+    turnos.forEach(t=>{
+      if(diaSemana===5&&t.periodo==='Tarde'&&String(t.local).includes('(HRT)')&&String(t.local).includes('Pronto-socorro'))t.local='Hospital Regional de Taguatinga (HRT) — PS BOX';
+      t.responsaveis=responsaveisDataPed(t,dataCompleta);
+    });
     return turnos;
   }
 
