@@ -7570,7 +7570,7 @@ Escala Diária por Turnos
   }
   function detalhesResponsaveisPed(t){
     if(!t.responsaveis?.length)return '';
-    return '<div class="w-full mt-2 mb-4 text-left rounded-xl bg-blue-500/[.06] border border-blue-500/15 p-3" data-ped-responsaveis><span class="block text-[8px] font-black uppercase tracking-wider text-blue-500 mb-2">'+(String(t.local).includes('HRSAM')?'Contatos da equipe':'Responsável'+(t.responsaveis.length>1?'s':''))+'</span>'+t.responsaveis.map(p=>'<div class="mb-2 last:mb-0"><p class="text-[11px] font-bold leading-relaxed">'+escapar(p[0])+'</p><a class="text-[10px] text-blue-500 font-semibold" href="tel:+55'+p[1]+'">('+p[1].slice(0,2)+') '+p[1].slice(2,7)+'-'+p[1].slice(7)+'</a></div>').join('')+'</div>';
+    return '<div class="w-full mt-2 mb-4 text-left rounded-xl bg-blue-500/[.06] border border-blue-500/15 p-3" data-ped-responsaveis><span class="block text-[8px] font-black uppercase tracking-wider text-blue-500 mb-2">'+(String(t.local).includes('HRSAM')?'Contatos da equipe':'Responsável'+(t.responsaveis.length>1?'s':''))+'</span>'+t.responsaveis.map(p=>'<div class="mb-2 last:mb-0"><p class="text-[11px] font-bold leading-relaxed">'+escapar(p[0])+'</p><a class="text-[10px] text-blue-500 font-semibold" href="https://wa.me/55'+p[1]+'" target="_blank" rel="noopener noreferrer" aria-label="Abrir WhatsApp de '+escapar(p[0])+'">('+p[1].slice(0,2)+') '+p[1].slice(2,7)+'-'+p[1].slice(7)+'</a></div>').join('')+'</div>';
   }
   function dataSelecionadaPedCompleta(){
     return formatarDataCompletaPed(dataRodizioPed(semanaPed,indiceDiaPed(diaPed)));
