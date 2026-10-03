@@ -6629,8 +6629,8 @@ Escala Diária por Turnos
 
   function participantesTurnoPed(trioId,local){
     const membros=dadosTrioPedPorId(trioId).membros||[];
-    const dupla=String(local||'').match(/\b([1-3])\/([1-3])\b/);
-    return dupla?[membros[Number(dupla[1])-1],membros[Number(dupla[2])-1]].filter(Boolean):membros.slice();
+    const dupla=String(local||'').match(/^HRSAM\b.*\b([1-3])\/([1-3])\b/);
+    return dupla?[membros[Number(dupla[1])-1],membros[Number(dupla[2])-1]].filter(Boolean):[];
   }
 
   function horarioAtividadePed(periodo,local){
@@ -7166,7 +7166,7 @@ const atividade = atividadeSelecionadaPed || '';
 const ocorrencias = ocorrenciasAtividadePed(atividade).map(item=>({
 ...item,idTrio:item.trio,diaKey:diasPedConfig[(dataBrParaDate(item.data).getDay()+6)%7][0],
 diaNome:['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'][dataBrParaDate(item.data).getDay()],
-atividade:item.local,nomeGrupo:'Trio A'+item.trio+': '+(item.membros||[]).join(' • ')
+atividade:item.local,nomeGrupo:item.membros?.length?'Trio A'+item.trio+': '+item.membros.join(' • '):'Trio A'+item.trio
 }));
 const totalTrios = new Set(ocorrencias.map(item => item.idTrio)).size;
 const agora = new Date();
