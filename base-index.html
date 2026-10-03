@@ -6991,21 +6991,52 @@ Escala Diária por Turnos
   };
 
   function renderHoje(){
-    renderTurnosVazios();
+    var container=el('lista-turnos');if(!container)return;
+    var agora=new Date();
+    var dataHoje=pad2(agora.getDate())+'/'+pad2(agora.getMonth()+1)+'/'+agora.getFullYear();
+    var trio=String(el('grupo-select')?.value||'1');
+    var turnos=turnosPedPorData(trio,dataHoje);
+
+    var label=el('label-dia-topo');
+    var nomes=['DOMINGO','SEGUNDA-FEIRA','TERÇA-FEIRA','QUARTA-FEIRA','QUINTA-FEIRA','SEXTA-FEIRA','SÁBADO'];
+    if(label)label.textContent=nomes[agora.getDay()]+' • '+pad2(agora.getDate())+'/'+pad2(agora.getMonth()+1);
+
+    var titulo=el('titulo-banner-hero');
+    if(titulo)titulo.textContent='Seu dia na Pediatria';
+
+    container.innerHTML='<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">'+turnos.map(cardTurnoPed).join('')+'</div>';
   }
 
   function renderGeral(){
     var container=el('lista-turnos');if(!container)return;
+    var data=dataSelecionadaPedCompleta();
     var html='<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 overflow-y-auto pr-1 pb-4 h-full content-start">';
     for(var i=1;i<=10;i++){
       var dados=dadosTrioPedPorId(i);
       var nome=(dados.nomeGrupo&&dados.nomeGrupo.includes(':'))?dados.nomeGrupo.split(':').slice(1).join(':').trim():(dados.nomeGrupo||('Trio A'+i));
-      var turnos=['Manhã','Tarde','Noite'].map(function(periodo){
-        return '<div class="flex items-center justify-between text-[10px] py-1.5 px-3 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5"><span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit uppercase tracking-widest">'+periodo+'</span><span class="font-extrabold font-outfit text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5 px-2 py-0.5 rounded whitespace-normal leading-tight text-center border">Pendente</span></div>';
+      var turnos=turnosPedPorData(String(i),data);
+      var turnosHtml=turnos.map(function(t){
+        var confirmado=atividadePedConfirmada(t.local);
+        var livre=t.local==='—';
+        var texto=confirmado?t.local:(livre?'Livre':'Pendente');
+        var badge=confirmado
+          ? 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20 shadow-inner'
+          : (livre?'text-zinc-500 dark:text-zinc-400 bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/5':'text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5');
+        return '<div class="flex items-center justify-between text-[10px] py-1.5 px-3 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5 gap-2">'+
+          '<span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit uppercase tracking-widest">'+t.periodo+'</span>'+
+          '<span class="font-extrabold font-outfit '+badge+' px-2 py-0.5 rounded whitespace-normal leading-tight text-center border max-w-[68%]">'+escapar(texto)+'</span>'+
+        '</div>';
       }).join('');
-      html+='<div class="glass-panel rounded-2xl p-4 space-y-3 transition-all shadow-md border border-black/5 dark:border-white/10 hover:border-blue-500/30"><div class="flex items-center justify-between border-b border-black/5 dark:border-white/10 pb-2"><div class="flex items-center space-x-2.5 min-w-0"><div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-outfit font-black text-[11px] flex items-center justify-center shrink-0 shadow-inner">A'+i+'</div><h4 class="text-xs font-outfit font-bold dark:text-white text-zinc-900 tracking-tight truncate">'+escapar(nome)+'</h4></div><button onclick="document.getElementById(\'ped-grupo-select\').value=\''+i+'\'; alternarModoPed(\'individual\');" class="text-[10px] font-outfit font-bold text-blue-600 dark:text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-2.5 py-1 rounded-md transition-all cursor-pointer shrink-0">Ver</button></div><div class="space-y-1.5">'+turnos+'</div></div>';
+
+      html+='<div class="glass-panel rounded-2xl p-4 space-y-3 transition-all shadow-md border border-black/5 dark:border-white/10 hover:border-blue-500/30">'+
+        '<div class="flex items-center justify-between border-b border-black/5 dark:border-white/10 pb-2">'+
+          '<div class="flex items-center space-x-2.5 min-w-0"><div class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-outfit font-black text-[11px] flex items-center justify-center shrink-0 shadow-inner">A'+i+'</div>'+
+          '<h4 class="text-xs font-outfit font-bold dark:text-white text-zinc-900 tracking-tight truncate">'+escapar(nome)+'</h4></div>'+
+          '<button onclick="document.getElementById(\'ped-grupo-select\').value=\''+i+'\'; mudarGrupoPed(false); alternarModoPed(\'individual\');" class="text-[10px] font-outfit font-bold text-blue-600 dark:text-blue-400 hover:text-white bg-blue-500/10 hover:bg-blue-600 px-2.5 py-1 rounded-md transition-all cursor-pointer shrink-0">Ver</button>'+
+        '</div><div class="space-y-1.5">'+turnosHtml+'</div></div>';
     }
-    html+='</div>';container.innerHTML=html;
+    html+='</div>';
+    container.innerHTML=html;
   }
 
   var atividadeSelecionadaPed='';
