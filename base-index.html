@@ -7014,6 +7014,22 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
 `;
   }
 
+  function descricaoCompactaPed(t){
+    if(t.sci&&!t.sci.feriado){
+      if(t.sci.simulado)return t.sci.tema+' — UNIEURO';
+      const temas=String(t.sci.tema||'').split(' | '),docentes=String(t.sci.docentes||'').split(' | ').filter(Boolean);
+      return 'Sessões Clínicas Integradas (Aula Teórica) — '+temas.map(function(tema,i){
+        const docente=docentes.length===temas.length?docentes[i]:(i===temas.length-1?docentes.join(' | '):'');
+        return tema+(docente?' — '+docente:'');
+      }).join(' + ')+' — UNIEURO';
+    }
+    if(t.sci?.feriado)return 'Feriado';
+    if(t.seminarios?.length)return t.seminarios.map(function(s){
+      const temas=temasSeparadosPed(s.tema.replace(/ e /,' | ').replace(/\n/g,' | '));
+      return tituloSeminarioPed([s])+' — '+(temas.aula?temas.aula+' — ':'')+temas.temas+' — '+s.apresentadores.split(' • ').map(nomeCurtoPed).join(' – ');
+    }).join(' / ')+' — '+localSeminariosPed;
+    return t.local==='—'?'Livre':(t.local==='Escala não enviada'?'Pendente':t.local);
+  }
   function localDetalhesPed(turno){
     return turno.localSeminario?'<div class="rounded-xl border border-purple-500/15 bg-purple-500/[.06] p-3"><span class="block text-[8px] font-black uppercase tracking-wider text-purple-500 mb-1">Local</span><p class="text-[10px] font-bold">'+escapar(turno.localSeminario)+'</p></div>':'';
   }
@@ -7174,13 +7190,13 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
       var turnosHtml=turnos.map(function(t){
         var confirmado=atividadePedConfirmada(t.local);
         var livre=t.local==='—';
-        var texto=confirmado?t.local:(livre?'Livre':'Pendente');
+        var texto=descricaoCompactaPed(t);
         var badge=confirmado
           ? 'text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-500/20 shadow-inner'
           : (livre?'text-zinc-500 dark:text-zinc-400 bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/5':'text-zinc-400 dark:text-zinc-500 bg-black/5 dark:bg-black/20 border-black/5 dark:border-white/5');
         return '<div class="flex items-center justify-between text-[10px] py-1.5 px-3 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5 gap-2">'+
           '<span class="text-zinc-500 dark:text-zinc-400 font-bold font-outfit uppercase tracking-widest">'+t.periodo+'</span>'+
-          '<span class="font-extrabold font-outfit '+badge+' px-2 py-0.5 rounded whitespace-normal leading-tight text-center border max-w-[68%]">'+escapar(texto)+(confirmado&&t.membros?.length?'<small class="block mt-1 text-[9px] font-semibold">'+t.membros.map(escapar).join(' – ')+'</small>':'')+detalhesSeminarioDiaPed(t)+'</span>'+
+          '<span class="font-extrabold font-outfit '+badge+' px-2 py-0.5 rounded whitespace-normal leading-tight text-center border max-w-[68%]">'+escapar(texto)+(confirmado&&t.membros?.length?'<small class="block mt-1 text-[9px] font-semibold">'+t.membros.map(escapar).join(' – ')+'</small>':'')+'</span>'+
         '</div>';
       }).join('');
 
