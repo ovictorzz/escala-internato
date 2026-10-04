@@ -7735,6 +7735,7 @@ Escala Diária por Turnos
     var chave=String(local||'').trim();
     if(chave==='UNIEURO Amb.')return periodo==='Manhã'?'08h-12h':(periodo==='Tarde'?'14h-18h':'18h-22h');
     if(chave==='UNIEURO Simulação')return '14h-18h';
+    if(chave==='SCI'||chave.indexOf('Sessões Clínicas Integradas')===0)return '14h-17h';
     if(chave.toLowerCase().indexOf('seminário')>=0)return '18h30-21h30';
     var item=periodosPed.find(function(p){return p.nome===periodo;});
     return item?item.horario:'A definir';
