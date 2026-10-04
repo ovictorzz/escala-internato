@@ -7895,7 +7895,15 @@ Escala Diária por Turnos
 
   function horasTurnoPed(turno){
     if(!atividadePedConfirmada(turno.local))return 0;
-    if(String(turno.local).toLowerCase().indexOf('seminário')>=0)return 3;
+    var nome=String(turno.local||'').trim();
+    var horario=String(turno.horario||'').trim();
+    if(nome.toLowerCase().indexOf('seminário')>=0)return 3;
+    var m=horario.match(/(\d{1,2})h(?:(\d{2}))?\s*[-–]\s*(\d{1,2})h(?:(\d{2}))?/i);
+    if(m){
+      var inicio=Number(m[1])*60+Number(m[2]||0);
+      var fim=Number(m[3])*60+Number(m[4]||0);
+      if(fim>inicio)return (fim-inicio)/60;
+    }
     if(turno.periodo==='Manhã')return 6;
     if(turno.periodo==='Tarde')return 5;
     return 4;
