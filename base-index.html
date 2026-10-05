@@ -7475,14 +7475,12 @@ A1
 </div>
 <div class="stat-card stat-capotes glass-panel rounded-2xl p-4 flex flex-col items-center justify-between text-center bg-gradient-to-br from-blue-500/5 to-indigo-500/5 border border-blue-500/20 shadow-md">
 <div class="w-full flex flex-col items-center justify-center py-2">
-<span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-2">Seminários</span>
+<span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-2">Turnos restantes</span>
 <div class="flex items-center justify-center space-x-1.5">
-<span class="font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 drop-shadow-sm text-[4.5rem] sm:text-[5.5rem] leading-none" id="ped-stat-seminarios">11</span>
+<span class="font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 drop-shadow-sm text-[4.5rem] sm:text-[5.5rem] leading-none" id="ped-stat-restantes">--</span>
 </div>
 </div>
-<div class="flex items-center justify-center mt-2 pt-3 border-t border-blue-500/20 w-full">
-<span class="text-[10px] font-outfit font-bold text-zinc-500 dark:text-zinc-400">10 apresentações • 1 avaliação</span>
-</div>
+<div id="ped-stat-restantes-detalhes" class="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 mt-2 pt-3 border-t border-blue-500/20 w-full text-[9px] sm:text-[10px] text-zinc-500 dark:text-zinc-400 font-semibold tracking-wide"></div>
 </div>
 </div>
 </div>
@@ -8242,6 +8240,52 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
     window.mudarGrupoPed();
   };
 
+  function atualizarTurnosRestantesPed(){
+    var totalEl=el('ped-stat-restantes');
+    var detalhesEl=el('ped-stat-restantes-detalhes');
+    if(!totalEl||!detalhesEl)return;
+
+    var trio=String(el('grupo-select')?.value||'1');
+    var inicio=new Date(2026,9,5);
+    var fim=new Date(2026,11,6);
+    var agora=new Date();
+    var hoje=new Date(agora.getFullYear(),agora.getMonth(),agora.getDate());
+    var inicioContagem=hoje<inicio?inicio:hoje;
+    var total=0,manha=0,tarde=0,noite=0,fds=0,sci=0,academicos=0;
+
+    function dataLocal(d){
+      return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+    }
+
+    if(inicioContagem<=fim){
+      for(var d=new Date(inicioContagem);d<=fim;d.setDate(d.getDate()+1)){
+        var data=dataLocal(d);
+        var turnos=turnosPedPorData(trio,data);
+        turnos.forEach(function(turno){
+          if(!atividadePedConfirmada(turno.local))return;
+          total++;
+          if(turno.periodo==='Manhã')manha++;
+          else if(turno.periodo==='Tarde')tarde++;
+          else if(turno.periodo==='Noite')noite++;
+          if(d.getDay()===0||d.getDay()===6)fds++;
+
+          var nome=String(turno.local||'').toLocaleLowerCase('pt-BR');
+          if(nome==='sci'||nome.indexOf('sessões clínicas integradas')===0||nome.indexOf('simulado 4')===0)sci++;
+          if(nome.indexOf('seminário')>=0||nome.indexOf('avaliação de pediatria')>=0)academicos++;
+        });
+      }
+    }
+
+    totalEl.textContent=String(total);
+    detalhesEl.innerHTML=
+      '<span class="whitespace-nowrap">🌅 '+manha+' manhã</span>'+
+      '<span class="whitespace-nowrap">☀️ '+tarde+' tarde</span>'+
+      '<span class="whitespace-nowrap">🌙 '+noite+' noite</span>'+
+      '<span class="whitespace-nowrap">🏖️ '+fds+' FDS</span>'+
+      '<span class="whitespace-nowrap">📚 '+sci+' SCI</span>'+
+      '<span class="whitespace-nowrap">📝 '+academicos+' sem.+prova</span>';
+  }
+
   function atualizarResumo(){
     var atividades=el('stat-atividades');
     var detalhes=el('stat-detalhes-turnos');
@@ -8296,6 +8340,7 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
     renderMembros();
     atualizarProximaAtividade();
     atualizarResumo();
+    atualizarTurnosRestantesPed();
     var label=el('label-dia-topo');
     var nomes={seg:'SEGUNDA-FEIRA',ter:'TERÇA-FEIRA',qua:'QUARTA-FEIRA',qui:'QUINTA-FEIRA',sex:'SEXTA-FEIRA',sab:'SÁBADO',dom:'DOMINGO'};
     var dataSelecionada=dataRodizioPed(semanaPed,indiceDiaPed(diaPed));
