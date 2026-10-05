@@ -8263,6 +8263,12 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
         var turnos=turnosPedPorData(trio,data);
         turnos.forEach(function(turno){
           if(!atividadePedConfirmada(turno.local))return;
+          if(d.getTime()===hoje.getTime()){
+            var hm=String(turno.horario||'').match(/(\\d{1,2})h(?:(\\d{2}))?/);
+            var horaInicio=hm?Number(hm[1]):(turno.periodo==='Manhã'?7:(turno.periodo==='Tarde'?13:18));
+            var minutoInicio=hm&&hm[2]?Number(hm[2]):0;
+            if(agora.getHours()>horaInicio || (agora.getHours()===horaInicio&&agora.getMinutes()>=minutoInicio))return;
+          }
           total++;
           if(turno.periodo==='Manhã')manha++;
           else if(turno.periodo==='Tarde')tarde++;
