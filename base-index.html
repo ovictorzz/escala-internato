@@ -8827,6 +8827,7 @@ function estadoTemporalDataPed(dataObj){
       window.renderizarSemanasPed();window.renderizarAbasDiasPed();
       var modo='individual';try{modo=localStorage.getItem(MODE_KEY)||'individual';}catch(e){}
       window.alternarModoPed(modo,false);
+      atualizarTurnosRestantesPed();
       document.title='PED T7A • Painel do Internato';
     }else{
       document.title='GO T7A • Painel do Internato';
