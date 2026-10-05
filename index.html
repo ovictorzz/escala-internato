@@ -1,29 +1,164 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Painel T7A</title>
 <style>
 html,body{margin:0;min-height:100%;background:#05070a;color:#e5e7eb;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-#boot{display:grid;min-height:100vh;min-height:100dvh;place-items:center;padding:24px;text-align:center}.boot-card{max-width:520px}.err{color:#fca5a5;line-height:1.5}
+#boot{display:none;min-height:100vh;min-height:100dvh;place-items:center;padding:24px;text-align:center}.boot-card{max-width:520px}.err{color:#fca5a5;line-height:1.5}
 </style>
 </head>
 <body>
-<div id="boot" class="boot-card" aria-live="polite">Carregando o Painel T7A…</div>
+<div id="boot" aria-hidden="true"></div>
 <script>
 (async()=>{
-  try{
-    const response=await fetch('https://raw.githubusercontent.com/ovictorzz/escala-internato/main/base-index.html',{cache:'no-store'});
-    if(!response.ok)throw new Error('HTTP '+response.status);
-    const src=await response.text();
-    if(!src.includes('PED T7A') && !src.includes('ped-stat-restantes'))throw new Error('Base do painel inválida');
+  try {
+    let src = await (await fetch('https://raw.githubusercontent.com/ovictorzz/escala-internato/1f1a3cf6a2e520743fb50b625e8e1205c2a08dcf/index.html', { cache: 'no-store' })).text();
+
+    const anchor = `    src = src.replace(datasAntigas, datasNovas);`;
+    const replacement = [
+      `    src = src.replace(datasAntigas, datasNovas);`,
+      `    const patch01a04Outubro = \`// Normaliza as pendências antigas antes de aplicar a escala confirmada de outubro.
+const datasAguardandoEscala01a04Outubro = new Set(["01/10","02/10","03/10","04/10"]);
+for (let i=1;i<=10;i++) {
+  const idTrio=String(i);
+  const forcarSemEscala = idTrio==="2" || idTrio==="10";
+  for (let semana=1;semana<=9;semana++) {
+    const dias=dadosEscala[idTrio]?.semanas?.[semana]||{};
+    Object.values(dias).forEach(infoDia=>{
+      if(!datasAguardandoEscala01a04Outubro.has(String(infoDia?.data||""))) return;
+      (infoDia.turnos||[]).forEach(turno=>{
+        if(forcarSemEscala) {
+          if(!compromissoAcademicoFixoSetembro(turno)) turno.local=ESCALA_NAO_ENVIADA;
+        } else if(turno.local==="—") {
+          turno.local=ESCALA_NAO_ENVIADA;
+        }
+      });
+    });
+  }
+}
+// A base antiga considerava 01/10–04/10 como escala já enviada para os Trios 02 e 10.
+// Remove essas datas antes da rotina que transforma pendências em "Livre".
+["2","10"].forEach(idTrio=>{
+  datasComEscalaEnviadaPorTrio[idTrio]=(datasComEscalaEnviadaPorTrio[idTrio]||[])
+    .filter(data=>!datasAguardandoEscala01a04Outubro.has(String(data)));
+});
+
+// Escala assistencial confirmada de 01 a 04/10/2026.
+const escalaOutubro01a04={"1":{"01/10":{"tarde":"Dra. Gilmária (HRC)","noite":"PS FICHA (HRC)"},"02/10":{"manha":"PS BOX (HRC)","tarde":"Poli (Dra. Mirna) (HRC)"}},"2":{"01/10":{"tarde":"CO (HRAN)"},"02/10":{"tarde":"CO (HRAN)"},"03/10":{"noite":"CO (HRAN)"},"04/10":{}},"3":{"01/10":{"manha":"Poli (Dra. Mirna) (HRC)","tarde":"Dra. Sádia (HRC)"},"02/10":{"manha":"CO (HRC)","tarde":"Dra. Nádia (HRC)"}},"4":{"01/10":{"manha":"PS BOX (HRC)","tarde":"PS FICHA (HRC)"},"02/10":{"manha":"Dra. Sâmia (PNAR) (HRC)","tarde":"Dr. Rocha (HRC)"}},"5":{"01/10":{"manha":"ALCON (HRC)","tarde":"Dr. Caio (PNAR) (HRC)"},"02/10":{"manha":"Dra. Nádia (EUD) (HRC)"},"03/10":{"noite":"CO (HRC)"}},"6":{"01/10":{"manha":"ALCON (HRC)"},"02/10":{"tarde":"PS FICHA (HRC)","noite":"CO (HRC)"},"03/10":{"manha":"PS BOX (HRC)"}},"7":{"01/10":{"manha":"PS BOX (HRC)"},"02/10":{"manha":"CC (HRC)","tarde":"Dra. Flávia (HRC)"}},"8":{"01/10":{"manha":"BL (HRC)","tarde":"CO (HRC)"},"02/10":{"manha":"Dr. Caio (PNAR) (HRC)","tarde":"CO (HRC)"}},"9":{"01/10":{"tarde":"Dra. Gilmária (HRC)","noite":"CO (HRC)"},"02/10":{"manha":"Dra. Gilmária (HRC)","tarde":"Dr. F. Mota (HRC)"}},"10":{"01/10":{"tarde":"HRSM"},"02/10":{"tarde":"HRSM"},"03/10":{"tarde":"HRSM"}}};
+for (let i=1;i<=10;i++) {
+  const idTrio=String(i);
+  for (let semana=1;semana<=9;semana++) {
+    Object.values(dadosEscala[idTrio]?.semanas?.[semana]||{}).forEach(infoDia=>{
+      const data=String(infoDia?.data||"");
+      if(!datasAguardandoEscala01a04Outubro.has(data)) return;
+      
+      (infoDia.turnos||[]).forEach(turno=>{
+        if(!compromissoAcademicoFixoSetembro(turno))
+          turno.local="—";
+      });
+      Object.entries(escalaOutubro01a04[idTrio]?.[data]||{}).forEach(([chave,local])=>{
+        const turno=infoDia.turnos?.[{manha:0,tarde:1,noite:2}[chave]];
+        if(turno && !compromissoAcademicoFixoSetembro(turno)) {
+          turno.local=local;
+          if(local==="BL (HRC)" && chave==="manha") turno.horario="08h-13h";
+        }
+      });
+    });
+  }
+  const confirmadas=new Set(datasComEscalaEnviadaPorTrio[idTrio]||[]);
+  [...datasAguardandoEscala01a04Outubro]
+    .forEach(data=>confirmadas.add(data));
+  datasComEscalaEnviadaPorTrio[idTrio]=[...confirmadas];
+}
+
+// Trio 04: PNAR com Dra. Sâmia na manhã de 30/09.
+Object.values(dadosEscala["4"]?.semanas||{}).forEach(semana=>{
+  Object.values(semana||{}).forEach(infoDia=>{
+    if(String(infoDia?.data||"")!=="30/09") return;
+    const turno=infoDia.turnos?.[0];
+    if(turno) {
+      turno.local="Dra. Sâmia (PNAR) (HRC)";
+      turno.horario="07h-13h";
+    }
+  });
+});
+\`;`,
+      `    src = src.replace(datasNovas, patch01a04Outubro + "\\n" + datasNovas);`
+    ].join("\n");
+
+    if (!src.includes(anchor)) throw new Error('Ponto de confirmação da escala não encontrado');
+    src = src.replace(anchor, replacement);
+
+    const lucimara24Antiga = `"24/09":{manha:"Dra. Lucimara (HRC)"},"25/09":{manha:"Dr. F. Mota (HRC)",tarde:"CO (HRC)"}`;
+    const lucimara24Nova = `"24/09":{tarde:"Dra. Lucimara (HRC)"},"25/09":{manha:"Dr. F. Mota (HRC)",tarde:"CO (HRC)"}`;
+    if (!src.includes(lucimara24Antiga)) throw new Error('Ponto da Dra. Lucimara no Trio 10 em 24/09 não encontrado');
+    src = src.replace(lucimara24Antiga, lucimara24Nova);
+
+    // Remanejamento do Trio 05 em 21/09 e 25/09.
+    // 21/09 pela manhã fica livre; 25/09 mantém PS BOX de manhã e recebe Dr. Metódio à tarde.
+    const trio05Hellen21Antiga = `"5":{"21/09":{manha:"Dra. Hellen (ECO) (HRC)"},`;
+    const trio05Hellen21Nova = `"5":{"21/09":{},`;
+    if (!src.includes(trio05Hellen21Antiga)) throw new Error('Ponto da Dra. Hellen no Trio 05 em 21/09 não encontrado');
+    src = src.replace(trio05Hellen21Antiga, trio05Hellen21Nova);
+
+    const trio05Metodio25Antiga = `"24/09":{manha:"PS BOX (HRC)",tarde:"CO (HRC)"},"25/09":{manha:"PS BOX (HRC)"},"28/09":{manha:"Dra. Gilmária (HRC)"}`;
+    const trio05Metodio25Nova = `"24/09":{manha:"PS BOX (HRC)",tarde:"CO (HRC)"},"25/09":{manha:"PS BOX (HRC)",tarde:"Dr. Metódio (HRC)"},"28/09":{manha:"Dra. Gilmária (HRC)"}`;
+    if (!src.includes(trio05Metodio25Antiga)) throw new Error('Ponto do Trio 05 em 25/09 não encontrado');
+    src = src.replace(trio05Metodio25Antiga, trio05Metodio25Nova);
+
+    // Remanejamento do Trio 06 (Leticia, Júlia e Luiza) em 25/09 pela manhã.
+    // Sai Dra. Nádia (EUD) e entra PS FICHA.
+    const trio06Nadia25Antiga = `"25/09":{manha:"Dra. Nádia (EUD) (HRC)"},"27/09":{manha:"ALCON (HRC)",tarde:"CO (HRC)"}`;
+    const trio06Nadia25Nova = `"25/09":{manha:"PS FICHA (HRC)"},"27/09":{manha:"ALCON (HRC)",tarde:"CO (HRC)"}`;
+    if (!src.includes(trio06Nadia25Antiga)) throw new Error('Ponto da Dra. Nádia (EUD) no Trio 06 em 25/09 não encontrado');
+    src = src.replace(trio06Nadia25Antiga, trio06Nadia25Nova);
+
+    const regraHorarioBL = `
+<script id="bl-hours-rule-20260909">
+(()=>{
+  const normalizarBL=(valor)=>String(valor||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toUpperCase().trim();
+  const aplicarHorarioBL=()=>{
+    try {
+      if (typeof dadosEscala === 'undefined') return;
+      for (let idTrio=1; idTrio<=10; idTrio++) {
+        Object.values(dadosEscala[idTrio]?.semanas||{}).forEach(semana=>{
+          Object.values(semana||{}).forEach(infoDia=>{
+            (infoDia.turnos||[]).forEach(turno=>{
+              const local=normalizarBL(turno.local);
+              const periodo=normalizarBL(turno.periodo);
+              if ((local==='BL' || local.startsWith('BL (')) && periodo.includes('MANHA')) {
+                turno.horario='08h-13h';
+              }
+            });
+          });
+        });
+      }
+    } catch (erro) {
+      console.warn('Não foi possível aplicar o horário do BL.', erro);
+    }
+  };
+  const anterior=typeof window.aplicarHorariosEspeciaisAtividades==='function' ? window.aplicarHorariosEspeciaisAtividades : null;
+  if (anterior && !anterior.__incluiBL08h) {
+    const combinado=function(){ anterior(); aplicarHorarioBL(); };
+    combinado.__incluiBL08h=true;
+    window.aplicarHorariosEspeciaisAtividades=combinado;
+  }
+  aplicarHorarioBL();
+})();
+<\/script>`;
+    src = src.replace('</body>', regraHorarioBL + '\n</body>');
+
+
+
     document.open();
     document.write(src);
     document.close();
-  }catch(err){
+  } catch (err) {
     console.error(err);
     const boot=document.getElementById('boot');
+    boot.style.display='grid';
     boot.innerHTML='<div class="boot-card err"><strong>Não foi possível carregar o Painel T7A.</strong><br>Atualize a página. Se o erro persistir, avise o administrador.</div>';
   }
 })();
