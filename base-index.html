@@ -353,6 +353,56 @@ scroll-behavior: auto !important;
 }
 }
 
+
+/* Card PED — Turnos restantes */
+.ped-turnos-restantes-grid {
+display:grid;
+grid-template-columns:repeat(3,minmax(0,1fr));
+gap:5px;
+width:100%;
+padding-top:8px;
+margin-top:5px;
+border-top:1px solid rgba(96,165,250,.14);
+}
+.ped-turno-restante-item {
+min-width:0;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:4px;
+padding:6px 3px;
+border-radius:9px;
+background:rgba(59,130,246,.055);
+border:1px solid rgba(96,165,250,.09);
+color:#71717a;
+font-size:8px;
+font-weight:700;
+line-height:1.1;
+white-space:nowrap;
+}
+.ped-turno-restante-item b {
+font-family:'Outfit',sans-serif;
+font-size:10px;
+font-weight:900;
+color:#d4d4d8;
+}
+.ped-turno-restante-icon {
+font-size:10px;
+line-height:1;
+}
+html:not(.dark) .ped-turno-restante-item {
+background:rgba(59,130,246,.045);
+border-color:rgba(59,130,246,.10);
+color:#64748b;
+}
+html:not(.dark) .ped-turno-restante-item b { color:#1e293b; }
+@media (max-width:640px) {
+.ped-turnos-restantes-grid { gap:4px; }
+.ped-turno-restante-item { padding:6px 2px; font-size:7.5px; }
+.ped-turno-restante-item b { font-size:9px; }
+.ped-turno-restante-icon { font-size:9px; }
+}
+
 /* Camada premium — identidade, bento e turnos */
 .dashboard-topbar {
 min-height: 58px;
@@ -7473,14 +7523,21 @@ A1
 <span class="text-base sm:text-xl font-outfit font-black text-violet-600 dark:text-violet-400" id="ped-stat-carga-semanal">--</span>
 <div id="ped-stat-carga-detalhes" class="mt-2 text-[9px] sm:text-[10px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed">Semana confirmada<br>Total: -- • Teóricas: --</div>
 </div>
-<div class="stat-card stat-capotes glass-panel rounded-2xl p-4 flex flex-col items-center justify-between text-center bg-gradient-to-br from-blue-500/5 to-indigo-500/5 border border-blue-500/20 shadow-md">
-<div class="w-full flex flex-col items-center justify-center py-2">
-<span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-2">Turnos restantes</span>
-<div class="flex items-center justify-center space-x-1.5">
-<span class="font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 drop-shadow-sm text-[4.5rem] sm:text-[5.5rem] leading-none" id="ped-stat-restantes">--</span>
+<div class="stat-card stat-capotes glass-panel rounded-2xl p-4 sm:p-4.5 flex flex-col justify-between text-center bg-gradient-to-br from-blue-500/[.07] via-indigo-500/[.04] to-transparent border border-blue-500/20 shadow-md min-h-[178px]">
+<div class="flex items-start justify-between gap-3 w-full">
+<div class="text-left">
+<span class="block text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[.16em]">Turnos restantes</span>
+<span class="block mt-1 text-[8px] font-semibold text-zinc-500 dark:text-zinc-500">Até 06/12</span>
+</div>
+<div class="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/15 flex items-center justify-center text-blue-500 dark:text-blue-400 shrink-0">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4v4M5 11h14M6 21h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"/></svg>
 </div>
 </div>
-<div id="ped-stat-restantes-detalhes" class="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 mt-2 pt-3 border-t border-blue-500/20 w-full text-[9px] sm:text-[10px] text-zinc-500 dark:text-zinc-400 font-semibold tracking-wide"></div>
+<div class="flex items-baseline justify-center gap-2 py-1">
+<span class="font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-blue-300 dark:to-indigo-400 drop-shadow-sm text-[3.8rem] sm:text-[4.4rem] leading-[.9]" id="ped-stat-restantes">--</span>
+<span class="text-[9px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-500">turnos</span>
+</div>
+<div id="ped-stat-restantes-detalhes" class="ped-turnos-restantes-grid"></div>
 </div>
 </div>
 </div>
@@ -8284,12 +8341,12 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
 
     totalEl.textContent=String(total);
     detalhesEl.innerHTML=
-      '<span class="whitespace-nowrap">🌅 '+manha+' manhã</span>'+
-      '<span class="whitespace-nowrap">☀️ '+tarde+' tarde</span>'+
-      '<span class="whitespace-nowrap">🌙 '+noite+' noite</span>'+
-      '<span class="whitespace-nowrap">🏖️ '+fds+' FDS</span>'+
-      '<span class="whitespace-nowrap">📚 '+sci+' SCI</span>'+
-      '<span class="whitespace-nowrap">📝 '+academicos+' sem.+prova</span>';
+      '<div class="ped-turno-restante-item"><span class="ped-turno-restante-icon">🌅</span><span><b>'+manha+'</b> manhã</span></div>'+
+      '<div class="ped-turno-restante-item"><span class="ped-turno-restante-icon">☀️</span><span><b>'+tarde+'</b> tarde</span></div>'+
+      '<div class="ped-turno-restante-item"><span class="ped-turno-restante-icon">🌙</span><span><b>'+noite+'</b> noite</span></div>'+
+      '<div class="ped-turno-restante-item"><span class="ped-turno-restante-icon">🏖️</span><span><b>'+fds+'</b> FDS</span></div>'+
+      '<div class="ped-turno-restante-item"><span class="ped-turno-restante-icon">📚</span><span><b>'+sci+'</b> SCI</span></div>'+
+      '<div class="ped-turno-restante-item"><span class="ped-turno-restante-icon">📝</span><span><b>'+academicos+'</b> sem.+prova</span></div>';
   }
 
   function atualizarResumo(){
