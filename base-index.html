@@ -7733,6 +7733,7 @@ Escala Diária por Turnos
 
   function horarioAtividadePed(periodo,local){
     var chave=String(local||'').trim();
+    if(chave.indexOf('HRSAM')>=0)return periodo==='Manhã'?'07h-13h':(periodo==='Tarde'?'13h-19h':'19h-23h');
     if(chave==='UNIEURO Amb.')return periodo==='Manhã'?'08h-12h':(periodo==='Tarde'?'14h-18h':'18h-22h');
     if(chave==='UNIEURO Simulação')return '14h-18h';
     if(chave==='SCI'||chave.indexOf('Sessões Clínicas Integradas')===0)return '14h-17h';
