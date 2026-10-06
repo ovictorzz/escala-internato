@@ -7372,13 +7372,13 @@ Próxima: Carregando Pediatria...
 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
 </button>
 </div>
-<div class="mt-3 p-3 rounded-xl bg-blue-950/40 border border-blue-500/30 text-white flex flex-col space-y-1 shadow-md">
-<div class="flex items-center space-x-1.5 text-blue-400">
-<span class="w-2 h-2 rounded-full bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.8)]" aria-hidden="true"></span>
-<span class="text-[11px] font-bold tracking-wider uppercase">Próxima Atividade Obrigatória</span>
+<div class="mt-3 p-3.5 rounded-2xl bg-gradient-to-br from-blue-500/[.10] via-indigo-500/[.06] to-transparent border border-blue-400/20 text-white shadow-[0_12px_30px_-22px_rgba(59,130,246,.8)]">
+<div class="flex items-center gap-2 text-blue-300">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,.9)]" aria-hidden="true"></span>
+<span class="text-[9px] font-black tracking-[.16em] uppercase">Próxima atividade</span>
 </div>
-<div id="ped-proxima-atividade-conteudo" class="text-xs text-zinc-300">
-<span class="italic">Carregando agenda de Pediatria...</span>
+<div id="ped-proxima-atividade-conteudo" class="mt-2">
+<span class="text-[11px] text-zinc-400">Carregando agenda de Pediatria...</span>
 </div>
 </div>
 <nav id="ped-mobile-nav-menu" class="hidden lg:block space-y-2.5 font-outfit pt-2">
@@ -8134,7 +8134,10 @@ Escala Diária por Turnos
       return;
     }
     badge.textContent='Próxima: '+proximo.data+' • '+proximo.periodo;
-    box.innerHTML='<span class="font-bold text-blue-300">'+escapar(proximo.data)+' • '+escapar(proximo.horario)+'</span><br><span>'+escapar(proximo.tema||proximo.local)+'</span>';
+    var tituloProximo=escapar(proximo.tema||proximo.local);
+    var localProximo=escapar(proximo.local||'');
+    var mostrarLocal=localProximo&&localProximo!==tituloProximo;
+    box.innerHTML='<div class="flex items-center gap-1.5 flex-wrap"><span class="font-outfit font-extrabold text-[13px] text-white">'+escapar(proximo.data)+'</span><span class="text-zinc-600">•</span><span class="text-[11px] font-bold text-blue-300">'+escapar(proximo.horario)+'</span><span class="ml-auto px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-400/15 text-[8px] font-black uppercase tracking-wider text-blue-300">'+escapar(proximo.periodo)+'</span></div><div class="mt-1.5 text-[11px] font-semibold leading-snug text-zinc-300">'+tituloProximo+'</div>'+(mostrarLocal?'<div class="mt-1 text-[9px] leading-snug text-zinc-500">'+localProximo+'</div>':'');
   }
 
   function renderMembros(){
