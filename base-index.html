@@ -7497,7 +7497,15 @@ html:not(.dark) #ped-aside .ped-next-place{color:#334155}
   #ped-aside .ped-profile-hero{align-items:center}
   #ped-aside .ped-next-card{margin-top:12px}
 
-  /* PED mobile — menu suspenso no mesmo padrão visual da GO */
+  /* PED mobile — menu suspenso estável, sem cobrir o próprio menu */
+  body.ped-menu-open{overflow:hidden!important}
+  body.ped-menu-open #ped-aside{z-index:135!important}
+  body.ped-menu-open #ped-main{
+    opacity:.34!important;
+    pointer-events:none!important;
+    transition:opacity .18s ease!important;
+  }
+
   #ped-mobile-nav-menu:not(.hidden){
     position:fixed!important;
     display:flex!important;
@@ -7507,19 +7515,19 @@ html:not(.dark) #ped-aside .ped-next-place{color:#334155}
     left:12px!important;
     right:12px!important;
     bottom:calc(env(safe-area-inset-bottom) + 190px)!important;
-    z-index:105!important;
+    z-index:140!important;
     overflow-y:auto!important;
     -webkit-overflow-scrolling:touch;
     padding:12px!important;
     border:1px solid rgba(148,163,184,.16)!important;
     border-radius:22px 22px 14px 14px!important;
-    background:rgba(8,10,18,.985)!important;
+    background:rgba(8,10,18,.99)!important;
     box-shadow:0 28px 80px -20px rgba(0,0,0,.96)!important;
-    backdrop-filter:blur(24px) saturate(135%)!important;
-    -webkit-backdrop-filter:blur(24px) saturate(135%)!important;
+    backdrop-filter:blur(20px) saturate(135%)!important;
+    -webkit-backdrop-filter:blur(20px) saturate(135%)!important;
   }
   html:not(.dark) #ped-mobile-nav-menu:not(.hidden){
-    background:rgba(255,255,255,.985)!important;
+    background:rgba(255,255,255,.99)!important;
   }
   #ped-mobile-nav-menu:not(.hidden) button{
     min-height:52px!important;
@@ -7540,17 +7548,17 @@ html:not(.dark) #ped-aside .ped-next-place{color:#334155}
     left:12px!important;
     right:12px!important;
     bottom:calc(env(safe-area-inset-bottom) + 82px)!important;
-    z-index:105!important;
+    z-index:140!important;
     padding:10px 12px!important;
     border:1px solid rgba(148,163,184,.16)!important;
     border-radius:14px 14px 20px 20px!important;
-    background:rgba(8,10,18,.985)!important;
+    background:rgba(8,10,18,.99)!important;
     box-shadow:0 20px 60px -22px rgba(0,0,0,.96)!important;
-    backdrop-filter:blur(24px) saturate(135%)!important;
-    -webkit-backdrop-filter:blur(24px) saturate(135%)!important;
+    backdrop-filter:blur(20px) saturate(135%)!important;
+    -webkit-backdrop-filter:blur(20px) saturate(135%)!important;
   }
   html:not(.dark) #ped-mobile-footer-menu:not(.hidden){
-    background:rgba(255,255,255,.985)!important;
+    background:rgba(255,255,255,.99)!important;
   }
   #ped-mobile-footer-menu:not(.hidden)>div:first-child{min-height:40px}
   #ped-mobile-footer-menu:not(.hidden) #ped-faceid-setup-button{
@@ -7560,16 +7568,6 @@ html:not(.dark) #ped-aside .ped-next-place{color:#334155}
   #ped-mobile-footer-menu:not(.hidden) #ped-btn-header-admin{
     min-height:42px!important;
     margin-top:8px!important;
-  }
-
-  body:has(#ped-mobile-nav-menu:not(.hidden))::after{
-    content:"";
-    position:fixed;
-    inset:0;
-    z-index:94;
-    background:rgba(2,3,8,.64);
-    backdrop-filter:blur(6px);
-    -webkit-backdrop-filter:blur(6px);
   }
 }
 </style>
@@ -8252,6 +8250,8 @@ Escala Diária por Turnos
     var footer=el('mobile-footer-menu');
     if(menu)menu.classList.toggle('hidden');
     if(footer)footer.classList.toggle('hidden');
+    var aberto=!!(menu&&!menu.classList.contains('hidden'));
+    document.body.classList.toggle('ped-menu-open',aberto);
   };
 
   window.toggleNotificacoesPed=function(forcar){
@@ -9109,6 +9109,13 @@ function estadoTemporalDataPed(dataObj){
     else if(modo==='recados')renderRecados();
     else renderAdmin();
 
+    if(window.innerWidth<1024){
+      var menuMobile=el('mobile-nav-menu');
+      var footerMobile=el('mobile-footer-menu');
+      if(menuMobile)menuMobile.classList.add('hidden');
+      if(footerMobile)footerMobile.classList.add('hidden');
+      document.body.classList.remove('ped-menu-open');
+    }
     if(persistir)try{localStorage.setItem(MODE_KEY,modo);}catch(e){}
   };
 
