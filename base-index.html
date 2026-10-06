@@ -7350,21 +7350,173 @@ body.rotation-ped{overflow:hidden!important}
 #ped-lista-turnos>div>div,#ped-lista-turnos .glass-panel{transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease,background-color .25s ease}
 #ped-lista-turnos>div>div:hover,#ped-lista-turnos .glass-panel:hover{transform:translateY(-3px);box-shadow:0 22px 48px -32px rgba(37,99,235,.75)}
 @media(max-width:1023px){body.rotation-ped{overflow-y:auto!important;padding-bottom:calc(78px + env(safe-area-inset-bottom))!important}body.rotation-ped>#ped-mobile-bottom-nav{display:flex!important}#ped-banner-hero{min-height:94px}#ped-banner-hero::after{right:14px;opacity:.75}#rotation-switcher button{min-width:42px;height:28px;padding:0 9px}}
+
+/* PED — cabeçalho e próxima atividade premium */
+#ped-aside .ped-profile-hero{
+  position:relative;
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  min-width:0;
+}
+#ped-aside .ped-profile-icon{
+  width:56px;
+  height:56px;
+  flex:0 0 56px;
+  display:grid;
+  place-items:center;
+  border-radius:18px;
+  color:#60a5fa;
+  background:
+    radial-gradient(circle at 28% 18%,rgba(96,165,250,.24),transparent 42%),
+    linear-gradient(145deg,rgba(37,99,235,.20),rgba(79,70,229,.13));
+  border:1px solid rgba(96,165,250,.32);
+  box-shadow:0 14px 30px -22px rgba(37,99,235,.95),inset 0 1px 0 rgba(255,255,255,.08);
+}
+#ped-aside .ped-profile-icon svg{width:27px;height:27px;filter:drop-shadow(0 0 8px rgba(96,165,250,.22))}
+#ped-aside .ped-profile-copy{min-width:0;flex:1;padding-top:1px}
+#ped-aside .ped-greeting-row{display:flex;align-items:center;gap:7px;min-width:0}
+#ped-aside .ped-greeting-star{
+  color:#60a5fa;
+  font-size:12px;
+  line-height:1;
+  filter:drop-shadow(0 0 7px rgba(96,165,250,.8));
+  animation:ped-star-pulse 2.8s ease-in-out infinite;
+}
+@keyframes ped-star-pulse{0%,100%{opacity:.55;transform:scale(.9) rotate(0deg)}50%{opacity:1;transform:scale(1.15) rotate(8deg)}}
+#ped-aside #ped-aluno-logado-badge{font-family:'Outfit',sans-serif;font-size:18px;line-height:1.1;font-weight:900;letter-spacing:-.025em}
+#ped-aside #ped-proxima-atividade-badge{
+  margin-top:7px;
+  min-height:27px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  width:max-content;
+  max-width:100%;
+  padding:5px 9px;
+  border-radius:9px;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  color:#a1a1aa;
+  background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025));
+  border:1px solid rgba(148,163,184,.10);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+  font-size:10px;
+  font-weight:700;
+}
+#ped-aside #ped-proxima-atividade-badge::before{
+  content:"";
+  width:13px;
+  height:13px;
+  flex:0 0 13px;
+  opacity:.75;
+  background:center/13px 13px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z'/%3E%3C/svg%3E");
+}
+#ped-aside .ped-rest-chip{
+  margin-top:7px;
+  width:max-content;
+  max-width:100%;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 9px;
+  border-radius:999px;
+  color:#c4b5fd;
+  background:linear-gradient(145deg,rgba(99,102,241,.11),rgba(76,29,149,.08));
+  border:1px solid rgba(129,140,248,.22);
+  box-shadow:0 9px 22px -18px rgba(99,102,241,.95),inset 0 1px 0 rgba(255,255,255,.04);
+  font:800 9px/1.1 'Outfit',sans-serif;
+  letter-spacing:.01em;
+}
+#ped-aside .ped-rest-moon{font-size:12px;color:#ddd6fe;filter:drop-shadow(0 0 6px rgba(167,139,250,.5))}
+#ped-aside .ped-rest-star{font-size:9px;color:#a78bfa;filter:drop-shadow(0 0 6px rgba(167,139,250,.85));animation:ped-star-pulse 2.3s ease-in-out infinite}
+#ped-aside .ped-next-card{
+  position:relative;
+  overflow:hidden;
+  margin-top:15px;
+  padding:14px;
+  border-radius:18px;
+  color:#fff;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(59,130,246,.16),transparent 40%),
+    linear-gradient(145deg,rgba(30,58,138,.19),rgba(15,23,42,.40) 58%,rgba(8,10,18,.35));
+  border:1px solid rgba(96,165,250,.26);
+  box-shadow:0 18px 40px -30px rgba(37,99,235,.95),inset 0 1px 0 rgba(255,255,255,.055);
+}
+#ped-aside .ped-next-card::after{
+  content:"";
+  position:absolute;
+  width:150px;
+  height:150px;
+  right:-78px;
+  bottom:-102px;
+  border-radius:50%;
+  border:1px solid rgba(96,165,250,.10);
+  box-shadow:0 0 0 28px rgba(59,130,246,.025),0 0 0 55px rgba(59,130,246,.015);
+  pointer-events:none;
+}
+#ped-aside .ped-next-head{
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#60a5fa;
+}
+#ped-aside .ped-next-dot{
+  width:7px;height:7px;flex:0 0 7px;border-radius:999px;
+  background:#60a5fa;
+  box-shadow:0 0 9px rgba(96,165,250,.9);
+}
+#ped-aside .ped-next-head span:last-child{
+  font:900 9px/1.1 'Outfit',sans-serif;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+#ped-aside #ped-proxima-atividade-conteudo{position:relative;z-index:1;margin-top:11px}
+#ped-aside .ped-next-line{display:grid;grid-template-columns:32px minmax(0,1fr);align-items:center;gap:9px}
+#ped-aside .ped-next-line+.ped-next-line{margin-top:9px}
+#ped-aside .ped-next-icon{
+  width:32px;height:32px;display:grid;place-items:center;border-radius:10px;
+  color:#93c5fd;background:rgba(59,130,246,.09);border:1px solid rgba(96,165,250,.14);
+}
+#ped-aside .ped-next-icon svg{width:16px;height:16px}
+#ped-aside .ped-next-date{font:900 13px/1.15 'Outfit',sans-serif;color:#f8fafc}
+#ped-aside .ped-next-time{font:800 11px/1.15 'Outfit',sans-serif;color:#93c5fd}
+#ped-aside .ped-next-place{font-size:11px;line-height:1.35;font-weight:650;color:#d4d4d8}
+html:not(.dark) #ped-aside .ped-next-card{
+  color:#0f172a;
+  background:linear-gradient(145deg,rgba(239,246,255,.96),rgba(255,255,255,.90));
+  border-color:rgba(59,130,246,.18);
+}
+html:not(.dark) #ped-aside .ped-next-date{color:#0f172a}
+html:not(.dark) #ped-aside .ped-next-place{color:#334155}
+@media(max-width:1023px){
+  #ped-aside .ped-profile-hero{align-items:center}
+  #ped-aside .ped-next-card{margin-top:12px}
+}
 </style>
 
 
 <aside id="ped-aside" class="w-full lg:w-80 glass-panel border-b lg:border-b-0 lg:border-r border-black/10 dark:border-white/5 flex flex-col justify-between p-5 lg:p-6 shrink-0 z-30 shadow-2xl">
 <div class="space-y-6">
-<div class="flex items-center justify-between lg:justify-start lg:space-x-4">
-<div class="flex items-center space-x-3.5 min-w-0">
-<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0 shadow-sm">
-<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+<div class="flex items-start justify-between gap-3">
+<div class="ped-profile-hero min-w-0 flex-1">
+<div class="ped-profile-icon">
+<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
 </div>
-<div class="min-w-0 flex-1">
-<p id="ped-saudacao-aluno" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-[0.15em] truncate">Olá!</p>
-<h1 class="text-base font-black tracking-tight dark:text-white text-zinc-900 leading-tight truncate" id="ped-aluno-logado-badge">Turma T7A</h1>
-<div id="ped-proxima-atividade-badge" class="mt-1 text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 truncate bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded-md border border-black/5 dark:border-white/5">
-Próxima: Carregando Pediatria...
+<div class="ped-profile-copy">
+<div class="ped-greeting-row">
+<p id="ped-saudacao-aluno" class="text-[11px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.16em] truncate">Olá!</p>
+<span class="ped-greeting-star" aria-hidden="true">✦</span>
+</div>
+<h1 class="dark:text-white text-zinc-900 truncate" id="ped-aluno-logado-badge">Turma T7A</h1>
+<div id="ped-proxima-atividade-badge">Próxima: Carregando Pediatria...</div>
+<div id="ped-descanso-badge" class="ped-rest-chip hidden" aria-label="Mensagem de descanso">
+<span class="ped-rest-moon" aria-hidden="true">☾</span>
+<span>Descanse, interno</span>
+<span class="ped-rest-star" aria-hidden="true">✦</span>
 </div>
 </div>
 </div>
@@ -7372,12 +7524,12 @@ Próxima: Carregando Pediatria...
 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
 </button>
 </div>
-<div class="mt-3 p-3.5 rounded-2xl bg-gradient-to-br from-blue-500/[.10] via-indigo-500/[.06] to-transparent border border-blue-400/20 text-white shadow-[0_12px_30px_-22px_rgba(59,130,246,.8)]">
-<div class="flex items-center gap-2 text-blue-300">
-<span class="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,.9)]" aria-hidden="true"></span>
-<span class="text-[9px] font-black tracking-[.16em] uppercase">Próxima atividade</span>
+<div class="ped-next-card">
+<div class="ped-next-head">
+<span class="ped-next-dot" aria-hidden="true"></span>
+<span>Próxima atividade obrigatória</span>
 </div>
-<div id="ped-proxima-atividade-conteudo" class="mt-2">
+<div id="ped-proxima-atividade-conteudo">
 <span class="text-[11px] text-zinc-400">Carregando agenda de Pediatria...</span>
 </div>
 </div>
@@ -8060,6 +8212,14 @@ Escala Diária por Turnos
     }
   }
 
+  function atualizarStatusDescansoPed(){
+    var chip=el('descanso-badge');
+    if(!chip)return;
+    var hora=new Date().getHours();
+    var descansar=hora>=22||hora<6;
+    chip.classList.toggle('hidden',!descansar);
+  }
+
   function atualizarIdentidade(){
     var aluno=sessionStorage.getItem('alunoLogado')||'Turma T7A';
     var badge=el('aluno-logado-badge');
@@ -8068,6 +8228,7 @@ Escala Diária por Turnos
     if(badge)badge.textContent=aluno;
     if(saudacao)saudacao.textContent=aluno==='Turma T7A'?'Olá!':'Olá,';
     if(perfil)perfil.textContent=aluno==='Turma T7A'?'T7':iniciais(aluno);
+    atualizarStatusDescansoPed();
     sincronizarTrioComAluno();
     window.mudarGrupoPed(false);
   }
@@ -8137,7 +8298,11 @@ Escala Diária por Turnos
     var tituloProximo=escapar(proximo.tema||proximo.local);
     var localProximo=escapar(proximo.local||'');
     var mostrarLocal=localProximo&&localProximo!==tituloProximo;
-    box.innerHTML='<div class="flex items-center gap-1.5 flex-wrap"><span class="font-outfit font-extrabold text-[13px] text-white">'+escapar(proximo.data)+'</span><span class="text-zinc-600">•</span><span class="text-[11px] font-bold text-blue-300">'+escapar(proximo.horario)+'</span><span class="ml-auto px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-400/15 text-[8px] font-black uppercase tracking-wider text-blue-300">'+escapar(proximo.periodo)+'</span></div><div class="mt-1.5 text-[11px] font-semibold leading-snug text-zinc-300">'+tituloProximo+'</div>'+(mostrarLocal?'<div class="mt-1 text-[9px] leading-snug text-zinc-500">'+localProximo+'</div>':'');
+    var iconeCalendario='<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"/></svg>';
+    var iconeLocal='<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4"/></svg>';
+    box.innerHTML=
+      '<div class="ped-next-line"><span class="ped-next-icon">'+iconeCalendario+'</span><div><span class="ped-next-date">'+escapar(proximo.data)+'</span><span class="text-zinc-600 mx-1">•</span><span class="ped-next-time">'+escapar(proximo.horario)+'</span></div></div>'+
+      '<div class="ped-next-line"><span class="ped-next-icon">'+iconeLocal+'</span><div class="ped-next-place">'+tituloProximo+(mostrarLocal?'<div class="mt-0.5 text-[9px] text-zinc-500">'+localProximo+'</div>':'')+'</div></div>';
   }
 
   function renderMembros(){
@@ -8874,6 +9039,7 @@ function estadoTemporalDataPed(dataObj){
   function atualizarRelogio(){
     var r=el('relogio-dashboard');
     if(r)r.textContent=new Intl.DateTimeFormat('pt-BR',{hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
+    atualizarStatusDescansoPed();
   }
 
   function aplicarRodizio(nome,persistir){
