@@ -8266,9 +8266,13 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
       var selecionada=n===semanaPed;
       var inicio=dataRodizioPed(n,0);
       var fim=dataRodizioPed(n,6);
+      var agora=new Date();
+      var fimComparacao=new Date(fim);fimComparacao.setHours(23,59,59,999);
+      var passou=fimComparacao<agora;
       var intervalo=formatarDataCurtaPed(inicio)+' – '+formatarDataCurtaPed(fim);
-      var cls=selecionada?'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_4px_12px_rgba(79,70,229,0.3)] scale-[1.02]':'glass-panel text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 border-black/5 dark:border-white/5';
-      c.innerHTML+='<button onclick="selecionarSemanaPed('+n+')" class="relative border rounded-xl py-2.5 px-2 flex flex-col items-center justify-center transition-all duration-300 '+cls+' w-full cursor-pointer"><span class="text-[9px] font-bold uppercase tracking-wider font-outfit">SEM '+n+'</span><span class="text-[10px] font-extrabold font-outfit mt-0.5 tracking-tight">'+intervalo+'</span></button>';
+      var cls=selecionada?'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_4px_12px_rgba(79,70,229,0.3)] scale-[1.02]':(passou?'glass-panel opacity-50 saturate-[.45] text-zinc-500 dark:text-zinc-500 border-black/5 dark:border-white/5':'glass-panel text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 border-black/5 dark:border-white/5');
+      var badgePassou=passou?'<span class="absolute top-1 right-1 px-1.5 py-0.5 rounded-md bg-zinc-500/10 border border-zinc-500/20 text-[6px] font-black uppercase tracking-wider text-zinc-500">Passou</span>':'';
+      c.innerHTML+='<button onclick="selecionarSemanaPed('+n+')" class="relative border rounded-xl py-2.5 px-2 flex flex-col items-center justify-center transition-all duration-300 '+cls+' w-full cursor-pointer">'+badgePassou+'<span class="text-[9px] font-bold uppercase tracking-wider font-outfit">SEM '+n+'</span><span class="text-[10px] font-extrabold font-outfit mt-0.5 tracking-tight">'+intervalo+'</span></button>';
     }
     var stat=el('stat-semana');if(stat)stat.textContent=semanaPed+' de '+totalSemanasPed;
   };
@@ -8286,8 +8290,12 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
     diasPedConfig.forEach(function(item,indice){
       var sel=item[0]===diaPed;
       var data=dataRodizioPed(semanaPed,indice);
-      var cls=sel?'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_4px_12px_rgba(79,70,229,0.3)] scale-[1.02]':'glass-panel text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 border-black/5 dark:border-white/5';
-      c.innerHTML+='<button onclick="selecionarDiaPed(\''+item[0]+'\')" class="relative border rounded-xl py-3 px-2 flex flex-col items-center justify-center transition-all duration-300 '+cls+' w-full cursor-pointer"><span class="text-[11px] font-bold uppercase tracking-widest font-outfit">'+item[1]+'</span><span class="text-xs font-extrabold font-outfit mt-1">'+formatarDataCurtaPed(data)+'</span></button>';
+      var agora=new Date();
+      var fimDia=new Date(data);fimDia.setHours(23,59,59,999);
+      var passou=fimDia<agora;
+      var cls=sel?'bg-gradient-to-br from-blue-600 to-indigo-600 border-transparent text-white shadow-[0_4px_12px_rgba(79,70,229,0.3)] scale-[1.02]':(passou?'glass-panel opacity-50 saturate-[.45] text-zinc-500 dark:text-zinc-500 border-black/5 dark:border-white/5':'glass-panel text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 border-black/5 dark:border-white/5');
+      var badgePassou=passou?'<span class="absolute top-1 right-1 px-1.5 py-0.5 rounded-md bg-zinc-500/10 border border-zinc-500/20 text-[6px] font-black uppercase tracking-wider text-zinc-500">Passou</span>':'';
+      c.innerHTML+='<button onclick="selecionarDiaPed(\''+item[0]+'\')" class="relative border rounded-xl py-3 px-2 flex flex-col items-center justify-center transition-all duration-300 '+cls+' w-full cursor-pointer">'+badgePassou+'<span class="text-[11px] font-bold uppercase tracking-widest font-outfit">'+item[1]+'</span><span class="text-xs font-extrabold font-outfit mt-1">'+formatarDataCurtaPed(data)+'</span></button>';
     });
   };
 
