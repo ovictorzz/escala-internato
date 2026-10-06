@@ -7497,140 +7497,43 @@ html:not(.dark) #ped-aside .ped-next-place{color:#334155}
   #ped-aside .ped-profile-hero{align-items:center}
   #ped-aside .ped-next-card{margin-top:12px}
 
-  /* PED mobile — menu em uma única camada, visual igual ao menu da GO */
-  #ped-mobile-menu-layer{display:none}
 
+  /* PED: painel flutuante com as proporções do menu GO. */
+  #ped-mobile-menu-layer{display:none}
   @media(max-width:1023px){
     body.ped-menu-open{overflow:hidden!important}
-
-    #ped-mobile-menu-layer.is-open{
-      position:fixed!important;
-      inset:0!important;
-      z-index:260!important;
-      display:flex!important;
-      flex-direction:column!important;
-      min-height:100dvh!important;
-      padding:calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 22px)!important;
-      overflow:hidden!important;
-      background:
-        radial-gradient(circle at 12% -8%,rgba(37,99,235,.12),transparent 28%),
-        linear-gradient(180deg,#090b15 0%,#070913 48%,#05070f 100%)!important;
-      color:#e4e4e7!important;
-    }
-
-    html:not(.dark) #ped-mobile-menu-layer.is-open{
-      background:linear-gradient(180deg,#ffffff 0%,#f8fafc 100%)!important;
-      color:#18181b!important;
-    }
-
-    #ped-mobile-menu-layer #ped-mobile-nav-menu{
-      position:static!important;
-      display:flex!important;
-      flex:1 1 auto!important;
-      min-height:0!important;
-      flex-direction:column!important;
-      justify-content:space-evenly!important;
-      gap:0!important;
-      margin:0!important;
-      padding:0 0 18px!important;
-      overflow-y:auto!important;
-      border:0!important;
-      border-radius:0!important;
-      background:transparent!important;
-      box-shadow:none!important;
-      backdrop-filter:none!important;
-      -webkit-backdrop-filter:none!important;
-    }
-
-    #ped-mobile-menu-layer #ped-mobile-nav-menu>p{
-      display:none!important;
-    }
-
-    #ped-mobile-menu-layer #ped-mobile-nav-menu button{
-      width:100%!important;
-      min-height:58px!important;
-      flex:0 0 auto!important;
-      display:flex!important;
-      align-items:center!important;
-      justify-content:flex-start!important;
-      gap:24px!important;
-      padding:0 28px!important;
-      border-radius:14px!important;
-      background:transparent!important;
-      box-shadow:none!important;
-      color:#a1a1aa!important;
-      font-family:'Outfit',sans-serif!important;
-      font-size:17px!important;
-      line-height:1.15!important;
-      font-weight:750!important;
-      text-align:left!important;
-    }
-
-    #ped-mobile-menu-layer #ped-mobile-nav-menu button svg{
-      width:25px!important;
-      height:25px!important;
-      flex:0 0 25px!important;
-      color:#a1a1aa!important;
-    }
-
-    #ped-mobile-menu-layer #ped-mobile-nav-menu button:hover,
-    #ped-mobile-menu-layer #ped-mobile-nav-menu button:active{
-      color:#d4d4d8!important;
-      background:rgba(255,255,255,.035)!important;
-    }
-
-    html:not(.dark) #ped-mobile-menu-layer #ped-mobile-nav-menu button,
-    html:not(.dark) #ped-mobile-menu-layer #ped-mobile-nav-menu button svg{
-      color:#52525b!important;
-    }
-
-    #ped-mobile-menu-layer #ped-mobile-footer-menu{
-      position:static!important;
-      display:block!important;
-      flex:0 0 auto!important;
-      margin:0!important;
-      padding:22px 0 0!important;
-      border-top:1px solid rgba(148,163,184,.12)!important;
-      background:transparent!important;
-      border-radius:0!important;
-      box-shadow:none!important;
-      backdrop-filter:none!important;
-      -webkit-backdrop-filter:none!important;
-    }
-
-    #ped-mobile-menu-layer #ped-mobile-footer-menu>div:first-child{
-      min-height:48px!important;
-      padding:0!important;
-    }
-
-    #ped-mobile-menu-layer #ped-mobile-footer-menu>div:first-child>span{
-      font-size:13px!important;
-      font-weight:800!important;
-      color:#a1a1aa!important;
-    }
-
-    #ped-mobile-menu-layer #ped-mobile-footer-menu #ped-faceid-setup-button{
-      display:none!important;
-    }
-
-    #ped-mobile-menu-layer #ped-mobile-footer-menu #ped-btn-header-admin{
-      min-height:58px!important;
-      margin-top:14px!important;
-      border-radius:14px!important;
-      border:1px solid rgba(129,140,248,.30)!important;
-      color:#c7c7ff!important;
-      background:rgba(79,70,229,.17)!important;
-      box-shadow:none!important;
-      font-size:16px!important;
-      font-weight:850!important;
-    }
-
-    #ped-mobile-menu-layer #ped-mobile-footer-menu #ped-btn-header-admin svg{
-      width:19px!important;
-      height:19px!important;
-    }
+    #ped-mobile-menu-layer.is-open{position:fixed;inset:0;z-index:260;display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top) + 18px) 18px calc(env(safe-area-inset-bottom) + 18px);background:rgba(3,6,14,.68);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-sizing:border-box}
+    #ped-mobile-menu-layer .ped-menu-card{width:100%;max-width:430px;max-height:100%;overflow:auto;overscroll-behavior:contain;box-sizing:border-box;padding:17px 12px 24px;border:1px solid rgba(148,163,184,.18);border-radius:25px;background:linear-gradient(145deg,#10131f,#060910);box-shadow:0 0 0 1px rgba(99,102,241,.07),0 18px 55px rgba(37,99,235,.16);font-family:'Outfit',sans-serif;color:#a1a1aa}
+    .ped-menu-heading{display:flex;align-items:center;justify-content:space-between;padding:0 7px 12px}
+    .ped-menu-heading small{display:block;color:#60a5fa;letter-spacing:.18em;font-size:9px;font-weight:800;margin-bottom:3px}
+    .ped-menu-heading strong{font-size:16px;line-height:1.2;color:#fafafa;font-weight:850}
+    .ped-menu-close{width:34px;height:34px;border:1px solid rgba(148,163,184,.15);border-radius:12px;background:rgba(255,255,255,.04);color:#a1a1aa;font-size:24px}
+    #ped-mobile-menu-layer #ped-mobile-nav-menu{display:flex!important;position:static!important;flex-direction:column;gap:5px;margin:0!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important}
+    #ped-mobile-menu-layer #ped-mobile-nav-menu>p{display:none!important}
+    #ped-mobile-menu-layer #ped-mobile-nav-menu button{display:flex!important;align-items:center;gap:12px;width:100%;min-height:47px;padding:6px 13px!important;margin:0!important;border:1px solid transparent;border-radius:14px!important;background:transparent!important;box-shadow:none!important;color:#a1a1aa!important;font:750 13px/1.2 'Outfit',sans-serif;text-align:left}
+    #ped-mobile-menu-layer #ped-mobile-nav-menu button>span{margin:0!important}
+    #ped-mobile-menu-layer #ped-mobile-nav-menu button svg{width:18px!important;height:18px!important;padding:8px;box-sizing:content-box;flex-shrink:0;border-radius:11px;border:1px solid rgba(148,163,184,.10);background:rgba(255,255,255,.035);stroke-width:1.8}
+    #ped-mobile-menu-layer #ped-mobile-nav-menu button::after{content:'›';margin-left:auto;color:#71717a;font-size:21px;font-weight:400}
+    #ped-mobile-menu-layer #ped-mobile-nav-menu button[data-menu-active="true"]{background:linear-gradient(110deg,#2563eb,#3b82f6 40%,#6d28d9)!important;border-color:rgba(167,139,250,.4);color:#fff!important;box-shadow:inset 0 1px 1px rgba(255,255,255,.16),0 8px 20px rgba(37,99,235,.15)!important}
+    #ped-mobile-menu-layer #ped-mobile-nav-menu button[data-menu-active="true"] svg{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.16)}
+    #ped-mobile-menu-layer #ped-mobile-nav-menu button[data-menu-active="true"]::after{color:#fff}
+    #ped-mobile-menu-layer #ped-btn-modo-atividade{margin-top:12px!important;position:relative}
+    #ped-mobile-menu-layer #ped-btn-modo-atividade::before{content:'';position:absolute;top:-9px;left:4px;right:4px;border-top:1px solid rgba(148,163,184,.10)}
+    .ped-menu-account{margin-top:13px;padding:11px 2px 0;border-top:1px solid rgba(148,163,184,.13)}
+    .ped-menu-account-title{padding:0 7px 9px;font-size:9px;line-height:1;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#71717a}
+    .ped-menu-account-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .ped-menu-account-grid button{min-height:47px;border-radius:13px;border:1px solid rgba(148,163,184,.13);background:rgba(255,255,255,.04);color:#e4e4e7;font:750 12px/1.1 'Outfit',sans-serif;padding:8px;display:flex;align-items:center;justify-content:center;gap:9px}
+    .ped-menu-color{width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.75)}
+    .ped-menu-account-grid .ped-menu-logout{border-color:rgba(244,63,94,.18);background:rgba(244,63,94,.08);color:#fb7185}
+    .ped-menu-account-grid .ped-menu-faceid{grid-column:1/-1;min-height:52px;border-color:rgba(56,189,248,.28);background:linear-gradient(135deg,rgba(14,165,233,.14),rgba(59,130,246,.09));color:#7dd3fc}
+    .ped-menu-account-grid .ped-menu-admin{grid-column:1/-1;border-color:rgba(99,102,241,.24);background:rgba(79,70,229,.12);color:#a5b4fc}
+    .ped-menu-account::after{content:'';display:block;margin-top:15px;border-top:1px solid rgba(148,163,184,.10)}
+    html:not(.dark) #ped-mobile-menu-layer .ped-menu-card{background:linear-gradient(145deg,#fff,#f8fafc);color:#52525b}
+    html:not(.dark) .ped-menu-heading strong{color:#18181b}
+    html:not(.dark) .ped-menu-account-grid button{color:#3f3f46;background:rgba(15,23,42,.035)}
   }
 }
+
 </style>
 
 
@@ -7683,11 +7586,11 @@ html:not(.dark) #ped-aside .ped-next-place{color:#334155}
 <span>Todos os Trios</span>
 </button>
 <button onclick="alternarModoPed('atividade')" id="ped-btn-modo-atividade" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm">
-<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h18M6 12h12m-9 7h6"/></svg>
+<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
 <span>Atividades</span>
 </button>
 <button onclick="alternarModoPed('seminarios')" id="ped-btn-modo-seminarios" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm">
-<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 3h14v18H5zM5 17h14"/></svg>
 <span>Seminários</span>
 </button>
 <button onclick="alternarModoPed('calendario')" id="ped-btn-modo-calendario" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm">
@@ -7695,7 +7598,7 @@ html:not(.dark) #ped-aside .ped-next-place{color:#334155}
 <span>Calendário</span>
 </button>
 <button onclick="alternarModoPed('recados')" id="ped-btn-modo-recados" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm">
-<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 15a3 3 0 01-3 3H8l-5 4V6a3 3 0 013-3h12a3 3 0 013 3z"/></svg>
 <span>Recados e Avisos</span>
 </button>
 </nav>
@@ -8308,58 +8211,63 @@ Escala Diária por Turnos
 
   var pedMenuOrigem=null;
 
+
+  var pedMenuTrigger=null;
   function garantirPedMobileMenuLayer(){
     var layer=document.getElementById('ped-mobile-menu-layer');
     if(!layer){
       layer=document.createElement('div');
       layer.id='ped-mobile-menu-layer';
-      layer.setAttribute('aria-label','Menu da Pediatria');
+      layer.innerHTML='<section class="ped-menu-card" role="dialog" aria-modal="true" aria-labelledby="ped-menu-title"><header class="ped-menu-heading"><div><small>NAVEGAÇÃO</small><strong id="ped-menu-title">Menu principal</strong></div><button class="ped-menu-close" type="button" aria-label="Fechar menu">×</button></header><div class="ped-menu-nav-slot"></div><div class="ped-menu-account"><div class="ped-menu-account-title">Conta e aparência</div><div class="ped-menu-account-grid"><button data-action="blue"><span class="ped-menu-color" style="background:#3b82f6"></span>Azul</button><button data-action="pink"><span class="ped-menu-color" style="background:#ec4899"></span>Rosa</button><button data-action="theme">☀︎ / ☾ Tema</button><button data-action="logout" class="ped-menu-logout">Sair</button><button data-action="faceid" class="ped-menu-faceid">Cadastrar Face ID neste aparelho</button><button data-action="admin" class="ped-menu-admin">Painel Admin</button></div></div></section>';
       document.body.appendChild(layer);
+      layer.addEventListener('click',function(e){
+        if(e.target===layer||e.target.closest('.ped-menu-close')){fecharPedMobileMenu();return;}
+        var button=e.target.closest('[data-action]');if(!button)return;
+        var action=button.dataset.action;
+        if(action==='blue')window.alterarCorPainel('azul');
+        if(action==='pink')window.alterarCorPainel('rosa');
+        if(action==='theme')window.alternarTema();
+        if(action==='logout'){fecharPedMobileMenu();window.sairSistema();}
+        if(action==='faceid'){fecharPedMobileMenu();window.abrirConfiguracaoFaceID();}
+        if(action==='admin'){fecharPedMobileMenu();window.alternarModoPed('admin');}
+      });
+      layer.addEventListener('keydown',function(e){
+        if(e.key==='Escape'){e.preventDefault();fecharPedMobileMenu();}
+        if(e.key==='Tab'){
+          var buttons=Array.from(layer.querySelectorAll('button')).filter(function(b){return b.offsetParent!==null;});
+          var first=buttons[0],last=buttons[buttons.length-1];
+          if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+          else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+        }
+      });
     }
     return layer;
   }
-
   function abrirPedMobileMenu(){
     if(window.innerWidth>=1024)return;
-    var menu=el('mobile-nav-menu');
-    var footer=el('mobile-footer-menu');
-    if(!menu||!footer)return;
-
+    var menu=el('mobile-nav-menu');if(!menu)return;
     if(!pedMenuOrigem){
       var navMarker=document.createComment('ped-nav-origin');
-      var footerMarker=document.createComment('ped-footer-origin');
-      menu.parentNode.insertBefore(navMarker,menu);
-      footer.parentNode.insertBefore(footerMarker,footer);
-      pedMenuOrigem={navMarker:navMarker,footerMarker:footerMarker};
+      menu.parentNode.insertBefore(navMarker,menu);pedMenuOrigem={navMarker:navMarker};
     }
-
+    pedMenuTrigger=document.activeElement;
     var layer=garantirPedMobileMenuLayer();
-    layer.appendChild(menu);
-    layer.appendChild(footer);
+    layer.querySelector('.ped-menu-nav-slot').appendChild(menu);
+    var mode=localStorage.getItem(MODE_KEY)||'individual';
+    var ids={hoje:'hoje',individual:'ind',geral:'geral',atividade:'atividade',seminarios:'seminarios',calendario:'calendario',recados:'recados'};
+    menu.querySelectorAll('button').forEach(function(b){b.dataset.menuActive=String(b.id==='ped-btn-modo-'+ids[mode]);});
     menu.classList.remove('hidden');
-    footer.classList.remove('hidden');
-    layer.classList.add('is-open');
-    document.body.classList.add('ped-menu-open');
+    layer.classList.add('is-open');document.body.classList.add('ped-menu-open');
+    layer.querySelector('.ped-menu-close').focus();
   }
-
   function fecharPedMobileMenu(){
-    var menu=el('mobile-nav-menu');
-    var footer=el('mobile-footer-menu');
-    var layer=document.getElementById('ped-mobile-menu-layer');
-
+    var menu=el('mobile-nav-menu'),layer=document.getElementById('ped-mobile-menu-layer');
     if(menu)menu.classList.add('hidden');
-    if(footer)footer.classList.add('hidden');
     if(layer)layer.classList.remove('is-open');
     document.body.classList.remove('ped-menu-open');
-
-    if(pedMenuOrigem){
-      if(menu&&pedMenuOrigem.navMarker?.parentNode){
-        pedMenuOrigem.navMarker.parentNode.insertBefore(menu,pedMenuOrigem.navMarker.nextSibling);
-      }
-      if(footer&&pedMenuOrigem.footerMarker?.parentNode){
-        pedMenuOrigem.footerMarker.parentNode.insertBefore(footer,pedMenuOrigem.footerMarker.nextSibling);
-      }
-    }
+    if(pedMenuOrigem&&menu&&pedMenuOrigem.navMarker.parentNode)pedMenuOrigem.navMarker.parentNode.insertBefore(menu,pedMenuOrigem.navMarker.nextSibling);
+    if(pedMenuTrigger&&pedMenuTrigger.isConnected)pedMenuTrigger.focus();
+    pedMenuTrigger=null;
   }
 
   window.togglePedMobileMenu=function(){
