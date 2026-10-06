@@ -7493,8 +7493,84 @@ html:not(.dark) #ped-aside .ped-next-card{
 html:not(.dark) #ped-aside .ped-next-date{color:#0f172a}
 html:not(.dark) #ped-aside .ped-next-place{color:#334155}
 @media(max-width:1023px){
+  #ped-aside{overflow:visible!important}
   #ped-aside .ped-profile-hero{align-items:center}
   #ped-aside .ped-next-card{margin-top:12px}
+
+  /* PED mobile — menu suspenso no mesmo padrão visual da GO */
+  #ped-mobile-nav-menu:not(.hidden){
+    position:fixed!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:7px!important;
+    top:calc(env(safe-area-inset-top) + 72px)!important;
+    left:12px!important;
+    right:12px!important;
+    bottom:calc(env(safe-area-inset-bottom) + 190px)!important;
+    z-index:105!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch;
+    padding:12px!important;
+    border:1px solid rgba(148,163,184,.16)!important;
+    border-radius:22px 22px 14px 14px!important;
+    background:rgba(8,10,18,.985)!important;
+    box-shadow:0 28px 80px -20px rgba(0,0,0,.96)!important;
+    backdrop-filter:blur(24px) saturate(135%)!important;
+    -webkit-backdrop-filter:blur(24px) saturate(135%)!important;
+  }
+  html:not(.dark) #ped-mobile-nav-menu:not(.hidden){
+    background:rgba(255,255,255,.985)!important;
+  }
+  #ped-mobile-nav-menu:not(.hidden) button{
+    min-height:52px!important;
+    padding:0 14px!important;
+    border-radius:15px!important;
+    font-size:14px!important;
+    gap:13px!important;
+    flex-shrink:0!important;
+  }
+  #ped-mobile-nav-menu:not(.hidden) button svg{
+    width:21px!important;
+    height:21px!important;
+  }
+
+  #ped-mobile-footer-menu:not(.hidden){
+    position:fixed!important;
+    display:block!important;
+    left:12px!important;
+    right:12px!important;
+    bottom:calc(env(safe-area-inset-bottom) + 82px)!important;
+    z-index:105!important;
+    padding:10px 12px!important;
+    border:1px solid rgba(148,163,184,.16)!important;
+    border-radius:14px 14px 20px 20px!important;
+    background:rgba(8,10,18,.985)!important;
+    box-shadow:0 20px 60px -22px rgba(0,0,0,.96)!important;
+    backdrop-filter:blur(24px) saturate(135%)!important;
+    -webkit-backdrop-filter:blur(24px) saturate(135%)!important;
+  }
+  html:not(.dark) #ped-mobile-footer-menu:not(.hidden){
+    background:rgba(255,255,255,.985)!important;
+  }
+  #ped-mobile-footer-menu:not(.hidden)>div:first-child{min-height:40px}
+  #ped-mobile-footer-menu:not(.hidden) #ped-faceid-setup-button{
+    min-height:40px!important;
+    margin-top:8px!important;
+  }
+  #ped-mobile-footer-menu:not(.hidden) #ped-btn-header-admin{
+    min-height:42px!important;
+    margin-top:8px!important;
+  }
+
+  body:has(#ped-mobile-nav-menu:not(.hidden))::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:94;
+    background:rgba(2,3,8,.64);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+  }
 }
 </style>
 
