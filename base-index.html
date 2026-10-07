@@ -8438,12 +8438,26 @@ Escala Diária por Turnos
   }
 
   function estadoTurnoPed(data,turno,agora=new Date()){
-    const alvo=dataBrParaDate(data);alvo.setHours(0,0,0,0);
-    const hoje=new Date(agora);hoje.setHours(0,0,0,0);
+    const partes=String(data||'').split('/').map(Number);
+    if(partes.length<2||!partes[0]||!partes[1])return 'futuro';
+    const relogio=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{
+      timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit',
+      hour:'2-digit',minute:'2-digit',hourCycle:'h23'
+    }).formatToParts(agora).filter(p=>p.type!=='literal').map(p=>[p.type,Number(p.value)]));
+    const alvo=(partes[2]||2026)*10000+partes[1]*100+partes[0];
+    const hoje=relogio.year*10000+relogio.month*100+relogio.day;
     if(alvo<hoje)return 'passado';if(alvo>hoje)return 'futuro';
-    const faixa=typeof obterFaixaHorarioTurno==='function'?obterFaixaHorarioTurno(turno.horario,turno.periodo):{inicio:420,fim:780};
-    const minutos=agora.getHours()*60+agora.getMinutes();
-    return minutos<faixa.inicio?'futuro':(minutos>=faixa.fim?'passado':'agora');
+    const padroes={'Manhã':{inicio:420,fim:780},'Tarde':{inicio:780,fim:1080},'Noite':{inicio:1080,fim:1380}};
+    const padrao=padroes[turno.periodo]||padroes['Manhã'];
+    const horarios=[...String(turno.horario||'').matchAll(/(\d{1,2})(?:h|:)(\d{2})?/gi)]
+      .map(p=>Number(p[1])*60+Number(p[2]||0));
+    const inicio=horarios[0]??padrao.inicio;
+    const fim=horarios[1]??Math.max(padrao.fim,inicio+60);
+    const minutos=relogio.hour*60+relogio.minute;
+    if(fim<=inicio){
+      return minutos>=inicio||minutos<fim?'agora':'futuro';
+    }
+    return minutos<inicio?'futuro':(minutos>=fim?'passado':'agora');
   }
 
   function temasSeparadosPed(temas){
@@ -9152,8 +9166,16 @@ function estadoTemporalDataPed(dataObj){
 
   function atualizarRelogio(){
     var r=el('relogio-dashboard');
-    if(r)r.textContent=new Intl.DateTimeFormat('pt-BR',{hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
+    var agora=new Date();
+    if(r)r.textContent=new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit',hour12:false}).format(agora);
     atualizarStatusDescansoPed();
+    var minuto=Math.floor(agora.getTime()/60000);
+    if(atualizarRelogio.ultimoMinuto!==undefined&&atualizarRelogio.ultimoMinuto!==minuto&&document.body.classList.contains('rotation-ped')&&document.body.classList.contains('app-authenticated')){
+      var modo=localStorage.getItem(MODE_KEY)||'individual';
+      if(modo==='individual')renderTurnosPed();
+      if(modo==='hoje')renderHoje();
+    }
+    atualizarRelogio.ultimoMinuto=minuto;
   }
 
   function aplicarRodizio(nome,persistir){
