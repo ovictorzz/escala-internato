@@ -7869,10 +7869,10 @@ Escala Diária por Turnos
     '05/10/2026':{manha:'HRSAM NEO — Dra. Elaine',tarde:'SCI'},
     '06/10/2026':{manha:'HRSAM NEO — Dra. Adriana',noite:'Seminário'},
     '07/10/2026':{noite:'HRSAM NEO — Dra. Aline'},
-    '08/10/2026':{status:'livre'},
+    '08/10/2026':{tarde:'HRSAM NEO',noite:'HRSAM NEO',membrosPorTurno:{tarde:['Davi Carvalho'],noite:['André Victor','Letícia Barbosa']}},
     '09/10/2026':{manha:'HRSAM NEO — Dra. Adriana'},
     '10/10/2026':{manha:'HRSAM NEO — Dra. Luciana'},
-    '11/10/2026':{noite:'HRSAM NEO — Dra. Luciana'},
+    '11/10/2026':{status:'livre'},
 
     '12/10/2026':{tarde:'SCI'},
     '13/10/2026':{noite:'Seminário'},
@@ -8027,7 +8027,7 @@ Escala Diária por Turnos
     return periodosPed.map(function(p){
       var local=entrada[p.key]||'—';
       if(local==='Seminário')local='Seminário';
-      var turno={periodo:p.nome,horario:horarioAtividadePed(p.nome,local),local:nomeCenarioPed(local),membros:participantesTurnoPed(id,local)};
+      var turno={periodo:p.nome,horario:horarioAtividadePed(p.nome,local),local:nomeCenarioPed(local),membros:entrada.membrosPorTurno?.[p.key]?.slice()||participantesTurnoPed(id,local)};
       if(local.indexOf('Seminário')===0){
         var eventos=seminariosPed.filter(function(s){return s.data===dataCompleta&&s.tipo!=='avaliacao';});
         if(!eventos.length)eventos=[{tema:'Tema a definir',apresentadores:'Apresentadores a definir'}];
