@@ -2113,6 +2113,9 @@ window.filtrarSeletorAluno = window.filtrarSeletorAluno || function() {};
 </button>
 <select id="aluno-select" class="hidden" tabindex="-1" aria-hidden="true">
 <option value="" disabled selected>-- Escolha o seu nome --</option>
+<optgroup label="Professora de Pediatria">
+<option value="Dra. Fernanda Canuto">Dra. Fernanda Canuto</option>
+</optgroup>
 <optgroup label="Trio A1">
 <option value="André Victor">André Victor</option>
 <option value="Davi Carvalho">Davi Carvalho</option>
@@ -3151,6 +3154,7 @@ document.getElementById('aluno-select-trigger')?.classList.remove('has-value');
 }
 
 function senhaPadraoUsuario(nome) {
+if (nome === 'Dra. Fernanda Canuto') return 't7a';
 return nome === 'André Victor' ? SENHA_ANDRE : SENHA_ACESSO;
 }
 
@@ -3334,6 +3338,11 @@ botao.innerText = 'ACESSAR SISTEMA';
 }
 };
 function direcionarParaTrioDoAluno(nomeAluno) {
+if (nomeAluno === 'Dra. Fernanda Canuto') {
+if (typeof window.alternarRodizioT7A === 'function') window.alternarRodizioT7A('ped', false);
+if (typeof window.alternarModoPed === 'function') window.alternarModoPed('geral');
+return;
+}
 const trioId = alunoTrioMap[nomeAluno];
 if (trioId) {
 detectarDiaESemanaAtual();
