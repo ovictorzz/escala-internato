@@ -6477,13 +6477,25 @@ let iniciado=false,historicosIniciados=false;
 function pedAdminElement(id){return document.getElementById('ped-'+id);}
 function atividadeConfirmada(local){return !!local&&local!=='—'&&local!=='Escala não enviada';}
 function calcularCargaHorariaTrio(id){
- let total=0,teorica=0,pratica=0,semanas={};
+ const integrantes=window.membrosCargaPedAdmin(id).map(nome=>({nome,total:0,teorica:0,pratica:0,semanas:{}}));
+ const semanas={};
  Object.entries(dadosEscala[id]?.semanas||{}).forEach(([n,dias])=>{
- let subtotal=0,semPratica=0,semTeorica=0;Object.values(dias).forEach(dia=>dia.turnos.forEach(t=>{
- if(!atividadeConfirmada(t.local))return;const minutos=window.horasTurnoPedAdmin(t)*60;
- total+=minutos;subtotal+=minutos;if(window.atividadePedAssistencialAdmin(t.local)){pratica+=minutos;semPratica+=minutos;}else{teorica+=minutos;semTeorica+=minutos;}
- }));semanas[n]={total:subtotal,pratica:semPratica,teorica:semTeorica};
- });return {total,teorica,pratica,semanas};
+ integrantes.forEach(p=>p.semanas[n]={total:0,pratica:0,teorica:0});
+ Object.values(dias).forEach(dia=>(dia.turnos||[]).forEach(t=>{
+ if(!atividadeConfirmada(t.local))return;
+ const minutos=Math.round(window.horasTurnoPedAdmin(t)*60);
+ const tipo=window.atividadePedAssistencialAdmin(t.local)?'pratica':'teorica';
+ integrantes.forEach(p=>{
+ if(!window.participanteCargaPedAdmin(t,p.nome))return;
+ p.total+=minutos;p[tipo]+=minutos;p.semanas[n].total+=minutos;p.semanas[n][tipo]+=minutos;
+ });
+ }));
+ semanas[n]={};
+ ['total','pratica','teorica'].forEach(k=>semanas[n][k]=integrantes.length?integrantes.reduce((s,p)=>s+p.semanas[n][k],0)/integrantes.length:0);
+ });
+ const resultado={semanas,integrantes};
+ ['total','pratica','teorica'].forEach(k=>resultado[k]=integrantes.length?integrantes.reduce((s,p)=>s+p[k],0)/integrantes.length:0);
+ return resultado;
 }
 function atualizarDadosEscalaPed(){
  dadosEscala={};for(let id=1;id<=10;id++){let semanas={};for(let n=1;n<=9;n++){let dias={};for(let d=0;d<7;d++){const date=new Date(2026,9,5+(n-1)*7+d,12);const data=date.toLocaleDateString('pt-BR');dias[['seg','ter','qua','qui','sex','sab','dom'][d]]={data,turnos:window.obterTurnosPed(String(id),data)};}semanas[n]=dias;}dadosEscala[id]={semanas};}
@@ -6721,7 +6733,7 @@ if (diaKey === 'sab' || diaKey === 'dom') atividadesFds++;
 });
 totalMinutosCarga += cargaTrio.total;
 totalMinutosTeoricos += cargaTrio.teorica;
-cargaTrios.push({ trioId: Number(trioId), nome: `Trio A${trioId}`, valor: cargaTrio.total, teorica: cargaTrio.teorica, pratica: cargaTrio.pratica, semanas: cargaTrio.semanas });
+cargaTrios.push({ trioId: Number(trioId), nome: `Trio A${trioId}`, valor: cargaTrio.total, teorica: cargaTrio.teorica, pratica: cargaTrio.pratica, semanas: cargaTrio.semanas, integrantes: cargaTrio.integrantes });
 });
 }
 cargaTrios.sort((a, b) => a.trioId - b.trioId);
@@ -6795,12 +6807,14 @@ const rankingAtividadesPed=dados.cargaTrios.map(item=>{
 const maxAtividadesPed=Math.max(1,...rankingAtividadesPed.map(i=>i.turnos));
 const rankingAtividadesHtmlPed=rankingAtividadesPed.map((item,i)=>'<div class="space-y-1.5"><div class="flex justify-between items-center gap-3 text-[10px]"><span class="font-bold text-zinc-600 dark:text-zinc-300">#'+(i+1)+' '+item.nome+'</span><span class="font-black text-blue-500">'+item.turnos+' atividades <span class="text-zinc-500 font-semibold">— '+formatarCargaHoraria(item.valor)+'</span></span></div><div class="admin-rank-track"><div class="admin-rank-fill" style="width:'+(item.turnos/maxAtividadesPed*100)+'%"></div></div></div>').join('');
 const cargaTriosHtml = dados.cargaTrios.map(item => {
-const semanasHtml = Array.from({ length: 9 }, (_, indice) => {
-const numero = indice + 1;
-const semana = item.semanas[numero] || { total: 0, teorica: 0, pratica: 0 };
-return `<div class="rounded-lg bg-black/5 dark:bg-white/[.045] border border-black/5 dark:border-white/5 px-2 py-2 text-center" title="Semana ${numero}: ${formatarCargaHoraria(semana.total)} no total, ${formatarCargaHoraria(semana.pratica)} práticas e ${formatarCargaHoraria(semana.teorica)} teóricas"><span class="block text-[8px] font-black uppercase tracking-wider text-zinc-500">S${numero}</span><strong class="block text-[10px] text-zinc-800 dark:text-zinc-200 mt-1">${formatarCargaHoraria(semana.total)}</strong><span class="block text-[8px] text-emerald-500 mt-0.5">P ${formatarCargaHoraria(semana.pratica)}</span><span class="block text-[8px] text-violet-500 mt-0.5">T ${formatarCargaHoraria(semana.teorica)}</span></div>`;
-}).join('');
-return `<article class="rounded-xl p-3.5 bg-black/[.025] dark:bg-black/20 border border-black/5 dark:border-white/5"><div class="flex items-center justify-between gap-3 flex-wrap"><div><strong class="font-outfit font-black text-sm text-zinc-900 dark:text-white">${item.nome}</strong><span class="block text-[9px] text-zinc-500 mt-0.5">Confirmado até agora</span></div><div class="flex items-center gap-2 flex-wrap"><span class="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 text-[9px] font-bold">Prática ${formatarCargaHoraria(item.pratica)}</span><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 text-violet-500 text-[9px] font-bold">Teórica ${formatarCargaHoraria(item.teorica)}</span><span class="px-2.5 py-1.5 rounded-lg bg-blue-500/10 text-blue-500 text-[10px] font-black">Total ${formatarCargaHoraria(item.valor)}</span></div></div><div class="grid grid-cols-3 sm:grid-cols-5 xl:grid-cols-9 gap-1.5 mt-3">${semanasHtml}</div></article>`;
+ const pessoasHtml=(item.integrantes||[]).map(p=>{
+ const semanasHtml=Array.from({length:9},(_,i)=>{
+ const numero=i+1,s=p.semanas[numero]||{total:0,pratica:0,teorica:0};
+ return `<div class="rounded-lg bg-black/5 dark:bg-white/[.045] border border-black/5 dark:border-white/5 px-2 py-2 text-center"><span class="block text-[8px] font-black text-zinc-500">S${numero}</span><strong class="block text-[10px] mt-1">${formatarCargaHoraria(s.total)}</strong><span class="block text-[8px] text-emerald-500">P ${formatarCargaHoraria(s.pratica)}</span><span class="block text-[8px] text-violet-500">T ${formatarCargaHoraria(s.teorica)}</span></div>`;
+ }).join('');
+ return `<div class="mt-3 border-t border-black/5 dark:border-white/5 pt-3"><div class="flex justify-between gap-2 flex-wrap"><strong class="text-xs">${p.nome}</strong><span class="text-[10px] text-blue-500">Total ${formatarCargaHoraria(p.total)} · P ${formatarCargaHoraria(p.pratica)} · T ${formatarCargaHoraria(p.teorica)}</span></div><div class="grid grid-cols-3 sm:grid-cols-5 xl:grid-cols-9 gap-1.5 mt-2">${semanasHtml}</div></div>`;
+ }).join('');
+ return `<article class="rounded-xl p-3.5 bg-black/[.025] dark:bg-black/20 border border-black/5 dark:border-white/5"><strong class="font-outfit font-black text-sm">${item.nome}</strong><span class="block text-[9px] text-zinc-500">Carga por integrante · média do trio: ${formatarCargaHoraria(item.valor)}</span>${pessoasHtml}</article>`;
 }).join('');
 const valoresTurnos = [dados.turnosEscala['Manhã'], dados.turnosEscala['Tarde'], dados.turnosEscala['Noite']];
 const coresTurnos = ['#38bdf8', '#f59e0b', '#818cf8'];
@@ -6837,7 +6851,7 @@ sub.innerHTML = `
 
 <section class="admin-analytics-card rounded-2xl p-4 xl:col-span-7"><div class="relative z-10"><div class="flex items-start justify-between gap-3"><div><h4 class="admin-chart-title">Movimentação dos capotes</h4><p class="admin-chart-subtitle">Entradas e retiradas registradas no contador.</p></div><strong class="text-3xl font-outfit font-black text-emerald-500">${capotesCount}</strong></div><div class="grid grid-cols-2 gap-3 mt-5"><div class="rounded-xl p-4 bg-emerald-500/10 border border-emerald-500/15"><span class="text-[9px] font-black uppercase tracking-widest text-emerald-500">Adicionados</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">+${dados.capotesAdicionados}</strong></div><div class="rounded-xl p-4 bg-rose-500/10 border border-rose-500/15"><span class="text-[9px] font-black uppercase tracking-widest text-rose-500">Retirados</span><strong class="block text-2xl font-outfit font-black text-zinc-900 dark:text-white mt-2">−${dados.capotesRetirados}</strong></div></div><div class="flex h-2 rounded-full overflow-hidden bg-zinc-500/10 mt-4"><span class="bg-emerald-500" style="width:${historicoCapotesGlobal.length ? (dados.capotesAdicionados / historicoCapotesGlobal.length) * 100 : 0}%"></span><span class="bg-rose-500" style="width:${historicoCapotesGlobal.length ? (dados.capotesRetirados / historicoCapotesGlobal.length) * 100 : 0}%"></span></div><div class="flex justify-between mt-2 text-[9px] text-zinc-500"><span>${historicoCapotesGlobal.length} movimentações</span><span>Saldo: ${variacaoCapotes > 0 ? '+' : ''}${variacaoCapotes}</span></div></div></section>
 
-<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><div class="flex items-start justify-between gap-3 flex-wrap"><div><h4 class="admin-chart-title">Carga horária confirmada por trio</h4><p class="admin-chart-subtitle">Cada semana separa prática (P) e teórica (T), além do total confirmado.</p></div><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-500 text-[9px] font-bold">Teóricas fixas: segunda à tarde + terça à noite</span></div><div class="space-y-2.5 mt-5">${cargaTriosHtml}</div></div></section>
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><div class="flex items-start justify-between gap-3 flex-wrap"><div><h4 class="admin-chart-title">Carga horária confirmada por trio</h4><p class="admin-chart-subtitle">Cada integrante tem sua carga semanal de prática (P) e teoria (T). Os totais agregados usam a média por integrante.</p></div><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-500 text-[9px] font-bold">Teóricas fixas: segunda à tarde + terça à noite</span></div><div class="space-y-2.5 mt-5">${cargaTriosHtml}</div></div></section>
 
 <section class="admin-analytics-card rounded-2xl p-4 xl:col-span-5"><div class="relative z-10"><h4 class="admin-chart-title">Atividades por turno</h4><p class="admin-chart-subtitle">Composição dos turnos confirmados na escala.</p><div class="flex items-center justify-center gap-5 mt-5"><div class="admin-donut" style="background:${donutTurnos}" role="img" aria-label="Distribuição das atividades por turno"><div class="admin-donut-center"><strong>${dados.totalTurnos}</strong><span>turnos</span></div></div><div class="space-y-2.5 min-w-[112px]">${['Manhã','Tarde','Noite'].map((nome, i) => `<div class="flex items-center justify-between gap-3"><span class="flex items-center gap-2 text-[10px] text-zinc-500"><i class="admin-legend-dot" style="background:${coresTurnos[i]};color:${coresTurnos[i]}"></i>${nome}</span><strong class="text-[11px] text-zinc-800 dark:text-zinc-200">${valoresTurnos[i]}</strong></div>`).join('')}<div class="pt-2 mt-2 border-t border-black/5 dark:border-white/5 text-[9px] text-zinc-500">${dados.atividadesFds} no fim de semana<br>${formatarCargaHoraria(dados.totalMinutosTeoricos)} teóricas</div></div></div></div></section>
 
@@ -9128,6 +9142,8 @@ function estadoTemporalDataPed(dataObj){
   function renderAdmin(){if(window.abrirPainelAdminPed)window.abrirPainelAdminPed();}
   window.obterTurnosPed=turnosPedPorData;
   window.horasTurnoPedAdmin=horasTurnoPed;
+  window.membrosCargaPedAdmin=function(id){return (dadosTrioPedPorId(String(id)).membros||[]).slice();};
+  window.participanteCargaPedAdmin=participanteCargaPed;
   window.atividadePedAssistencialAdmin=atividadePedAssistencial;
   window.addEventListener('ped-admin-pronto',function(){if(window.modoVisualizacaoPed==='admin')renderAdmin();else if(window.modoVisualizacaoPed==='recados')renderRecados();});
   window.addEventListener('ped-dados-atualizados',function(){if(window.modoVisualizacaoPed&&window.modoVisualizacaoPed!=='admin')window.alternarModoPed(window.modoVisualizacaoPed,false);});
