@@ -8650,6 +8650,16 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
       '<div class="ped-turno-restante-item"><span class="ped-turno-restante-icon">📝</span><span><b>'+academicos+'</b> sem.+prova</span></div>';
   }
 
+  function participanteCargaPed(turno,nome){
+    var participantes=turno.membros||[];
+    return !participantes.length||participantes.some(function(membro){return nomeCurtoPed(membro)===nomeCurtoPed(nome);});
+  }
+
+  function formatarHorasCargaPed(horas){
+    var minutos=Math.round(horas*60);
+    return Math.floor(minutos/60)+'h'+(minutos%60?' '+(minutos%60)+'min':'');
+  }
+
   function atualizarResumo(){
     var atividades=el('stat-atividades');
     var detalhes=el('stat-detalhes-turnos');
@@ -8659,7 +8669,8 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
 
     var totalConfirmados=0,totalPossiveis=21;
     var manha=0,tarde=0,noite=0,fds=0;
-    var horasTotal=0,horasPratica=0,horasAcademica=0;
+    var membrosCarga=dadosTrioPedPorId(trio).membros||[];
+    var cargas=membrosCarga.map(function(nome){return {nome:nome,total:0,pratica:0,academica:0};});
 
     for(var indice=0;indice<7;indice++){
       var data=formatarDataCompletaPed(dataRodizioPed(semanaPed,indice));
@@ -8673,9 +8684,12 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
         if(indice>=5)fds++;
 
         var h=horasTurnoPed(turno);
-        horasTotal+=h;
-        if(atividadePedAssistencial(turno.local))horasPratica+=h;
-        else horasAcademica+=h;
+        cargas.forEach(function(item){
+          if(!participanteCargaPed(turno,item.nome))return;
+          item.total+=h;
+          if(atividadePedAssistencial(turno.local))item.pratica+=h;
+          else item.academica+=h;
+        });
       });
     }
 
@@ -8686,10 +8700,15 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
       '<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🌙 Noite: '+noite+'</span>'+
       '<span class="bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-black/5 dark:border-white/5 whitespace-nowrap">🏖️ FDS: '+fds+'</span>';
 
-    if(carga)carga.textContent=horasTotal?horasTotal+'h':'--';
+    var totais=cargas.map(function(item){return item.total;});
+    var minimo=totais.length?Math.min.apply(null,totais):0;
+    var maximo=totais.length?Math.max.apply(null,totais):0;
+    if(carga)carga.textContent=maximo?(minimo===maximo?formatarHorasCargaPed(maximo):formatarHorasCargaPed(minimo)+' – '+formatarHorasCargaPed(maximo)):'--';
     if(cargaDetalhes){
-      cargaDetalhes.innerHTML=horasTotal
-        ? '<span class="text-emerald-600 dark:text-emerald-400 font-bold">'+horasPratica+'h de prática</span><br><span class="text-violet-600 dark:text-violet-400 font-bold">'+horasAcademica+'h acadêmicas</span><br>Total da semana: '+horasTotal+'h'
+      cargaDetalhes.innerHTML=maximo
+        ? '<span class="block text-zinc-500 mb-2">Carga semanal por integrante</span>'+cargas.map(function(item){
+          return '<div class="py-1.5 border-t border-black/5 dark:border-white/5"><strong>'+escapar(nomeCurtoPed(item.nome))+' · '+formatarHorasCargaPed(item.total)+'</strong><br><span class="text-emerald-600 dark:text-emerald-400">'+formatarHorasCargaPed(item.pratica)+' de prática</span> · <span class="text-violet-600 dark:text-violet-400">'+formatarHorasCargaPed(item.academica)+' acadêmicas</span></div>';
+        }).join('')
         : 'Semana aguardando escala<br>Total: --';
     }
   }
