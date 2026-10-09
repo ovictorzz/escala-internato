@@ -8327,6 +8327,9 @@ Escala Diária por Turnos
   function sincronizarTrioComAluno(){
     var select=el('grupo-select');
     if(!select)return;
+    var identidade=sessionStorage.getItem('alunoLogado')||'';
+    if(select.dataset.alunoSincronizado===identidade)return;
+    select.dataset.alunoSincronizado=identidade;
     var goSelect=document.getElementById('grupo-select');
     if(goSelect&&goSelect.value){
       select.value=goSelect.value;
