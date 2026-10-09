@@ -1766,6 +1766,48 @@ main { padding-bottom: 26px !important; }
 @media (prefers-reduced-motion: reduce) {
 *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
 }
+
+/* Keep the remaining shifts card compact beside the individual workload. */
+#ped-app .ped-restantes-card,
+.ped-restantes-card {
+ align-self:start;
+ height:auto;
+ min-height:0;
+ justify-content:flex-start;
+ gap:16px;
+}
+.ped-restantes-card > .flex.items-baseline {
+ padding:4px 0;
+}
+.ped-restantes-card .ped-turnos-restantes-grid {
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:8px;
+ width:100%;
+ padding-top:14px;
+ margin-top:0;
+}
+.ped-restantes-card .ped-turno-restante-item {
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ gap:6px;
+ min-width:0;
+ min-height:64px;
+ padding:10px 5px;
+ white-space:normal;
+ text-align:center;
+ font-size:10px;
+ line-height:1.3;
+ border-radius:12px;
+}
+.ped-restantes-card .ped-turno-restante-item > span:last-child {
+ display:flex;
+ flex-direction:column;
+ gap:3px;
+}
+.ped-restantes-card .ped-turno-restante-item b {font-size:17px;line-height:1;}
+.ped-restantes-card .ped-turno-restante-icon {font-size:17px;}
 </style>
 <style id="ped-calendar-proportions-20261003">
 /* Ajuste fino de proporção dos três modos do calendário PED. */
@@ -7742,7 +7784,7 @@ A1
 <span class="text-base sm:text-xl font-outfit font-black text-violet-600 dark:text-violet-400" id="ped-stat-carga-semanal">--</span>
 <div id="ped-stat-carga-detalhes" class="mt-2 text-[9px] sm:text-[10px] text-zinc-600 dark:text-zinc-300 font-semibold leading-relaxed">Semana confirmada<br>Total: -- • Teóricas: --</div>
 </div>
-<div class="stat-card stat-capotes glass-panel rounded-2xl p-4 sm:p-4.5 flex flex-col justify-between text-center bg-gradient-to-br from-blue-500/[.07] via-indigo-500/[.04] to-transparent border border-blue-500/20 shadow-md min-h-[178px]">
+<div class="ped-restantes-card stat-card stat-capotes glass-panel rounded-2xl p-4 sm:p-4.5 flex flex-col justify-between text-center bg-gradient-to-br from-blue-500/[.07] via-indigo-500/[.04] to-transparent border border-blue-500/20 shadow-md min-h-[178px]">
 <div class="flex items-start justify-between gap-3 w-full">
 <div class="text-left">
 <span class="block text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-[.16em]">Turnos restantes</span>
