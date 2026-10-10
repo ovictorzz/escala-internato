@@ -1808,6 +1808,25 @@ main { padding-bottom: 26px !important; }
 }
 .ped-restantes-card .ped-turno-restante-item b {font-size:17px;line-height:1;}
 .ped-restantes-card .ped-turno-restante-icon {font-size:17px;}
+
+@media (min-width:1024px) {
+ .ped-resumo-desktop {grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:stretch;}
+ .ped-resumo-desktop .ped-resumo-stats {display:contents;}
+ .ped-resumo-desktop > .trio-spotlight {grid-column:span 2;min-height:160px;height:auto;justify-content:center;gap:20px;}
+ .ped-resumo-desktop .stat-periodo,.ped-resumo-desktop .stat-turnos {grid-column:span 1;min-height:160px;height:auto;gap:6px;}
+ .ped-resumo-desktop .stat-carga,.ped-resumo-desktop .ped-restantes-card {grid-column:span 2;align-self:stretch;justify-content:flex-start;min-height:0;height:auto;padding:24px;}
+ .ped-resumo-desktop .stat-carga {gap:8px;}
+ #ped-stat-carga-detalhes {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:100%;text-align:left;font-size:11px;}
+ #ped-stat-carga-detalhes > span:first-child {grid-column:1 / -1;text-align:center;}
+ #ped-stat-carga-detalhes > div:last-child {grid-column:1 / -1;text-align:center;}
+ #ped-stat-carga-detalhes > div:last-child > span:not(:last-child) {display:inline-block;margin:8px 12px 0;}
+ .ped-resumo-desktop .ped-restantes-card .ped-turnos-restantes-grid {grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+ .ped-resumo-desktop .ped-restantes-card .ped-turno-restante-item {min-height:70px;}
+ .ped-resumo-desktop .ped-restantes-card > .flex.items-baseline {padding:12px 0;}
+ #ped-stat-detalhes-turnos {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
+ #ped-stat-detalhes-turnos > span {padding:6px 8px;}
+}
+
 </style>
 <style id="ped-calendar-proportions-20261003">
 /* Ajuste fino de proporção dos três modos do calendário PED. */
@@ -7740,7 +7759,7 @@ Internato de Pediatria
 </div>
 </div>
 </header>
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
+<div class="ped-resumo-desktop grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
 <div class="trio-spotlight lg:col-span-5 glass-panel rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col justify-between gap-3">
 <div class="flex items-center space-x-4 w-full">
 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-outfit font-black text-lg shrink-0 shadow-[0_0_20px_rgba(79,70,229,0.4)]" id="ped-grupo-badge-num">
@@ -7769,7 +7788,7 @@ A1
 </div>
 </div>
 </div>
-<div class="lg:col-span-7 grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+<div class="ped-resumo-stats lg:col-span-7 grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
 <div class="stat-card stat-periodo glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center">
 <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1.5">Semana</span>
 <span class="text-base sm:text-xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-white dark:to-zinc-300 truncate" id="ped-stat-semana">-- de 9</span>
