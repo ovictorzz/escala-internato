@@ -1811,6 +1811,25 @@ main { padding-bottom: 26px !important; }
 
 
 
+
+@media (min-width:1024px) {
+ .ped-trio-selecao-card {
+  align-self:start;
+  height:auto;
+  min-height:0;
+  justify-content:flex-start;
+  gap:20px;
+ }
+ .ped-trio-selecao-card #ped-titulo-grupo-header {
+  white-space:normal;
+  line-height:1.4;
+ }
+ .ped-trio-selecao-card > .relative {
+  margin-top:0;
+  padding-top:16px;
+ }
+}
+
 </style>
 <style id="ped-calendar-proportions-20261003">
 /* Ajuste fino de proporção dos três modos do calendário PED. */
@@ -7744,7 +7763,7 @@ Internato de Pediatria
 </div>
 </header>
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
-<div class="trio-spotlight lg:col-span-5 glass-panel rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col justify-between gap-3">
+<div class="ped-trio-selecao-card trio-spotlight lg:col-span-5 glass-panel rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col justify-between gap-3">
 <div class="flex items-center space-x-4 w-full">
 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-outfit font-black text-lg shrink-0 shadow-[0_0_20px_rgba(79,70,229,0.4)]" id="ped-grupo-badge-num">
 A1
