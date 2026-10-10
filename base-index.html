@@ -1848,6 +1848,28 @@ main { padding-bottom: 26px !important; }
  .ped-stats-proporcionais #ped-stat-restantes {font-size:3.2rem;}
 }
 
+
+@media (min-width:1280px) {
+ .ped-pc-equilibrado {align-items:stretch;}
+ .ped-pc-equilibrado > .ped-trio-selecao-card {grid-column:span 3;align-self:stretch;height:350px;justify-content:center;}
+ .ped-pc-equilibrado > .ped-stats-proporcionais {grid-column:span 9;grid-template-columns:.7fr 1.1fr 1.7fr 1.5fr;align-items:stretch;gap:14px;}
+ .ped-pc-equilibrado .ped-stats-proporcionais .stat-card {height:350px;min-height:350px;align-self:stretch;box-sizing:border-box;}
+ .ped-pc-equilibrado .stat-carga {padding:16px;}
+ .ped-pc-equilibrado #ped-stat-carga-detalhes {font-size:10px;line-height:1.35;margin-top:6px;}
+ .ped-pc-equilibrado #ped-stat-carga-detalhes > div {padding:6px 0;}
+ .ped-pc-equilibrado #ped-stat-carga-detalhes > div:last-child {margin-top:6px;padding-top:8px;}
+ .ped-pc-equilibrado #ped-stat-carga-detalhes > div:last-child > span:last-child {font-size:8px;line-height:1.3;margin-top:6px;}
+ .ped-pc-equilibrado .ped-restantes-card {justify-content:space-between;gap:10px;}
+ .ped-pc-equilibrado .ped-restantes-card .ped-turnos-restantes-grid {grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+ .ped-pc-equilibrado .ped-restantes-card .ped-turno-restante-item {min-height:65px;}
+ .ped-pc-equilibrado #ped-titulo-grupo-header {font-size:15px;}
+}
+@media (min-width:1024px) and (max-width:1279px) {
+ .ped-pc-equilibrado > .ped-trio-selecao-card {grid-column:span 3;}
+ .ped-pc-equilibrado > .ped-stats-proporcionais {grid-column:span 9;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;}
+ .ped-pc-equilibrado .stat-periodo,.ped-pc-equilibrado .stat-turnos {height:160px;min-height:160px;}
+ .ped-pc-equilibrado .stat-carga,.ped-pc-equilibrado .ped-restantes-card {align-self:stretch;}
+}
 </style>
 <style id="ped-calendar-proportions-20261003">
 /* Ajuste fino de proporção dos três modos do calendário PED. */
@@ -7780,7 +7802,7 @@ Internato de Pediatria
 </div>
 </div>
 </header>
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
+<div class="ped-pc-equilibrado grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
 <div class="ped-trio-selecao-card trio-spotlight lg:col-span-5 glass-panel rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col justify-between gap-3">
 <div class="flex items-center space-x-4 w-full">
 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-outfit font-black text-lg shrink-0 shadow-[0_0_20px_rgba(79,70,229,0.4)]" id="ped-grupo-badge-num">
