@@ -7973,7 +7973,7 @@ Escala Diária por Turnos
     diaPed=diasPedConfig[Math.min(6,Math.max(0,diff%7))][0];
   }
 
-  var seminariosPed=[{"trio":"1","data":"06/10/2026","tema":"Exame Físico Neonatal e Icterícia Neonatal","apresentadores":"André Victor de Oliveira Almeida • Davi Carvalho Barbosa • Leticia Barbosa Nunes Otaviano"},{"trio":"geral","data":"13/10/2026","tipo":"aula","tema":"19h — Puberdade — Dra. Fernanda\n20h — Aula Fissurados — Dra. Rafaella","apresentadores":"Dra. Fernanda Canuto • Dra. Rafaella","horario":"19h-21h","local":"Online"},{"trio":"2","data":"20/10/2026","tema":"Sífilis Neonatal (STORCHZ) e Distúrbios respiratórios no período neonatal","apresentadores":"Nadya Veras Jarosczynski • Louise Albuquerque Mirindiba Bonfim • Isabella Teixeira de Lima"},{"trio":"3","data":"27/10/2026","tema":"Adolescência e Meningites na Infância","apresentadores":"Hiago Kaian Xavier Lisboa • Isabela Frota Carmona • Maria Eduarda Lima de Aquino"},{"trio":"4","data":"03/11/2026","tema":"Diagnóstico Diferencial das Anemias e Anemia Falciforme","apresentadores":"Heitor Stoduto Mello Ferreira • Bruno Azevedo Lima • Andressa Costa Maboni"},{"trio":"5","data":"03/11/2026","tema":"Diarreia e Desidratação","apresentadores":"Maria Luiza de Ornelas Nobrega • Maria Eduarda Santiago • Luiza de Santes"},{"trio":"6","data":"10/11/2026","tema":"ITU e Diagnóstico diferencial da Síndrome Nefrótica e Nefrítica","apresentadores":"Letícia Teixeira Monteiro • Júlia Matos Guimarães • Luiza Borges Sales"},{"trio":"7","data":"17/11/2026","tema":"Doenças Exantemáticas","apresentadores":"Ana Clara Estrela Ghisleni • Carolina Banholi • Kamilly Lima do Vale"},{"trio":"8","data":"17/11/2026","tema":"Parasitoses intestinais","apresentadores":"Giovanna Muniz • Rayane Maria • Sofia Dias"},{"trio":"9","data":"24/11/2026","tema":"Doenças Respiratórias na Infância: Bronquiolite, Asma e PNM na infância","apresentadores":"Annelise Paiva • Camila Souza • Gabriella Reis"},{"trio":"10","data":"01/12/2026","tema":"Calendário vacinal na infância e suas particularidades","apresentadores":"José Henrique Ferreira • João Victor Tajra • Ana Luiza Daros"},{"trio":"geral","data":"01/12/2026","tema":"Avaliação de Pediatria — 50 questões","apresentadores":"Turma T7A","tipo":"avaliacao"}];
+  var seminariosPed=[{"trio":"1","data":"06/10/2026","tema":"Exame Físico Neonatal e Icterícia Neonatal","apresentadores":"André Victor de Oliveira Almeida • Davi Carvalho Barbosa • Leticia Barbosa Nunes Otaviano"},{"trio":"geral","data":"13/10/2026","tipo":"aula","tema":"19h — Puberdade — Dra. Fernanda\n20h — Aula Fissurados — Dra. Rafaella","apresentadores":"Dra. Fernanda Canuto • Dra. Rafaella","horario":"19h-21h","local":"Online"},{"trio":"2","data":"20/10/2026","tema":"Sífilis Neonatal (STORCHZ) e Distúrbios respiratórios no período neonatal","apresentadores":"Nadya Veras Jarosczynski • Louise Albuquerque Mirindiba Bonfim • Isabella Teixeira de Lima"},{"trio":"3","data":"27/10/2026","tema":"Adolescência e Meningites na Infância","apresentadores":"Hiago Kaian Xavier Lisboa • Isabela Frota Carmona • Maria Eduarda Lima de Aquino"},{"trio":"4","data":"03/11/2026","tema":"Diagnóstico Diferencial das Anemias e Anemia Falciforme","apresentadores":"Heitor Stoduto Mello Ferreira • Bruno Azevedo Lima • Andressa Costa Maboni"},{"trio":"5","data":"03/11/2026","tema":"Diarreia e Desidratação","apresentadores":"Maria Luiza de Ornelas Nobrega • Maria Eduarda Santiago • Luiza de Santes"},{"trio":"6","data":"10/11/2026","tema":"ITU e Diagnóstico diferencial da Síndrome Nefrótica e Nefrítica","apresentadores":"Letícia Teixeira Monteiro • Júlia Matos Guimarães • Luiza Borges Sales"},{"trio":"7","data":"17/11/2026","tema":"Doenças Exantemáticas","apresentadores":"Ana Clara Estrela Ghisleni • Carolina Banholi • Kamilly Lima do Vale"},{"trio":"8","data":"17/11/2026","tema":"Parasitoses intestinais","apresentadores":"Giovanna Muniz • Rayane Maria • Sofia Dias"},{"trio":"9","data":"24/11/2026","tema":"Doenças Respiratórias na Infância: Bronquiolite, Asma e PNM na infância","apresentadores":"Annelise Paiva • Camila Souza • Gabriella Reis"},{"trio":"10","data":"01/12/2026","tema":"Calendário vacinal na infância e suas particularidades","apresentadores":"José Henrique Ferreira • João Victor Tajra • Ana Luiza Daros"},{"trio":"geral","data":"08/12/2026","tema":"Avaliação de Pediatria — 50 questões","apresentadores":"Turma T7A","tipo":"avaliacao"}];
   var horarioSeminariosPed='18:30';
   var localSeminariosPed='Sala 3, Bloco D, UNIEURO';
 
@@ -8055,7 +8055,7 @@ Escala Diária por Turnos
     var entrada=pedEscalasOficiais[id]?.[dataCompleta];
     if(!entrada){
       return periodosPed.map(function(p){
-        return {periodo:p.nome,horario:p.horario,local:'Escala não enviada'};
+        return {periodo:p.nome,horario:p.horario,local:seminariosPed.some(function(e){return e.data===dataCompleta&&e.tipo==='avaliacao';})?'—':'Escala não enviada'};
       });
     }
     if(entrada.status==='livre'){
@@ -9100,7 +9100,10 @@ function estadoTemporalDataPed(dataObj){
   function dataDentroRodizioPed(dataObj){
     var inicio=new Date(inicioRodizioPed);inicio.setHours(0,0,0,0);
     var fim=dataRodizioPed(totalSemanasPed,6);fim.setHours(23,59,59,999);
-    return dataObj>=inicio&&dataObj<=fim;
+    return (dataObj>=inicio&&dataObj<=fim)||seminariosPed.some(function(evento){
+      var partes=evento.data.split('/').map(Number);
+      return evento.tipo==='avaliacao'&&dataObj.getFullYear()===partes[2]&&dataObj.getMonth()===partes[1]-1&&dataObj.getDate()===partes[0];
+    });
   }
 
   window.definirVisualizacaoCalendarioPed=function(modo){
