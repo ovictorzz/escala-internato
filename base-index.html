@@ -1871,13 +1871,16 @@ main { padding-bottom: 26px !important; }
  .ped-pc-equilibrado .stat-carga,.ped-pc-equilibrado .ped-restantes-card {align-self:stretch;}
 }
 
-/* Keep all ten PED weeks in one row. */
+/* PED weeks: responsive grid without horizontal scrolling. */
 #ped-semanas-tab-container {
-  grid-template-columns: repeat(10, minmax(96px, 1fr));
-  overflow-x: auto;
-  padding: 3px 2px 8px;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  overflow:visible;
+  padding:3px 2px 8px;
 }
-#ped-semanas-tab-container button {white-space: nowrap; min-width: 0;}
+#ped-semanas-tab-container button {white-space:nowrap;min-width:0;}
+@media (min-width:640px) {
+  #ped-semanas-tab-container {grid-template-columns:repeat(5,minmax(0,1fr));}
+}
 @media (min-width:1024px) {
   #ped-semanas-tab-container {grid-template-columns:repeat(10,minmax(0,1fr));}
   #ped-semanas-tab-container button {padding-left:4px;padding-right:4px;}
