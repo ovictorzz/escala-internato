@@ -6977,7 +6977,7 @@ sub.innerHTML = `
 
 <section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><div class="flex items-start justify-between gap-3 flex-wrap"><div><h4 class="admin-chart-title">Carga horária confirmada por trio</h4><p class="admin-chart-subtitle">Cada integrante tem sua carga semanal de prática (P) e teoria (T). Os totais agregados usam a média por integrante.</p></div><span class="px-2.5 py-1.5 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-500 text-[9px] font-bold">Teóricas fixas: segunda à tarde + terça à noite</span></div><div class="space-y-2.5 mt-5">${cargaTriosHtml}</div></div></section>
 
-<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><h4 class="admin-chart-title">Carimbos previstos por trio</h4><p class="admin-chart-subtitle">1 por turno de atividade prática ou simulação, conforme os participantes. Inclui hospitais, UBS e ambulatórios. SCI, seminários, simulados e provas não contam.</p><div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 mt-4">${carimbosTriosHtml}</div></div></section>
+<section class="admin-analytics-card rounded-2xl p-4 xl:col-span-12"><div class="relative z-10"><h4 class="admin-chart-title">Carimbos previstos por trio</h4><p class="admin-chart-subtitle">1 por turno de atividade prática ou simulação, conforme os participantes. Inclui hospitais, UBS e ambulatórios. SCI, seminários, simulados e provas não contam. Trios 03 a 10: mínimo previsto de 10 carimbos de HRSAM NEO por pessoa, pois a escala é provisória.</p><div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 mt-4">${carimbosTriosHtml}</div></div></section>
 
 <section class="admin-analytics-card rounded-2xl p-4 xl:col-span-5"><div class="relative z-10"><h4 class="admin-chart-title">Atividades por turno</h4><p class="admin-chart-subtitle">Composição dos turnos confirmados na escala.</p><div class="flex items-center justify-center gap-5 mt-5"><div class="admin-donut" style="background:${donutTurnos}" role="img" aria-label="Distribuição das atividades por turno"><div class="admin-donut-center"><strong>${dados.totalTurnos}</strong><span>turnos</span></div></div><div class="space-y-2.5 min-w-[112px]">${['Manhã','Tarde','Noite'].map((nome, i) => `<div class="flex items-center justify-between gap-3"><span class="flex items-center gap-2 text-[10px] text-zinc-500"><i class="admin-legend-dot" style="background:${coresTurnos[i]};color:${coresTurnos[i]}"></i>${nome}</span><strong class="text-[11px] text-zinc-800 dark:text-zinc-200">${valoresTurnos[i]}</strong></div>`).join('')}<div class="pt-2 mt-2 border-t border-black/5 dark:border-white/5 text-[9px] text-zinc-500">${dados.atividadesFds} no fim de semana<br>${formatarCargaHoraria(dados.totalMinutosTeoricos)} teóricas</div></div></div></div></section>
 
@@ -8716,18 +8716,29 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
   }
 
   function contarCarimbosPed(trio){
-    var pessoas=(dadosTrioPedPorId(String(trio)).membros||[]).map(function(nome){return {nome:nome,total:0};});
+    var estimativaNeo=Number(trio)>=3&&Number(trio)<=10;
+    var pessoas=(dadosTrioPedPorId(String(trio)).membros||[]).map(function(nome){return {nome:nome,total:0,hrsAMNeo:0};});
     var total=0;
     for(var s=1;s<=totalSemanasPed;s++)for(var d=0;d<7;d++){
       var data=formatarDataCompletaPed(dataRodizioPed(s,d));
       turnosPedPorData(String(trio),data).forEach(function(t){
         var local=String(t.local||'').toLocaleLowerCase('pt-BR');
         if(!atividadePedAssistencial(t.local)&&local.indexOf('simulação')<0)return;
+        var neo=local.indexOf('neo')>=0&&(local.indexOf('hrsam')>=0||local.indexOf('samambaia')>=0);
         total++;
-        pessoas.forEach(function(p){if(participanteCargaPed(t,p.nome))p.total++;});
+        pessoas.forEach(function(p){
+          if(!participanteCargaPed(t,p.nome))return;
+          p.total++;
+          if(neo)p.hrsAMNeo++;
+        });
       });
     }
-    return {total:total,pessoas:pessoas};
+    if(estimativaNeo)pessoas.forEach(function(p){
+      var previstos=Math.max(10,p.hrsAMNeo);
+      p.total+=previstos-p.hrsAMNeo;
+      p.hrsAMNeo=previstos;
+    });
+    return {total:total,pessoas:pessoas,estimativaNeo:estimativaNeo};
   }
   window.contarCarimbosPed=contarCarimbosPed;
 
@@ -8794,7 +8805,7 @@ ${turnoLivre ? `<p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-r
     }
     if(cargaDetalhes){
       var carimbos=contarCarimbosPed(trio);
-      cargaDetalhes.innerHTML+='<div class="mt-3 pt-3 border-t border-black/10 dark:border-white/10"><strong class="block text-blue-500">Carimbos previstos</strong>'+carimbos.pessoas.map(function(p){return '<span class="block mt-1">'+escapar(nomeCurtoPed(p.nome))+': <b>'+p.total+'</b></span>';}).join('')+'<span class="block text-[9px] text-zinc-500 mt-2">Atividades práticas e simulações. Cada turno vale 1 carimbo.</span></div>';
+      cargaDetalhes.innerHTML+='<div class="mt-3 pt-3 border-t border-black/10 dark:border-white/10"><strong class="block text-blue-500">Carimbos previstos</strong>'+carimbos.pessoas.map(function(p){return '<span class="block mt-1">'+escapar(nomeCurtoPed(p.nome))+': <b>'+p.total+'</b></span>';}).join('')+'<span class="block text-[9px] text-zinc-500 mt-2">Atividades práticas e simulações. Cada turno vale 1 carimbo.'+(carimbos.estimativaNeo?' HRSAM NEO: mínimo previsto de 10 por pessoa; escala provisória.':'')+'</span></div>';
     }
   }
 
