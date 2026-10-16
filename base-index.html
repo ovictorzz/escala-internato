@@ -8177,6 +8177,8 @@ Escala Diária por Turnos
       t.responsaveis=responsaveisDataPed(t,dataCompleta);
       t.confirmarPreceptor=String(t.local).includes('(HRSM)')&&diaSemana===0&&t.periodo==='Tarde';
     });
+    const ordemPeriodos={'Manhã':0,'Tarde':1,'Noite':2};
+    turnos.sort(function(a,b){return (ordemPeriodos[a.periodo]??3)-(ordemPeriodos[b.periodo]??3);});
     return turnos;
   }
 
