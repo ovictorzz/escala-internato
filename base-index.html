@@ -2392,6 +2392,7 @@ Próxima: Carregando...
 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
 <span>Todos os Trios</span>
 </button>
+<button onclick="alternarRodizioT7A('ped');alternarModoPed('intermed')" id="btn-modo-intermed" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm"><svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3M4 10h16M5 5h14a2 2 0 012 2v12a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2zM8 15h4m2 0h2"/></svg><span>Intermed</span></button>
 <button onclick="alternarModo('atividade')" id="btn-modo-atividade" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm">
 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h18M6 12h12m-9 7h6"/></svg>
 <span>Atividades</span>
@@ -7734,6 +7735,7 @@ html:not(.dark) #ped-aside .ped-next-place{color:#334155}
 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
 <span>Todos os Trios</span>
 </button>
+<button onclick="alternarModoPed('intermed')" id="ped-btn-modo-intermed" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm"><svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V3m8 4V3M4 10h16M5 5h14a2 2 0 012 2v12a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2zM8 15h4m2 0h2"/></svg><span>Intermed</span></button>
 <button onclick="alternarModoPed('atividade')" id="ped-btn-modo-atividade" class="w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer shadow-sm">
 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
 <span>Atividades</span>
@@ -8329,7 +8331,7 @@ Escala Diária por Turnos
     var layer=garantirPedMobileMenuLayer();
     layer.querySelector('.ped-menu-nav-slot').appendChild(menu);
     var mode=localStorage.getItem(MODE_KEY)||'individual';
-    var ids={hoje:'hoje',individual:'ind',geral:'geral',atividade:'atividade',seminarios:'seminarios',calendario:'calendario',recados:'recados'};
+    var ids={hoje:'hoje',individual:'ind',geral:'geral',intermed:'intermed',atividade:'atividade',seminarios:'seminarios',calendario:'calendario',recados:'recados'};
     menu.querySelectorAll('button').forEach(function(b){b.dataset.menuActive=String(b.id==='ped-btn-modo-'+ids[mode]);});
     menu.classList.remove('hidden');
     layer.classList.add('is-open');document.body.classList.add('ped-menu-open');
@@ -9232,13 +9234,143 @@ function estadoTemporalDataPed(dataObj){
   window.addEventListener('ped-admin-pronto',function(){if(window.modoVisualizacaoPed==='admin')renderAdmin();else if(window.modoVisualizacaoPed==='recados')renderRecados();});
   window.addEventListener('ped-dados-atualizados',function(){if(window.modoVisualizacaoPed&&window.modoVisualizacaoPed!=='admin')window.alternarModoPed(window.modoVisualizacaoPed,false);});
 
+
+  // INTERMED_T7A_2026 — cruza os oito participantes e os cenários efetivos da escala PED.
+  // Não lança faltas, não altera escalas e não contabiliza automaticamente carimbos.
+  var alunosIntermedPed=[
+    {nome:'Letícia Teixeira Monteiro',trio:'6',cadastro:'Leticia Teixeira'},
+    {nome:'Bruno Azevedo Lima',trio:'4',cadastro:'Bruno Azevedo'},
+    {nome:'Camila Souza Pereira Guidão',trio:'9',cadastro:'Camila Souza'},
+    {nome:'Júlia Matos Guimarães',trio:'6',cadastro:'Júlia Matos'},
+    {nome:'Annelise Quinta da Fonseca Paiva',trio:'9',cadastro:'Annelise Paiva'},
+    {nome:'Gabriella da Costa Reis',trio:'9',cadastro:'Gabriella Reis'},
+    {nome:'Luiza de Santes Bastos Moreira',trio:'5',cadastro:'Luiza de Santes'},
+    {nome:'Heitor Stoduto Mello Ferreira',trio:'4',cadastro:'Heitor Stoduto'}
+  ];
+  var datasIntermedPed=['19/11/2026','20/11/2026','21/11/2026','22/11/2026'];
+  var filtroAlunoIntermedPed='todos';
+  var filtroDataIntermedPed='todas';
+  function normalizarNomeIntermedPed(nome){
+    return String(nome||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+  }
+  function eventosIntermedPed(){
+    var eventos=[];
+    alunosIntermedPed.forEach(function(aluno){
+      datasIntermedPed.forEach(function(data){
+        turnosPedPorData(aluno.trio,data).forEach(function(turno){
+          if(!atividadePedConfirmada(turno.local))return;
+          var lista=Array.isArray(turno.membros)?turno.membros:[];
+          if(lista.length&&!lista.some(function(nome){
+            return normalizarNomeIntermedPed(nome)===normalizarNomeIntermedPed(aluno.cadastro);
+          }))return;
+          eventos.push({
+            nome:aluno.nome,trio:aluno.trio,data:data,periodo:turno.periodo,
+            local:turno.local,horario:turno.horario||'A definir',
+            assistencial:atividadePedAssistencial(turno.local)
+          });
+        });
+      });
+    });
+    return eventos;
+  }
+  function resumoIntermedPed(rotulo,valor,descricao){
+    return '<div class="glass-panel border border-blue-500/15 rounded-2xl p-4 shadow-sm">'+
+      '<div class="text-[9px] sm:text-[10px] uppercase tracking-[.15em] font-black text-zinc-500 dark:text-zinc-400">'+escapar(rotulo)+'</div>'+
+      '<div class="text-2xl sm:text-3xl font-outfit font-black text-blue-600 dark:text-blue-400 mt-2">'+escapar(valor)+'</div>'+
+      '<div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium mt-1">'+escapar(descricao)+'</div></div>';
+  }
+  function renderIntermedPed(){
+    var container=el('lista-turnos');if(!container)return;
+    var todos=eventosIntermedPed();
+    var filtrados=todos.filter(function(evento){
+      return (filtroAlunoIntermedPed==='todos'||evento.nome===filtroAlunoIntermedPed)&&
+        (filtroDataIntermedPed==='todas'||evento.data===filtroDataIntermedPed);
+    });
+    var turnosUnicos=new Set(todos.map(function(e){
+      return e.trio+'|'+e.data+'|'+e.periodo+'|'+e.local;
+    })).size;
+    var assistenciais=todos.filter(function(e){return e.assistencial;}).length;
+    var opcoesAluno='<option value="todos">Todos os 8 alunos</option>'+alunosIntermedPed.map(function(a){
+      return '<option value="'+escapar(a.nome)+'"'+(filtroAlunoIntermedPed===a.nome?' selected':'')+'>'+escapar(a.nome)+'</option>';
+    }).join('');
+    var opcoesData='<option value="todas">19 a 22/11 — todos os dias</option>'+datasIntermedPed.map(function(data){
+      return '<option value="'+data+'"'+(filtroDataIntermedPed===data?' selected':'')+'>'+data.slice(0,5)+'/2026</option>';
+    }).join('');
+    var grupos=alunosIntermedPed.filter(function(a){return filtroAlunoIntermedPed==='todos'||a.nome===filtroAlunoIntermedPed;});
+    var cards=grupos.map(function(aluno){
+      var atividades=filtrados.filter(function(e){return e.nome===aluno.nome;});
+      if(!atividades.length)return '';
+      var itens=atividades.map(function(e){
+        var nomeDia={'19/11/2026':'Qui','20/11/2026':'Sex','21/11/2026':'Sáb','22/11/2026':'Dom'}[e.data]||'';
+        return '<li class="px-4 py-3.5 border-b border-black/5 dark:border-white/10 last:border-0">'+
+          '<div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2.5">'+
+            '<div class="min-w-0">'+
+              '<div class="flex flex-wrap items-center gap-2 mb-1.5">'+
+                '<span class="text-[10px] font-black text-blue-600 dark:text-blue-400">'+escapar(nomeDia+' '+e.data.slice(0,5))+'</span>'+
+                '<span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400">'+escapar(e.periodo)+'</span>'+
+                '<span class="text-[9px] font-bold rounded-full px-2 py-0.5 bg-indigo-500/10 text-indigo-600 dark:text-indigo-300">'+(e.assistencial?'Assistencial':'Acadêmica / Simulação')+'</span>'+
+              '</div>'+
+              '<div class="text-xs sm:text-sm font-extrabold text-zinc-900 dark:text-white leading-relaxed">'+escapar(e.local)+'</div>'+
+            '</div>'+
+            '<span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-300 shrink-0">'+escapar(e.horario)+'</span>'+
+          '</div>'+
+        '</li>';
+      }).join('');
+      return '<article class="glass-panel rounded-2xl border border-black/5 dark:border-white/10 shadow-sm overflow-hidden">'+
+        '<header class="flex items-center justify-between gap-3 p-4 bg-blue-500/[.05]">'+
+          '<div class="min-w-0"><div class="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">Trio A'+escapar(aluno.trio)+'</div>'+
+          '<h3 class="font-outfit text-sm sm:text-base font-extrabold text-zinc-900 dark:text-white mt-1">'+escapar(aluno.nome)+'</h3></div>'+
+          '<div class="rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-300 px-3 py-2 text-center shrink-0">'+
+          '<strong class="text-lg font-black">'+atividades.length+'</strong><span class="block text-[9px] font-semibold">'+(atividades.length===1?'turno':'turnos')+'</span></div>'+
+        '</header>'+
+        '<ul class="list-none m-0 p-0">'+itens+'</ul>'+
+      '</article>';
+    }).filter(Boolean).join('');
+    var avisoSemAtividades=filtrados.length?'':('<div class="glass-panel rounded-2xl p-6 text-sm text-zinc-500 dark:text-zinc-400 font-semibold text-center">'+
+      'Nenhuma atividade prevista na escala para este filtro. O dia 22/11 está livre para os oito alunos.</div>');
+    container.innerHTML=
+      '<div class="w-full space-y-4 pb-8">'+
+        '<section class="glass-panel rounded-2xl p-5 sm:p-6 border border-blue-500/20 bg-gradient-to-br from-blue-500/[.05] to-indigo-500/[.03]">'+
+          '<div class="text-[10px] uppercase tracking-[.2em] font-black text-blue-600 dark:text-blue-400">INTERMED 2026 • PEDIATRIA</div>'+
+          '<h2 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 mt-2">Cenários que serão afetados</h2>'+
+          '<p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 mt-2 leading-relaxed">Atividades previstas entre 19 e 22 de novembro de 2026 para os oito alunos participantes. A lista é recalculada a partir da escala atual e considera os turnos individuais quando informados.</p>'+
+        '</section>'+
+        '<div class="grid grid-cols-2 xl:grid-cols-4 gap-3">'+
+          resumoIntermedPed('Participantes',alunosIntermedPed.length,'4 trios')+
+          resumoIntermedPed('Turnos únicos',turnosUnicos,'Considerando cada trio uma vez')+
+          resumoIntermedPed('Participações',todos.length,'Soma dos turnos por aluno')+
+          resumoIntermedPed('Assistenciais',assistenciais,'+'+(todos.length-assistenciais)+' acadêmicas')+
+        '</div>'+
+        '<div class="glass-panel rounded-2xl border border-black/5 dark:border-white/10 p-4">'+
+          '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">'+
+            '<label class="block"><span class="block text-[10px] font-black text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Filtrar por aluno</span>'+
+              '<select aria-label="Filtrar por aluno" class="w-full rounded-xl bg-white/80 dark:bg-zinc-900/80 border border-black/10 dark:border-white/10 p-3 text-sm text-zinc-900 dark:text-white font-semibold" onchange="filtrarIntermedPed(\'aluno\',this.value)">'+opcoesAluno+'</select></label>'+
+            '<label class="block"><span class="block text-[10px] font-black text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Filtrar por dia</span>'+
+              '<select aria-label="Filtrar por dia" class="w-full rounded-xl bg-white/80 dark:bg-zinc-900/80 border border-black/10 dark:border-white/10 p-3 text-sm text-zinc-900 dark:text-white font-semibold" onchange="filtrarIntermedPed(\'data\',this.value)">'+opcoesData+'</select></label>'+
+          '</div>'+
+          '<p class="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mt-3">'+filtrados.length+' participações no filtro atual.</p>'+
+        '</div>'+
+        avisoSemAtividades+
+        '<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">'+cards+'</div>'+
+        '<p class="text-[10px] text-zinc-500 dark:text-zinc-400 leading-relaxed px-1">Projeção de compromissos potencialmente perdidos, não registro de faltas. Simulações são contabilizadas como atividades, não como carimbos assistenciais. Confirme com a preceptoria a execução dos turnos de 20/11 (feriado) e possíveis remanejamentos.</p>'+
+      '</div>';
+  }
+  window.filtrarIntermedPed=function(campo,valor){
+    if(campo==='aluno')filtroAlunoIntermedPed=valor;
+    if(campo==='data')filtroDataIntermedPed=valor;
+    renderIntermedPed();
+  };
+  window.addEventListener('ped-dados-atualizados',function(){
+    if(window.modoVisualizacaoPed==='intermed')renderIntermedPed();
+  });
+
   window.alternarModoPed=function(modo,persistir){
     window.modoVisualizacaoPed=modo;
     if(persistir===undefined)persistir=true;
-    var valid=['hoje','individual','geral','atividade','seminarios','calendario','recados','admin'];
+    var valid=['hoje','individual','geral','intermed','atividade','seminarios','calendario','recados','admin'];
     if(valid.indexOf(modo)<0)modo='individual';
 
-    var ids={hoje:'btn-modo-hoje',individual:'btn-modo-ind',geral:'btn-modo-geral',atividade:'btn-modo-atividade',seminarios:'btn-modo-seminarios',calendario:'btn-modo-calendario',recados:'btn-modo-recados'};
+    var ids={hoje:'btn-modo-hoje',individual:'btn-modo-ind',geral:'btn-modo-geral',intermed:'btn-modo-intermed',atividade:'btn-modo-atividade',seminarios:'btn-modo-seminarios',calendario:'btn-modo-calendario',recados:'btn-modo-recados'};
     Object.keys(ids).forEach(function(k){var b=el(ids[k]);if(b)b.className=(k===modo?classAtivo:classInativo);});
     document.querySelectorAll('[data-ped-mobile-mode]').forEach(function(b){b.classList.toggle('is-active',b.dataset.pedMobileMode===modo);});
 
@@ -9246,6 +9378,8 @@ function estadoTemporalDataPed(dataObj){
     if(admin)admin.className=modo==='admin'?"w-full py-3 px-4 rounded-xl bg-indigo-600 text-white text-sm font-bold tracking-wide shadow-[0_0_15px_rgba(79,70,229,0.4)] transition-all cursor-pointer flex items-center justify-center space-x-2":"w-full py-3 px-4 rounded-xl bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 text-sm font-bold tracking-wide hover:bg-indigo-600 hover:text-white transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm";
 
     var membros=el('coluna-membros'), turnos=el('coluna-turnos-wrapper'), titulo=el('titulo-secao-inferior'), dias=el('container-abas-dias'), banner=el('banner-hero'), semanas=el('wrapper-semanas-tabs');
+    var indicadores=document.querySelector('#ped-main .ped-pc-equilibrado');
+    if(indicadores)indicadores.style.display=modo==='intermed'?'none':'';
     if(!turnos)return;
     if(membros)membros.style.display=modo==='individual'?'flex':'none';
     turnos.className=modo==='individual'?"lg:col-span-9 flex flex-col h-full":"lg:col-span-12 flex flex-col h-full";
@@ -9262,6 +9396,7 @@ function estadoTemporalDataPed(dataObj){
       individual:'Divisão por Turnos (Manhã, Tarde e Noite)',
       geral:'Visão Geral: Todos os 10 Trios do Dia',
       atividade:'Atividades • Consulte toda a escala',
+      intermed:'Intermed • Cenários afetados de 19 a 22/11/2026',
       seminarios:'Cronograma de Seminários e Avaliação • Pediatria',
       calendario:'Calendário Mensal do Trio Selecionado (Outubro a Dezembro de 2026)',
       recados:'Quadro de Recados Oficiais e Avisos',
@@ -9277,6 +9412,7 @@ function estadoTemporalDataPed(dataObj){
     else if(modo==='hoje')renderHoje();
     else if(modo==='geral')renderGeral();
     else if(modo==='atividade')renderAtividades();
+    else if(modo==='intermed')renderIntermedPed();
     else if(modo==='seminarios')renderSeminarios();
     else if(modo==='calendario')renderCalendario();
     else if(modo==='recados')renderRecados();
