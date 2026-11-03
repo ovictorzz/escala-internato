@@ -9265,8 +9265,7 @@ function estadoTemporalDataPed(dataObj){
           }))return;
           eventos.push({
             nome:aluno.nome,trio:aluno.trio,data:data,periodo:turno.periodo,
-            local:turno.local,horario:turno.horario||'A definir',
-            assistencial:atividadePedAssistencial(turno.local)
+            local:turno.local,horario:turno.horario||'A definir'
           });
         });
       });
@@ -9289,7 +9288,6 @@ function estadoTemporalDataPed(dataObj){
     var turnosUnicos=new Set(todos.map(function(e){
       return e.trio+'|'+e.data+'|'+e.periodo+'|'+e.local;
     })).size;
-    var assistenciais=todos.filter(function(e){return e.assistencial;}).length;
     var opcoesAluno='<option value="todos">Todos os 8 alunos</option>'+alunosIntermedPed.map(function(a){
       return '<option value="'+escapar(a.nome)+'"'+(filtroAlunoIntermedPed===a.nome?' selected':'')+'>'+escapar(a.nome)+'</option>';
     }).join('');
@@ -9308,7 +9306,6 @@ function estadoTemporalDataPed(dataObj){
               '<div class="flex flex-wrap items-center gap-2 mb-1.5">'+
                 '<span class="text-[10px] font-black text-blue-600 dark:text-blue-400">'+escapar(nomeDia+' '+e.data.slice(0,5))+'</span>'+
                 '<span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400">'+escapar(e.periodo)+'</span>'+
-                '<span class="text-[9px] font-bold rounded-full px-2 py-0.5 bg-indigo-500/10 text-indigo-600 dark:text-indigo-300">'+(e.assistencial?'Assistencial':'Acadêmica / Simulação')+'</span>'+
               '</div>'+
               '<div class="text-xs sm:text-sm font-extrabold text-zinc-900 dark:text-white leading-relaxed">'+escapar(e.local)+'</div>'+
             '</div>'+
@@ -9335,11 +9332,10 @@ function estadoTemporalDataPed(dataObj){
           '<h2 class="text-xl sm:text-2xl font-outfit font-black dark:text-white text-zinc-900 mt-2">Cenários que serão afetados</h2>'+
           '<p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 mt-2 leading-relaxed">Atividades previstas entre 19 e 22 de novembro de 2026 para os oito alunos participantes. A lista é recalculada a partir da escala atual e considera os turnos individuais quando informados.</p>'+
         '</section>'+
-        '<div class="grid grid-cols-2 xl:grid-cols-4 gap-3">'+
+        '<div class="grid grid-cols-2 xl:grid-cols-3 gap-3">'+
           resumoIntermedPed('Participantes',alunosIntermedPed.length,'4 trios')+
           resumoIntermedPed('Turnos únicos',turnosUnicos,'Considerando cada trio uma vez')+
           resumoIntermedPed('Participações',todos.length,'Soma dos turnos por aluno')+
-          resumoIntermedPed('Assistenciais',assistenciais,'+'+(todos.length-assistenciais)+' acadêmicas')+
         '</div>'+
         '<div class="glass-panel rounded-2xl border border-black/5 dark:border-white/10 p-4">'+
           '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">'+
@@ -9352,7 +9348,7 @@ function estadoTemporalDataPed(dataObj){
         '</div>'+
         avisoSemAtividades+
         '<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">'+cards+'</div>'+
-        '<p class="text-[10px] text-zinc-500 dark:text-zinc-400 leading-relaxed px-1">Projeção de compromissos potencialmente perdidos, não registro de faltas. Simulações são contabilizadas como atividades, não como carimbos assistenciais. Confirme com a preceptoria a execução dos turnos de 20/11 (feriado) e possíveis remanejamentos.</p>'+
+        '<p class="text-[10px] text-zinc-500 dark:text-zinc-400 leading-relaxed px-1">Projeção de compromissos potencialmente perdidos, não registro de faltas. Simulações são contabilizadas como atividades, não como carimbos. Confirme com a preceptoria a execução dos turnos de 20/11 (feriado) e possíveis remanejamentos.</p>'+
       '</div>';
   }
   window.filtrarIntermedPed=function(campo,valor){
