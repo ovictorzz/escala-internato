@@ -9278,6 +9278,65 @@ function estadoTemporalDataPed(dataObj){
       '<div class="text-2xl sm:text-3xl font-outfit font-black text-blue-600 dark:text-blue-400 mt-2">'+escapar(valor)+'</div>'+
       '<div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium mt-1">'+escapar(descricao)+'</div></div>';
   }
+
+  // REFERENCIA_REPOSICOES_INTERMED_DEZ — transcrição visual da imagem recebida.
+  // Grupos 1–5 são os rótulos da planilha, sem vínculo definido com os oito alunos.
+  // O ano, as atribuições e a realização dos turnos permanecem pendentes de confirmação.
+  // 'colunas' conserva a mesclagem visual, sem pressupor atividade em todos os dias cobertos.
+  var referenciaReposicoesIntermedPed=[
+    {grupo:'1',manha:[{dia:8,colunas:2,atividade:'A. UNIEURO'},{dia:10,colunas:1,atividade:'HRL PS'},{dia:11,colunas:1,atividade:'HRL PS'}],tarde:[{dia:8,colunas:2,atividade:'SCI'},{dia:12,colunas:1,atividade:'A. UNIEURO'}],noite:[{dia:9,colunas:1,atividade:'SEMINÁRIO'}]},
+    {grupo:'2',manha:[{dia:8,colunas:3,atividade:'A. UNIEURO'},{dia:11,colunas:1,atividade:'A. UNIEURO'}],tarde:[{dia:8,colunas:2,atividade:'SCI'},{dia:11,colunas:1,atividade:'HRL PS'},{dia:12,colunas:1,atividade:'A. UNIEURO'}],noite:[{dia:9,colunas:1,atividade:'SEMINÁRIO'}]},
+    {grupo:'3',manha:[{dia:8,colunas:1,atividade:'NEO HRSAM'},{dia:9,colunas:1,atividade:'NEO HRSAM'},{dia:11,colunas:1,atividade:'A. UNIEURO'}],tarde:[{dia:8,colunas:2,atividade:'SCI'},{dia:12,colunas:1,atividade:'A. UNIEURO'}],noite:[{dia:9,colunas:1,atividade:'SEMINÁRIO'}]},
+    {grupo:'4',manha:[{dia:8,colunas:4,atividade:'A. UNIEURO'}],tarde:[{dia:8,colunas:2,atividade:'SCI'},{dia:11,colunas:1,atividade:'A. UNIEURO'}],noite:[{dia:9,colunas:1,atividade:'SEMINÁRIO'}]},
+    {grupo:'5',manha:[],tarde:[{dia:8,colunas:2,atividade:'SCI'},{dia:11,colunas:1,atividade:'A. UNIEURO'}],noite:[{dia:9,colunas:1,atividade:'SEMINÁRIO'}]}
+  ];
+  function renderQuadroReposicoesIntermedPed(){
+    var dias=[8,9,10,11,12,13,14];
+    var nomesTurnos=[['manha','Manhã'],['tarde','Tarde'],['noite','Noite']];
+    var cabecalho='<tr class="bg-blue-500/[.09] text-zinc-700 dark:text-zinc-200">'+
+      '<th class="px-3 py-3 text-[10px] font-black uppercase tracking-wide text-left w-[70px]">Grupo</th>'+
+      '<th class="px-3 py-3 text-[10px] font-black uppercase tracking-wide text-left w-[76px]">Turno</th>'+
+      dias.map(function(d){return '<th class="px-2 py-3 text-[11px] font-black text-center'+(d>=13?' bg-zinc-500/10':'')+'">'+d+'/dez</th>';}).join('')+'</tr>';
+    var linhas=referenciaReposicoesIntermedPed.map(function(grupo){
+      return nomesTurnos.map(function(par,idx){
+        var chave=par[0],nome=par[1],lista=grupo[chave]||[];
+        var celulas='',dia=8;
+        while(dia<=14){
+          var item=lista.find(function(e){return e.dia===dia;});
+          if(item){
+            var largura=Math.min(item.colunas,15-dia);
+            celulas+='<td colspan="'+largura+'" title="'+(largura>1?'Bloco mesclado na planilha, duração não confirmada':'Proposta sem confirmação')+'" class="px-2 py-3 align-middle border-l border-black/5 dark:border-white/10 bg-blue-500/[.035]">'+
+              '<span class="block text-[10px] sm:text-[11px] font-extrabold text-zinc-900 dark:text-zinc-100 leading-snug">'+escapar(item.atividade)+'</span>'+
+              (largura>1?'<span class="block text-[8px] mt-1 text-zinc-500 dark:text-zinc-400">Célula mesclada na referência</span>':'')+
+              '</td>';
+            dia+=largura;
+          }else{
+            celulas+='<td class="border-l border-black/5 dark:border-white/10 '+(dia>=13?'bg-zinc-400/[.13]':'')+'"></td>';
+            dia++;
+          }
+        }
+        return '<tr class="border-t border-black/10 dark:border-white/10">'+
+          (idx===0?'<th rowspan="3" scope="rowgroup" class="px-3 py-3 text-center text-blue-600 dark:text-blue-400 font-black text-sm bg-blue-500/[.045] border-r border-black/5 dark:border-white/10">'+escapar(grupo.grupo)+'</th>':'')+
+          '<th scope="row" class="px-3 py-3 text-[10px] font-bold text-zinc-500 dark:text-zinc-400">'+nome+'</th>'+
+          celulas+'</tr>';
+      }).join('');
+    }).join('');
+    return '<section id="intermed-reposicoes" class="glass-panel min-w-0 w-full max-w-full rounded-2xl border border-amber-500/20 p-4 sm:p-6 shadow-sm space-y-3">'+
+      '<div class="flex flex-wrap items-center justify-between gap-3">'+
+        '<div class="min-w-0"><div class="text-[9px] sm:text-[10px] uppercase tracking-[.15em] font-black text-amber-600 dark:text-amber-400">Planejamento • não confirmado</div>'+
+          '<h2 class="font-outfit text-lg sm:text-xl font-black text-zinc-900 dark:text-white mt-1">Possíveis reposições</h2></div>'+
+        '<span class="text-[10px] font-bold rounded-full px-3 py-1.5 border border-amber-500/25 text-amber-700 dark:text-amber-300 bg-amber-500/[.07]">8 a 14/dez • ano a confirmar</span>'+
+      '</div>'+
+      '<p class="text-xs sm:text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">Quadro de referência enviado para organizar possíveis reposições. A distribuição <strong>ainda não foi estabelecida</strong>, e os grupos de 1 a 5 indicados na imagem não foram associados automaticamente aos alunos ou trios do Intermed.</p>'+
+      '<div class="w-full min-w-0 max-w-full overflow-x-auto rounded-xl border border-black/10 dark:border-white/10" role="region" aria-label="Tabela provisória de reposições de 8 a 14 de dezembro" tabindex="0">'+
+        '<table class="w-full text-left" style="min-width:850px;table-layout:fixed;border-collapse:collapse">'+
+          '<thead>'+cabecalho+'</thead><tbody>'+linhas+'</tbody>'+
+        '</table>'+
+      '</div>'+
+      '<p class="text-[10px] text-zinc-500 dark:text-zinc-400 leading-relaxed">Reprodução dos blocos e células mescladas da imagem, sem presumir duração contínua. Datas sem ano indicado no original. Não constitui escala aprovada, reposição confirmada, presença ou carimbo. No celular, deslize a tabela lateralmente.</p>'+
+    '</section>';
+  }
+
   function renderIntermedPed(){
     var container=el('lista-turnos');if(!container)return;
     var todos=eventosIntermedPed();
@@ -9348,6 +9407,7 @@ function estadoTemporalDataPed(dataObj){
         '</div>'+
         avisoSemAtividades+
         '<div class="grid grid-cols-1 xl:grid-cols-2 gap-4 min-w-0 w-full max-w-full items-start">'+cards+'</div'+'>'+
+        renderQuadroReposicoesIntermedPed()+
         '<p class="text-[10px] text-zinc-500 dark:text-zinc-400 leading-relaxed px-1">Projeção de compromissos potencialmente perdidos, não registro de faltas. Simulações são contabilizadas como atividades, não como carimbos. Confirme com a preceptoria a execução dos turnos de 20/11 (feriado) e possíveis remanejamentos.</p>'+
       '</div>';
   }
