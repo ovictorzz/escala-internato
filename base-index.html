@@ -9285,7 +9285,7 @@ function estadoTemporalDataPed(dataObj){
     {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',vagas:9},
     {dia:'07/12',periodo:'Manhã',cenario:'NEO HRSAM',vagas:3},
     {dia:'08/12',periodo:'Manhã',cenario:'NEO HRSAM',vagas:3},
-    {dia:'09/12',periodo:'A confirmar',cenario:'HRL PS',vagas:3},
+    {dia:'09/12',periodo:'Manhã',cenario:'HRL PS',vagas:3},
     {dia:'10/12',periodo:'Manhã',cenario:'HRL PS',vagas:3},
     {dia:'10/12',periodo:'Tarde',cenario:'HRL PS',vagas:3},
     {dia:'10/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',vagas:6},
@@ -9294,10 +9294,10 @@ function estadoTemporalDataPed(dataObj){
   ];
   // Proposta provisória: 17 participações, sem sobreposição para o mesmo aluno.
   // Os nomes são os mesmos alunos cadastrados em alunosIntermedPed.
-  // 07/12 UNIEURO: 8 pessoas em 9 vagas, organizadas em listas de até 3, sem rótulos.
+  // 07/12 UNIEURO: 5 pessoas em 9 vagas; NEO HRSAM: 3 pessoas em 3 vagas.
   var propostaIntermedDez=[
     {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']},
-    {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Camila Souza Pereira Guidão','Annelise Quinta da Fonseca Paiva','Gabriella da Costa Reis']},
+    {dia:'07/12',periodo:'Manhã',cenario:'NEO HRSAM',alunos:['Camila Souza Pereira Guidão','Annelise Quinta da Fonseca Paiva','Gabriella da Costa Reis']},
     {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Bruno Azevedo Lima','Heitor Stoduto Mello Ferreira']},
     {dia:'10/12',periodo:'Manhã',cenario:'HRL PS',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']},
     {dia:'10/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Camila Souza Pereira Guidão','Annelise Quinta da Fonseca Paiva','Gabriella da Costa Reis']},
@@ -9391,7 +9391,7 @@ function estadoTemporalDataPed(dataObj){
           '<thead><tr class="bg-blue-500/[.07]"><th class="px-3 py-3">Data</th><th class="px-3 py-3">Turno</th><th class="px-3 py-3">Cenário</th><th class="px-3 py-3 text-center">Propostos / vagas</th></tr></thead>'+
           '<tbody>'+capacidade+'</tbody></table>'+
       '</div>'+
-      '<p class="text-[10px] leading-relaxed text-zinc-500 dark:text-zinc-400">O turno do HRL PS de 09/12 não foi especificado. Não foi usado na proposta. 09/12 não possui NEO HRSAM nas disponibilidades atualizadas. Os demais horários não escolhidos permanecem como alternativas. Distribuição preliminar, ainda sujeita à definição e aprovação das reposições pela preceptoria.</p>'+
+      '<p class="text-[10px] leading-relaxed text-zinc-500 dark:text-zinc-400">O HRL PS de 09/12 ocorre pela manhã e não foi usado na proposta. 09/12 não possui NEO HRSAM nas disponibilidades atualizadas. Os demais horários não escolhidos permanecem como alternativas. Distribuição preliminar, ainda sujeita à definição e aprovação das reposições pela preceptoria.</p>'+
     '</section>';
   }
 
