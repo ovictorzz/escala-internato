@@ -9292,15 +9292,13 @@ function estadoTemporalDataPed(dataObj){
     {dia:'10/12',periodo:'Tarde',cenario:'Ambulatório UNIEURO',vagas:6},
     {dia:'11/12',periodo:'Tarde',cenario:'Ambulatório UNIEURO',vagas:9}
   ];
-  // Proposta provisória: 13 participações de 6 alunos em dezembro; Camila e Annelise fazem 4 em novembro.
+  // Proposta provisória: 11 participações de 5 alunos em dezembro; 4 em novembro e 1 atividade já realizada em outubro.
   // Os nomes são os mesmos alunos cadastrados em alunosIntermedPed.
   // 07/12 UNIEURO: 5 pessoas em 9 vagas; NEO HRSAM: 3 pessoas em 3 vagas.
   var propostaIntermedDez=[
     {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']},
-    {dia:'07/12',periodo:'Manhã',cenario:'NEO HRSAM',alunos:['Gabriella da Costa Reis']},
     {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Bruno Azevedo Lima','Heitor Stoduto Mello Ferreira']},
     {dia:'10/12',periodo:'Manhã',cenario:'HRL PS',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']},
-    {dia:'10/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Gabriella da Costa Reis']},
     {dia:'11/12',periodo:'Tarde',cenario:'Ambulatório UNIEURO',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']}
   ];
   function chaveVagaIntermed(item){
@@ -9325,7 +9323,7 @@ function estadoTemporalDataPed(dataObj){
       if(total>v.vagas)inconsistencias.push('Vagas excedidas: '+v.dia+' '+v.cenario);
     });
     alunosIntermedPed.forEach(function(a){
-      if(a.nome==='Annelise Quinta da Fonseca Paiva'||a.nome==='Camila Souza Pereira Guidão')return; // Sem reposições atribuídas por solicitação.
+      if(a.nome==='Annelise Quinta da Fonseca Paiva'||a.nome==='Camila Souza Pereira Guidão'||a.nome==='Gabriella da Costa Reis')return; // Reposições separadas da proposta de dezembro.
       var previsto=eventosIntermedPed().filter(function(e){return e.nome===a.nome;}).length;
       if((contagem[a.nome]||0)!==previsto)inconsistencias.push('Quantidade diferente para '+a.nome);
     });
@@ -9337,34 +9335,40 @@ function estadoTemporalDataPed(dataObj){
     });});
     return inconsistencias;
   }
-  // REPOSICOES_INTERMED_NOV_2026 — dois encaixes por aluna informados para novembro.
-  // Os turnos aqui não são presença registrada, nem alteram a escala oficial de Pediatria.
-  var reposicoesIntermedNov=[
-    {dia:'09/11',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Annelise Quinta da Fonseca Paiva','Camila Souza Pereira Guidão']},
-    {dia:'13/11',periodo:'Manhã',cenario:'HRGu',alunos:['Annelise Quinta da Fonseca Paiva','Camila Souza Pereira Guidão']}
+  // REPOSICOES_INTERMED_OUT_NOV_2026 — registros informados de outubro e novembro.
+  // A atividade de 16/10 foi realizada segundo relato; não registrar presença automaticamente.
+  var reposicoesIntermedOutNov=[
+    {dia:'16/10',periodo:'Tarde',cenario:'UBS de Taguatinga',alunos:['Gabriella da Costa Reis'],situacao:'Realizada (informado)'},
+    {dia:'09/11',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Annelise Quinta da Fonseca Paiva','Camila Souza Pereira Guidão'],situacao:'Agendada (informado)'},
+    {dia:'13/11',periodo:'Manhã',cenario:'HRGu',alunos:['Annelise Quinta da Fonseca Paiva','Camila Souza Pereira Guidão'],situacao:'Agendada (informado)'}
   ];
-  function renderReposicoesNovIntermed(){
-    var linhas=reposicoesIntermedNov.map(function(p){
+  function renderReposicoesOutNovIntermed(){
+    var nomes={
+      'Gabriella da Costa Reis':'Gabriella',
+      'Annelise Quinta da Fonseca Paiva':'Annelise',
+      'Camila Souza Pereira Guidão':'Camila'
+    };
+    var linhas=reposicoesIntermedOutNov.map(function(p){
       return '<tr class="border-t border-black/5 dark:border-white/10">'+
         '<td class="px-3 py-3 font-black text-blue-600 dark:text-blue-400 whitespace-nowrap">'+escapar(p.dia)+'</td>'+
         '<td class="px-3 py-3 whitespace-nowrap">'+escapar(p.periodo)+'</td>'+
         '<td class="px-3 py-3 font-semibold">'+escapar(p.cenario)+'</td>'+
-        '<td class="px-3 py-3">Camila, Annelise</td>'+
-        '<td class="px-3 py-3 text-center font-extrabold">'+p.alunos.length+'/3</td>'+
+        '<td class="px-3 py-3">'+escapar(p.alunos.map(function(n){return nomes[n]||n;}).join(', '))+'</td>'+
+        '<td class="px-3 py-3 font-semibold">'+escapar(p.situacao)+'</td>'+
       '</tr>';
     }).join('');
-    return '<section id="intermed-reposicoes-nov" class="glass-panel min-w-0 w-full max-w-full rounded-2xl border border-blue-500/20 p-4 sm:p-6 shadow-sm space-y-3">'+
+    return '<section id="intermed-reposicoes-historico" class="glass-panel min-w-0 w-full max-w-full rounded-2xl border border-blue-500/20 p-4 sm:p-6 shadow-sm space-y-3">'+
       '<div class="flex flex-wrap items-center justify-between gap-3">'+
-        '<div><div class="text-[9px] uppercase tracking-[.15em] font-black text-blue-600 dark:text-blue-400">Encaixes informados • novembro</div>'+
-        '<h2 class="font-outfit text-lg sm:text-xl font-black text-zinc-900 dark:text-white mt-1">Reposições de Camila e Annelise</h2></div>'+
-        '<span class="text-[10px] font-bold rounded-full px-3 py-1.5 border border-blue-500/25 text-blue-700 dark:text-blue-300 bg-blue-500/[.07]">09 e 13/nov • 2026</span>'+
+        '<div><div class="text-[9px] uppercase tracking-[.15em] font-black text-blue-600 dark:text-blue-400">Reposições informadas • outubro e novembro</div>'+
+        '<h2 class="font-outfit text-lg sm:text-xl font-black text-zinc-900 dark:text-white mt-1">Atividades de Gabriella, Camila e Annelise</h2></div>'+
+        '<span class="text-[10px] font-bold rounded-full px-3 py-1.5 border border-blue-500/25 text-blue-700 dark:text-blue-300 bg-blue-500/[.07]">Outubro e novembro • 2026</span>'+
       '</div>'+
-      '<p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">Foram informados dois turnos de reposição para cada aluna (4 participações). Mantidos separadamente da proposta de dezembro, sem alteração na escala original ou registro automático de presença.</p>'+
-      '<div class="min-w-0 w-full overflow-x-auto rounded-xl border border-black/10 dark:border-white/10" role="region" aria-label="Reposições informadas de novembro de 2026" tabindex="0">'+
-      '<table class="w-full text-left text-[11px] text-zinc-700 dark:text-zinc-200" style="min-width:530px;border-collapse:collapse">'+
-        '<thead><tr class="bg-blue-500/[.07]"><th class="px-3 py-3">Data</th><th class="px-3 py-3">Turno</th><th class="px-3 py-3">Cenário</th><th class="px-3 py-3">Alunas</th><th class="px-3 py-3">Pessoas</th></tr></thead>'+
+      '<p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">Gabriella: 16/10 à tarde na UBS de Taguatinga, atividade informada como realizada. Camila e Annelise: 09 e 13/11 pela manhã, conforme encaixes informados. Nenhuma das três permanece na proposta de dezembro.</p>'+
+      '<div class="min-w-0 w-full overflow-x-auto rounded-xl border border-black/10 dark:border-white/10" role="region" aria-label="Atividades de reposição de outubro e novembro" tabindex="0">'+
+      '<table class="w-full text-left text-[11px] text-zinc-700 dark:text-zinc-200" style="min-width:630px;border-collapse:collapse">'+
+        '<thead><tr class="bg-blue-500/[.07]"><th class="px-3 py-3">Data</th><th class="px-3 py-3">Turno</th><th class="px-3 py-3">Cenário</th><th class="px-3 py-3">Alunos</th><th class="px-3 py-3">Situação</th></tr></thead>'+
         '<tbody>'+linhas+'</tbody></table></div>'+
-      '<p class="text-[10px] text-zinc-500 dark:text-zinc-400">Agendamento informado; execução e contabilização ainda dependem da realização dos turnos e dos critérios da preceptoria.</p>'+
+      '<p class="text-[10px] text-zinc-500 dark:text-zinc-400">Histórico informado sem alteração na escala original, sem registro automático de presença e sem validação de carimbos. Gabriella possuía dois turnos afetados na projeção; apenas uma atividade de reposição foi informada até agora.</p>'+
     '</section>';
   }
   function renderQuadroReposicoesIntermedPed(){
@@ -9374,7 +9378,6 @@ function estadoTemporalDataPed(dataObj){
       'Letícia Teixeira Monteiro':'Letícia',
       'Bruno Azevedo Lima':'Bruno',
       'Júlia Matos Guimarães':'Júlia',
-      'Gabriella da Costa Reis':'Gabriella',
       'Luiza de Santes Bastos Moreira':'Luiza',
       'Heitor Stoduto Mello Ferreira':'Heitor'
     };
@@ -9400,13 +9403,13 @@ function estadoTemporalDataPed(dataObj){
     var informacao=validacao.length?
       '<p class="text-xs font-bold text-red-600 dark:text-red-400">Atenção: '+escapar(validacao.join(' • '))+'</p>':
       '<p class="text-xs font-bold text-blue-600 dark:text-blue-400">Conferência: '+total+' participações distribuídas, sem conflitos de horário ou excesso de vagas.</p>';
-    return renderReposicoesNovIntermed()+'<section id="intermed-reposicoes" class="glass-panel min-w-0 w-full max-w-full rounded-2xl border border-amber-500/20 p-4 sm:p-6 shadow-sm space-y-4">'+
+    return renderReposicoesOutNovIntermed()+'<section id="intermed-reposicoes" class="glass-panel min-w-0 w-full max-w-full rounded-2xl border border-amber-500/20 p-4 sm:p-6 shadow-sm space-y-4">'+
       '<div class="flex flex-wrap items-center justify-between gap-3">'+
         '<div class="min-w-0"><div class="text-[9px] sm:text-[10px] uppercase tracking-[.15em] font-black text-amber-600 dark:text-amber-400">Proposta • não confirmada</div>'+
           '<h2 class="font-outfit text-lg sm:text-xl font-black text-zinc-900 dark:text-white mt-1">Distribuição sugerida de reposições</h2></div>'+
         '<span class="text-[10px] font-bold rounded-full px-3 py-1.5 border border-amber-500/25 text-amber-700 dark:text-amber-300 bg-amber-500/[.07]">7 a 11/dez • 2026</span>'+
       '</div>'+
-      '<p class="text-xs sm:text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">Proposta de 13 turnos em dezembro para 6 alunos; Camila e Annelise têm seus dois turnos por pessoa informados separadamente em novembro. Total dos dois meses: 17 participações previstas para 8 alunos. Os cenários perdidos em novembro continuam registrados. Os trios originais podem ser misturados. Os cenários não precisam ser os mesmos perdidos em novembro. Cada lista de alunos tem até 3 participantes, respeitando a capacidade total de cada cenário e turno. Nenhuma vaga ou reposição está confirmada.</p>'+
+      '<p class="text-xs sm:text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">Proposta de 11 turnos em dezembro para 5 alunos. Camila e Annelise têm dois turnos informados por pessoa em novembro; Gabriella realizou uma atividade em outubro, conforme relato. São 16 participações conhecidas entre outubro e dezembro, para os 8 alunos. Como Gabriella tinha 2 turnos afetados na escala de novembro e apenas 1 realizado informado, a equivalência do turno restante permanece a verificar. Os cenários perdidos em novembro continuam registrados. Os trios originais podem ser misturados. Os cenários não precisam ser os mesmos perdidos em novembro. Cada lista de alunos tem até 3 participantes, respeitando a capacidade total de cada cenário e turno. Nenhuma vaga ou reposição está confirmada.</p>'+
       informacao+
       '<h3 class="text-xs font-black uppercase tracking-wider text-zinc-800 dark:text-zinc-200">Sugestão de encaixe</h3>'+
       '<div class="min-w-0 w-full overflow-x-auto rounded-xl border border-black/10 dark:border-white/10" role="region" aria-label="Distribuição sugerida para as reposições" tabindex="0">'+
