@@ -9292,15 +9292,15 @@ function estadoTemporalDataPed(dataObj){
     {dia:'10/12',periodo:'Tarde',cenario:'Ambulatório UNIEURO',vagas:6},
     {dia:'11/12',periodo:'Tarde',cenario:'Ambulatório UNIEURO',vagas:9}
   ];
-  // Proposta provisória: 17 participações, sem sobreposição para o mesmo aluno.
+  // Proposta provisória: 15 participações de 7 alunos (Annelise excluída apenas das reposições).
   // Os nomes são os mesmos alunos cadastrados em alunosIntermedPed.
   // 07/12 UNIEURO: 5 pessoas em 9 vagas; NEO HRSAM: 3 pessoas em 3 vagas.
   var propostaIntermedDez=[
     {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']},
-    {dia:'07/12',periodo:'Manhã',cenario:'NEO HRSAM',alunos:['Camila Souza Pereira Guidão','Annelise Quinta da Fonseca Paiva','Gabriella da Costa Reis']},
+    {dia:'07/12',periodo:'Manhã',cenario:'NEO HRSAM',alunos:['Camila Souza Pereira Guidão','Gabriella da Costa Reis']},
     {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Bruno Azevedo Lima','Heitor Stoduto Mello Ferreira']},
     {dia:'10/12',periodo:'Manhã',cenario:'HRL PS',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']},
-    {dia:'10/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Camila Souza Pereira Guidão','Annelise Quinta da Fonseca Paiva','Gabriella da Costa Reis']},
+    {dia:'10/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Camila Souza Pereira Guidão','Gabriella da Costa Reis']},
     {dia:'11/12',periodo:'Tarde',cenario:'Ambulatório UNIEURO',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']}
   ];
   function chaveVagaIntermed(item){
@@ -9325,6 +9325,7 @@ function estadoTemporalDataPed(dataObj){
       if(total>v.vagas)inconsistencias.push('Vagas excedidas: '+v.dia+' '+v.cenario);
     });
     alunosIntermedPed.forEach(function(a){
+      if(a.nome==='Annelise Quinta da Fonseca Paiva')return; // Sem reposições atribuídas por solicitação.
       var previsto=eventosIntermedPed().filter(function(e){return e.nome===a.nome;}).length;
       if((contagem[a.nome]||0)!==previsto)inconsistencias.push('Quantidade diferente para '+a.nome);
     });
@@ -9344,7 +9345,6 @@ function estadoTemporalDataPed(dataObj){
       'Bruno Azevedo Lima':'Bruno',
       'Camila Souza Pereira Guidão':'Camila',
       'Júlia Matos Guimarães':'Júlia',
-      'Annelise Quinta da Fonseca Paiva':'Annelise',
       'Gabriella da Costa Reis':'Gabriella',
       'Luiza de Santes Bastos Moreira':'Luiza',
       'Heitor Stoduto Mello Ferreira':'Heitor'
@@ -9377,7 +9377,7 @@ function estadoTemporalDataPed(dataObj){
           '<h2 class="font-outfit text-lg sm:text-xl font-black text-zinc-900 dark:text-white mt-1">Distribuição sugerida de reposições</h2></div>'+
         '<span class="text-[10px] font-bold rounded-full px-3 py-1.5 border border-amber-500/25 text-amber-700 dark:text-amber-300 bg-amber-500/[.07]">7 a 11/dez • 2026</span>'+
       '</div>'+
-      '<p class="text-xs sm:text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">Distribuição proposta a partir das novas capacidades informadas, misturando os trios originais. Os cenários não precisam ser os mesmos perdidos em novembro. Cada lista de alunos tem até 3 participantes, respeitando a capacidade total de cada cenário e turno. Nenhuma vaga ou reposição está confirmada.</p>'+
+      '<p class="text-xs sm:text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">Distribuição provisória de 15 turnos entre 7 alunos, sem incluir Annelise nas reposições. Os cenários perdidos dela em novembro permanecem registrados. Os trios originais podem ser misturados. Os cenários não precisam ser os mesmos perdidos em novembro. Cada lista de alunos tem até 3 participantes, respeitando a capacidade total de cada cenário e turno. Nenhuma vaga ou reposição está confirmada.</p>'+
       informacao+
       '<h3 class="text-xs font-black uppercase tracking-wider text-zinc-800 dark:text-zinc-200">Sugestão de encaixe</h3>'+
       '<div class="min-w-0 w-full overflow-x-auto rounded-xl border border-black/10 dark:border-white/10" role="region" aria-label="Distribuição sugerida para as reposições" tabindex="0">'+
