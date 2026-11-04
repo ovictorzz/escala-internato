@@ -9279,61 +9279,119 @@ function estadoTemporalDataPed(dataObj){
       '<div class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium mt-1">'+escapar(descricao)+'</div></div>';
   }
 
-  // REFERENCIA_REPOSICOES_INTERMED_DEZ — transcrição visual da imagem recebida.
-  // Grupos 1–5 são os rótulos da planilha, sem vínculo definido com os oito alunos.
-  // O ano, as atribuições e a realização dos turnos permanecem pendentes de confirmação.
-  // 'colunas' conserva a mesclagem visual, sem pressupor atividade em todos os dias cobertos.
-  var referenciaReposicoesIntermedPed=[
-    {grupo:'1',manha:[{dia:8,colunas:2,atividade:'A. UNIEURO'},{dia:10,colunas:1,atividade:'HRL PS'},{dia:11,colunas:1,atividade:'HRL PS'}],tarde:[{dia:8,colunas:2,atividade:'SCI'},{dia:12,colunas:1,atividade:'A. UNIEURO'}],noite:[{dia:9,colunas:1,atividade:'SEMINÁRIO'}]},
-    {grupo:'2',manha:[{dia:8,colunas:3,atividade:'A. UNIEURO'},{dia:11,colunas:1,atividade:'A. UNIEURO'}],tarde:[{dia:8,colunas:2,atividade:'SCI'},{dia:11,colunas:1,atividade:'HRL PS'},{dia:12,colunas:1,atividade:'A. UNIEURO'}],noite:[{dia:9,colunas:1,atividade:'SEMINÁRIO'}]},
-    {grupo:'3',manha:[{dia:8,colunas:1,atividade:'NEO HRSAM'},{dia:9,colunas:1,atividade:'NEO HRSAM'},{dia:11,colunas:1,atividade:'A. UNIEURO'}],tarde:[{dia:8,colunas:2,atividade:'SCI'},{dia:12,colunas:1,atividade:'A. UNIEURO'}],noite:[{dia:9,colunas:1,atividade:'SEMINÁRIO'}]},
-    {grupo:'4',manha:[{dia:8,colunas:4,atividade:'A. UNIEURO'}],tarde:[{dia:8,colunas:2,atividade:'SCI'},{dia:11,colunas:1,atividade:'A. UNIEURO'}],noite:[{dia:9,colunas:1,atividade:'SEMINÁRIO'}]},
-    {grupo:'5',manha:[],tarde:[{dia:8,colunas:2,atividade:'SCI'},{dia:11,colunas:1,atividade:'A. UNIEURO'}],noite:[{dia:9,colunas:1,atividade:'SEMINÁRIO'}]}
+  // VAGAS_INTERMED_DEZ_2026 — disponibilidades informadas para 07–11/dez.
+  // As quantidades são limites máximos por turno/cenário, não confirmações de matrícula.
+  var vagasIntermedDez=[
+    {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',vagas:9},
+    {dia:'07/12',periodo:'Manhã',cenario:'NEO HRSAM',vagas:3},
+    {dia:'08/12',periodo:'Manhã',cenario:'NEO HRSAM',vagas:3},
+    {dia:'09/12',periodo:'A confirmar',cenario:'HRL PS',vagas:3},
+    {dia:'10/12',periodo:'Manhã',cenario:'HRL PS',vagas:3},
+    {dia:'10/12',periodo:'Tarde',cenario:'HRL PS',vagas:3},
+    {dia:'10/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',vagas:6},
+    {dia:'10/12',periodo:'Tarde',cenario:'Ambulatório UNIEURO',vagas:6},
+    {dia:'11/12',periodo:'Tarde',cenario:'Ambulatório UNIEURO',vagas:9}
   ];
+  // Proposta provisória: 17 participações, sem sobreposição para o mesmo aluno.
+  // Os nomes são os mesmos alunos cadastrados em alunosIntermedPed.
+  // 07/12 UNIEURO comporta dois subgrupos de até 3 (6 pessoas em 9 vagas).
+  var propostaIntermedDez=[
+    {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',grupo:'A',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']},
+    {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',grupo:'B',alunos:['Camila Souza Pereira Guidão','Annelise Quinta da Fonseca Paiva','Gabriella da Costa Reis']},
+    {dia:'07/12',periodo:'Manhã',cenario:'NEO HRSAM',grupo:'C',alunos:['Bruno Azevedo Lima','Heitor Stoduto Mello Ferreira']},
+    {dia:'10/12',periodo:'Manhã',cenario:'HRL PS',grupo:'A',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']},
+    {dia:'10/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',grupo:'B',alunos:['Camila Souza Pereira Guidão','Annelise Quinta da Fonseca Paiva','Gabriella da Costa Reis']},
+    {dia:'11/12',periodo:'Tarde',cenario:'Ambulatório UNIEURO',grupo:'A',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']}
+  ];
+  function chaveVagaIntermed(item){
+    return [item.dia,item.periodo,item.cenario].join('|');
+  }
+  function vagasOcupadasIntermed(chave){
+    return propostaIntermedDez.filter(function(p){return chaveVagaIntermed(p)===chave;})
+      .reduce(function(n,p){return n+p.alunos.length;},0);
+  }
+  function validarDistribuicaoIntermed(){
+    var inconsistencias=[];
+    var contagem={};
+    propostaIntermedDez.forEach(function(p){
+      if(p.alunos.length>3)inconsistencias.push('Grupo de mais de 3 pessoas: '+p.dia+' '+p.cenario);
+      p.alunos.forEach(function(nome){
+        if(!alunosIntermedPed.some(function(a){return a.nome===nome;}))inconsistencias.push('Aluno desconhecido: '+nome);
+        contagem[nome]=(contagem[nome]||0)+1;
+      });
+    });
+    vagasIntermedDez.forEach(function(v){
+      var total=vagasOcupadasIntermed(chaveVagaIntermed(v));
+      if(total>v.vagas)inconsistencias.push('Vagas excedidas: '+v.dia+' '+v.cenario);
+    });
+    alunosIntermedPed.forEach(function(a){
+      var previsto=eventosIntermedPed().filter(function(e){return e.nome===a.nome;}).length;
+      if((contagem[a.nome]||0)!==previsto)inconsistencias.push('Quantidade diferente para '+a.nome);
+    });
+    var presencaPorTurno={};
+    propostaIntermedDez.forEach(function(p){p.alunos.forEach(function(n){
+      var chave=[n,p.dia,p.periodo].join('|');
+      presencaPorTurno[chave]=(presencaPorTurno[chave]||0)+1;
+      if(presencaPorTurno[chave]>1)inconsistencias.push('Conflito de horário: '+n);
+    });});
+    return inconsistencias;
+  }
   function renderQuadroReposicoesIntermedPed(){
-    var dias=[8,9,10,11,12,13,14];
-    var nomesTurnos=[['manha','Manhã'],['tarde','Tarde'],['noite','Noite']];
-    var cabecalho='<tr class="bg-blue-500/[.09] text-zinc-700 dark:text-zinc-200">'+
-      '<th class="px-3 py-3 text-[10px] font-black uppercase tracking-wide text-left w-[70px]">Grupo</th>'+
-      '<th class="px-3 py-3 text-[10px] font-black uppercase tracking-wide text-left w-[76px]">Turno</th>'+
-      dias.map(function(d){return '<th class="px-2 py-3 text-[11px] font-black text-center'+(d>=13?' bg-zinc-500/10':'')+'">'+d+'/dez</th>';}).join('')+'</tr>';
-    var linhas=referenciaReposicoesIntermedPed.map(function(grupo){
-      return nomesTurnos.map(function(par,idx){
-        var chave=par[0],nome=par[1],lista=grupo[chave]||[];
-        var celulas='',dia=8;
-        while(dia<=14){
-          var item=lista.find(function(e){return e.dia===dia;});
-          if(item){
-            var largura=Math.min(item.colunas,15-dia);
-            celulas+='<td colspan="'+largura+'" title="'+(largura>1?'Bloco mesclado na planilha, duração não confirmada':'Proposta sem confirmação')+'" class="px-2 py-3 align-middle border-l border-black/5 dark:border-white/10 bg-blue-500/[.035]">'+
-              '<span class="block text-[10px] sm:text-[11px] font-extrabold text-zinc-900 dark:text-zinc-100 leading-snug">'+escapar(item.atividade)+'</span>'+
-              (largura>1?'<span class="block text-[8px] mt-1 text-zinc-500 dark:text-zinc-400">Célula mesclada na referência</span>':'')+
-              '</td>';
-            dia+=largura;
-          }else{
-            celulas+='<td class="border-l border-black/5 dark:border-white/10 '+(dia>=13?'bg-zinc-400/[.13]':'')+'"></td>';
-            dia++;
-          }
-        }
-        return '<tr class="border-t border-black/10 dark:border-white/10">'+
-          (idx===0?'<th rowspan="3" scope="rowgroup" class="px-3 py-3 text-center text-blue-600 dark:text-blue-400 font-black text-sm bg-blue-500/[.045] border-r border-black/5 dark:border-white/10">'+escapar(grupo.grupo)+'</th>':'')+
-          '<th scope="row" class="px-3 py-3 text-[10px] font-bold text-zinc-500 dark:text-zinc-400">'+nome+'</th>'+
-          celulas+'</tr>';
-      }).join('');
+    var validacao=validarDistribuicaoIntermed();
+    var total=propostaIntermedDez.reduce(function(n,p){return n+p.alunos.length;},0);
+    var nomesCurtos={
+      'Letícia Teixeira Monteiro':'Letícia',
+      'Bruno Azevedo Lima':'Bruno',
+      'Camila Souza Pereira Guidão':'Camila',
+      'Júlia Matos Guimarães':'Júlia',
+      'Annelise Quinta da Fonseca Paiva':'Annelise',
+      'Gabriella da Costa Reis':'Gabriella',
+      'Luiza de Santes Bastos Moreira':'Luiza',
+      'Heitor Stoduto Mello Ferreira':'Heitor'
+    };
+    var linhas=propostaIntermedDez.map(function(p){
+      return '<tr class="border-t border-black/5 dark:border-white/10">'+
+        '<td class="px-3 py-3 font-black text-blue-600 dark:text-blue-400 whitespace-nowrap">'+escapar(p.dia)+'</td>'+
+        '<td class="px-3 py-3 whitespace-nowrap">'+escapar(p.periodo)+'</td>'+
+        '<td class="px-3 py-3 font-semibold">'+escapar(p.cenario)+'</td>'+
+        '<td class="px-3 py-3 font-bold text-zinc-500 dark:text-zinc-400">'+escapar(p.grupo)+'</td>'+
+        '<td class="px-3 py-3">'+escapar(p.alunos.map(function(n){return nomesCurtos[n]||n;}).join(', '))+'</td>'+
+        '<td class="px-3 py-3 text-center font-extrabold">'+p.alunos.length+'/3</td>'+
+      '</tr>';
     }).join('');
-    return '<section id="intermed-reposicoes" class="glass-panel min-w-0 w-full max-w-full rounded-2xl border border-amber-500/20 p-4 sm:p-6 shadow-sm space-y-3">'+
+    var capacidade=vagasIntermedDez.map(function(v){
+      var ocupado=vagasOcupadasIntermed(chaveVagaIntermed(v));
+      return '<tr class="border-t border-black/5 dark:border-white/10">'+
+        '<td class="px-3 py-3 whitespace-nowrap font-bold text-blue-600 dark:text-blue-400">'+escapar(v.dia)+'</td>'+
+        '<td class="px-3 py-3 whitespace-nowrap">'+escapar(v.periodo)+'</td>'+
+        '<td class="px-3 py-3">'+escapar(v.cenario)+'</td>'+
+        '<td class="px-3 py-3 text-center font-extrabold">'+ocupado+' / '+v.vagas+'</td>'+
+      '</tr>';
+    }).join('');
+    var informacao=validacao.length?
+      '<p class="text-xs font-bold text-red-600 dark:text-red-400">Atenção: '+escapar(validacao.join(' • '))+'</p>':
+      '<p class="text-xs font-bold text-blue-600 dark:text-blue-400">Conferência: '+total+' participações distribuídas, sem conflitos de horário ou excesso de vagas.</p>';
+    return '<section id="intermed-reposicoes" class="glass-panel min-w-0 w-full max-w-full rounded-2xl border border-amber-500/20 p-4 sm:p-6 shadow-sm space-y-4">'+
       '<div class="flex flex-wrap items-center justify-between gap-3">'+
-        '<div class="min-w-0"><div class="text-[9px] sm:text-[10px] uppercase tracking-[.15em] font-black text-amber-600 dark:text-amber-400">Planejamento • não confirmado</div>'+
-          '<h2 class="font-outfit text-lg sm:text-xl font-black text-zinc-900 dark:text-white mt-1">Possíveis reposições</h2></div>'+
-        '<span class="text-[10px] font-bold rounded-full px-3 py-1.5 border border-amber-500/25 text-amber-700 dark:text-amber-300 bg-amber-500/[.07]">8 a 14/dez • ano a confirmar</span>'+
+        '<div class="min-w-0"><div class="text-[9px] sm:text-[10px] uppercase tracking-[.15em] font-black text-amber-600 dark:text-amber-400">Proposta • não confirmada</div>'+
+          '<h2 class="font-outfit text-lg sm:text-xl font-black text-zinc-900 dark:text-white mt-1">Distribuição sugerida de reposições</h2></div>'+
+        '<span class="text-[10px] font-bold rounded-full px-3 py-1.5 border border-amber-500/25 text-amber-700 dark:text-amber-300 bg-amber-500/[.07]">7 a 11/dez • 2026</span>'+
       '</div>'+
-      '<p class="text-xs sm:text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">Quadro de referência enviado para organizar possíveis reposições. A distribuição <strong>ainda não foi estabelecida</strong>, e os grupos de 1 a 5 indicados na imagem não foram associados automaticamente aos alunos ou trios do Intermed.</p>'+
-      '<div class="w-full min-w-0 max-w-full overflow-x-auto rounded-xl border border-black/10 dark:border-white/10" role="region" aria-label="Tabela provisória de reposições de 8 a 14 de dezembro" tabindex="0">'+
-        '<table class="w-full text-left" style="min-width:850px;table-layout:fixed;border-collapse:collapse">'+
-          '<thead>'+cabecalho+'</thead><tbody>'+linhas+'</tbody>'+
-        '</table>'+
+      '<p class="text-xs sm:text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">Distribuição proposta a partir das novas capacidades informadas, misturando os trios originais. Os cenários não precisam ser os mesmos perdidos em novembro. Cada subgrupo tem no máximo 3 alunos; cenários com capacidade maior podem receber mais de um subgrupo. Nenhuma vaga ou reposição está confirmada.</p>'+
+      informacao+
+      '<h3 class="text-xs font-black uppercase tracking-wider text-zinc-800 dark:text-zinc-200">Sugestão de encaixe</h3>'+
+      '<div class="min-w-0 w-full overflow-x-auto rounded-xl border border-black/10 dark:border-white/10" role="region" aria-label="Distribuição sugerida para as reposições" tabindex="0">'+
+        '<table class="w-full text-left text-[11px] text-zinc-700 dark:text-zinc-200" style="min-width:760px;border-collapse:collapse">'+
+          '<thead><tr class="bg-blue-500/[.07]"><th class="px-3 py-3">Data</th><th class="px-3 py-3">Turno</th><th class="px-3 py-3">Cenário</th><th class="px-3 py-3">Grupo</th><th class="px-3 py-3">Alunos</th><th class="px-3 py-3">Grupo</th></tr></thead>'+
+          '<tbody>'+linhas+'</tbody></table>'+
       '</div>'+
-      '<p class="text-[10px] text-zinc-500 dark:text-zinc-400 leading-relaxed">Reprodução dos blocos e células mescladas da imagem, sem presumir duração contínua. Datas sem ano indicado no original. Não constitui escala aprovada, reposição confirmada, presença ou carimbo. No celular, deslize a tabela lateralmente.</p>'+
+      '<h3 class="text-xs font-black uppercase tracking-wider text-zinc-800 dark:text-zinc-200">Vagas informadas (07 a 11/dez)</h3>'+
+      '<div class="min-w-0 w-full overflow-x-auto rounded-xl border border-black/10 dark:border-white/10" role="region" aria-label="Capacidade disponível por data e cenário" tabindex="0">'+
+        '<table class="w-full text-left text-[11px] text-zinc-700 dark:text-zinc-200" style="min-width:540px;border-collapse:collapse">'+
+          '<thead><tr class="bg-blue-500/[.07]"><th class="px-3 py-3">Data</th><th class="px-3 py-3">Turno</th><th class="px-3 py-3">Cenário</th><th class="px-3 py-3 text-center">Propostos / vagas</th></tr></thead>'+
+          '<tbody>'+capacidade+'</tbody></table>'+
+      '</div>'+
+      '<p class="text-[10px] leading-relaxed text-zinc-500 dark:text-zinc-400">O turno do HRL PS de 09/12 não foi especificado. Não foi usado na proposta. 09/12 não possui NEO HRSAM nas disponibilidades atualizadas. Os demais horários não escolhidos permanecem como alternativas. Distribuição preliminar, ainda sujeita à definição e aprovação das reposições pela preceptoria.</p>'+
     '</section>';
   }
 
