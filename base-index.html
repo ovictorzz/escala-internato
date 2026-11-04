@@ -9294,14 +9294,14 @@ function estadoTemporalDataPed(dataObj){
   ];
   // Proposta provisória: 17 participações, sem sobreposição para o mesmo aluno.
   // Os nomes são os mesmos alunos cadastrados em alunosIntermedPed.
-  // 07/12 UNIEURO comporta três subgrupos de até 3 (8 pessoas em 9 vagas).
+  // 07/12 UNIEURO: 8 pessoas em 9 vagas, organizadas em listas de até 3, sem rótulos.
   var propostaIntermedDez=[
-    {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',grupo:'A',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']},
-    {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',grupo:'B',alunos:['Camila Souza Pereira Guidão','Annelise Quinta da Fonseca Paiva','Gabriella da Costa Reis']},
-    {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',grupo:'C',alunos:['Bruno Azevedo Lima','Heitor Stoduto Mello Ferreira']},
-    {dia:'10/12',periodo:'Manhã',cenario:'HRL PS',grupo:'A',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']},
-    {dia:'10/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',grupo:'B',alunos:['Camila Souza Pereira Guidão','Annelise Quinta da Fonseca Paiva','Gabriella da Costa Reis']},
-    {dia:'11/12',periodo:'Tarde',cenario:'Ambulatório UNIEURO',grupo:'A',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']}
+    {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']},
+    {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Camila Souza Pereira Guidão','Annelise Quinta da Fonseca Paiva','Gabriella da Costa Reis']},
+    {dia:'07/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Bruno Azevedo Lima','Heitor Stoduto Mello Ferreira']},
+    {dia:'10/12',periodo:'Manhã',cenario:'HRL PS',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']},
+    {dia:'10/12',periodo:'Manhã',cenario:'Ambulatório UNIEURO',alunos:['Camila Souza Pereira Guidão','Annelise Quinta da Fonseca Paiva','Gabriella da Costa Reis']},
+    {dia:'11/12',periodo:'Tarde',cenario:'Ambulatório UNIEURO',alunos:['Letícia Teixeira Monteiro','Júlia Matos Guimarães','Luiza de Santes Bastos Moreira']}
   ];
   function chaveVagaIntermed(item){
     return [item.dia,item.periodo,item.cenario].join('|');
@@ -9314,7 +9314,7 @@ function estadoTemporalDataPed(dataObj){
     var inconsistencias=[];
     var contagem={};
     propostaIntermedDez.forEach(function(p){
-      if(p.alunos.length>3)inconsistencias.push('Grupo de mais de 3 pessoas: '+p.dia+' '+p.cenario);
+      if(p.alunos.length>3)inconsistencias.push('Mais de 3 pessoas na mesma lista: '+p.dia+' '+p.cenario);
       p.alunos.forEach(function(nome){
         if(!alunosIntermedPed.some(function(a){return a.nome===nome;}))inconsistencias.push('Aluno desconhecido: '+nome);
         contagem[nome]=(contagem[nome]||0)+1;
@@ -9354,7 +9354,7 @@ function estadoTemporalDataPed(dataObj){
         '<td class="px-3 py-3 font-black text-blue-600 dark:text-blue-400 whitespace-nowrap">'+escapar(p.dia)+'</td>'+
         '<td class="px-3 py-3 whitespace-nowrap">'+escapar(p.periodo)+'</td>'+
         '<td class="px-3 py-3 font-semibold">'+escapar(p.cenario)+'</td>'+
-        '<td class="px-3 py-3 font-bold text-zinc-500 dark:text-zinc-400">'+escapar(p.grupo)+'</td>'+
+
         '<td class="px-3 py-3">'+escapar(p.alunos.map(function(n){return nomesCurtos[n]||n;}).join(', '))+'</td>'+
         '<td class="px-3 py-3 text-center font-extrabold">'+p.alunos.length+'/3</td>'+
       '</tr>';
@@ -9377,12 +9377,12 @@ function estadoTemporalDataPed(dataObj){
           '<h2 class="font-outfit text-lg sm:text-xl font-black text-zinc-900 dark:text-white mt-1">Distribuição sugerida de reposições</h2></div>'+
         '<span class="text-[10px] font-bold rounded-full px-3 py-1.5 border border-amber-500/25 text-amber-700 dark:text-amber-300 bg-amber-500/[.07]">7 a 11/dez • 2026</span>'+
       '</div>'+
-      '<p class="text-xs sm:text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">Distribuição proposta a partir das novas capacidades informadas, misturando os trios originais. Os cenários não precisam ser os mesmos perdidos em novembro. Cada subgrupo tem no máximo 3 alunos; cenários com capacidade maior podem receber mais de um subgrupo. Nenhuma vaga ou reposição está confirmada.</p>'+
+      '<p class="text-xs sm:text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">Distribuição proposta a partir das novas capacidades informadas, misturando os trios originais. Os cenários não precisam ser os mesmos perdidos em novembro. Cada lista de alunos tem até 3 participantes, respeitando a capacidade total de cada cenário e turno. Nenhuma vaga ou reposição está confirmada.</p>'+
       informacao+
       '<h3 class="text-xs font-black uppercase tracking-wider text-zinc-800 dark:text-zinc-200">Sugestão de encaixe</h3>'+
       '<div class="min-w-0 w-full overflow-x-auto rounded-xl border border-black/10 dark:border-white/10" role="region" aria-label="Distribuição sugerida para as reposições" tabindex="0">'+
         '<table class="w-full text-left text-[11px] text-zinc-700 dark:text-zinc-200" style="min-width:760px;border-collapse:collapse">'+
-          '<thead><tr class="bg-blue-500/[.07]"><th class="px-3 py-3">Data</th><th class="px-3 py-3">Turno</th><th class="px-3 py-3">Cenário</th><th class="px-3 py-3">Grupo</th><th class="px-3 py-3">Alunos</th><th class="px-3 py-3">Grupo</th></tr></thead>'+
+          '<thead><tr class="bg-blue-500/[.07]"><th class="px-3 py-3">Data</th><th class="px-3 py-3">Turno</th><th class="px-3 py-3">Cenário</th><th class="px-3 py-3">Alunos</th><th class="px-3 py-3">Pessoas</th></tr></thead>'+
           '<tbody>'+linhas+'</tbody></table>'+
       '</div>'+
       '<h3 class="text-xs font-black uppercase tracking-wider text-zinc-800 dark:text-zinc-200">Vagas informadas (07 a 11/dez)</h3>'+
